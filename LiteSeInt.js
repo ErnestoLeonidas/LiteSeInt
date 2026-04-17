@@ -64,10 +64,12 @@ class LiteSeInt {
     for (let i = 0; i < lineas.length; i++) {
       if (!this.ejecutando) break;
 
-      const linea = lineas[i].trim();
+      // Strip inline comments: everything after // (outside strings)
+      const lineaRaw = lineas[i].trim();
+      const linea = LiteSeInt.stripComment(lineaRaw);
 
-      // Ignorar líneas vacías y comentarios
-      if (linea === '' || linea.startsWith('//')) continue;
+      // Ignorar líneas vacías y comentarios puros
+      if (linea === '') continue;
 
       // Notificar línea activa
       this.callbacks.onLineaActiva(i);
@@ -402,4 +404,46 @@ class LiteSeInt {
   static PALABRAS_RESERVADAS_SET = new Set(
     ['definir', 'escribir', 'leer', 'como', 'entero', 'real', 'caracter']
   );
+
+  /**
+   * Strips inline comments from a line, respecting strings.
+   * Everything after // outside of quotes is removed.
+   * @param {string} linea
+   * @returns {string}
+   */
+  static stripComment(linea) {
+    let enComillas = false;
+    for (let i = 0; i < linea.length; i++) {
+      if (linea[i] === '"') {
+        enComillas = !enComillas;
+      } else if (!enComillas && linea[i] === '/' && linea[i + 1] === '/') {
+        return linea.substring(0, i).trim();
+      }
+    }
+    return linea.trim();
+  }
+
+  /**
+   * Scans code text and returns an array of variable names found
+   * in Definir statements (for autocomplete purposes).
+   * @param {string} codigo
+   * @returns {Array<string>}
+   */
+  static extraerVariablesDelCodigo(codigo) {
+    const vars = [];
+    const lineas = codigo.split('\n');
+    for (const raw of lineas) {
+      const linea = LiteSeInt.stripComment(raw).trim();
+      const match = linea.match(/^definir\s+(.+?)\s+como\s+(entero|real|caracter)\s*$/i);
+      if (match) {
+        const nombres = match[1].split(',').map(n => n.trim()).filter(n => n.length > 0);
+        for (const n of nombres) {
+          if (/^\w+$/.test(n) && !LiteSeInt.PALABRAS_RESERVADAS_SET.has(n.toLowerCase())) {
+            vars.push(n);
+          }
+        }
+      }
+    }
+    return [...new Set(vars)];
+  }
 }

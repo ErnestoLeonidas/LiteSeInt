@@ -27,8 +27,13 @@
       --warning: #ffa502;
       --info: #70a1ff;
       --exec-highlight: #b8f0c8;
-      --exec-highlight-bg: rgba(184, 240, 200, 0.08);
-      --error-highlight-bg: rgba(255, 71, 87, 0.08);
+      --exec-highlight-bg: rgba(184, 240, 200, 0.16);
+      --error-highlight-bg: rgba(255, 71, 87, 0.16);
+      --syntax-keyword: #ff6b9d;
+      --syntax-string: #ffd43b;
+      --syntax-variable: #70a1ff;
+      --syntax-comment: #5c6a7a;
+      --syntax-number: #a8e6cf;
       --font-code: 'JetBrains Mono', 'Space Mono', monospace;
       --shadow-glow: 0 0 30px rgba(0, 255, 136, 0.05);
       --line-height-val: 1.65;
@@ -173,7 +178,7 @@
 
     /* ---- Gutter ---- */
     .line-numbers {
-      width: 50px; padding: 16px 0;
+      width: 58px; padding: 16px 0;
       background: rgba(0,0,0,0.15); border-right: 1px solid var(--border-color);
       font-size: 13px; color: var(--line-number); line-height: var(--line-height-val);
       overflow: hidden; user-select: none; flex-shrink: 0;
@@ -184,17 +189,37 @@
       padding-right: 8px; height: var(--line-px); position: relative;
       transition: background 0.15s, color 0.15s;
     }
-    .line-num-row .num-text { width: 26px; text-align: right; }
+    .line-num-row .exec-arrow {
+      display: none;
+      font-size: 11px;
+      font-weight: 700;
+      margin-right: 2px;
+      flex-shrink: 0;
+    }
+    .line-num-row.executing .exec-arrow {
+      display: inline;
+      color: var(--accent);
+    }
+    .line-num-row.has-error .exec-arrow {
+      display: inline;
+      color: var(--error);
+    }
+    .line-num-row .num-text { width: 24px; text-align: right; }
 
     /* Executing: verde pastel claro */
     .line-num-row.executing { background: var(--exec-highlight-bg); color: var(--exec-highlight); }
 
-    /* Error badge */
-    .line-num-row .error-badge {
-      display: none; position: absolute; right: -14px; top: 50%;
-      transform: translateY(-50%); z-index: 20;
+    /* Error badge — positioned in the overlay (right side of code) */
+    .error-badge-container {
+      display: none;
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 20;
+      pointer-events: auto;
     }
-    .line-num-row.has-error .error-badge { display: flex; }
+    .line-overlay.has-error .error-badge-container { display: flex; }
 
     .error-badge-btn {
       width: 18px; height: 18px; border-radius: 50%;
@@ -207,30 +232,53 @@
 
     /* ---- Line overlays (behind textarea) ---- */
     .editor-line-overlays {
-      position: absolute; top: 0; left: 50px; right: 0; bottom: 0;
+      position: absolute; top: 0; left: 58px; right: 0; bottom: 0;
       pointer-events: none; padding-top: 16px; z-index: 1; overflow: hidden;
     }
-    .line-overlay { height: var(--line-px); width: 100%; transition: background 0.15s; }
+    .line-overlay {
+      height: var(--line-px); width: 100%; transition: background 0.15s;
+      position: relative;
+    }
     .line-overlay.executing { background: var(--exec-highlight-bg); }
     .line-overlay.has-error { background: var(--error-highlight-bg); }
 
     /* ---- Textarea ---- */
     #editor {
-      flex: 1; background: transparent; color: var(--text-primary);
+      flex: 1; background: transparent; color: transparent;
       border: none; outline: none; padding: 16px;
       font-family: var(--font-code); font-size: 13px; line-height: var(--line-height-val);
       resize: none; tab-size: 2; white-space: pre;
       overflow-wrap: normal; overflow-x: auto;
-      position: relative; z-index: 2;
+      position: relative; z-index: 4;
       caret-color: var(--accent);
     }
     #editor::placeholder { color: var(--text-muted); }
+    /* Show placeholder text normally (not transparent) */
+    #editor:placeholder-shown { color: var(--text-muted); }
 
     /* Editor area background (behind overlay) */
     .editor-bg-layer {
-      position: absolute; top: 0; left: 50px; right: 0; bottom: 0;
+      position: absolute; top: 0; left: 58px; right: 0; bottom: 0;
       background: var(--bg-editor); z-index: 0;
     }
+
+    /* Syntax highlight layer */
+    .syntax-highlight-layer {
+      position: absolute; top: 0; left: 58px; right: 0; bottom: 0;
+      padding: 16px; z-index: 3; pointer-events: none;
+      font-family: var(--font-code); font-size: 13px;
+      line-height: var(--line-height-val);
+      white-space: pre; overflow: hidden;
+      color: transparent; /* base text invisible, spans provide color */
+    }
+
+    .syntax-highlight-layer .sh-keyword { color: var(--syntax-keyword); font-weight: 500; }
+    .syntax-highlight-layer .sh-string { color: var(--syntax-string); }
+    .syntax-highlight-layer .sh-variable { color: var(--syntax-variable); }
+    .syntax-highlight-layer .sh-comment { color: var(--syntax-comment); font-style: italic; }
+    .syntax-highlight-layer .sh-number { color: var(--syntax-number); }
+    .syntax-highlight-layer .sh-operator { color: var(--text-secondary); }
+    .syntax-highlight-layer .sh-plain { color: var(--text-primary); }
 
     /* ========================================
        CONSOLE PANEL
@@ -392,6 +440,7 @@
         <div class="line-numbers" id="lineNumbers"></div>
         <div class="editor-bg-layer"></div>
         <div class="editor-line-overlays" id="lineOverlays"></div>
+        <div class="syntax-highlight-layer" id="syntaxLayer"></div>
         <textarea
           id="editor"
           spellcheck="false"
@@ -546,21 +595,29 @@ Ejemplo:
       $overlays.empty();
 
       for (let i = 0; i < total; i++) {
+        // Gutter row: arrow + number
         const $row = $('<div>').addClass('line-num-row').attr('data-line', i);
+        $row.append($('<span>').addClass('exec-arrow').text('>'));
         $row.append($('<span>').addClass('num-text').text(i + 1));
-        $row.append(
-          $('<span>').addClass('error-badge').html(
+        $gutter.append($row);
+
+        // Overlay row with error badge inside
+        const $overlay = $('<div>').addClass('line-overlay').attr('data-line', i);
+        $overlay.append(
+          $('<div>').addClass('error-badge-container').html(
             `<button class="error-badge-btn" data-line="${i}" tabindex="-1">!</button>`
           )
         );
-        $gutter.append($row);
-        $overlays.append($('<div>').addClass('line-overlay').attr('data-line', i));
+        $overlays.append($overlay);
       }
 
       // Re-apply errors
       for (const [idx, msg] of Object.entries(erroresMapa)) {
         marcarErrorLinea(parseInt(idx), msg);
       }
+
+      // Update syntax highlighting
+      actualizarSyntaxHighlight();
     }
 
     function resaltarLineaEjecutando(lineaIdx) {
@@ -571,17 +628,21 @@ Ejemplo:
     }
 
     function marcarErrorLinea(lineaIdx, mensaje) {
+      // Mark gutter
       const $row = $(`.line-num-row[data-line="${lineaIdx}"]`);
       $row.addClass('has-error').removeClass('executing');
-      $(`.line-overlay[data-line="${lineaIdx}"]`).removeClass('executing').addClass('has-error');
 
-      const $btn = $row.find('.error-badge-btn');
+      // Mark overlay
+      const $overlay = $(`.line-overlay[data-line="${lineaIdx}"]`);
+      $overlay.removeClass('executing').addClass('has-error');
+
+      // Setup tooltip on the error badge inside the overlay
+      const $btn = $overlay.find('.error-badge-btn');
       $btn.attr('title', mensaje);
 
-      // Bootstrap tooltip
       const existing = bootstrap.Tooltip.getInstance($btn[0]);
       if (existing) existing.dispose();
-      new bootstrap.Tooltip($btn[0], { placement: 'right', trigger: 'hover focus', html: false });
+      new bootstrap.Tooltip($btn[0], { placement: 'left', trigger: 'hover focus', html: false });
     }
 
     function limpiarEstadoLineas() {
@@ -598,7 +659,131 @@ Ejemplo:
     $('#editor').on('scroll', function() {
       document.getElementById('lineNumbers').scrollTop = this.scrollTop;
       document.getElementById('lineOverlays').scrollTop = this.scrollTop;
+      document.getElementById('syntaxLayer').scrollTop = this.scrollTop;
+      document.getElementById('syntaxLayer').scrollLeft = this.scrollLeft;
     });
+
+    // =========================================
+    // 5b. SYNTAX HIGHLIGHTING
+    // =========================================
+
+    const KEYWORD_REGEX = /\b(Definir|Escribir|Leer|Como|Entero|Real|Caracter)\b/gi;
+
+    /**
+     * Renders syntax-highlighted HTML into the overlay layer.
+     * Runs on every input change.
+     */
+    function actualizarSyntaxHighlight() {
+      const texto = $('#editor').val();
+      const lineas = texto.split('\n');
+      const userVars = LiteSeInt.extraerVariablesDelCodigo(texto);
+
+      // Build a regex for user variables (if any)
+      let varRegex = null;
+      if (userVars.length > 0) {
+        const escaped = userVars.map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+        varRegex = new RegExp('\\b(' + escaped.join('|') + ')\\b', 'gi');
+      }
+
+      const htmlLines = lineas.map(linea => {
+        return resaltarLinea_syntax(linea, varRegex);
+      });
+
+      document.getElementById('syntaxLayer').innerHTML = htmlLines.join('\n');
+    }
+
+    /**
+     * Highlights a single line respecting: comments > strings > keywords > variables > numbers
+     */
+    function resaltarLinea_syntax(linea, varRegex) {
+      if (linea === '') return '\n';
+
+      // Find comment position (outside strings)
+      let commentIdx = -1;
+      let enComillas = false;
+      for (let i = 0; i < linea.length; i++) {
+        if (linea[i] === '"') enComillas = !enComillas;
+        if (!enComillas && linea[i] === '/' && linea[i + 1] === '/') {
+          commentIdx = i;
+          break;
+        }
+      }
+
+      let codePart = commentIdx >= 0 ? linea.substring(0, commentIdx) : linea;
+      let commentPart = commentIdx >= 0 ? linea.substring(commentIdx) : '';
+
+      // Tokenize the code part
+      let highlighted = tokenizarYResaltar(codePart, varRegex);
+
+      // Comment part: all gray
+      if (commentPart) {
+        highlighted += `<span class="sh-comment">${escapeHtml(commentPart)}</span>`;
+      }
+
+      return highlighted;
+    }
+
+    /**
+     * Tokenizes code (no comments) into highlighted spans.
+     * Processes left-to-right to respect string boundaries.
+     */
+    function tokenizarYResaltar(code, varRegex) {
+      let result = '';
+      let i = 0;
+
+      while (i < code.length) {
+        // String literal
+        if (code[i] === '"') {
+          let j = i + 1;
+          while (j < code.length && code[j] !== '"') j++;
+          if (j < code.length) j++; // include closing quote
+          result += `<span class="sh-string">${escapeHtml(code.substring(i, j))}</span>`;
+          i = j;
+          continue;
+        }
+
+        // Word token
+        if (/\w/.test(code[i])) {
+          let j = i;
+          while (j < code.length && /\w/.test(code[j])) j++;
+          const word = code.substring(i, j);
+
+          if (LiteSeInt.PALABRAS_RESERVADAS_SET.has(word.toLowerCase())) {
+            result += `<span class="sh-keyword">${escapeHtml(word)}</span>`;
+          } else if (/^\d+(\.\d+)?$/.test(word)) {
+            result += `<span class="sh-number">${escapeHtml(word)}</span>`;
+          } else if (varRegex && varRegex.test(word)) {
+            varRegex.lastIndex = 0; // reset regex state
+            result += `<span class="sh-variable">${escapeHtml(word)}</span>`;
+          } else {
+            result += `<span class="sh-plain">${escapeHtml(word)}</span>`;
+          }
+          i = j;
+          continue;
+        }
+
+        // Operator: <-
+        if (code[i] === '<' && code[i + 1] === '-') {
+          result += `<span class="sh-operator">${escapeHtml('<-')}</span>`;
+          i += 2;
+          continue;
+        }
+
+        // Other characters (spaces, punctuation)
+        result += `<span class="sh-plain">${escapeHtml(code[i])}</span>`;
+        i++;
+      }
+
+      return result;
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
 
     // =========================================
     // 5. AUTOCOMPLETADO
@@ -652,6 +837,17 @@ Ejemplo:
       const cur = editor.selectionStart;
       const txt = editor.value;
 
+      // Determine current line text up to cursor
+      const textBefore = txt.substring(0, cur);
+      const lastNewline = textBefore.lastIndexOf('\n');
+      const lineUpToCursor = textBefore.substring(lastNewline + 1);
+
+      // Skip autocomplete if cursor is inside a comment
+      if (estEnComentario(lineUpToCursor)) {
+        ocultarAutocompletado();
+        return;
+      }
+
       let ini = cur - 1;
       while (ini >= 0 && /\w/.test(txt[ini])) ini--;
       ini++;
@@ -659,16 +855,31 @@ Ejemplo:
 
       if (palabra.length < 2) { ocultarAutocompletado(); return; }
 
-      const matches = LiteSeInt.PALABRAS_RESERVADAS.filter(p =>
+      // Build suggestions: reserved words + user variables
+      const userVars = LiteSeInt.extraerVariablesDelCodigo(txt).map(v => ({
+        texto: v, tipo: 'variable'
+      }));
+      const todas = [...LiteSeInt.PALABRAS_RESERVADAS, ...userVars];
+
+      const matches = todas.filter(p =>
         p.texto.toLowerCase().startsWith(palabra.toLowerCase()) &&
         p.texto.toLowerCase() !== palabra.toLowerCase()
       );
-      if (!matches.length) { ocultarAutocompletado(); return; }
+      // Deduplicate by text
+      const seen = new Set();
+      const unique = matches.filter(m => {
+        const key = m.texto.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+
+      if (!unique.length) { ocultarAutocompletado(); return; }
 
       const $dd = $('#autocompleteDropdown').empty();
       acIndice = 0;
 
-      matches.forEach((item, idx) => {
+      unique.forEach((item, idx) => {
         const $it = $('<div>').addClass('autocomplete-item')
           .attr('data-texto', item.texto)
           .html(`<span>${item.texto}</span><span class="kw-badge">${item.tipo}</span>`)
@@ -681,6 +892,18 @@ Ejemplo:
       $dd.addClass('visible');
     }
 
+    /**
+     * Returns true if the given line text (up to cursor) is inside a comment.
+     */
+    function estEnComentario(lineText) {
+      let enComillas = false;
+      for (let i = 0; i < lineText.length; i++) {
+        if (lineText[i] === '"') enComillas = !enComillas;
+        if (!enComillas && lineText[i] === '/' && lineText[i + 1] === '/') return true;
+      }
+      return false;
+    }
+
     function posicionarDropdown(cursorPos) {
       const editor = document.getElementById('editor');
       const $dd = $('#autocompleteDropdown');
@@ -691,7 +914,7 @@ Ejemplo:
       const wr = editor.parentElement.getBoundingClientRect();
 
       const top = (lnIdx + 1) * 21.45 + 16 - editor.scrollTop;
-      const left = col * 7.8 + 50 + 16 - editor.scrollLeft;
+      const left = col * 7.8 + 58 + 16 - editor.scrollLeft;
 
       $dd.css({
         top: Math.min(top, wr.height - 190) + 'px',
@@ -781,14 +1004,17 @@ Ejemplo:
     // =========================================
 
     const EJEMPLOS = {
-      hola: `Escribir "Hola mundo"`,
+      hola: `// Mi primer programa
+Escribir "Hola mundo"`,
 
-      saludo: `Definir nombre Como Caracter
+      saludo: `// Programa de saludo personalizado
+Definir nombre Como Caracter
 Escribir "¿Cómo te llamas?"
 Leer nombre
-Escribir "¡Hola, ", nombre, "! Bienvenido."`,
+Escribir "¡Hola, ", nombre, "! Bienvenido."  // saludo final`,
 
-      notas: `Definir nota1 Como Real
+      notas: `// Calculadora de suma de notas
+Definir nota1 Como Real
 Definir nota2 Como Real
 Definir promedio Como Real
 
@@ -797,11 +1023,12 @@ Leer nota1
 Escribir "Ingresa la segunda nota:"
 Leer nota2
 
-promedio <- nota1 + nota2
+promedio <- nota1 + nota2  // suma ambas notas
 
 Escribir "La suma de las notas es: ", promedio`,
 
-      multivar: `Definir nombre, apellido, ciudad Como Caracter
+      multivar: `// Ejemplo con múltiples variables en una línea
+Definir nombre, apellido, ciudad Como Caracter
 Definir edad Como Entero
 
 Escribir "Ingresa tu nombre:"
@@ -813,6 +1040,7 @@ Leer ciudad
 Escribir "Ingresa tu edad:"
 Leer edad
 
+// Mostrar resultados
 Escribir "--- Datos ingresados ---"
 Escribir "Nombre: ", nombre, " ", apellido
 Escribir "Ciudad: ", ciudad
