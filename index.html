@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PseudoCode — Intérprete de Pseudocódigo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ========================================
+       CSS VARIABLES & THEME
+       ======================================== */
+    :root {
+      --bg-deep: #0a0e14;
+      --bg-panel: #0d1117;
+      --bg-editor: #0f1319;
+      --bg-console: #080b10;
+      --border-color: #1a2332;
+      --accent: #00ff88;
+      --accent-dim: #00cc6a;
+      --accent-bg: #00ff8810;
+      --text-primary: #c8d6e5;
+      --text-secondary: #5c6a7a;
+      --text-muted: #3a4555;
+      --line-number: #2a3545;
+      --error: #ff4757;
+      --warning: #ffa502;
+      --info: #70a1ff;
+      --exec-highlight: #b8f0c8;
+      --exec-highlight-bg: rgba(184, 240, 200, 0.08);
+      --error-highlight-bg: rgba(255, 71, 87, 0.08);
+      --font-code: 'JetBrains Mono', 'Space Mono', monospace;
+      --shadow-glow: 0 0 30px rgba(0, 255, 136, 0.05);
+      --line-height-val: 1.65;
+      --line-px: 21.45px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: var(--font-code);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ========================================
+       HEADER
+       ======================================== */
+    .app-header {
+      position: relative;
+      z-index: 10;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      background: linear-gradient(180deg, rgba(0,255,136,0.03) 0%, transparent 100%);
+    }
+
+    .app-logo { display: flex; align-items: center; gap: 12px; }
+
+    .app-logo-icon {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent) 0%, #00aa55 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; font-weight: 700; color: var(--bg-deep);
+      box-shadow: 0 0 20px rgba(0,255,136,0.25);
+    }
+
+    .app-logo-text { font-size: 15px; font-weight: 600; letter-spacing: 1px; }
+    .app-logo-text span { color: var(--accent); }
+
+    .app-version {
+      font-size: 10px; color: var(--text-secondary);
+      background: var(--accent-bg); border: 1px solid var(--border-color);
+      padding: 2px 8px; border-radius: 20px; letter-spacing: 0.5px;
+    }
+
+    /* ========================================
+       TOOLBAR
+       ======================================== */
+    .toolbar {
+      position: relative; z-index: 10; padding: 9px 24px;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(13, 17, 23, 0.8);
+    }
+
+    .btn-exec {
+      background: linear-gradient(135deg, var(--accent) 0%, #00cc6a 100%);
+      color: var(--bg-deep); border: none; padding: 7px 18px; border-radius: 6px;
+      font-family: var(--font-code); font-size: 12.5px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px;
+    }
+    .btn-exec:hover { box-shadow: 0 0 20px rgba(0,255,136,0.35); transform: translateY(-1px); }
+    .btn-exec:active { transform: translateY(0); }
+    .btn-exec:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-secondary {
+      background: transparent; color: var(--text-secondary);
+      border: 1px solid var(--border-color); padding: 7px 14px; border-radius: 6px;
+      font-family: var(--font-code); font-size: 11.5px;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .btn-secondary:hover {
+      border-color: var(--text-secondary); color: var(--text-primary);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .toolbar-separator { width: 1px; height: 24px; background: var(--border-color); margin: 0 4px; }
+
+    .status-indicator {
+      margin-left: auto; font-size: 11px; color: var(--text-secondary);
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .status-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--text-secondary); transition: background 0.3s;
+    }
+    .status-dot.running {
+      background: var(--accent); box-shadow: 0 0 8px rgba(0,255,136,0.6);
+      animation: pulse 1s infinite;
+    }
+    .status-dot.error { background: var(--error); box-shadow: 0 0 8px rgba(255,71,87,0.6); }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* ========================================
+       MAIN LAYOUT
+       ======================================== */
+    .main-container {
+      position: relative; z-index: 5; display: flex;
+      height: calc(100vh - 100px);
+    }
+
+    /* ========================================
+       EDITOR PANEL
+       ======================================== */
+    .editor-panel {
+      flex: 1; display: flex; flex-direction: column;
+      border-right: 1px solid var(--border-color); min-width: 0;
+    }
+
+    .panel-header {
+      padding: 7px 16px; font-size: 10.5px; font-weight: 500;
+      color: var(--text-secondary); letter-spacing: 1.5px; text-transform: uppercase;
+      border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.2);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .panel-header-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-dim); }
+
+    .editor-wrapper { flex: 1; display: flex; overflow: hidden; position: relative; }
+
+    /* ---- Gutter ---- */
+    .line-numbers {
+      width: 50px; padding: 16px 0;
+      background: rgba(0,0,0,0.15); border-right: 1px solid var(--border-color);
+      font-size: 13px; color: var(--line-number); line-height: var(--line-height-val);
+      overflow: hidden; user-select: none; flex-shrink: 0;
+    }
+
+    .line-num-row {
+      display: flex; align-items: center; justify-content: flex-end;
+      padding-right: 8px; height: var(--line-px); position: relative;
+      transition: background 0.15s, color 0.15s;
+    }
+    .line-num-row .num-text { width: 26px; text-align: right; }
+
+    /* Executing: verde pastel claro */
+    .line-num-row.executing { background: var(--exec-highlight-bg); color: var(--exec-highlight); }
+
+    /* Error badge */
+    .line-num-row .error-badge {
+      display: none; position: absolute; right: -14px; top: 50%;
+      transform: translateY(-50%); z-index: 20;
+    }
+    .line-num-row.has-error .error-badge { display: flex; }
+
+    .error-badge-btn {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 1.5px solid var(--error); background: transparent;
+      color: var(--error); font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; padding: 0; line-height: 1; transition: all 0.2s;
+    }
+    .error-badge-btn:hover { background: var(--error); color: #fff; }
+
+    /* ---- Line overlays (behind textarea) ---- */
+    .editor-line-overlays {
+      position: absolute; top: 0; left: 50px; right: 0; bottom: 0;
+      pointer-events: none; padding-top: 16px; z-index: 1; overflow: hidden;
+    }
+    .line-overlay { height: var(--line-px); width: 100%; transition: background 0.15s; }
+    .line-overlay.executing { background: var(--exec-highlight-bg); }
+    .line-overlay.has-error { background: var(--error-highlight-bg); }
+
+    /* ---- Textarea ---- */
+    #editor {
+      flex: 1; background: transparent; color: var(--text-primary);
+      border: none; outline: none; padding: 16px;
+      font-family: var(--font-code); font-size: 13px; line-height: var(--line-height-val);
+      resize: none; tab-size: 2; white-space: pre;
+      overflow-wrap: normal; overflow-x: auto;
+      position: relative; z-index: 2;
+      caret-color: var(--accent);
+    }
+    #editor::placeholder { color: var(--text-muted); }
+
+    /* Editor area background (behind overlay) */
+    .editor-bg-layer {
+      position: absolute; top: 0; left: 50px; right: 0; bottom: 0;
+      background: var(--bg-editor); z-index: 0;
+    }
+
+    /* ========================================
+       CONSOLE PANEL
+       ======================================== */
+    .console-panel { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+    #consola {
+      flex: 1; background: var(--bg-console); padding: 16px;
+      overflow-y: auto; font-family: var(--font-code); font-size: 13px; line-height: 1.7;
+    }
+    #consola::-webkit-scrollbar { width: 6px; }
+    #consola::-webkit-scrollbar-track { background: transparent; }
+    #consola::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+
+    .console-line { padding: 2px 0; animation: fadeInLine 0.15s ease; }
+
+    @keyframes fadeInLine {
+      from { opacity: 0; transform: translateX(-5px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .console-line.output { color: var(--text-primary); }
+    .console-line.output::before { content: '› '; color: var(--accent-dim); }
+    .console-line.system { color: var(--text-secondary); font-style: italic; font-size: 12px; }
+    .console-line.error { color: var(--error); }
+    .console-line.error::before { content: '✕ '; }
+    .console-line.input-echo { color: var(--text-secondary); font-size: 12px; }
+
+    /* Inline input in console */
+    .console-input-row {
+      display: flex; align-items: center; gap: 8px; padding: 6px 0;
+      animation: fadeInLine 0.15s ease;
+    }
+    .console-input-row .prompt-symbol { color: var(--warning); font-weight: 600; flex-shrink: 0; }
+    .console-input-row .var-label { color: var(--accent); font-size: 12px; flex-shrink: 0; }
+
+    .console-input-field {
+      flex: 1; background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-color); border-radius: 4px;
+      color: var(--text-primary); padding: 5px 10px;
+      font-family: var(--font-code); font-size: 13px;
+      outline: none; transition: border-color 0.2s; min-width: 0;
+    }
+    .console-input-field:focus {
+      border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0,255,136,0.1);
+    }
+
+    .console-input-send {
+      background: linear-gradient(135deg, var(--accent) 0%, #00cc6a 100%);
+      color: var(--bg-deep); border: none; padding: 5px 12px; border-radius: 4px;
+      font-family: var(--font-code); font-size: 12px; font-weight: 600;
+      cursor: pointer; flex-shrink: 0; transition: box-shadow 0.2s;
+    }
+    .console-input-send:hover { box-shadow: 0 0 12px rgba(0,255,136,0.3); }
+
+    /* ========================================
+       AUTOCOMPLETE
+       ======================================== */
+    .autocomplete-dropdown {
+      display: none; position: absolute; background: var(--bg-panel);
+      border: 1px solid var(--border-color); border-radius: 6px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4); z-index: 500;
+      max-height: 180px; overflow-y: auto; min-width: 160px;
+    }
+    .autocomplete-dropdown.visible { display: block; }
+
+    .autocomplete-item {
+      padding: 6px 14px; font-size: 12px; font-family: var(--font-code);
+      color: var(--text-primary); cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .autocomplete-item:hover,
+    .autocomplete-item.selected { background: var(--accent-bg); color: var(--accent); }
+
+    .autocomplete-item .kw-badge {
+      font-size: 9px; padding: 1px 5px; border-radius: 3px;
+      background: rgba(255,255,255,0.05); color: var(--text-secondary);
+      letter-spacing: 0.5px;
+    }
+
+    /* ========================================
+       EXAMPLES BAR
+       ======================================== */
+    .example-bar {
+      padding: 5px 16px; border-top: 1px solid var(--border-color);
+      background: rgba(0,0,0,0.15); display: flex; align-items: center;
+      gap: 8px; flex-wrap: wrap;
+    }
+    .example-bar span {
+      font-size: 10px; color: var(--text-muted);
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+    .example-btn {
+      font-size: 11px; padding: 2px 10px; background: transparent;
+      border: 1px solid var(--border-color); color: var(--text-secondary);
+      border-radius: 4px; cursor: pointer; font-family: var(--font-code);
+      transition: all 0.2s;
+    }
+    .example-btn:hover {
+      border-color: var(--accent-dim); color: var(--accent); background: var(--accent-bg);
+    }
+
+    /* ========================================
+       TOOLTIP OVERRIDE (Bootstrap dark)
+       ======================================== */
+    .tooltip-inner {
+      background: #1a1a2e !important; border: 1px solid var(--error);
+      color: var(--error) !important; font-family: var(--font-code);
+      font-size: 11px; max-width: 300px; text-align: left; padding: 6px 10px;
+    }
+    .tooltip .tooltip-arrow::before { border-top-color: var(--error) !important; }
+    .bs-tooltip-end .tooltip-arrow::before { border-right-color: var(--error) !important; }
+    .bs-tooltip-start .tooltip-arrow::before { border-left-color: var(--error) !important; }
+
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    @media (max-width: 768px) {
+      .main-container { flex-direction: column; height: auto; }
+      .editor-panel, .console-panel { min-height: 40vh; border-right: none; }
+      .editor-panel { border-bottom: 1px solid var(--border-color); }
+      .toolbar { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="app-header">
+    <div class="app-logo">
+      <div class="app-logo-icon">P</div>
+      <div class="app-logo-text">Pseudo<span>Code</span></div>
+    </div>
+    <div class="app-version">v1.1 — LiteSeInt</div>
+  </header>
+
+  <!-- ========== TOOLBAR ========== -->
+  <div class="toolbar">
+    <button class="btn-exec" id="btnEjecutar">▶ Ejecutar</button>
+    <button class="btn-secondary" id="btnDetener" style="display:none;">◼ Detener</button>
+    <div class="toolbar-separator"></div>
+    <button class="btn-secondary" id="btnLimpiarConsola">⌫ Limpiar consola</button>
+    <button class="btn-secondary" id="btnLimpiarTodo">✕ Limpiar todo</button>
+    <div class="status-indicator">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">Listo</span>
+    </div>
+  </div>
+
+  <!-- ========== MAIN ========== -->
+  <div class="main-container">
+    <!-- Editor -->
+    <div class="editor-panel">
+      <div class="panel-header">
+        <div class="panel-header-dot"></div>
+        Editor de pseudocódigo
+      </div>
+      <div class="editor-wrapper">
+        <div class="line-numbers" id="lineNumbers"></div>
+        <div class="editor-bg-layer"></div>
+        <div class="editor-line-overlays" id="lineOverlays"></div>
+        <textarea
+          id="editor"
+          spellcheck="false"
+          placeholder="Escribe tu pseudocódigo aquí...
+
+Ejemplo:
+  Definir nombre, apellido Como Caracter
+  Escribir &quot;¿Cómo te llamas?&quot;
+  Leer nombre
+  Escribir &quot;Hola, &quot;, nombre"
+        ></textarea>
+        <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+      </div>
+      <div class="example-bar">
+        <span>Ejemplos:</span>
+        <button class="example-btn" data-ejemplo="hola">Hola Mundo</button>
+        <button class="example-btn" data-ejemplo="saludo">Saludo</button>
+        <button class="example-btn" data-ejemplo="notas">Notas</button>
+        <button class="example-btn" data-ejemplo="multivar">Multi-variable</button>
+      </div>
+    </div>
+
+    <!-- Consola -->
+    <div class="console-panel">
+      <div class="panel-header">
+        <div class="panel-header-dot" style="background: var(--info);"></div>
+        Consola de salida
+      </div>
+      <div id="consola"></div>
+    </div>
+  </div>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="LiteSeInt.js"></script>
+  <script>
+    /* ==============================================
+       UI Controller — Conecta LiteSeInt con la interfaz
+       ============================================== */
+
+    // =========================================
+    // 1. INSTANCIA DEL INTÉRPRETE
+    // =========================================
+
+    let inputResolver = null;
+    let erroresMapa = {};
+
+    const interprete = new LiteSeInt({
+
+      onEscribir(texto) {
+        consolaImprimir(texto, 'output');
+      },
+
+      onLeer(nombreVar) {
+        return new Promise((resolve) => {
+          inputResolver = resolve;
+          mostrarInputConsola(nombreVar);
+        });
+      },
+
+      onError(lineaIdx, mensaje) {
+        erroresMapa[lineaIdx] = mensaje;
+        consolaImprimir(`Error en línea ${lineaIdx + 1}: ${mensaje}`, 'error');
+        marcarErrorLinea(lineaIdx, mensaje);
+      },
+
+      onLineaActiva(lineaIdx) {
+        resaltarLineaEjecutando(lineaIdx);
+      },
+
+      onSistema(texto) {
+        consolaImprimir(texto, 'input-echo');
+      },
+
+      onFin() { /* handled in ejecutar() */ },
+    });
+
+    // =========================================
+    // 2. CONSOLA
+    // =========================================
+
+    function consolaImprimir(texto, tipo = 'output') {
+      $('#consola').append(
+        $('<div>').addClass(`console-line ${tipo}`).text(texto)
+      );
+      scrollConsola();
+    }
+
+    function scrollConsola() {
+      const el = document.getElementById('consola');
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function limpiarConsola() { $('#consola').empty(); }
+
+    function limpiarTodo() {
+      $('#editor').val('');
+      limpiarConsola();
+      limpiarEstadoLineas();
+      actualizarLineas();
+    }
+
+    // =========================================
+    // 3. INPUT INLINE EN CONSOLA
+    // =========================================
+
+    function mostrarInputConsola(nombreVar) {
+      const $row = $('<div>').addClass('console-input-row');
+      $row.html(`
+        <span class="prompt-symbol">?</span>
+        <span class="var-label">${nombreVar}:</span>
+        <input type="text" class="console-input-field" id="consolaInputField"
+               placeholder="Escribe un valor..." autocomplete="off" />
+        <button class="console-input-send" id="consolaInputBtn">↵</button>
+      `);
+
+      $('#consola').append($row);
+      scrollConsola();
+      setTimeout(() => $('#consolaInputField').focus(), 50);
+
+      $row.find('#consolaInputField').on('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); confirmarInputConsola($row); }
+      });
+      $row.find('#consolaInputBtn').on('click', () => confirmarInputConsola($row));
+    }
+
+    function confirmarInputConsola($row) {
+      const valor = $row.find('#consolaInputField').val();
+      $row.replaceWith(
+        $('<div>').addClass('console-line input-echo').text(`  ↳ entrada: ${valor}`)
+      );
+      if (inputResolver) {
+        const resolver = inputResolver;
+        inputResolver = null;
+        resolver(valor);
+      }
+    }
+
+    // =========================================
+    // 4. LINE NUMBERS + HIGHLIGHTS + ERROR BADGES
+    // =========================================
+
+    function actualizarLineas() {
+      const texto = $('#editor').val();
+      const numLineas = texto.split('\n').length;
+      const total = Math.max(numLineas, 20);
+      const $gutter = $('#lineNumbers');
+      const $overlays = $('#lineOverlays');
+
+      $gutter.empty();
+      $overlays.empty();
+
+      for (let i = 0; i < total; i++) {
+        const $row = $('<div>').addClass('line-num-row').attr('data-line', i);
+        $row.append($('<span>').addClass('num-text').text(i + 1));
+        $row.append(
+          $('<span>').addClass('error-badge').html(
+            `<button class="error-badge-btn" data-line="${i}" tabindex="-1">!</button>`
+          )
+        );
+        $gutter.append($row);
+        $overlays.append($('<div>').addClass('line-overlay').attr('data-line', i));
+      }
+
+      // Re-apply errors
+      for (const [idx, msg] of Object.entries(erroresMapa)) {
+        marcarErrorLinea(parseInt(idx), msg);
+      }
+    }
+
+    function resaltarLineaEjecutando(lineaIdx) {
+      $('.line-num-row.executing').removeClass('executing');
+      $('.line-overlay.executing').removeClass('executing');
+      $(`.line-num-row[data-line="${lineaIdx}"]`).addClass('executing');
+      $(`.line-overlay[data-line="${lineaIdx}"]`).addClass('executing');
+    }
+
+    function marcarErrorLinea(lineaIdx, mensaje) {
+      const $row = $(`.line-num-row[data-line="${lineaIdx}"]`);
+      $row.addClass('has-error').removeClass('executing');
+      $(`.line-overlay[data-line="${lineaIdx}"]`).removeClass('executing').addClass('has-error');
+
+      const $btn = $row.find('.error-badge-btn');
+      $btn.attr('title', mensaje);
+
+      // Bootstrap tooltip
+      const existing = bootstrap.Tooltip.getInstance($btn[0]);
+      if (existing) existing.dispose();
+      new bootstrap.Tooltip($btn[0], { placement: 'right', trigger: 'hover focus', html: false });
+    }
+
+    function limpiarEstadoLineas() {
+      erroresMapa = {};
+      $('.line-num-row').removeClass('executing has-error');
+      $('.line-overlay').removeClass('executing has-error');
+      $('.error-badge-btn').each(function() {
+        const tip = bootstrap.Tooltip.getInstance(this);
+        if (tip) tip.dispose();
+      });
+    }
+
+    // Sync scroll
+    $('#editor').on('scroll', function() {
+      document.getElementById('lineNumbers').scrollTop = this.scrollTop;
+      document.getElementById('lineOverlays').scrollTop = this.scrollTop;
+    });
+
+    // =========================================
+    // 5. AUTOCOMPLETADO
+    // =========================================
+
+    let acIndice = -1;
+
+    $('#editor').on('input', function() {
+      actualizarLineas();
+      mostrarAutocompletado();
+    });
+
+    $('#editor').on('keydown', function(e) {
+      const $dd = $('#autocompleteDropdown');
+      const visible = $dd.hasClass('visible');
+
+      if (visible) {
+        const items = $dd.find('.autocomplete-item');
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          acIndice = Math.min(acIndice + 1, items.length - 1);
+          actualizarSeleccionAC(items); return;
+        }
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          acIndice = Math.max(acIndice - 1, 0);
+          actualizarSeleccionAC(items); return;
+        }
+        if (e.key === 'Tab' || e.key === 'Enter') {
+          if (acIndice >= 0 && acIndice < items.length) {
+            e.preventDefault();
+            insertarAutocompletado($(items[acIndice]).data('texto'));
+            ocultarAutocompletado(); return;
+          }
+        }
+        if (e.key === 'Escape') { ocultarAutocompletado(); return; }
+      }
+
+      if (e.key === 'Tab' && !visible) {
+        e.preventDefault();
+        const s = this.selectionStart, en = this.selectionEnd;
+        const v = $(this).val();
+        $(this).val(v.substring(0, s) + '  ' + v.substring(en));
+        this.selectionStart = this.selectionEnd = s + 2;
+        actualizarLineas();
+      }
+    });
+
+    function mostrarAutocompletado() {
+      const editor = document.getElementById('editor');
+      const cur = editor.selectionStart;
+      const txt = editor.value;
+
+      let ini = cur - 1;
+      while (ini >= 0 && /\w/.test(txt[ini])) ini--;
+      ini++;
+      const palabra = txt.substring(ini, cur);
+
+      if (palabra.length < 2) { ocultarAutocompletado(); return; }
+
+      const matches = LiteSeInt.PALABRAS_RESERVADAS.filter(p =>
+        p.texto.toLowerCase().startsWith(palabra.toLowerCase()) &&
+        p.texto.toLowerCase() !== palabra.toLowerCase()
+      );
+      if (!matches.length) { ocultarAutocompletado(); return; }
+
+      const $dd = $('#autocompleteDropdown').empty();
+      acIndice = 0;
+
+      matches.forEach((item, idx) => {
+        const $it = $('<div>').addClass('autocomplete-item')
+          .attr('data-texto', item.texto)
+          .html(`<span>${item.texto}</span><span class="kw-badge">${item.tipo}</span>`)
+          .on('click', () => { insertarAutocompletado(item.texto); ocultarAutocompletado(); });
+        if (idx === 0) $it.addClass('selected');
+        $dd.append($it);
+      });
+
+      posicionarDropdown(cur);
+      $dd.addClass('visible');
+    }
+
+    function posicionarDropdown(cursorPos) {
+      const editor = document.getElementById('editor');
+      const $dd = $('#autocompleteDropdown');
+      const txt = editor.value.substring(0, cursorPos);
+      const lineas = txt.split('\n');
+      const lnIdx = lineas.length - 1;
+      const col = lineas[lineas.length - 1].length;
+      const wr = editor.parentElement.getBoundingClientRect();
+
+      const top = (lnIdx + 1) * 21.45 + 16 - editor.scrollTop;
+      const left = col * 7.8 + 50 + 16 - editor.scrollLeft;
+
+      $dd.css({
+        top: Math.min(top, wr.height - 190) + 'px',
+        left: Math.min(left, wr.width - 170) + 'px'
+      });
+    }
+
+    function insertarAutocompletado(palabra) {
+      const editor = document.getElementById('editor');
+      const cur = editor.selectionStart;
+      const txt = editor.value;
+
+      let ini = cur - 1;
+      while (ini >= 0 && /\w/.test(txt[ini])) ini--;
+      ini++;
+
+      editor.value = txt.substring(0, ini) + palabra + ' ' + txt.substring(cur);
+      const pos = ini + palabra.length + 1;
+      editor.selectionStart = editor.selectionEnd = pos;
+      editor.focus();
+      actualizarLineas();
+    }
+
+    function actualizarSeleccionAC(items) {
+      items.removeClass('selected');
+      $(items[acIndice]).addClass('selected');
+    }
+
+    function ocultarAutocompletado() {
+      $('#autocompleteDropdown').removeClass('visible');
+      acIndice = -1;
+    }
+
+    $(document).on('click', function(e) {
+      if (!$(e.target).closest('#editor, #autocompleteDropdown').length) ocultarAutocompletado();
+    });
+
+    // =========================================
+    // 6. CONTROLES PRINCIPALES
+    // =========================================
+
+    function setEstado(estado, texto) {
+      $('#statusDot').removeClass('running error').addClass(estado);
+      $('#statusText').text(texto);
+    }
+
+    async function ejecutar() {
+      if (interprete.ejecutando) return;
+
+      limpiarConsola();
+      limpiarEstadoLineas();
+      actualizarLineas();
+      setEstado('running', 'Ejecutando...');
+      $('#btnEjecutar').prop('disabled', true);
+      $('#btnDetener').show();
+
+      consolaImprimir('Inicio de ejecución', 'system');
+
+      const resultado = await interprete.ejecutar($('#editor').val());
+
+      if (resultado.exito) {
+        consolaImprimir('Fin de ejecución', 'system');
+        setEstado('', 'Listo');
+      } else {
+        setEstado('error', 'Error');
+      }
+
+      $('.line-num-row.executing').removeClass('executing');
+      $('.line-overlay.executing').removeClass('executing');
+      $('#btnEjecutar').prop('disabled', false);
+      $('#btnDetener').hide();
+    }
+
+    function detener() {
+      interprete.detener();
+      if (inputResolver) { const r = inputResolver; inputResolver = null; r(''); }
+      consolaImprimir('Ejecución detenida por el usuario.', 'system');
+      setEstado('', 'Detenido');
+      $('#btnEjecutar').prop('disabled', false);
+      $('#btnDetener').hide();
+      $('.line-num-row.executing').removeClass('executing');
+      $('.line-overlay.executing').removeClass('executing');
+    }
+
+    // =========================================
+    // 7. EJEMPLOS
+    // =========================================
+
+    const EJEMPLOS = {
+      hola: `Escribir "Hola mundo"`,
+
+      saludo: `Definir nombre Como Caracter
+Escribir "¿Cómo te llamas?"
+Leer nombre
+Escribir "¡Hola, ", nombre, "! Bienvenido."`,
+
+      notas: `Definir nota1 Como Real
+Definir nota2 Como Real
+Definir promedio Como Real
+
+Escribir "Ingresa la primera nota:"
+Leer nota1
+Escribir "Ingresa la segunda nota:"
+Leer nota2
+
+promedio <- nota1 + nota2
+
+Escribir "La suma de las notas es: ", promedio`,
+
+      multivar: `Definir nombre, apellido, ciudad Como Caracter
+Definir edad Como Entero
+
+Escribir "Ingresa tu nombre:"
+Leer nombre
+Escribir "Ingresa tu apellido:"
+Leer apellido
+Escribir "Ingresa tu ciudad:"
+Leer ciudad
+Escribir "Ingresa tu edad:"
+Leer edad
+
+Escribir "--- Datos ingresados ---"
+Escribir "Nombre: ", nombre, " ", apellido
+Escribir "Ciudad: ", ciudad
+Escribir "Edad: ", edad`,
+    };
+
+    function cargarEjemplo(nombre) {
+      if (EJEMPLOS[nombre]) {
+        $('#editor').val(EJEMPLOS[nombre]);
+        limpiarConsola();
+        limpiarEstadoLineas();
+        actualizarLineas();
+      }
+    }
+
+    // =========================================
+    // 8. INIT
+    // =========================================
+
+    $(document).ready(function() {
+      actualizarLineas();
+      $('#btnEjecutar').on('click', ejecutar);
+      $('#btnDetener').on('click', detener);
+      $('#btnLimpiarConsola').on('click', limpiarConsola);
+      $('#btnLimpiarTodo').on('click', limpiarTodo);
+      $(document).on('click', '.example-btn', function() {
+        cargarEjemplo($(this).data('ejemplo'));
+      });
+    });
+  </script>
+</body>
+</html>
