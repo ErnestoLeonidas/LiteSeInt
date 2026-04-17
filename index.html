@@ -6,6 +6,7 @@
   <title>LiteSeInt — Intérprete de Pseudocódigo</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <style>
     /* ========================================
        CSS VARIABLES & THEME
@@ -222,17 +223,22 @@
 
     /* ---- Gutter ---- */
     .line-numbers {
-      width: 58px; padding: 16px 0;
+      width: 45px; padding: 16px 0;
       background: rgba(0,0,0,0.15); border-right: 1px solid var(--border-color);
       font-size: 13px; color: var(--line-number); line-height: var(--line-height-val);
       overflow: hidden; user-select: none; flex-shrink: 0;
     }
 
     .line-num-row {
-      display: flex; align-items: center; justify-content: flex-end;
-      padding-right: 8px; height: var(--line-px); position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+      height: var(--line-px);
+      position: relative;
       transition: background 0.15s, color 0.15s;
     }
+
     .line-num-row .exec-arrow {
       display: none;
       font-size: 11px;
@@ -240,17 +246,26 @@
       margin-right: 2px;
       flex-shrink: 0;
     }
-    .line-num-row.executing .exec-arrow {
-      display: inline;
-      color: var(--accent);
-    }
+
+    .line-num-row.executing .exec-arrow,
     .line-num-row.has-error .exec-arrow {
-      display: inline;
+      display: none;
+    }
+
+    .line-num-row .num-text {
+      width: 24px;
+      text-align: right;
+    }
+
+    .line-num-row.executing {
+      background: var(--exec-highlight-bg);
+      color: var(--exec-highlight);
+    }
+
+    .line-num-row.has-error {
+      background: var(--error-highlight-bg);
       color: var(--error);
     }
-    .line-num-row .num-text { width: 24px; text-align: right; }
-
-    .line-num-row.executing { background: var(--exec-highlight-bg); color: var(--exec-highlight); }
 
     /* Error badge */
     .error-badge-container {
@@ -358,15 +373,34 @@
     .console-header-actions { margin-left: auto; }
 
     .btn-console-clear {
-      background: transparent; color: var(--text-muted);
-      border: 1px solid var(--border-color); padding: 2px 10px; border-radius: 4px;
-      font-family: var(--font-code); font-size: 10px; font-weight: 500;
-      cursor: pointer; transition: all 0.2s;
-      letter-spacing: 0.5px; text-transform: none;
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-family: var(--font-code);
+      font-size: 10px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+      text-transform: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
+
     .btn-console-clear:hover {
-      border-color: var(--text-secondary); color: var(--text-primary);
-      background: rgba(255,255,255,0.03);
+      color: var(--bg-deep);
+      background: linear-gradient(135deg, var(--accent) 0%, #00cc6a 100%);
+      border-color: var(--accent);
+      box-shadow: 0 0 12px rgba(0,255,136,0.25);
+    }
+
+    .btn-console-clear i,
+    .btn-console-clear svg {
+      width: 14px;
+      height: 14px;
     }
 
     #consola {
@@ -503,13 +537,86 @@
        RESPONSIVE
        ======================================== */
     @media (max-width: 768px) {
-      .main-container { flex-direction: column; }
-      .editor-panel, .console-panel { min-height: 35vh; flex: none; border-right: none; }
-      .editor-panel { border-bottom: 1px solid var(--border-color); flex: 1; }
-      .console-panel { flex: 1; }
-      .toolbar { flex-wrap: wrap; height: auto; padding: 8px 16px; }
-      .toolbar-right { position: static; transform: none; }
+      .main-container {
+        flex-direction: column;
+      }
+
+      .editor-panel,
+      .console-panel {
+        min-height: 35vh;
+        flex: none;
+        border-right: none;
+      }
+
+      .editor-panel {
+        border-bottom: 1px solid var(--border-color);
+        flex: 1;
+      }
+
+      .console-panel {
+        flex: 1;
+      }
+
+      .toolbar {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px 14px;
+        gap: 10px;
+      }
+
+      .toolbar-center {
+        width: 100%;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .toolbar-right {
+        position: static;
+        transform: none;
+        width: 100%;
+        justify-content: center;
+        display: flex;
+      }
+
+      .btn-exec,
+      .btn-stop,
+      .btn-secondary {
+        min-height: 40px;
+        padding: 8px 12px;
+        font-size: 11px;
+        border-radius: 8px;
+        justify-content: center;
+      }
+
+      .btn-exec,
+      .btn-stop {
+        min-width: 110px;
+      }
+
+      .btn-secondary {
+        min-width: 110px;
+      }
+
+      .toolbar-separator {
+        display: none;
+      }
+
+      .status-indicator {
+        justify-content: center;
+        font-size: 11px;
+      }
     }
+
+    @supports (-webkit-touch-callout: none) {
+      @media (hover: none) and (pointer: coarse) {
+        #editor,
+        .console-input-field {
+          font-size: 16px;
+        }
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -522,7 +629,7 @@
         <div class="app-logo-icon">L</div>
         <div class="app-logo-text">Lite<span>SeInt</span></div>
       </div>
-      <div class="app-version">v2.0</div>
+      <div class="app-version">v0.1.3</div>
     </header>
 
     <!-- ========== TOOLBAR ========== -->
@@ -585,7 +692,10 @@ Ejemplo:
           <div class="panel-header-dot" style="background: var(--info);"></div>
           Consola de salida
           <div class="console-header-actions">
-            <button class="btn-console-clear" id="btnLimpiarConsola">⌫ Limpiar</button>
+          <button class="btn-console-clear" id="btnLimpiarConsola">
+            <i data-lucide="delete"></i>
+            Limpiar
+          </button>        
           </div>
         </div>
         <div id="consola"></div>
@@ -594,7 +704,7 @@ Ejemplo:
 
     <!-- ========== FOOTER ========== -->
     <footer class="app-footer">
-      Desarrollado con<span class="heart">♥</span>por ernesto velásquez
+      Desarrollado con<span class="heart">♥</span>por Ernesto Velásquez
     </footer>
 
   </div>
@@ -1304,6 +1414,11 @@ Escribir "Edad: ", edad`,
         cargarEjemplo($(this).data('ejemplo'));
       });
     });
+  </script>
+  
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
   </script>
 </body>
 </html>
