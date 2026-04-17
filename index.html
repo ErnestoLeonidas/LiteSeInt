@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PseudoCode — Intérprete de Pseudocódigo</title>
+  <title>LiteSeInt — Intérprete de Pseudocódigo</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <style>
@@ -24,6 +24,8 @@
       --text-muted: #3a4555;
       --line-number: #2a3545;
       --error: #ff4757;
+      --danger: #ff6b6b;
+      --danger-dim: #ee5a5a;
       --warning: #ffa502;
       --info: #70a1ff;
       --exec-highlight: #b8f0c8;
@@ -34,22 +36,23 @@
       --syntax-variable: #70a1ff;
       --syntax-comment: #5c6a7a;
       --syntax-number: #a8e6cf;
+      --syntax-assign: #c8d6e5;
       --font-code: 'JetBrains Mono', 'Space Mono', monospace;
-      --shadow-glow: 0 0 30px rgba(0, 255, 136, 0.05);
       --line-height-val: 1.65;
       --line-px: 21.45px;
+      --header-h: 52px;
+      --toolbar-h: 44px;
+      --example-bar-h: 32px;
+      --footer-h: 32px;
     }
 
     *, *::before, *::after { box-sizing: border-box; }
 
-    body {
-      margin: 0;
-      padding: 0;
+    html, body {
+      margin: 0; padding: 0; height: 100%; overflow: hidden;
       background: var(--bg-deep);
       color: var(--text-primary);
       font-family: var(--font-code);
-      min-height: 100vh;
-      overflow-x: hidden;
     }
 
     body::before {
@@ -65,13 +68,20 @@
       z-index: 0;
     }
 
+    /* Full-page flex layout */
+    .app-shell {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column;
+      height: 100vh; width: 100vw; overflow: hidden;
+    }
+
     /* ========================================
        HEADER
        ======================================== */
     .app-header {
-      position: relative;
-      z-index: 10;
-      padding: 14px 24px;
+      flex-shrink: 0;
+      height: var(--header-h);
+      padding: 0 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -82,10 +92,10 @@
     .app-logo { display: flex; align-items: center; gap: 12px; }
 
     .app-logo-icon {
-      width: 34px; height: 34px; border-radius: 8px;
+      width: 32px; height: 32px; border-radius: 8px;
       background: linear-gradient(135deg, var(--accent) 0%, #00aa55 100%);
       display: flex; align-items: center; justify-content: center;
-      font-size: 17px; font-weight: 700; color: var(--bg-deep);
+      font-size: 15px; font-weight: 700; color: var(--bg-deep);
       box-shadow: 0 0 20px rgba(0,255,136,0.25);
     }
 
@@ -99,13 +109,28 @@
     }
 
     /* ========================================
-       TOOLBAR
+       TOOLBAR — centered buttons
        ======================================== */
     .toolbar {
-      position: relative; z-index: 10; padding: 9px 24px;
-      display: flex; align-items: center; gap: 10px;
+      flex-shrink: 0;
+      height: var(--toolbar-h);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
       border-bottom: 1px solid var(--border-color);
       background: rgba(13, 17, 23, 0.8);
+      position: relative;
+    }
+
+    .toolbar-center {
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .toolbar-right {
+      position: absolute; right: 24px; top: 50%; transform: translateY(-50%);
+      display: flex; align-items: center; gap: 6px;
     }
 
     .btn-exec {
@@ -118,6 +143,16 @@
     .btn-exec:hover { box-shadow: 0 0 20px rgba(0,255,136,0.35); transform: translateY(-1px); }
     .btn-exec:active { transform: translateY(0); }
     .btn-exec:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-stop {
+      background: linear-gradient(135deg, var(--danger) 0%, var(--danger-dim) 100%);
+      color: #fff; border: none; padding: 7px 16px; border-radius: 6px;
+      font-family: var(--font-code); font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px;
+    }
+    .btn-stop:hover { box-shadow: 0 0 16px rgba(255,107,107,0.4); transform: translateY(-1px); }
+    .btn-stop:active { transform: translateY(0); }
 
     .btn-secondary {
       background: transparent; color: var(--text-secondary);
@@ -134,7 +169,7 @@
     .toolbar-separator { width: 1px; height: 24px; background: var(--border-color); margin: 0 4px; }
 
     .status-indicator {
-      margin-left: auto; font-size: 11px; color: var(--text-secondary);
+      font-size: 11px; color: var(--text-secondary);
       display: flex; align-items: center; gap: 6px;
     }
 
@@ -154,8 +189,10 @@
        MAIN LAYOUT
        ======================================== */
     .main-container {
-      position: relative; z-index: 5; display: flex;
-      height: calc(100vh - 100px);
+      flex: 1;
+      display: flex;
+      min-height: 0;
+      overflow: hidden;
     }
 
     /* ========================================
@@ -167,6 +204,7 @@
     }
 
     .panel-header {
+      flex-shrink: 0;
       padding: 7px 16px; font-size: 10.5px; font-weight: 500;
       color: var(--text-secondary); letter-spacing: 1.5px; text-transform: uppercase;
       border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.2);
@@ -174,9 +212,8 @@
     }
     .panel-header-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-dim); }
 
-    .editor-wrapper { flex: 1; display: flex; overflow: hidden; position: relative; }
+    .editor-wrapper { flex: 1; display: flex; overflow: hidden; position: relative; min-height: 0; }
 
-    /* Container for the code area (right of gutter) */
     .editor-code-area {
       flex: 1;
       position: relative;
@@ -213,10 +250,9 @@
     }
     .line-num-row .num-text { width: 24px; text-align: right; }
 
-    /* Executing: verde pastel claro */
     .line-num-row.executing { background: var(--exec-highlight-bg); color: var(--exec-highlight); }
 
-    /* Error badge — positioned in the overlay (right side of code) */
+    /* Error badge */
     .error-badge-container {
       display: none;
       position: absolute;
@@ -237,7 +273,7 @@
     }
     .error-badge-btn:hover { background: var(--error); color: #fff; }
 
-    /* ---- Line overlays (inside code area) ---- */
+    /* ---- Line overlays ---- */
     .editor-line-overlays {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       pointer-events: none; padding-top: 16px; z-index: 1; overflow: hidden;
@@ -263,13 +299,12 @@
     #editor::placeholder { color: var(--text-muted); }
     #editor:placeholder-shown { color: var(--text-muted); }
 
-    /* Editor area background */
     .editor-bg-layer {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       background: var(--bg-editor); z-index: 0;
     }
 
-    /* Syntax highlight layer — same box model as #editor */
+    /* Syntax highlight layer */
     .syntax-highlight-layer {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       padding: 16px; z-index: 3; pointer-events: none;
@@ -286,12 +321,53 @@
     .syntax-highlight-layer .sh-comment { color: var(--syntax-comment); opacity: 0.8; }
     .syntax-highlight-layer .sh-number { color: var(--syntax-number); }
     .syntax-highlight-layer .sh-operator { color: var(--text-secondary); }
+    .syntax-highlight-layer .sh-assign { color: var(--syntax-assign); }
     .syntax-highlight-layer .sh-plain { color: var(--text-primary); }
+
+    /* ---- Error decoration layer (underlines) ---- */
+    .error-decoration-layer {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      padding: 16px; z-index: 2; pointer-events: none;
+      font-family: var(--font-code); font-size: 13px;
+      line-height: var(--line-height-val);
+      white-space: pre; overflow: hidden;
+      color: transparent;
+      margin: 0; border: none;
+    }
+
+    .error-underline {
+      text-decoration: wavy underline var(--error);
+      text-decoration-skip-ink: none;
+      text-underline-offset: 2px;
+      color: transparent;
+    }
 
     /* ========================================
        CONSOLE PANEL
        ======================================== */
     .console-panel { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+    .console-header {
+      flex-shrink: 0;
+      padding: 7px 16px; font-size: 10.5px; font-weight: 500;
+      color: var(--text-secondary); letter-spacing: 1.5px; text-transform: uppercase;
+      border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.2);
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .console-header-actions { margin-left: auto; }
+
+    .btn-console-clear {
+      background: transparent; color: var(--text-muted);
+      border: 1px solid var(--border-color); padding: 2px 10px; border-radius: 4px;
+      font-family: var(--font-code); font-size: 10px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+      letter-spacing: 0.5px; text-transform: none;
+    }
+    .btn-console-clear:hover {
+      border-color: var(--text-secondary); color: var(--text-primary);
+      background: rgba(255,255,255,0.03);
+    }
 
     #consola {
       flex: 1; background: var(--bg-console); padding: 16px;
@@ -371,23 +447,44 @@
        EXAMPLES BAR
        ======================================== */
     .example-bar {
-      padding: 5px 16px; border-top: 1px solid var(--border-color);
+      flex-shrink: 0;
+      height: var(--example-bar-h);
+      padding: 0 16px;
+      border-top: 1px solid var(--border-color);
       background: rgba(0,0,0,0.15); display: flex; align-items: center;
-      gap: 8px; flex-wrap: wrap;
+      gap: 8px; flex-wrap: nowrap; overflow: hidden;
     }
     .example-bar span {
       font-size: 10px; color: var(--text-muted);
       letter-spacing: 1px; text-transform: uppercase;
+      flex-shrink: 0;
     }
     .example-btn {
       font-size: 11px; padding: 2px 10px; background: transparent;
       border: 1px solid var(--border-color); color: var(--text-secondary);
       border-radius: 4px; cursor: pointer; font-family: var(--font-code);
-      transition: all 0.2s;
+      transition: all 0.2s; flex-shrink: 0;
     }
     .example-btn:hover {
       border-color: var(--accent-dim); color: var(--accent); background: var(--accent-bg);
     }
+
+    /* ========================================
+       FOOTER
+       ======================================== */
+    .app-footer {
+      flex-shrink: 0;
+      height: var(--footer-h);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-top: 1px solid var(--border-color);
+      background: rgba(0,0,0,0.15);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+    .app-footer .heart { color: var(--error); margin: 0 4px; font-size: 11px; }
 
     /* ========================================
        TOOLTIP OVERRIDE (Bootstrap dark)
@@ -396,6 +493,7 @@
       background: #1a1a2e !important; border: 1px solid var(--error);
       color: var(--error) !important; font-family: var(--font-code);
       font-size: 11px; max-width: 300px; text-align: left; padding: 6px 10px;
+      white-space: pre-line;
     }
     .tooltip .tooltip-arrow::before { border-top-color: var(--error) !important; }
     .bs-tooltip-end .tooltip-arrow::before { border-right-color: var(--error) !important; }
@@ -405,87 +503,106 @@
        RESPONSIVE
        ======================================== */
     @media (max-width: 768px) {
-      .main-container { flex-direction: column; height: auto; }
-      .editor-panel, .console-panel { min-height: 40vh; border-right: none; }
-      .editor-panel { border-bottom: 1px solid var(--border-color); }
-      .toolbar { flex-wrap: wrap; }
+      .main-container { flex-direction: column; }
+      .editor-panel, .console-panel { min-height: 35vh; flex: none; border-right: none; }
+      .editor-panel { border-bottom: 1px solid var(--border-color); flex: 1; }
+      .console-panel { flex: 1; }
+      .toolbar { flex-wrap: wrap; height: auto; padding: 8px 16px; }
+      .toolbar-right { position: static; transform: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ========== HEADER ========== -->
-  <header class="app-header">
-    <div class="app-logo">
-      <div class="app-logo-icon">P</div>
-      <div class="app-logo-text">Pseudo<span>Code</span></div>
-    </div>
-    <div class="app-version">v1.1 — LiteSeInt</div>
-  </header>
+  <div class="app-shell">
 
-  <!-- ========== TOOLBAR ========== -->
-  <div class="toolbar">
-    <button class="btn-exec" id="btnEjecutar">▶ Ejecutar</button>
-    <button class="btn-secondary" id="btnDetener" style="display:none;">◼ Detener</button>
-    <div class="toolbar-separator"></div>
-    <button class="btn-secondary" id="btnLimpiarConsola">⌫ Limpiar consola</button>
-    <button class="btn-secondary" id="btnLimpiarTodo">✕ Limpiar todo</button>
-    <div class="status-indicator">
-      <div class="status-dot" id="statusDot"></div>
-      <span id="statusText">Listo</span>
-    </div>
-  </div>
-
-  <!-- ========== MAIN ========== -->
-  <div class="main-container">
-    <!-- Editor -->
-    <div class="editor-panel">
-      <div class="panel-header">
-        <div class="panel-header-dot"></div>
-        Editor de pseudocódigo
+    <!-- ========== HEADER ========== -->
+    <header class="app-header">
+      <div class="app-logo">
+        <div class="app-logo-icon">L</div>
+        <div class="app-logo-text">Lite<span>SeInt</span></div>
       </div>
-      <div class="editor-wrapper">
-        <div class="line-numbers" id="lineNumbers"></div>
-        <div class="editor-code-area">
-          <div class="editor-bg-layer"></div>
-          <div class="editor-line-overlays" id="lineOverlays"></div>
-          <div class="syntax-highlight-layer" id="syntaxLayer"></div>
-          <textarea
-            id="editor"
-            spellcheck="false"
-            placeholder="Escribe tu pseudocódigo aquí...
+      <div class="app-version">v2.0</div>
+    </header>
+
+    <!-- ========== TOOLBAR ========== -->
+    <div class="toolbar">
+      <div class="toolbar-center">
+        <button class="btn-exec" id="btnEjecutar">▶ Ejecutar</button>
+        <button class="btn-stop" id="btnDetener" style="display:none;">◼ Detener</button>
+        <div class="toolbar-separator"></div>
+        <button class="btn-secondary" id="btnLimpiarTodo">✕ Limpiar todo</button>
+      </div>
+      <div class="toolbar-right">
+        <div class="status-indicator">
+          <div class="status-dot" id="statusDot"></div>
+          <span id="statusText">Listo</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== MAIN ========== -->
+    <div class="main-container">
+      <!-- Editor -->
+      <div class="editor-panel">
+        <div class="panel-header">
+          <div class="panel-header-dot"></div>
+          Editor de pseudocódigo
+        </div>
+        <div class="editor-wrapper">
+          <div class="line-numbers" id="lineNumbers"></div>
+          <div class="editor-code-area">
+            <div class="editor-bg-layer"></div>
+            <div class="editor-line-overlays" id="lineOverlays"></div>
+            <div class="error-decoration-layer" id="errorDecoLayer"></div>
+            <div class="syntax-highlight-layer" id="syntaxLayer"></div>
+            <textarea
+              id="editor"
+              spellcheck="false"
+              placeholder="Escribe tu pseudocódigo aquí...
 
 Ejemplo:
   Definir nombre, apellido Como Caracter
   Escribir &quot;¿Cómo te llamas?&quot;
   Leer nombre
   Escribir &quot;Hola, &quot;, nombre"
-          ></textarea>
+            ></textarea>
+          </div>
+          <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
         </div>
-        <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+        <div class="example-bar">
+          <span>Ejemplos:</span>
+          <button class="example-btn" data-ejemplo="hola">Hola Mundo</button>
+          <button class="example-btn" data-ejemplo="saludo">Saludo</button>
+          <button class="example-btn" data-ejemplo="notas">Notas</button>
+          <button class="example-btn" data-ejemplo="multivar">Multi-variable</button>
+        </div>
       </div>
-      <div class="example-bar">
-        <span>Ejemplos:</span>
-        <button class="example-btn" data-ejemplo="hola">Hola Mundo</button>
-        <button class="example-btn" data-ejemplo="saludo">Saludo</button>
-        <button class="example-btn" data-ejemplo="notas">Notas</button>
-        <button class="example-btn" data-ejemplo="multivar">Multi-variable</button>
+
+      <!-- Consola -->
+      <div class="console-panel">
+        <div class="console-header">
+          <div class="panel-header-dot" style="background: var(--info);"></div>
+          Consola de salida
+          <div class="console-header-actions">
+            <button class="btn-console-clear" id="btnLimpiarConsola">⌫ Limpiar</button>
+          </div>
+        </div>
+        <div id="consola"></div>
       </div>
     </div>
 
-    <!-- Consola -->
-    <div class="console-panel">
-      <div class="panel-header">
-        <div class="panel-header-dot" style="background: var(--info);"></div>
-        Consola de salida
-      </div>
-      <div id="consola"></div>
-    </div>
+    <!-- ========== FOOTER ========== -->
+    <footer class="app-footer">
+      Desarrollado con<span class="heart">♥</span>por ernesto velásquez
+    </footer>
+
   </div>
 
   <!-- ========== SCRIPTS ========== -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="doc_errores.js"></script>
   <script src="LiteSeInt.js"></script>
   <script>
     /* ==============================================
@@ -493,11 +610,31 @@ Ejemplo:
        ============================================== */
 
     // =========================================
-    // 1. INSTANCIA DEL INTÉRPRETE
+    // 1. STATE MANAGEMENT
     // =========================================
 
     let inputResolver = null;
-    let erroresMapa = {};
+
+    /**
+     * Estado visual de errores — separado del estado de edición.
+     * Se activa SOLO al presionar Ejecutar.
+     * Se invalida inmediatamente al editar.
+     */
+    let errorVisualState = {
+      activo: false,                 // true = hay errores pintados en el editor
+      erroresPorLinea: null,         // Map<lineaIdx, Array<error>>
+      erroresMapa: {},               // lineaIdx -> mensajes concatenados (para badges)
+    };
+
+    function resetErrorVisualState() {
+      errorVisualState.activo = false;
+      errorVisualState.erroresPorLinea = null;
+      errorVisualState.erroresMapa = {};
+    }
+
+    // =========================================
+    // 2. INTÉRPRETE
+    // =========================================
 
     const interprete = new LiteSeInt({
 
@@ -513,9 +650,15 @@ Ejemplo:
       },
 
       onError(lineaIdx, mensaje) {
-        erroresMapa[lineaIdx] = mensaje;
+        // Runtime errors: add to visual state and paint immediately
+        if (!errorVisualState.erroresMapa[lineaIdx]) {
+          errorVisualState.erroresMapa[lineaIdx] = mensaje;
+        } else {
+          errorVisualState.erroresMapa[lineaIdx] += '\n' + mensaje;
+        }
         consolaImprimir(`Error en línea ${lineaIdx + 1}: ${mensaje}`, 'error');
-        marcarErrorLinea(lineaIdx, mensaje);
+        marcarErrorLinea(lineaIdx, errorVisualState.erroresMapa[lineaIdx]);
+        errorVisualState.activo = true;
       },
 
       onLineaActiva(lineaIdx) {
@@ -530,7 +673,7 @@ Ejemplo:
     });
 
     // =========================================
-    // 2. CONSOLA
+    // 3. CONSOLA
     // =========================================
 
     function consolaImprimir(texto, tipo = 'output') {
@@ -545,17 +688,22 @@ Ejemplo:
       el.scrollTop = el.scrollHeight;
     }
 
-    function limpiarConsola() { $('#consola').empty(); }
+    /**
+     * Limpiar consola: vacía la consola Y limpia errores visuales del editor.
+     */
+    function limpiarConsola() {
+      $('#consola').empty();
+      invalidarErroresVisuales();
+    }
 
     function limpiarTodo() {
       $('#editor').val('');
       limpiarConsola();
-      limpiarEstadoLineas();
       actualizarLineas();
     }
 
     // =========================================
-    // 3. INPUT INLINE EN CONSOLA
+    // 4. INPUT INLINE EN CONSOLA
     // =========================================
 
     function mostrarInputConsola(nombreVar) {
@@ -591,13 +739,141 @@ Ejemplo:
     }
 
     // =========================================
-    // 4. LINE NUMBERS + HIGHLIGHTS + ERROR BADGES
+    // 5. ERROR VISUAL SYSTEM
+    //    - Only activated by Ejecutar
+    //    - Invalidated immediately on any edit
+    //    - Separate from execution highlight
+    // =========================================
+
+    /**
+     * Clears ALL visual error indicators from the editor.
+     */
+    function invalidarErroresVisuales() {
+      resetErrorVisualState();
+
+      // Clear gutter and overlay error classes
+      $('.line-num-row').removeClass('has-error');
+      $('.line-overlay').removeClass('has-error');
+
+      // Dispose all error tooltips
+      $('.error-badge-btn').each(function() {
+        const tip = bootstrap.Tooltip.getInstance(this);
+        if (tip) tip.dispose();
+      });
+
+      // Clear underline layer
+      document.getElementById('errorDecoLayer').innerHTML = '';
+    }
+
+    /**
+     * Clears only execution highlights (green line indicator).
+     * Independent from error visual state.
+     */
+    function limpiarEjecucionHighlight() {
+      $('.line-num-row.executing').removeClass('executing');
+      $('.line-overlay.executing').removeClass('executing');
+    }
+
+    /**
+     * Applies visual error state to the editor.
+     * Called ONLY from the ejecutar() flow.
+     */
+    function aplicarErroresVisuales(erroresPorLinea) {
+      invalidarErroresVisuales();
+
+      errorVisualState.activo = true;
+      errorVisualState.erroresPorLinea = erroresPorLinea;
+
+      for (const [lineaIdx, erroresLinea] of erroresPorLinea) {
+        const mensajes = erroresLinea.map(e => e.mensaje).join('\n');
+        errorVisualState.erroresMapa[lineaIdx] = mensajes;
+        marcarErrorLinea(lineaIdx, mensajes);
+      }
+
+      renderizarSubrayados();
+    }
+
+    /**
+     * Mark a single line with error badge + tooltip.
+     */
+    function marcarErrorLinea(lineaIdx, mensaje) {
+      const $row = $(`.line-num-row[data-line="${lineaIdx}"]`);
+      $row.addClass('has-error').removeClass('executing');
+
+      const $overlay = $(`.line-overlay[data-line="${lineaIdx}"]`);
+      $overlay.removeClass('executing').addClass('has-error');
+
+      const $btn = $overlay.find('.error-badge-btn');
+      $btn.attr('title', mensaje);
+
+      const existing = bootstrap.Tooltip.getInstance($btn[0]);
+      if (existing) existing.dispose();
+      new bootstrap.Tooltip($btn[0], { placement: 'left', trigger: 'hover focus', html: false });
+    }
+
+    /**
+     * Renders wavy red underlines from the current error visual state.
+     */
+    function renderizarSubrayados() {
+      const texto = $('#editor').val();
+      const lineas = texto.split('\n');
+      const errPorLinea = errorVisualState.erroresPorLinea;
+
+      if (!errPorLinea || errPorLinea.size === 0) {
+        document.getElementById('errorDecoLayer').innerHTML = lineas.map(() => '').join('\n');
+        return;
+      }
+
+      const htmlLines = lineas.map((linea, idx) => {
+        const erroresLinea = errPorLinea.get(idx);
+        if (!erroresLinea || erroresLinea.length === 0) {
+          return ' '.repeat(linea.length);
+        }
+        return renderErrorUnderlines(linea, erroresLinea);
+      });
+
+      document.getElementById('errorDecoLayer').innerHTML = htmlLines.join('\n');
+    }
+
+    function renderErrorUnderlines(linea, errores) {
+      if (linea.length === 0) return '';
+
+      const errorMap = new Array(linea.length).fill(false);
+      for (const err of errores) {
+        const start = Math.max(0, err.columnaInicio);
+        const end = Math.min(linea.length, err.columnaFin);
+        for (let i = start; i < end; i++) {
+          errorMap[i] = true;
+        }
+      }
+
+      let result = '';
+      let i = 0;
+      while (i < linea.length) {
+        const isError = errorMap[i];
+        let j = i;
+        while (j < linea.length && errorMap[j] === isError) j++;
+
+        const segment = escapeHtml(linea.substring(i, j));
+        if (isError) {
+          result += `<span class="error-underline">${segment}</span>`;
+        } else {
+          result += segment;
+        }
+        i = j;
+      }
+
+      return result;
+    }
+
+    // =========================================
+    // 6. LINE NUMBERS + OVERLAYS
     // =========================================
 
     function actualizarLineas() {
       const texto = $('#editor').val();
       const numLineas = texto.split('\n').length;
-      const total = Math.max(numLineas, 20);
+      const total = Math.max(numLineas, 10);  // mínimo 10 líneas
       const $gutter = $('#lineNumbers');
       const $overlays = $('#lineOverlays');
 
@@ -605,13 +881,11 @@ Ejemplo:
       $overlays.empty();
 
       for (let i = 0; i < total; i++) {
-        // Gutter row: arrow + number
         const $row = $('<div>').addClass('line-num-row').attr('data-line', i);
         $row.append($('<span>').addClass('exec-arrow').text('>'));
         $row.append($('<span>').addClass('num-text').text(i + 1));
         $gutter.append($row);
 
-        // Overlay row with error badge inside
         const $overlay = $('<div>').addClass('line-overlay').attr('data-line', i);
         $overlay.append(
           $('<div>').addClass('error-badge-container').html(
@@ -621,12 +895,13 @@ Ejemplo:
         $overlays.append($overlay);
       }
 
-      // Re-apply errors
-      for (const [idx, msg] of Object.entries(erroresMapa)) {
-        marcarErrorLinea(parseInt(idx), msg);
+      // Re-apply error visual state if still active (e.g. after line count rebuild)
+      if (errorVisualState.activo) {
+        for (const [idx, msg] of Object.entries(errorVisualState.erroresMapa)) {
+          marcarErrorLinea(parseInt(idx), msg);
+        }
       }
 
-      // Update syntax highlighting
       actualizarSyntaxHighlight();
     }
 
@@ -637,151 +912,71 @@ Ejemplo:
       $(`.line-overlay[data-line="${lineaIdx}"]`).addClass('executing');
     }
 
-    function marcarErrorLinea(lineaIdx, mensaje) {
-      // Mark gutter
-      const $row = $(`.line-num-row[data-line="${lineaIdx}"]`);
-      $row.addClass('has-error').removeClass('executing');
-
-      // Mark overlay
-      const $overlay = $(`.line-overlay[data-line="${lineaIdx}"]`);
-      $overlay.removeClass('executing').addClass('has-error');
-
-      // Setup tooltip on the error badge inside the overlay
-      const $btn = $overlay.find('.error-badge-btn');
-      $btn.attr('title', mensaje);
-
-      const existing = bootstrap.Tooltip.getInstance($btn[0]);
-      if (existing) existing.dispose();
-      new bootstrap.Tooltip($btn[0], { placement: 'left', trigger: 'hover focus', html: false });
-    }
-
-    function limpiarEstadoLineas() {
-      erroresMapa = {};
-      $('.line-num-row').removeClass('executing has-error');
-      $('.line-overlay').removeClass('executing has-error');
-      $('.error-badge-btn').each(function() {
-        const tip = bootstrap.Tooltip.getInstance(this);
-        if (tip) tip.dispose();
-      });
-    }
-
     // Sync scroll
     $('#editor').on('scroll', function() {
-      document.getElementById('lineNumbers').scrollTop = this.scrollTop;
-      document.getElementById('lineOverlays').scrollTop = this.scrollTop;
-      document.getElementById('syntaxLayer').scrollTop = this.scrollTop;
-      document.getElementById('syntaxLayer').scrollLeft = this.scrollLeft;
+      const st = this.scrollTop;
+      const sl = this.scrollLeft;
+      document.getElementById('lineNumbers').scrollTop = st;
+      document.getElementById('lineOverlays').scrollTop = st;
+      document.getElementById('syntaxLayer').scrollTop = st;
+      document.getElementById('syntaxLayer').scrollLeft = sl;
+      document.getElementById('errorDecoLayer').scrollTop = st;
+      document.getElementById('errorDecoLayer').scrollLeft = sl;
     });
 
     // =========================================
-    // 5b. SYNTAX HIGHLIGHTING
+    // 7. SYNTAX HIGHLIGHTING (always real-time)
     // =========================================
 
-    const KEYWORD_REGEX = /\b(Definir|Escribir|Leer|Como|Entero|Real|Caracter)\b/gi;
-
-    /**
-     * Renders syntax-highlighted HTML into the overlay layer.
-     * Runs on every input change.
-     */
     function actualizarSyntaxHighlight() {
       const texto = $('#editor').val();
       const lineas = texto.split('\n');
-      const userVars = LiteSeInt.extraerVariablesDelCodigo(texto);
+      const userVars = DocErrores.extraerVariablesDelCodigo(texto);
+      const userVarsSet = new Set(userVars.map(v => v.toLowerCase()));
 
-      // Build a regex for user variables (if any)
-      let varRegex = null;
-      if (userVars.length > 0) {
-        const escaped = userVars.map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-        varRegex = new RegExp('\\b(' + escaped.join('|') + ')\\b', 'gi');
-      }
-
-      const htmlLines = lineas.map(linea => {
-        return resaltarLinea_syntax(linea, varRegex);
-      });
-
+      const htmlLines = lineas.map(linea => resaltarLinea_syntax(linea, userVarsSet));
       document.getElementById('syntaxLayer').innerHTML = htmlLines.join('\n');
     }
 
-    /**
-     * Highlights a single line respecting: comments > strings > keywords > variables > numbers
-     */
-    function resaltarLinea_syntax(linea, varRegex) {
+    function resaltarLinea_syntax(linea, userVarsSet) {
       if (linea === '') return '';
 
-      // Find comment position (outside strings)
-      let commentIdx = -1;
-      let enComillas = false;
-      for (let i = 0; i < linea.length; i++) {
-        if (linea[i] === '"') enComillas = !enComillas;
-        if (!enComillas && linea[i] === '/' && linea[i + 1] === '/') {
-          commentIdx = i;
-          break;
-        }
-      }
-
-      let codePart = commentIdx >= 0 ? linea.substring(0, commentIdx) : linea;
-      let commentPart = commentIdx >= 0 ? linea.substring(commentIdx) : '';
-
-      // Tokenize the code part
-      let highlighted = tokenizarYResaltar(codePart, varRegex);
-
-      // Comment part: all gray
-      if (commentPart) {
-        highlighted += `<span class="sh-comment">${escapeHtml(commentPart)}</span>`;
-      }
-
-      return highlighted;
-    }
-
-    /**
-     * Tokenizes code (no comments) into highlighted spans.
-     * Processes left-to-right to respect string boundaries.
-     */
-    function tokenizarYResaltar(code, varRegex) {
+      const tokens = DocErrores.tokenizarLinea(linea);
       let result = '';
-      let i = 0;
 
-      while (i < code.length) {
-        // String literal
-        if (code[i] === '"') {
-          let j = i + 1;
-          while (j < code.length && code[j] !== '"') j++;
-          if (j < code.length) j++; // include closing quote
-          result += `<span class="sh-string">${escapeHtml(code.substring(i, j))}</span>`;
-          i = j;
-          continue;
+      for (const tk of tokens) {
+        const escaped = escapeHtml(tk.value);
+        switch (tk.type) {
+          case DocErrores.TK.KEYWORD:
+            result += `<span class="sh-keyword">${escaped}</span>`;
+            break;
+          case DocErrores.TK.STRING:
+          case DocErrores.TK.STRING_UNCLOSED:
+            result += `<span class="sh-string">${escaped}</span>`;
+            break;
+          case DocErrores.TK.NUMBER:
+            result += `<span class="sh-number">${escaped}</span>`;
+            break;
+          case DocErrores.TK.COMMENT:
+            result += `<span class="sh-comment">${escaped}</span>`;
+            break;
+          case DocErrores.TK.ASSIGN:
+            result += `<span class="sh-assign">${escaped}</span>`;
+            break;
+          case DocErrores.TK.OPERATOR:
+            result += `<span class="sh-operator">${escaped}</span>`;
+            break;
+          case DocErrores.TK.IDENTIFIER:
+            if (userVarsSet.has(tk.value.toLowerCase())) {
+              result += `<span class="sh-variable">${escaped}</span>`;
+            } else {
+              result += `<span class="sh-plain">${escaped}</span>`;
+            }
+            break;
+          default:
+            result += `<span class="sh-plain">${escaped}</span>`;
+            break;
         }
-
-        // Word token
-        if (/\w/.test(code[i])) {
-          let j = i;
-          while (j < code.length && /\w/.test(code[j])) j++;
-          const word = code.substring(i, j);
-
-          if (LiteSeInt.PALABRAS_RESERVADAS_SET.has(word.toLowerCase())) {
-            result += `<span class="sh-keyword">${escapeHtml(word)}</span>`;
-          } else if (/^\d+(\.\d+)?$/.test(word)) {
-            result += `<span class="sh-number">${escapeHtml(word)}</span>`;
-          } else if (varRegex && varRegex.test(word)) {
-            varRegex.lastIndex = 0; // reset regex state
-            result += `<span class="sh-variable">${escapeHtml(word)}</span>`;
-          } else {
-            result += `<span class="sh-plain">${escapeHtml(word)}</span>`;
-          }
-          i = j;
-          continue;
-        }
-
-        // Operator: <-
-        if (code[i] === '<' && code[i + 1] === '-') {
-          result += `<span class="sh-operator">${escapeHtml('<-')}</span>`;
-          i += 2;
-          continue;
-        }
-
-        // Other characters (spaces, punctuation)
-        result += `<span class="sh-plain">${escapeHtml(code[i])}</span>`;
-        i++;
       }
 
       return result;
@@ -796,14 +991,31 @@ Ejemplo:
     }
 
     // =========================================
-    // 5. AUTOCOMPLETADO
+    // 8. AUTOCOMPLETE
     // =========================================
 
     let acIndice = -1;
 
+    /**
+     * On input: update syntax highlighting, autocomplete,
+     * and INVALIDATE error visuals if they are active.
+     */
     $('#editor').on('input', function() {
+      if (errorVisualState.activo) {
+        invalidarErroresVisuales();
+      }
       actualizarLineas();
       mostrarAutocompletado();
+    });
+
+    // Handle paste
+    $('#editor').on('paste', function() {
+      setTimeout(() => {
+        if (errorVisualState.activo) {
+          invalidarErroresVisuales();
+        }
+        actualizarLineas();
+      }, 10);
     });
 
     $('#editor').on('keydown', function(e) {
@@ -847,26 +1059,27 @@ Ejemplo:
       const cur = editor.selectionStart;
       const txt = editor.value;
 
-      // Determine current line text up to cursor
       const textBefore = txt.substring(0, cur);
       const lastNewline = textBefore.lastIndexOf('\n');
       const lineUpToCursor = textBefore.substring(lastNewline + 1);
 
-      // Skip autocomplete if cursor is inside a comment
-      if (estEnComentario(lineUpToCursor)) {
+      const colInLine = lineUpToCursor.length;
+      const fullLine = txt.split('\n')[textBefore.split('\n').length - 1] || '';
+      const context = DocErrores.cursorContext(fullLine, colInLine - 1);
+
+      if (context.inString || context.inComment) {
         ocultarAutocompletado();
         return;
       }
 
       let ini = cur - 1;
-      while (ini >= 0 && /\w/.test(txt[ini])) ini--;
+      while (ini >= 0 && /[\wáéíóúüñÁÉÍÓÚÜÑ]/.test(txt[ini])) ini--;
       ini++;
       const palabra = txt.substring(ini, cur);
 
       if (palabra.length < 2) { ocultarAutocompletado(); return; }
 
-      // Build suggestions: reserved words + user variables
-      const userVars = LiteSeInt.extraerVariablesDelCodigo(txt).map(v => ({
+      const userVars = DocErrores.extraerVariablesDelCodigo(txt).map(v => ({
         texto: v, tipo: 'variable'
       }));
       const todas = [...LiteSeInt.PALABRAS_RESERVADAS, ...userVars];
@@ -875,7 +1088,7 @@ Ejemplo:
         p.texto.toLowerCase().startsWith(palabra.toLowerCase()) &&
         p.texto.toLowerCase() !== palabra.toLowerCase()
       );
-      // Deduplicate by text
+
       const seen = new Set();
       const unique = matches.filter(m => {
         const key = m.texto.toLowerCase();
@@ -902,18 +1115,6 @@ Ejemplo:
       $dd.addClass('visible');
     }
 
-    /**
-     * Returns true if the given line text (up to cursor) is inside a comment.
-     */
-    function estEnComentario(lineText) {
-      let enComillas = false;
-      for (let i = 0; i < lineText.length; i++) {
-        if (lineText[i] === '"') enComillas = !enComillas;
-        if (!enComillas && lineText[i] === '/' && lineText[i + 1] === '/') return true;
-      }
-      return false;
-    }
-
     function posicionarDropdown(cursorPos) {
       const editor = document.getElementById('editor');
       const $dd = $('#autocompleteDropdown');
@@ -938,7 +1139,7 @@ Ejemplo:
       const txt = editor.value;
 
       let ini = cur - 1;
-      while (ini >= 0 && /\w/.test(txt[ini])) ini--;
+      while (ini >= 0 && /[\wáéíóúüñÁÉÍÓÚÜÑ]/.test(txt[ini])) ini--;
       ini++;
 
       editor.value = txt.substring(0, ini) + palabra + ' ' + txt.substring(cur);
@@ -963,7 +1164,7 @@ Ejemplo:
     });
 
     // =========================================
-    // 6. CONTROLES PRINCIPALES
+    // 9. CONTROLES PRINCIPALES
     // =========================================
 
     function setEstado(estado, texto) {
@@ -974,26 +1175,51 @@ Ejemplo:
     async function ejecutar() {
       if (interprete.ejecutando) return;
 
-      limpiarConsola();
-      limpiarEstadoLineas();
+      // Clean everything
+      limpiarConsola();          // also calls invalidarErroresVisuales()
+      limpiarEjecucionHighlight();
       actualizarLineas();
+
+      const codigo = $('#editor').val();
+      if (codigo.trim() === '') return;
+
+      // Step 1: Static validation via doc_errores.js
+      const validacion = DocErrores.validarDocumento(codigo);
+
+      if (validacion.errores.length > 0) {
+        // Show all errors in console
+        for (const err of validacion.errores) {
+          consolaImprimir(`Error en línea ${err.linea + 1}: ${err.mensaje}`, 'error');
+        }
+        // Paint error visuals
+        aplicarErroresVisuales(validacion.erroresPorLinea);
+        setEstado('error', 'Error');
+        return;
+      }
+
+      // Step 2: Execute
       setEstado('running', 'Ejecutando...');
       $('#btnEjecutar').prop('disabled', true);
       $('#btnDetener').show();
 
       consolaImprimir('Inicio de ejecución', 'system');
 
-      const resultado = await interprete.ejecutar($('#editor').val());
+      const resultado = await interprete.ejecutar(codigo);
 
       if (resultado.exito) {
         consolaImprimir('Fin de ejecución', 'system');
         setEstado('', 'Listo');
       } else {
         setEstado('error', 'Error');
+        // Runtime errors already painted via onError callback.
+        // If structured errors exist, also render underlines
+        if (resultado.erroresPorLinea && resultado.erroresPorLinea.size > 0) {
+          errorVisualState.erroresPorLinea = resultado.erroresPorLinea;
+          renderizarSubrayados();
+        }
       }
 
-      $('.line-num-row.executing').removeClass('executing');
-      $('.line-overlay.executing').removeClass('executing');
+      limpiarEjecucionHighlight();
       $('#btnEjecutar').prop('disabled', false);
       $('#btnDetener').hide();
     }
@@ -1005,12 +1231,11 @@ Ejemplo:
       setEstado('', 'Detenido');
       $('#btnEjecutar').prop('disabled', false);
       $('#btnDetener').hide();
-      $('.line-num-row.executing').removeClass('executing');
-      $('.line-overlay.executing').removeClass('executing');
+      limpiarEjecucionHighlight();
     }
 
     // =========================================
-    // 7. EJEMPLOS
+    // 10. EJEMPLOS
     // =========================================
 
     const EJEMPLOS = {
@@ -1023,7 +1248,7 @@ Escribir "¿Cómo te llamas?"
 Leer nombre
 Escribir "¡Hola, ", nombre, "! Bienvenido."  // saludo final`,
 
-      notas: `// Calculadora de suma de notas
+      notas: `// Calculadora de promedio de notas
 Definir nota1 Como Real
 Definir nota2 Como Real
 Definir promedio Como Real
@@ -1033,9 +1258,9 @@ Leer nota1
 Escribir "Ingresa la segunda nota:"
 Leer nota2
 
-promedio <- nota1 + nota2  // suma ambas notas
+promedio <- (nota1 + nota2) / 2  // calcula promedio
 
-Escribir "La suma de las notas es: ", promedio`,
+Escribir "El promedio es: ", promedio`,
 
       multivar: `// Ejemplo con múltiples variables en una línea
 Definir nombre, apellido, ciudad Como Caracter
@@ -1060,14 +1285,13 @@ Escribir "Edad: ", edad`,
     function cargarEjemplo(nombre) {
       if (EJEMPLOS[nombre]) {
         $('#editor').val(EJEMPLOS[nombre]);
-        limpiarConsola();
-        limpiarEstadoLineas();
+        limpiarConsola();   // also invalidates error visuals
         actualizarLineas();
       }
     }
 
     // =========================================
-    // 8. INIT
+    // 11. INIT
     // =========================================
 
     $(document).ready(function() {
