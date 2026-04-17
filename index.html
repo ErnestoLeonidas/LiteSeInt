@@ -176,6 +176,13 @@
 
     .editor-wrapper { flex: 1; display: flex; overflow: hidden; position: relative; }
 
+    /* Container for the code area (right of gutter) */
+    .editor-code-area {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
     /* ---- Gutter ---- */
     .line-numbers {
       width: 58px; padding: 16px 0;
@@ -230,9 +237,9 @@
     }
     .error-badge-btn:hover { background: var(--error); color: #fff; }
 
-    /* ---- Line overlays (behind textarea) ---- */
+    /* ---- Line overlays (inside code area) ---- */
     .editor-line-overlays {
-      position: absolute; top: 0; left: 58px; right: 0; bottom: 0;
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       pointer-events: none; padding-top: 16px; z-index: 1; overflow: hidden;
     }
     .line-overlay {
@@ -244,38 +251,39 @@
 
     /* ---- Textarea ---- */
     #editor {
-      flex: 1; background: transparent; color: transparent;
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: transparent; color: transparent;
       border: none; outline: none; padding: 16px;
       font-family: var(--font-code); font-size: 13px; line-height: var(--line-height-val);
       resize: none; tab-size: 2; white-space: pre;
       overflow-wrap: normal; overflow-x: auto;
-      position: relative; z-index: 4;
+      z-index: 4; margin: 0; width: 100%; height: 100%;
       caret-color: var(--accent);
     }
     #editor::placeholder { color: var(--text-muted); }
-    /* Show placeholder text normally (not transparent) */
     #editor:placeholder-shown { color: var(--text-muted); }
 
-    /* Editor area background (behind overlay) */
+    /* Editor area background */
     .editor-bg-layer {
-      position: absolute; top: 0; left: 58px; right: 0; bottom: 0;
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       background: var(--bg-editor); z-index: 0;
     }
 
-    /* Syntax highlight layer */
+    /* Syntax highlight layer — same box model as #editor */
     .syntax-highlight-layer {
-      position: absolute; top: 0; left: 58px; right: 0; bottom: 0;
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       padding: 16px; z-index: 3; pointer-events: none;
       font-family: var(--font-code); font-size: 13px;
       line-height: var(--line-height-val);
       white-space: pre; overflow: hidden;
-      color: transparent; /* base text invisible, spans provide color */
+      color: transparent;
+      margin: 0; border: none;
     }
 
-    .syntax-highlight-layer .sh-keyword { color: var(--syntax-keyword); font-weight: 500; }
+    .syntax-highlight-layer .sh-keyword { color: var(--syntax-keyword); }
     .syntax-highlight-layer .sh-string { color: var(--syntax-string); }
     .syntax-highlight-layer .sh-variable { color: var(--syntax-variable); }
-    .syntax-highlight-layer .sh-comment { color: var(--syntax-comment); font-style: italic; }
+    .syntax-highlight-layer .sh-comment { color: var(--syntax-comment); opacity: 0.8; }
     .syntax-highlight-layer .sh-number { color: var(--syntax-number); }
     .syntax-highlight-layer .sh-operator { color: var(--text-secondary); }
     .syntax-highlight-layer .sh-plain { color: var(--text-primary); }
@@ -438,20 +446,22 @@
       </div>
       <div class="editor-wrapper">
         <div class="line-numbers" id="lineNumbers"></div>
-        <div class="editor-bg-layer"></div>
-        <div class="editor-line-overlays" id="lineOverlays"></div>
-        <div class="syntax-highlight-layer" id="syntaxLayer"></div>
-        <textarea
-          id="editor"
-          spellcheck="false"
-          placeholder="Escribe tu pseudocódigo aquí...
+        <div class="editor-code-area">
+          <div class="editor-bg-layer"></div>
+          <div class="editor-line-overlays" id="lineOverlays"></div>
+          <div class="syntax-highlight-layer" id="syntaxLayer"></div>
+          <textarea
+            id="editor"
+            spellcheck="false"
+            placeholder="Escribe tu pseudocódigo aquí...
 
 Ejemplo:
   Definir nombre, apellido Como Caracter
   Escribir &quot;¿Cómo te llamas?&quot;
   Leer nombre
   Escribir &quot;Hola, &quot;, nombre"
-        ></textarea>
+          ></textarea>
+        </div>
         <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
       </div>
       <div class="example-bar">
@@ -696,7 +706,7 @@ Ejemplo:
      * Highlights a single line respecting: comments > strings > keywords > variables > numbers
      */
     function resaltarLinea_syntax(linea, varRegex) {
-      if (linea === '') return '\n';
+      if (linea === '') return '';
 
       // Find comment position (outside strings)
       let commentIdx = -1;
@@ -911,7 +921,7 @@ Ejemplo:
       const lineas = txt.split('\n');
       const lnIdx = lineas.length - 1;
       const col = lineas[lineas.length - 1].length;
-      const wr = editor.parentElement.getBoundingClientRect();
+      const wr = document.querySelector('.editor-wrapper').getBoundingClientRect();
 
       const top = (lnIdx + 1) * 21.45 + 16 - editor.scrollTop;
       const left = col * 7.8 + 58 + 16 - editor.scrollLeft;
