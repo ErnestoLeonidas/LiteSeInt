@@ -19,7 +19,7 @@
         <div class="app-logo-icon">L</div>
         <div class="app-logo-text">Lite<span>SeInt</span></div>
       </div>
-      <div class="app-version">v0.1.4</div>
+      <div class="app-version">v0.2.0</div>
     </header>
 
     <!-- ========== TOOLBAR ========== -->
@@ -52,6 +52,7 @@
           <div class="line-numbers" id="lineNumbers"></div>
           <div class="editor-code-area">
             <div class="editor-bg-layer"></div>
+            <div class="indent-guide-layer" id="indentGuideLayer"></div>
             <div class="editor-line-overlays" id="lineOverlays"></div>
             <div class="error-decoration-layer" id="errorDecoLayer"></div>
             <div class="syntax-highlight-layer" id="syntaxLayer"></div>
@@ -68,6 +69,10 @@
           <button class="example-btn" data-ejemplo="saludo">Saludo</button>
           <button class="example-btn" data-ejemplo="notas">Notas</button>
           <button class="example-btn" data-ejemplo="multivar">Multi-variable</button>
+          <button class="example-btn" data-ejemplo="mayor">Mayor de dos</button>
+          <button class="example-btn" data-ejemplo="contador">Contador</button>
+          <button class="example-btn" data-ejemplo="tabla">Tabla</button>
+          <button class="example-btn" data-ejemplo="diasemana">Dia de semana</button>
         </div>
       </div>
 
@@ -429,6 +434,7 @@
       }
 
       actualizarSyntaxHighlight();
+      actualizarIndentGuides();
     }
 
     function resaltarLineaEjecutando(lineaIdx) {
@@ -444,6 +450,8 @@
       const sl = this.scrollLeft;
       document.getElementById('lineNumbers').scrollTop = st;
       document.getElementById('lineOverlays').scrollTop = st;
+      document.getElementById('indentGuideLayer').scrollTop = st;
+      document.getElementById('indentGuideLayer').scrollLeft = sl;
       document.getElementById('syntaxLayer').scrollTop = st;
       document.getElementById('syntaxLayer').scrollLeft = sl;
       document.getElementById('errorDecoLayer').scrollTop = st;
@@ -451,7 +459,111 @@
     });
 
     // =========================================
-    // 7. SYNTAX HIGHLIGHTING (always real-time)
+    // 7. INDENT GUIDES
+    // =========================================
+
+    const GUIDE_CHAR_W   = 7.8;
+    const GUIDE_LINE_H   = 21.45;
+    const GUIDE_PAD_TOP  = 16;
+    const GUIDE_PAD_LEFT = 16;
+    const INDENT_STEP    = 2;
+
+    function getLeadingIndentColumns(linea) {
+      let width = 0;
+      for (const ch of linea) {
+        if (ch === ' ') {
+          width += 1;
+        } else if (ch === '\t') {
+          width += INDENT_STEP;
+        } else {
+          break;
+        }
+      }
+      return width;
+    }
+
+    function computeGuideColumns(lineas) {
+      const n = lineas.length;
+      const cols = Array.from({ length: n }, () => []);
+      const effectiveIndents = new Array(n).fill(0);
+      const actualIndents = lineas.map(linea => {
+        if (linea.trim() === '') return null;
+        return getLeadingIndentColumns(linea);
+      });
+
+      for (let i = 0; i < n; i++) {
+        if (actualIndents[i] !== null) {
+          effectiveIndents[i] = actualIndents[i];
+          continue;
+        }
+
+        let prev = null;
+        for (let j = i - 1; j >= 0; j--) {
+          if (actualIndents[j] !== null) {
+            prev = actualIndents[j];
+            break;
+          }
+        }
+
+        let next = null;
+        for (let j = i + 1; j < n; j++) {
+          if (actualIndents[j] !== null) {
+            next = actualIndents[j];
+            break;
+          }
+        }
+
+        if (prev === null && next === null) {
+          effectiveIndents[i] = 0;
+        } else if (prev === null) {
+          effectiveIndents[i] = next;
+        } else if (next === null) {
+          effectiveIndents[i] = prev;
+        } else {
+          effectiveIndents[i] = Math.min(prev, next);
+        }
+      }
+
+      for (let i = 0; i < n; i++) {
+        const indent = effectiveIndents[i];
+        if (indent < INDENT_STEP) continue;
+
+        for (let col = INDENT_STEP; col <= indent; col += INDENT_STEP) {
+          cols[i].push(col);
+        }
+      }
+
+      return { cols, effectiveIndents };
+    }
+
+    function actualizarIndentGuides() {
+      const editor = document.getElementById('editor');
+      const layer  = document.getElementById('indentGuideLayer');
+      const texto  = editor.value;
+      const lineas = texto.split('\n');
+      const cursorLine = texto.substring(0, editor.selectionStart).split('\n').length - 1;
+      const { cols: guideCols, effectiveIndents } = computeGuideColumns(lineas);
+      const activeIndent = effectiveIndents[cursorLine] || 0;
+
+      let html = '';
+      for (let i = 0; i < lineas.length; i++) {
+        const y = GUIDE_PAD_TOP + i * GUIDE_LINE_H;
+        for (const col of guideCols[i]) {
+          const x = GUIDE_PAD_LEFT + col * GUIDE_CHAR_W;
+          const cls = i === cursorLine && col <= activeIndent ? ' active' : '';
+          html += `<div class="indent-guide${cls}" style="left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;height:${GUIDE_LINE_H.toFixed(1)}px"></div>`;
+        }
+      }
+      layer.innerHTML = html;
+    }
+
+    // Update guides on cursor move (without content change)
+    $('#editor').on('click keyup mouseup', function() {
+      actualizarIndentGuides();
+    });
+
+    // =========================================
+    // 8. SYNTAX HIGHLIGHTING (always real-time)
     // =========================================
 
     function actualizarSyntaxHighlight() {
@@ -811,6 +923,67 @@ Escribir "--- Datos ingresados ---"
 Escribir "Nombre: ", nombre, " ", apellido
 Escribir "Ciudad: ", ciudad
 Escribir "Edad: ", edad`,
+
+      mayor: `// Determina cuál de dos números es mayor
+Definir a, b Como Real
+
+Escribir "Ingresa el primer número:"
+Leer a
+Escribir "Ingresa el segundo número:"
+Leer b
+
+Si a > b Entonces
+  Escribir "El mayor es: ", a
+Sino
+  Si b > a Entonces
+    Escribir "El mayor es: ", b
+  Sino
+    Escribir "Los dos números son iguales."
+  FinSi
+FinSi`,
+
+      contador: `// Suma los números del 1 al N ingresado por el usuario
+Definir n, i, suma Como Entero
+
+Escribir "¿Hasta qué número sumar?"
+Leer n
+suma <- 0
+i <- 1
+
+Mientras i <= n Hacer
+  suma <- suma + i
+  i <- i + 1
+FinMientras
+
+Escribir "La suma de 1 a ", n, " es: ", suma`,
+
+      tabla: `// Tabla de multiplicar de un número
+Definir num, i Como Entero
+
+Escribir "¿De qué número quieres la tabla?"
+Leer num
+
+Para i <- 1 Hasta 10 Hacer
+  Escribir num, " x ", i, " = ", num * i
+FinPara`,
+
+      diasemana: `// Nombre del día según su número (1=Lunes ... 7=Domingo)
+Definir dia Como Entero
+
+Escribir "Ingresa el número del día (1-7):"
+Leer dia
+
+Segun dia Hacer
+  1: Escribir "Lunes"
+  2: Escribir "Martes"
+  3: Escribir "Miércoles"
+  4: Escribir "Jueves"
+  5: Escribir "Viernes"
+  6: Escribir "Sábado"
+  7: Escribir "Domingo"
+  De Otro Modo:
+    Escribir "Número inválido. Ingresa del 1 al 7."
+FinSegun`,
     };
 
     function cargarEjemplo(nombre) {

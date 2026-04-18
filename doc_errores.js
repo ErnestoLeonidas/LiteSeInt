@@ -17,9 +17,16 @@
 //  CONSTANTES
 // ─────────────────────────────────────────────
 
-const PALABRAS_RESERVADAS_SET = new Set(
-  ['definir', 'escribir', 'leer', 'como', 'entero', 'real', 'caracter', 'proceso', 'finproceso']
-);
+const PALABRAS_RESERVADAS_SET = new Set([
+  'definir', 'escribir', 'leer', 'como', 'entero', 'real', 'caracter',
+  'proceso', 'finproceso',
+  'si', 'entonces', 'sino', 'finsi',
+  'mientras', 'hacer', 'finmientras',
+  'repetir', 'hastaque',
+  'para', 'hasta', 'con', 'paso', 'finpara',
+  'segun', 'finsegun', 'de', 'otro', 'modo',
+  'y', 'o', 'no',
+]);
 
 const TIPOS_VALIDOS = new Set(['entero', 'real', 'caracter']);
 
@@ -36,6 +43,7 @@ const TK = Object.freeze({
   OPERATOR:         'operator',          // + - * /
   ASSIGN:           'assign',            // <-
   COMMA:            'comma',
+  COLON:            'colon',             // : used in Segun case labels
   LPAREN:           'lparen',
   RPAREN:           'rparen',
   COMMENT:          'comment',
@@ -156,6 +164,13 @@ function tokenizarLinea(linea) {
     // ── Comma ──
     if (linea[i] === ',') {
       tokens.push({ type: TK.COMMA, value: ',', col: start, end: start + 1 });
+      i++;
+      continue;
+    }
+
+    // ── Colon ──
+    if (linea[i] === ':') {
+      tokens.push({ type: TK.COLON, value: ':', col: start, end: start + 1 });
       i++;
       continue;
     }
@@ -306,19 +321,61 @@ function validarDocumento(codigo) {
   const todosErrores = [];
   const erroresPorLinea = new Map();
 
+  const agregarError = (i, err) => {
+    if (!erroresPorLinea.has(i)) erroresPorLinea.set(i, []);
+    erroresPorLinea.get(i).push(err);
+    todosErrores.push(err);
+  };
+
+  // Paso 1: validación línea a línea
   for (let i = 0; i < lineas.length; i++) {
     const lineaRaw = lineas[i];
     const tokens = tokenizarLinea(lineaRaw);
     const sig = tokensSignificativos(tokens);
-
     if (sig.length === 0) continue;
-
     const erroresLinea = validarLinea(sig, tokens, i, tabla);
+    for (const e of erroresLinea) agregarError(i, e);
+  }
 
-    if (erroresLinea.length > 0) {
-      erroresPorLinea.set(i, erroresLinea);
-      todosErrores.push(...erroresLinea);
+  // Paso 2: balance de bloques
+  const BLOQUES = [
+    { abre: 'si',       cierra: 'finsi',        etiqueta: 'Si',       cierraLabel: 'FinSi' },
+    { abre: 'mientras', cierra: 'finmientras',   etiqueta: 'Mientras', cierraLabel: 'FinMientras' },
+    { abre: 'repetir',  cierra: 'hastaque',      etiqueta: 'Repetir',  cierraLabel: 'HastaQue' },
+    { abre: 'para',     cierra: 'finpara',       etiqueta: 'Para',     cierraLabel: 'FinPara' },
+    { abre: 'segun',    cierra: 'finsegun',      etiqueta: 'Segun',    cierraLabel: 'FinSegun' },
+  ];
+
+  const stackBloques = [];
+  for (let i = 0; i < lineas.length; i++) {
+    const linea = stripComment(lineas[i].trim());
+    if (linea === '') continue;
+    const primera = linea.split(/\s+/)[0].toLowerCase();
+
+    for (const b of BLOQUES) {
+      if (primera === b.abre) {
+        stackBloques.push({ ...b, linea: i });
+        break;
+      }
+      if (primera === b.cierra) {
+        if (stackBloques.length === 0 || stackBloques[stackBloques.length - 1].cierra !== b.cierra) {
+          agregarError(i, crearError(
+            i, 0, linea.length, 'bloque_desbalanceado',
+            `"${linea.split(/\s+/)[0]}" sin bloque de apertura correspondiente.`, ''
+          ));
+        } else {
+          stackBloques.pop();
+        }
+        break;
+      }
     }
+  }
+
+  for (const ctx of stackBloques) {
+    agregarError(ctx.linea, crearError(
+      ctx.linea, 0, 0, 'bloque_sin_cerrar',
+      `Bloque "${ctx.etiqueta}" sin cierre (falta ${ctx.cierraLabel}).`, ''
+    ));
   }
 
   return { errores: todosErrores, tablaSimbolos: tabla, erroresPorLinea };
@@ -376,9 +433,38 @@ function validarLinea(sig, allTokens, lineaIdx, tabla) {
 
     case 'proceso':
     case 'finproceso':
-      break; // structural keywords, no validation needed
+      break;
+
+    // ── Estructuras de control — aceptadas sin validación profunda ──
+    case 'si':
+    case 'sino':
+    case 'finsi':
+    case 'mientras':
+    case 'finmientras':
+    case 'repetir':
+    case 'hastaque':
+    case 'para':
+    case 'finpara':
+    case 'segun':
+    case 'finsegun':
+    case 'de':       // De Otro Modo:
+    case 'entonces': // no debería aparecer solo, pero evita falso positivo
+    case 'hacer':
+    case 'hasta':
+    case 'con':
+    case 'paso':
+    case 'otro':
+    case 'modo':
+    case 'y':
+    case 'o':
+    case 'no':
+      break;
 
     default:
+      // Etiqueta de caso en Segun: cualquier línea cuyo último token significativo es COLON
+      if (sig[sig.length - 1].type === TK.COLON) {
+        break;
+      }
       if (sig.length >= 3 && sig[1].type === TK.ASSIGN) {
         validarAsignacion(sig, lineaIdx, tabla, errores);
       } else if (primerToken.type === TK.IDENTIFIER) {

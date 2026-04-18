@@ -6,6 +6,27 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.2.0] — 2026-04-18
+
+### Agregado
+
+- **Estructuras de control completas**: el interprete ahora soporta `Si/Entonces/Sino/FinSi`, `Mientras/Hacer/FinMientras`, `Repetir/HastaQue`, `Para/Hasta/Con Paso/Hacer/FinPara` y `Segun/De Otro Modo/FinSegun`, incluyendo anidamiento arbitrario.
+- **Motor AST**: `LiteSeInt.js` fue refactorizado a un pipeline de dos fases: `_parsear()` construye un arbol de nodos y `_ejecutarBloque()` los recorre recursivamente, reemplazando el loop plano anterior.
+- **Evaluador de condiciones**: nuevo metodo `_evaluarCondicion()` con soporte para operadores relacionales (`=`, `<>`, `<`, `>`, `<=`, `>=`) y logicos (`Y`, `O`, `No`), con correcta precedencia y cortocircuito.
+- **Validacion de balance de bloques**: `validarDocumento()` realiza un segundo pase para detectar bloques sin cerrar o cierres sin apertura (`Si` sin `FinSi`, etc.), reportando el error en la linea exacta.
+- **Nuevos ejemplos**: Mayor de dos (Si/FinSi), Contador (Mientras/FinMientras), Tabla de multiplicar (Para/FinPara), Dia de semana (Segun/FinSegun).
+- **Limite de iteraciones**: constante `MAX_ITERACIONES = 100 000` que aborta bucles infinitos con mensaje descriptivo.
+- **Token `COLON`** en el tokenizador de `doc_errores.js` para reconocer etiquetas de caso en `Segun`.
+- **Nuevas palabras reservadas**: `Si`, `Entonces`, `Sino`, `FinSi`, `Mientras`, `Hacer`, `FinMientras`, `Repetir`, `HastaQue`, `Para`, `Hasta`, `Con`, `Paso`, `FinPara`, `Segun`, `FinSegun`, `Y`, `O`, `No`, `De`, `Otro`, `Modo` — reconocidas por el tokenizador, resaltadas por el editor y excluidas del autocompletado de variables.
+
+### Cambiado
+
+- **`LiteSeInt.PALABRAS_RESERVADAS`** ampliado con todas las nuevas palabras clave, disponibles en el autocompletado con tipo `estructura` o `palabra clave`.
+- **`validarLinea`** acepta sin errores todas las lineas de control de flujo (cabeceras de Si, Mientras, Para, Segun, etiquetas de caso, etc.).
+- **Version** actualizada a `v0.2.0` en el header de la app.
+
+---
+
 ## [0.1.4] — 2026-04-18
 
 ### Agregado

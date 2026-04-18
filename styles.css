@@ -313,6 +313,25 @@ body::before {
   background: var(--bg-editor); z-index: 0;
 }
 
+/* Indent guide layer */
+.indent-guide-layer {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none; overflow: hidden; z-index: 1;
+}
+
+/* Vertical indent guide line */
+.indent-guide {
+  position: absolute;
+  width: 1px;
+  background: rgba(128, 138, 152, 0.30);
+  pointer-events: none;
+}
+.indent-guide.active {
+  background: rgba(190, 198, 209, 0.50);
+  box-shadow: none;
+  z-index: 2;
+}
+
 /* Syntax highlight layer */
 .syntax-highlight-layer {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -547,6 +566,7 @@ body::before {
     border-bottom: 1px solid var(--border-color);
     flex: 1;
   }
+
 
   .console-panel {
     flex: 1;

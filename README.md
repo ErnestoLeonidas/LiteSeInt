@@ -1,94 +1,154 @@
-# PseudoCode — Intérprete de Pseudocódigo Web
+# LiteSeInt — Interprete de Pseudocodigo Web
 
-**PseudoCode** es un intérprete de pseudocódigo ejecutable en navegador, orientado a fines educativos. Permite escribir instrucciones básicas estilo PSeInt, ejecutarlas línea por línea y ver los resultados en una consola visual integrada.
+**LiteSeInt** es un interprete de pseudocodigo ejecutable en navegador, orientado a fines educativos. Permite escribir instrucciones estilo PSeInt, ejecutarlas y ver los resultados en una consola visual integrada.
 
-El motor de interpretación se llama **LiteSeInt** y está separado de la interfaz, lo que facilita su mantenimiento, testing y reutilización.
+El motor de interpretacion es independiente de la interfaz, lo que facilita su mantenimiento y reutilizacion.
 
 ---
 
-## Características
+## Caracteristicas
 
-- Editor de pseudocódigo con numeración de líneas y resaltado de sintaxis.
+- Editor de pseudocodigo con numeracion de lineas y resaltado de sintaxis.
 - Consola de salida integrada con entrada inline para `Leer`.
-- Ejecución paso a paso con indicador visual `>` en la línea activa.
+- Ejecucion paso a paso con indicador visual `>` en la linea activa.
 - Autocompletado de palabras reservadas y variables del usuario.
-- Soporte de comentarios con `//` (inline y línea completa).
-- Indicadores de error con badge `!` y tooltip descriptivo junto a la línea.
+- Soporte de comentarios con `//` (inline y linea completa).
+- Indicadores de error con badge `!` y tooltip descriptivo junto a la linea.
+- Estructura Proceso/FinProceso protegida contra edicion accidental.
+- Exportar el pseudocodigo como archivo `.psc`.
 - Ejemplos precargados listos para ejecutar.
 
 ## Instrucciones soportadas
 
-| Instrucción | Formato | Ejemplo |
+| Instruccion | Formato | Ejemplo |
 |---|---|---|
-| Definir | `Definir var1, var2 Como Tipo` | `Definir nombre, apellido Como Caracter` |
-| Asignar | `variable <- expresión` | `total <- nota1 + nota2` |
+| Definir | `Definir var1, var2 Como Tipo` | `Definir nombre Como Caracter` |
+| Asignar | `variable <- expresion` | `total <- nota1 + nota2` |
 | Escribir | `Escribir expr1, expr2, ...` | `Escribir "Hola, ", nombre` |
 | Leer | `Leer variable` | `Leer edad` |
 | Comentario | `// texto` | `// esto es un comentario` |
 
+## Estructuras de control
+
+| Estructura | Sintaxis |
+|---|---|
+| Condicional | `Si condicion Entonces ... FinSi` |
+| Condicional con sino | `Si condicion Entonces ... Sino ... FinSi` |
+| Bucle Mientras | `Mientras condicion Hacer ... FinMientras` |
+| Bucle Repetir | `Repetir ... HastaQue condicion` |
+| Bucle Para | `Para var <- inicio Hasta fin [Con Paso n] Hacer ... FinPara` |
+| Segun | `Segun variable Hacer ... FinSegun` |
+
+### Operadores relacionales
+
+`=`, `<>`, `<`, `>`, `<=`, `>=`
+
+### Operadores logicos
+
+`Y` (AND), `O` (OR), `No` (NOT)
+
+### Ejemplo: Si/FinSi
+
+```
+Definir a, b Como Real
+Leer a
+Leer b
+Si a > b Entonces
+  Escribir "El mayor es: ", a
+Sino
+  Escribir "El mayor es: ", b
+FinSi
+```
+
+### Ejemplo: Mientras/FinMientras
+
+```
+Definir i, suma Como Entero
+i <- 1
+suma <- 0
+Mientras i <= 10 Hacer
+  suma <- suma + i
+  i <- i + 1
+FinMientras
+Escribir "Suma: ", suma
+```
+
+### Ejemplo: Para/FinPara
+
+```
+Definir i Como Entero
+Para i <- 1 Hasta 10 Hacer
+  Escribir i
+FinPara
+```
+
+### Ejemplo: Segun/FinSegun
+
+```
+Definir dia Como Entero
+Leer dia
+Segun dia Hacer
+  1: Escribir "Lunes"
+  2: Escribir "Martes"
+  De Otro Modo:
+    Escribir "Otro dia"
+FinSegun
+```
+
 ## Tipos de datos
 
-| Tipo | Valor por defecto | Ejemplo |
-|---|---|---|
-| Entero | `0` | `Definir edad Como Entero` |
-| Real | `0.0` | `Definir nota Como Real` |
-| Caracter | `""` | `Definir nombre Como Caracter` |
+| Tipo | Valor por defecto |
+|---|---|
+| Entero | `0` |
+| Real | `0.0` |
+| Caracter | `""` |
 
-## Tecnologías
+## Tecnologias
 
-- HTML5
-- CSS3
-- JavaScript vanilla (motor LiteSeInt)
+- HTML5, CSS3, JavaScript vanilla
 - Bootstrap 5.3.3 (layout y tooltips)
-- jQuery 3.7.1 (manipulación DOM de la UI)
+- jQuery 3.7.1 (DOM de la UI)
 
-No se usan frameworks ni librerías externas para la lógica del intérprete.
+No se usan frameworks ni librerias externas para la logica del interprete.
 
 ## Estructura de archivos
 
 ```
-├── index.html      # Interfaz completa (HTML + CSS + JS de UI)
-├── LiteSeInt.js    # Motor del intérprete (clase independiente)
-├── README.md
-└── CHANGELOG.md
+index.html        # Interfaz completa (HTML + CSS + JS de UI)
+LiteSeInt.js      # Motor del interprete (parser + ejecutor AST)
+doc_errores.js    # Tokenizador, validacion estatica, tabla de simbolos
+styles.css        # Estilos
+README.md
+CHANGELOG.md
 ```
 
-## Uso rápido
+## Uso rapido
 
-1. Descarga `index.html` y `LiteSeInt.js` en la misma carpeta.
+1. Descarga `index.html`, `LiteSeInt.js`, `doc_errores.js` y `styles.css` en la misma carpeta.
 2. Abre `index.html` en cualquier navegador moderno.
-3. Escribe pseudocódigo en el editor o selecciona un ejemplo.
-4. Presiona **▶ Ejecutar**.
+3. Escribe pseudocodigo en el editor o selecciona un ejemplo.
+4. Presiona **Ejecutar**.
 
 ## Arquitectura
 
 ```
-┌─────────────┐         callbacks          ┌──────────────┐
-│             │  onEscribir, onLeer, ...   │              │
-│  index.html │◄──────────────────────────►│ LiteSeInt.js │
-│  (UI Layer) │   ejecutar(), detener()    │   (Core)     │
-│             │                            │              │
-└─────────────┘                            └──────────────┘
-```
-
-**LiteSeInt** recibe callbacks al instanciarse y no depende del DOM. La UI conecta esos callbacks a la consola HTML, el input inline y los indicadores visuales del editor.
-
-## Ejemplo de pseudocódigo
-
-```
-// Programa de saludo
-Definir nombre Como Caracter
-Escribir "¿Cómo te llamas?"
-Leer nombre
-Escribir "¡Hola, ", nombre, "! Bienvenido."
+index.html (UI)
+    |-- LiteSeInt.js (parser + ejecutor)
+    |       |-- _parsear()       construye AST
+    |       |-- _ejecutarBloque() recorre nodos recursivamente
+    |       |-- _evaluarCondicion() operadores relacionales y logicos
+    |       |-- _evaluarExpresion() shunting-yard
+    |
+    |-- doc_errores.js (analisis estatico)
+            |-- tokenizarLinea()
+            |-- validarDocumento()  incluye balance de bloques
+            |-- TablaSimbolos
 ```
 
 ## Roadmap
 
-- Condicionales: `Si / Entonces / SiNo / FinSi`
-- Ciclos: `Mientras / FinMientras`, `Para / FinPara`
 - Arreglos: `Dimension`
-- Exportar / importar archivos `.psc`
+- Funciones de usuario
 - Historial de ejecuciones
 - Modo paso a paso con controles avanzados
 

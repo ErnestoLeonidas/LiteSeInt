@@ -7,20 +7,15 @@
  *
  *  Tipos soportados: Entero, Real, Caracter
  *  Instrucciones: Definir, Escribir, Leer, Asignación (<-)
- *
- *  Mejoras v2.0:
- *  - Parser de expresiones con shunting-yard (paréntesis, precedencia)
- *  - Variables con tracking de inicialización
- *  - Validación previa integrada con doc_errores.js
- *  - Errores "Variable no definida" en vez de "Expresión no reconocida"
+ *  Estructuras de control: Si/FinSi, Mientras/FinMientras,
+ *    Repetir/HastaQue, Para/FinPara, Segun/FinSegun
  * ============================================================
  */
 
 class LiteSeInt {
 
-  /**
-   * @param {Object} callbacks
-   */
+  static MAX_ITERACIONES = 100_000;
+
   constructor(callbacks = {}) {
     this.callbacks = {
       onEscribir:    callbacks.onEscribir    || (() => {}),
@@ -43,20 +38,14 @@ class LiteSeInt {
   //  API PÚBLICA
   // ===========================================================
 
-  /**
-   * Ejecuta un bloque de pseudocódigo completo.
-   * Realiza validación previa con doc_errores.js, luego ejecuta.
-   */
   async ejecutar(codigo) {
     this.variables = {};
     this.errores = [];
     this.ejecutando = true;
 
-    // Pre-validation
     const validacion = DocErrores.validarDocumento(codigo);
 
     if (validacion.errores.length > 0) {
-      // Report all static errors and abort
       for (const err of validacion.errores) {
         this.errores.push(err);
         this.callbacks.onError(err.linea, err.mensaje);
@@ -70,30 +59,27 @@ class LiteSeInt {
       };
     }
 
-    // Execute line by line
-    const lineas = codigo.split('\n');
+    let nodos;
+    try {
+      nodos = this._parsear(codigo);
+    } catch (err) {
+      const mensaje = err.message || String(err);
+      const errorObj = DocErrores.crearError(0, 0, 0, 'parse_error', mensaje, '');
+      this.errores.push(errorObj);
+      this.callbacks.onError(0, mensaje);
+      this.ejecutando = false;
+      this.callbacks.onFin();
+      return { exito: false, errores: this.errores, erroresPorLinea: new Map() };
+    }
 
-    for (let i = 0; i < lineas.length; i++) {
-      if (!this.ejecutando) break;
-
-      const lineaRaw = lineas[i].trim();
-      const linea = DocErrores.stripComment(lineaRaw);
-
-      if (linea === '') continue;
-
-      this.callbacks.onLineaActiva(i);
-
-      try {
-        await this._interpretarInstruccion(linea, i);
-      } catch (err) {
-        const mensaje = err.message || String(err);
-        const errorObj = DocErrores.crearError(i, 0, linea.length, 'runtime', mensaje, '');
-        this.errores.push(errorObj);
-        this.callbacks.onError(i, mensaje);
-        break;
-      }
-
-      await this._pausa(this.velocidadPausa);
+    try {
+      await this._ejecutarBloque(nodos);
+    } catch (err) {
+      const mensaje = err.message || String(err);
+      const lineaErr = err.lineaIdx !== undefined ? err.lineaIdx : 0;
+      const errorObj = DocErrores.crearError(lineaErr, 0, 0, 'runtime', mensaje, '');
+      this.errores.push(errorObj);
+      this.callbacks.onError(lineaErr, mensaje);
     }
 
     this.ejecutando = false;
@@ -115,29 +101,472 @@ class LiteSeInt {
   }
 
   // ===========================================================
-  //  DISPATCHER
+  //  PARSER — construye AST desde el código fuente
   // ===========================================================
 
-  async _interpretarInstruccion(linea, lineaIdx) {
-    if (/^proceso(\s+\S+)?$/i.test(linea)) return;
-    if (/^finproceso$/i.test(linea)) return;
-    if (/^definir\s+/i.test(linea)) {
-      return this._ejecutarDefinir(linea, lineaIdx);
+  _parsear(codigo) {
+    const lineas = codigo.split('\n');
+    const raiz = [];
+    // cada frame: { tipo, nodo, parentBloque }
+    const stack = [];
+    let bloqueActual = raiz;
+
+    for (let i = 0; i < lineas.length; i++) {
+      const lineaRaw = lineas[i].trim();
+      const linea = DocErrores.stripComment(lineaRaw);
+      if (linea === '') continue;
+
+      // Delimitadores de proceso — ignorar
+      if (/^proceso(\s+\S+)?$/i.test(linea)) continue;
+      if (/^finproceso$/i.test(linea)) continue;
+
+      // ── Si condicion Entonces ──
+      if (/^si\s+.+\s+entonces$/i.test(linea)) {
+        const condicion = linea.replace(/^si\s+/i, '').replace(/\s+entonces$/i, '').trim();
+        const nodo = { tipo: 'si', linea: i, condicion, entonces: [], sino: null };
+        if (bloqueActual !== null) bloqueActual.push(nodo);
+        stack.push({ tipo: 'si', nodo, parentBloque: bloqueActual });
+        bloqueActual = nodo.entonces;
+        continue;
+      }
+
+      // ── Sino ──
+      if (/^sino$/i.test(linea)) {
+        const ctx = stack[stack.length - 1];
+        if (ctx && ctx.tipo === 'si') {
+          ctx.nodo.sino = [];
+          bloqueActual = ctx.nodo.sino;
+        }
+        continue;
+      }
+
+      // ── FinSi ──
+      if (/^finsi$/i.test(linea)) {
+        const ctx = stack.pop();
+        bloqueActual = ctx ? ctx.parentBloque : raiz;
+        continue;
+      }
+
+      // ── Mientras condicion Hacer ──
+      if (/^mientras\s+.+\s+hacer$/i.test(linea)) {
+        const condicion = linea.replace(/^mientras\s+/i, '').replace(/\s+hacer$/i, '').trim();
+        const nodo = { tipo: 'mientras', linea: i, condicion, cuerpo: [] };
+        if (bloqueActual !== null) bloqueActual.push(nodo);
+        stack.push({ tipo: 'mientras', nodo, parentBloque: bloqueActual });
+        bloqueActual = nodo.cuerpo;
+        continue;
+      }
+
+      // ── FinMientras ──
+      if (/^finmientras$/i.test(linea)) {
+        const ctx = stack.pop();
+        bloqueActual = ctx ? ctx.parentBloque : raiz;
+        continue;
+      }
+
+      // ── Repetir ──
+      if (/^repetir$/i.test(linea)) {
+        const nodo = { tipo: 'repetir', linea: i, lineaHastaQue: i, cuerpo: [], condicion: null };
+        if (bloqueActual !== null) bloqueActual.push(nodo);
+        stack.push({ tipo: 'repetir', nodo, parentBloque: bloqueActual });
+        bloqueActual = nodo.cuerpo;
+        continue;
+      }
+
+      // ── HastaQue condicion ──
+      if (/^hastaque\s+.+$/i.test(linea)) {
+        const condicion = linea.replace(/^hastaque\s+/i, '').trim();
+        const ctx = stack[stack.length - 1];
+        if (ctx && ctx.tipo === 'repetir') {
+          ctx.nodo.condicion = condicion;
+          ctx.nodo.lineaHastaQue = i;
+          const parentBloque = ctx.parentBloque;
+          stack.pop();
+          bloqueActual = parentBloque;
+        }
+        continue;
+      }
+
+      // ── Para var <- inicio Hasta fin [Con Paso paso] Hacer ──
+      const paraMatch = linea.match(
+        /^para\s+(\w+)\s*<-\s*(.+?)\s+hasta\s+(.+?)(?:\s+con\s+paso\s+(.+?))?\s+hacer$/i
+      );
+      if (paraMatch) {
+        const nodo = {
+          tipo: 'para',
+          linea: i,
+          variable: paraMatch[1].toLowerCase(),
+          variableOriginal: paraMatch[1],
+          desde: paraMatch[2].trim(),
+          hasta: paraMatch[3].trim(),
+          paso: (paraMatch[4] || '1').trim(),
+          cuerpo: [],
+        };
+        if (bloqueActual !== null) bloqueActual.push(nodo);
+        stack.push({ tipo: 'para', nodo, parentBloque: bloqueActual });
+        bloqueActual = nodo.cuerpo;
+        continue;
+      }
+
+      // ── FinPara ──
+      if (/^finpara$/i.test(linea)) {
+        const ctx = stack.pop();
+        bloqueActual = ctx ? ctx.parentBloque : raiz;
+        continue;
+      }
+
+      // ── Segun variable Hacer ──
+      if (/^segun\s+\w+\s+hacer$/i.test(linea)) {
+        const varMatch = linea.match(/^segun\s+(\w+)\s+hacer$/i);
+        const nodo = {
+          tipo: 'segun',
+          linea: i,
+          variable: varMatch[1].toLowerCase(),
+          casos: [],
+          otro: null,
+        };
+        if (bloqueActual !== null) bloqueActual.push(nodo);
+        stack.push({ tipo: 'segun', nodo, parentBloque: bloqueActual });
+        bloqueActual = null; // espera etiqueta de caso
+        continue;
+      }
+
+      // ── De Otro Modo: ──
+      if (/^de\s+otro\s+modo\s*:$/i.test(linea)) {
+        const ctx = stack[stack.length - 1];
+        if (ctx && ctx.tipo === 'segun') {
+          ctx.nodo.otro = [];
+          bloqueActual = ctx.nodo.otro;
+        }
+        continue;
+      }
+
+      // ── FinSegun ──
+      if (/^finsegun$/i.test(linea)) {
+        const ctx = stack.pop();
+        bloqueActual = ctx ? ctx.parentBloque : raiz;
+        continue;
+      }
+
+      // ── Etiqueta de caso dentro de Segun: "val:" o "val1, val2:" ──
+      const ctxTop = stack[stack.length - 1];
+      if (ctxTop && ctxTop.tipo === 'segun') {
+        const casoMatch = linea.match(/^([^:]+):\s*(.*)$/);
+        if (casoMatch) {
+          const valores = casoMatch[1].split(',').map(v => v.trim());
+          const casoNodo = { valores, cuerpo: [] };
+          ctxTop.nodo.casos.push(casoNodo);
+          bloqueActual = casoNodo.cuerpo;
+          const restLinea = casoMatch[2].trim();
+          if (restLinea) {
+            const instrNodo = this._crearNodoSimple(restLinea, i);
+            if (instrNodo) bloqueActual.push(instrNodo);
+          }
+          continue;
+        }
+      }
+
+      // ── Instrucción simple ──
+      if (bloqueActual !== null) {
+        const nodo = this._crearNodoSimple(linea, i);
+        if (nodo) bloqueActual.push(nodo);
+      }
     }
-    if (/^escribir\s+/i.test(linea)) {
-      return this._ejecutarEscribir(linea, lineaIdx);
-    }
-    if (/^leer\s+/i.test(linea)) {
-      return await this._ejecutarLeer(linea, lineaIdx);
-    }
-    if (linea.includes('<-')) {
-      return this._ejecutarAsignacion(linea, lineaIdx);
-    }
-    throw new Error(`Instrucción no reconocida: "${linea}"`);
+
+    return raiz;
+  }
+
+  _crearNodoSimple(linea, lineaIdx) {
+    if (/^definir\s+/i.test(linea))  return { tipo: 'definir',    linea: lineaIdx, texto: linea };
+    if (/^escribir\s+/i.test(linea)) return { tipo: 'escribir',   linea: lineaIdx, texto: linea };
+    if (/^leer\s+/i.test(linea))     return { tipo: 'leer',       linea: lineaIdx, texto: linea };
+    if (linea.includes('<-'))         return { tipo: 'asignacion', linea: lineaIdx, texto: linea };
+    return { tipo: 'desconocido', linea: lineaIdx, texto: linea };
   }
 
   // ===========================================================
-  //  HANDLERS
+  //  EJECUTOR DE BLOQUES
+  // ===========================================================
+
+  async _ejecutarBloque(nodos) {
+    for (const nodo of nodos) {
+      if (!this.ejecutando) break;
+      await this._ejecutarNodo(nodo);
+    }
+  }
+
+  async _ejecutarNodo(nodo) {
+    if (!this.ejecutando) return;
+    try {
+      switch (nodo.tipo) {
+        case 'definir':
+          this.callbacks.onLineaActiva(nodo.linea);
+          await this._pausa(this.velocidadPausa);
+          return this._ejecutarDefinir(nodo.texto, nodo.linea);
+
+        case 'escribir':
+          this.callbacks.onLineaActiva(nodo.linea);
+          await this._pausa(this.velocidadPausa);
+          return this._ejecutarEscribir(nodo.texto, nodo.linea);
+
+        case 'leer':
+          this.callbacks.onLineaActiva(nodo.linea);
+          return await this._ejecutarLeer(nodo.texto, nodo.linea);
+
+        case 'asignacion':
+          this.callbacks.onLineaActiva(nodo.linea);
+          await this._pausa(this.velocidadPausa);
+          return this._ejecutarAsignacion(nodo.texto, nodo.linea);
+
+        case 'si':
+          return await this._ejecutarSi(nodo);
+
+        case 'mientras':
+          return await this._ejecutarMientras(nodo);
+
+        case 'repetir':
+          return await this._ejecutarRepetir(nodo);
+
+        case 'para':
+          return await this._ejecutarPara(nodo);
+
+        case 'segun':
+          return await this._ejecutarSegun(nodo);
+
+        case 'desconocido':
+          this.callbacks.onLineaActiva(nodo.linea);
+          throw new Error(`Instrucción no reconocida: "${nodo.texto}"`);
+      }
+    } catch (err) {
+      if (err.lineaIdx === undefined) err.lineaIdx = nodo.linea;
+      throw err;
+    }
+  }
+
+  // ===========================================================
+  //  EJECUTORES DE ESTRUCTURAS
+  // ===========================================================
+
+  async _ejecutarSi(nodo) {
+    this.callbacks.onLineaActiva(nodo.linea);
+    await this._pausa(this.velocidadPausa);
+    if (!this.ejecutando) return;
+
+    const cond = this._evaluarCondicion(nodo.condicion, nodo.linea);
+    if (cond) {
+      await this._ejecutarBloque(nodo.entonces);
+    } else if (nodo.sino !== null) {
+      await this._ejecutarBloque(nodo.sino);
+    }
+  }
+
+  async _ejecutarMientras(nodo) {
+    let iter = 0;
+    while (this.ejecutando) {
+      this.callbacks.onLineaActiva(nodo.linea);
+      await this._pausa(this.velocidadPausa);
+      if (!this.ejecutando) break;
+
+      if (!this._evaluarCondicion(nodo.condicion, nodo.linea)) break;
+
+      await this._ejecutarBloque(nodo.cuerpo);
+      iter++;
+      if (iter >= LiteSeInt.MAX_ITERACIONES) {
+        throw new Error(`Bucle infinito: más de ${LiteSeInt.MAX_ITERACIONES} iteraciones.`);
+      }
+    }
+  }
+
+  async _ejecutarRepetir(nodo) {
+    if (nodo.condicion === null) {
+      throw new Error('Bloque Repetir sin HastaQue correspondiente.');
+    }
+    let iter = 0;
+    do {
+      if (!this.ejecutando) break;
+      await this._ejecutarBloque(nodo.cuerpo);
+      if (!this.ejecutando) break;
+
+      this.callbacks.onLineaActiva(nodo.lineaHastaQue);
+      await this._pausa(this.velocidadPausa);
+
+      iter++;
+      if (iter >= LiteSeInt.MAX_ITERACIONES) {
+        throw new Error(`Bucle infinito: más de ${LiteSeInt.MAX_ITERACIONES} iteraciones.`);
+      }
+    } while (this.ejecutando && !this._evaluarCondicion(nodo.condicion, nodo.lineaHastaQue));
+  }
+
+  async _ejecutarPara(nodo) {
+    const varNombre = nodo.variable;
+
+    if (!this.variables.hasOwnProperty(varNombre)) {
+      throw new Error(
+        `Variable "${nodo.variableOriginal}" no definida. ` +
+        `Use "Definir ${nodo.variableOriginal} Como Entero" antes del Para.`
+      );
+    }
+
+    const desde = this._evaluarExpresion(nodo.desde, nodo.linea);
+    const hasta  = this._evaluarExpresion(nodo.hasta,  nodo.linea);
+    const paso   = this._evaluarExpresion(nodo.paso,   nodo.linea);
+
+    if (paso === 0) throw new Error('El paso del bucle Para no puede ser cero.');
+
+    this.variables[varNombre].valor = desde;
+    this.variables[varNombre].inicializada = true;
+
+    const avanza = paso > 0
+      ? () => this.variables[varNombre].valor <= hasta
+      : () => this.variables[varNombre].valor >= hasta;
+
+    let iter = 0;
+    while (this.ejecutando && avanza()) {
+      this.callbacks.onLineaActiva(nodo.linea);
+      await this._pausa(this.velocidadPausa);
+      if (!this.ejecutando) break;
+
+      await this._ejecutarBloque(nodo.cuerpo);
+
+      this.variables[varNombre].valor += paso;
+      iter++;
+      if (iter >= LiteSeInt.MAX_ITERACIONES) {
+        throw new Error(`Bucle infinito: más de ${LiteSeInt.MAX_ITERACIONES} iteraciones.`);
+      }
+    }
+  }
+
+  async _ejecutarSegun(nodo) {
+    const varNombre = nodo.variable;
+
+    if (!this.variables.hasOwnProperty(varNombre)) {
+      throw new Error(`Variable "${varNombre}" no definida.`);
+    }
+    if (!this.variables[varNombre].inicializada) {
+      throw new Error(`Variable "${varNombre}" no inicializada.`);
+    }
+
+    const valor = this.variables[varNombre].valor;
+
+    this.callbacks.onLineaActiva(nodo.linea);
+    await this._pausa(this.velocidadPausa);
+    if (!this.ejecutando) return;
+
+    let ejecutado = false;
+    for (const caso of nodo.casos) {
+      if (ejecutado) break;
+      for (const v of caso.valores) {
+        const valorCaso = this._evaluarExpresion(v.trim(), nodo.linea);
+        // loose equality para comparar números y strings sin importar tipo
+        if (valor == valorCaso) {
+          await this._ejecutarBloque(caso.cuerpo);
+          ejecutado = true;
+          break;
+        }
+      }
+    }
+
+    if (!ejecutado && nodo.otro !== null) {
+      await this._ejecutarBloque(nodo.otro);
+    }
+  }
+
+  // ===========================================================
+  //  EVALUADOR DE CONDICIONES
+  // ===========================================================
+
+  _evaluarCondicion(condStr, lineaIdx) {
+    condStr = condStr.trim();
+
+    // O (OR) — menor precedencia
+    const partesO = this._splitByLogOp(condStr, 'O');
+    if (partesO.length > 1) {
+      for (const p of partesO) {
+        if (this._evaluarCondicion(p, lineaIdx)) return true;
+      }
+      return false;
+    }
+
+    // Y (AND)
+    const partesY = this._splitByLogOp(condStr, 'Y');
+    if (partesY.length > 1) {
+      for (const p of partesY) {
+        if (!this._evaluarCondicion(p, lineaIdx)) return false;
+      }
+      return true;
+    }
+
+    // No (NOT) — prefijo unario
+    if (/^no\s+/i.test(condStr)) {
+      return !this._evaluarCondicion(condStr.replace(/^no\s+/i, '').trim(), lineaIdx);
+    }
+
+    // Eliminar paréntesis externos
+    if (condStr.startsWith('(') && condStr.endsWith(')')) {
+      return this._evaluarCondicion(condStr.slice(1, -1), lineaIdx);
+    }
+
+    // Operadores relacionales: <=, >=, <>, <, >, =
+    const m = condStr.match(/^(.*?)\s*(<=|>=|<>|<(?!-)|>|=)\s*(.+)$/);
+    if (m) {
+      const izq = this._evaluarExpresion(m[1].trim(), lineaIdx);
+      const der = this._evaluarExpresion(m[3].trim(), lineaIdx);
+      return this._aplicarRelop(izq, m[2], der);
+    }
+
+    // Fallback: coerción booleana
+    return Boolean(this._evaluarExpresion(condStr, lineaIdx));
+  }
+
+  _aplicarRelop(izq, op, der) {
+    switch (op) {
+      case '=':  return izq == der;
+      case '<>': return izq != der;
+      case '<':  return izq < der;
+      case '>':  return izq > der;
+      case '<=': return izq <= der;
+      case '>=': return izq >= der;
+      default:   throw new Error(`Operador relacional desconocido: "${op}"`);
+    }
+  }
+
+  // Divide condStr por operador lógico op ('Y' u 'O'), respetando strings y paréntesis
+  _splitByLogOp(condStr, op) {
+    const result = [];
+    let current = '';
+    let depth = 0;
+    let inStr = false;
+    let i = 0;
+
+    while (i < condStr.length) {
+      if (condStr[i] === '"') {
+        inStr = !inStr;
+        current += condStr[i++];
+        continue;
+      }
+      if (inStr) { current += condStr[i++]; continue; }
+      if (condStr[i] === '(') { depth++; current += condStr[i++]; continue; }
+      if (condStr[i] === ')') { depth--; current += condStr[i++]; continue; }
+
+      if (depth === 0 && condStr[i] === ' ') {
+        const ahead = condStr.slice(i + 1);
+        const re = new RegExp(`^${op}\\s+`, 'i');
+        const match = ahead.match(re);
+        if (match) {
+          result.push(current.trim());
+          current = '';
+          i += 1 + match[0].length;
+          continue;
+        }
+      }
+      current += condStr[i++];
+    }
+    if (current.trim()) result.push(current.trim());
+    return result.length >= 2 ? result : [condStr];
+  }
+
+  // ===========================================================
+  //  HANDLERS (lógica interna sin cambios)
   // ===========================================================
 
   _ejecutarDefinir(linea, lineaIdx) {
@@ -217,7 +646,6 @@ class LiteSeInt {
 
     const tipo = this.variables[nombre].tipo;
 
-    // Validate input matches declared type before accepting
     if (!this._validarEntradaTipo(valorIngresado, tipo)) {
       const tipoLabel = tipo.charAt(0).toUpperCase() + tipo.slice(1);
       throw new Error(
@@ -232,39 +660,32 @@ class LiteSeInt {
   }
 
   // ===========================================================
-  //  EXPRESSION EVALUATOR (Shunting-Yard)
+  //  EVALUADOR DE EXPRESIONES (Shunting-Yard)
   // ===========================================================
 
-  /**
-   * Evaluates an expression string using tokenization + shunting-yard algorithm.
-   * Supports: parentheses, +, -, *, /, variables, numbers, strings, concatenation.
-   */
   _evaluarExpresion(expr, lineaIdx) {
     const tokens = this._tokenizarExpresion(expr);
     if (tokens.length === 0) {
       throw new Error('Expresión vacía.');
     }
 
-    // Single string literal shortcut
     if (tokens.length === 1 && tokens[0].type === 'string') {
       return tokens[0].value;
     }
 
-    // Shunting-yard
     const outputQueue = [];
     const operatorStack = [];
 
     const precedencia = { '+': 1, '-': 1, '*': 2, '/': 2 };
     const esOperador = (tk) => tk.type === 'op';
 
-    // Handle unary minus: if '-' appears at start or after '(' or after another operator
+    // Manejo de menos unario
     const processedTokens = [];
     for (let i = 0; i < tokens.length; i++) {
       const tk = tokens[i];
       if (tk.type === 'op' && tk.value === '-') {
         const prev = processedTokens[processedTokens.length - 1];
         if (!prev || prev.type === 'op' || prev.type === 'lparen') {
-          // Unary minus: convert to (0 - next)
           processedTokens.push({ type: 'number', value: 0 });
           processedTokens.push({ type: 'op', value: '-' });
           continue;
@@ -281,7 +702,6 @@ class LiteSeInt {
         } else if (tk.type === 'string') {
           val = tk.value;
         } else {
-          // variable
           const nombre = tk.raw.toLowerCase();
           if (!this.variables.hasOwnProperty(nombre)) {
             throw new Error(`Variable "${tk.raw}" no definida.`);
@@ -310,7 +730,7 @@ class LiteSeInt {
         if (operatorStack.length === 0) {
           throw new Error('Paréntesis desbalanceados en la expresión.');
         }
-        operatorStack.pop(); // Remove lparen
+        operatorStack.pop();
       }
     }
 
@@ -322,14 +742,11 @@ class LiteSeInt {
       outputQueue.push(op);
     }
 
-    // Evaluate RPN
     const evalStack = [];
     for (const item of outputQueue) {
       if (typeof item !== 'object' || item === null) {
-        // It's a value (number, string)
         evalStack.push(item);
       } else {
-        // It's an operator
         if (evalStack.length < 2) {
           throw new Error('Expresión mal formada.');
         }
@@ -347,18 +764,13 @@ class LiteSeInt {
     return evalStack[0];
   }
 
-  /**
-   * Tokenizes an expression string into typed tokens for the shunting-yard parser.
-   */
   _tokenizarExpresion(expr) {
     const tokens = [];
     let i = 0;
 
     while (i < expr.length) {
-      // Skip whitespace
       if (/\s/.test(expr[i])) { i++; continue; }
 
-      // String literal
       if (expr[i] === '"') {
         let j = i + 1;
         while (j < expr.length && expr[j] !== '"') j++;
@@ -368,7 +780,6 @@ class LiteSeInt {
         continue;
       }
 
-      // Number
       if (/\d/.test(expr[i])) {
         let j = i;
         while (j < expr.length && /\d/.test(expr[j])) j++;
@@ -382,18 +793,15 @@ class LiteSeInt {
         continue;
       }
 
-      // Parentheses
       if (expr[i] === '(') { tokens.push({ type: 'lparen' }); i++; continue; }
       if (expr[i] === ')') { tokens.push({ type: 'rparen' }); i++; continue; }
 
-      // Operators
       if ('+-*/'.includes(expr[i])) {
         tokens.push({ type: 'op', value: expr[i] });
         i++;
         continue;
       }
 
-      // Identifier (variable)
       if (/[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ_]/.test(expr[i])) {
         let j = i;
         while (j < expr.length && /[\wáéíóúüñÁÉÍÓÚÜÑ]/.test(expr[j])) j++;
@@ -410,7 +818,6 @@ class LiteSeInt {
   }
 
   _aplicarOperador(izq, op, der) {
-    // String concatenation with +
     if (typeof izq === 'string' || typeof der === 'string') {
       if (op === '+') return String(izq) + String(der);
       throw new Error('Operación aritmética no válida con cadenas.');
@@ -429,18 +836,9 @@ class LiteSeInt {
   }
 
   // ===========================================================
-  //  UTILITIES
+  //  UTILIDADES
   // ===========================================================
 
-  /**
-   * Validates that a user-entered string is compatible with the declared type.
-   * - Entero: must be a valid integer (digits, optional leading minus)
-   * - Real: must be a valid number (integer or decimal, optional leading minus)
-   * - Caracter: any text is valid
-   * @param {string} valor - raw user input
-   * @param {string} tipo - 'entero' | 'real' | 'caracter'
-   * @returns {boolean}
-   */
   _validarEntradaTipo(valor, tipo) {
     switch (tipo) {
       case 'entero':
@@ -486,7 +884,7 @@ class LiteSeInt {
     const partes = [];
     let actual = '';
     let dentroComillas = false;
-    let nivel = 0; // parenthesis depth
+    let nivel = 0;
 
     for (let i = 0; i < texto.length; i++) {
       const c = texto[i];
@@ -515,17 +913,33 @@ class LiteSeInt {
   }
 
   // ===========================================================
-  //  STATIC HELPERS (backwards compatibility + autocomplete)
+  //  STATIC HELPERS (compatibilidad + autocompletado)
   // ===========================================================
 
   static PALABRAS_RESERVADAS = [
-    { texto: 'Definir',  tipo: 'instrucción' },
-    { texto: 'Escribir', tipo: 'instrucción' },
-    { texto: 'Leer',     tipo: 'instrucción' },
-    { texto: 'Como',     tipo: 'palabra clave' },
-    { texto: 'Entero',   tipo: 'tipo' },
-    { texto: 'Real',     tipo: 'tipo' },
-    { texto: 'Caracter', tipo: 'tipo' },
+    { texto: 'Definir',     tipo: 'instrucción' },
+    { texto: 'Escribir',    tipo: 'instrucción' },
+    { texto: 'Leer',        tipo: 'instrucción' },
+    { texto: 'Como',        tipo: 'palabra clave' },
+    { texto: 'Entero',      tipo: 'tipo' },
+    { texto: 'Real',        tipo: 'tipo' },
+    { texto: 'Caracter',    tipo: 'tipo' },
+    { texto: 'Si',          tipo: 'estructura' },
+    { texto: 'Entonces',    tipo: 'palabra clave' },
+    { texto: 'Sino',        tipo: 'estructura' },
+    { texto: 'FinSi',       tipo: 'estructura' },
+    { texto: 'Mientras',    tipo: 'estructura' },
+    { texto: 'Hacer',       tipo: 'palabra clave' },
+    { texto: 'FinMientras', tipo: 'estructura' },
+    { texto: 'Repetir',     tipo: 'estructura' },
+    { texto: 'HastaQue',    tipo: 'estructura' },
+    { texto: 'Para',        tipo: 'estructura' },
+    { texto: 'Hasta',       tipo: 'palabra clave' },
+    { texto: 'Con',         tipo: 'palabra clave' },
+    { texto: 'Paso',        tipo: 'palabra clave' },
+    { texto: 'FinPara',     tipo: 'estructura' },
+    { texto: 'Segun',       tipo: 'estructura' },
+    { texto: 'FinSegun',    tipo: 'estructura' },
   ];
 
   static PALABRAS_RESERVADAS_SET = DocErrores.PALABRAS_RESERVADAS_SET;
