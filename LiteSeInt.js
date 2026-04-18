@@ -119,6 +119,8 @@ class LiteSeInt {
   // ===========================================================
 
   async _interpretarInstruccion(linea, lineaIdx) {
+    if (/^proceso(\s+\S+)?$/i.test(linea)) return;
+    if (/^finproceso$/i.test(linea)) return;
     if (/^definir\s+/i.test(linea)) {
       return this._ejecutarDefinir(linea, lineaIdx);
     }

@@ -18,7 +18,7 @@
 // ─────────────────────────────────────────────
 
 const PALABRAS_RESERVADAS_SET = new Set(
-  ['definir', 'escribir', 'leer', 'como', 'entero', 'real', 'caracter']
+  ['definir', 'escribir', 'leer', 'como', 'entero', 'real', 'caracter', 'proceso', 'finproceso']
 );
 
 const TIPOS_VALIDOS = new Set(['entero', 'real', 'caracter']);
@@ -373,6 +373,10 @@ function validarLinea(sig, allTokens, lineaIdx, tabla) {
     case 'leer':
       validarLeer(sig, lineaIdx, tabla, errores);
       break;
+
+    case 'proceso':
+    case 'finproceso':
+      break; // structural keywords, no validation needed
 
     default:
       if (sig.length >= 3 && sig[1].type === TK.ASSIGN) {

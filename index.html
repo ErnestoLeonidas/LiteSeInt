@@ -44,6 +44,7 @@
           <div class="panel-header-dot"></div>
             Editor de pseudocódigo
           <div class="console-header-actions">
+            <button class="btn-console-clear" id="btnDescargar">↓ Descargar</button>
             <button class="btn-console-clear" id="btnLimpiarTodo">✕ Borrar todo</button>
           </div>
         </div>
@@ -57,13 +58,6 @@
             <textarea
               id="editor"
               spellcheck="false"
-              placeholder="Escribe tu pseudocódigo aquí...
-
-Ejemplo:
-  Definir nombre, apellido Como Caracter
-  Escribir &quot;¿Cómo te llamas?&quot;
-  Leer nombre
-  Escribir &quot;Hola, &quot;, nombre"
             ></textarea>
           </div>
           <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
@@ -190,6 +184,15 @@ Ejemplo:
       el.scrollTop = el.scrollHeight;
     }
 
+    const ESTRUCTURA_INICIAL = 'Proceso nombre_proceso\n\n\n\n\n\n\n\n\nFinProceso';
+    const PROCESO_PREFIX_LEN = 'Proceso '.length; // 8
+
+    function obtenerNombreProceso() {
+      const primera = $('#editor').val().split('\n')[0];
+      const m = primera.match(/^Proceso\s+(.+?)\s*$/i);
+      return m ? m[1] : 'nombre_proceso';
+    }
+
     /**
      * Limpiar consola: vacía la consola Y limpia errores visuales del editor.
      */
@@ -201,10 +204,28 @@ Ejemplo:
 
     function limpiarTodo() {
       detener();
-      $('#editor').val('');
+      const nombre = obtenerNombreProceso();
+      const estructura = `Proceso ${nombre}\n\n\n\n\n\n\n\n\nFinProceso`;
+      $('#editor').val(estructura);
       $('#consola').empty();
       invalidarErroresVisuales();
       actualizarLineas();
+      const editor = document.getElementById('editor');
+      const pos = estructura.indexOf('\n') + 1;
+      editor.setSelectionRange(pos, pos);
+      editor.focus();
+    }
+
+    function descargar() {
+      const contenido = $('#editor').val();
+      const nombre = obtenerNombreProceso();
+      const blob = new Blob([contenido], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${nombre}.psc`;
+      a.click();
+      URL.revokeObjectURL(url);
     }
 
     // =========================================
@@ -552,8 +573,10 @@ Ejemplo:
       if (e.key === 'Tab' && !visible) {
         e.preventDefault();
         const s = this.selectionStart, en = this.selectionEnd;
-        const v = $(this).val();
-        $(this).val(v.substring(0, s) + '  ' + v.substring(en));
+        const v = this.value;
+        const lastNL = v.lastIndexOf('\nFinProceso');
+        if (s < PROCESO_PREFIX_LEN || s > lastNL || en > lastNL) return;
+        this.value = v.substring(0, s) + '  ' + v.substring(en);
         this.selectionStart = this.selectionEnd = s + 2;
         actualizarLineas();
       }
@@ -730,10 +753,13 @@ Ejemplo:
     }
 
     function detener() {
+      const estabaEjecutando = interprete.ejecutando;
       interprete.detener();
       if (inputResolver) { const r = inputResolver; inputResolver = null; r(''); }
-      consolaImprimir('Ejecución detenida por el usuario.', 'system');
-      setEstado('', 'Detenido');
+      if (estabaEjecutando) {
+        consolaImprimir('Ejecución detenida por el usuario.', 'system');
+        setEstado('', 'Detenido');
+      }
       $('#btnEjecutar').prop('disabled', false);
       $('#btnDetener').hide();
       limpiarEjecucionHighlight();
@@ -789,8 +815,9 @@ Escribir "Edad: ", edad`,
 
     function cargarEjemplo(nombre) {
       if (EJEMPLOS[nombre]) {
-        $('#editor').val(EJEMPLOS[nombre]);
-        limpiarConsola();   // also invalidates error visuals
+        const nombreProceso = obtenerNombreProceso();
+        $('#editor').val(`Proceso ${nombreProceso}\n${EJEMPLOS[nombre]}\nFinProceso`);
+        limpiarConsola();
         actualizarLineas();
       }
     }
@@ -800,11 +827,42 @@ Escribir "Edad: ", edad`,
     // =========================================
 
     $(document).ready(function() {
+      // Initialize with Proceso/FinProceso structure
+      const editor = document.getElementById('editor');
+      editor.value = ESTRUCTURA_INICIAL;
       actualizarLineas();
+
+      // Place cursor on the empty body line
+      const pos = ESTRUCTURA_INICIAL.indexOf('\n') + 1;
+      editor.setSelectionRange(pos, pos);
+      editor.focus();
+
+      // Protect Proceso prefix and FinProceso from editing
+      editor.addEventListener('beforeinput', function(e) {
+        const val = this.value;
+        const s = this.selectionStart;
+        const se = this.selectionEnd;
+        const lastNL = val.lastIndexOf('\nFinProceso');
+        if (lastNL < 0) return;
+
+        const isBackward = ['deleteContentBackward','deleteWordBackward','deleteSoftLineBackward','deleteHardLineBackward'].includes(e.inputType);
+        const isForward  = ['deleteContentForward','deleteWordForward','deleteSoftLineForward','deleteHardLineForward'].includes(e.inputType);
+
+        let rStart = s;
+        let rEnd   = se;
+        if (isBackward && s === se) rStart = s - 1;
+        if (isForward  && s === se) rEnd   = se + 1;
+
+        if (rStart < PROCESO_PREFIX_LEN || rEnd > lastNL) {
+          e.preventDefault();
+        }
+      });
+
       $('#btnEjecutar').on('click', ejecutar);
       $('#btnDetener').on('click', detener);
       $('#btnLimpiarConsola').on('click', limpiarConsola);
       $('#btnLimpiarTodo').on('click', limpiarTodo);
+      $('#btnDescargar').on('click', descargar);
       $(document).on('click', '.example-btn', function() {
         cargarEjemplo($(this).data('ejemplo'));
       });

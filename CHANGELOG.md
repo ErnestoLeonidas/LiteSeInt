@@ -8,12 +8,19 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ## [0.1.4] — 2026-04-18
 
+### Agregado
+
+- **Botón "Descargar .psc"**: se añadió una acción para exportar el pseudocódigo actual del editor como archivo `.psc`, facilitando guardar y compartir programas escritos en LiteSeInt.
+- **Soporte para `Proceso` y `FinProceso`**: ahora el intérprete reconoce estas etiquetas como delimitadores del programa, mejorando la compatibilidad con la sintaxis habitual de PSeInt.
+
 ### Cambiado
+
 - **Alineación de paneles ajustada**: el panel del editor y la consola ahora tienen altura exactamente igual, con un espaciador en la consola que iguala la altura de la barra de ejemplos del editor.
 - **Altura de headers unificada**: `.panel-header` y `.console-header` comparten ahora la misma altura fija (`--header-panel-h: 32px`), garantizando alineación visual perfecta.
 - **Botón "Borrar todo" redimensionado**: ahora utiliza la misma clase y tamaño que el botón "Borrar" de la consola, mejorando la consistencia visual.
 
 ### Corregido
+
 - **Detención de ejecución en limpiar**: los botones "Borrar" y "Borrar todo" ahora detienen la ejecución del código si está en marcha, evitando comportamientos inesperados al limpiar durante la ejecución.
 
 ---
@@ -21,43 +28,48 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 ## [0.1.3] — 2026-04-17
 
 ### Agregado
+
 - **Módulo central de validación `doc_errores.js`**: se incorporó una nueva capa dedicada al análisis, validación, tabla de símbolos, generación de errores por rango exacto y utilidades para decoraciones del editor, desacoplada tanto de la UI como del motor de ejecución. :contentReference[oaicite:0]{index=0}
 - **Tokenización formal por línea**: el sistema ahora reconoce tokens como palabras reservadas, identificadores, strings, números, operadores, asignación `<-`, comas, paréntesis, comentarios, espacios y caracteres desconocidos. :contentReference[oaicite:1]{index=1}
-- **Tabla de símbolos con tracking de inicialización**: las variables pasan a manejar tipo, existencia e inicialización real, permitiendo distinguir entre variable definida, no definida y no inicializada. 
+- **Tabla de símbolos con tracking de inicialización**: las variables pasan a manejar tipo, existencia e inicialización real, permitiendo distinguir entre variable definida, no definida y no inicializada.
 - **Decoraciones de error por token exacto**: se añadió una capa visual específica para subrayados rojos debajo del fragmento exacto con error, separada del resaltado de sintaxis. :contentReference[oaicite:3]{index=3}
 - **Helper de contexto de cursor**: se agregó lógica reutilizable para detectar si el cursor está dentro de un string o un comentario, mejorando el comportamiento del autocompletado. :contentReference[oaicite:4]{index=4}
 - **Validación estructurada por línea y documento**: se implementaron funciones reutilizables para validar una línea o el documento completo y devolver errores agrupados por línea con columna inicial y final. :contentReference[oaicite:5]{index=5}
 
 ### Cambiado
-- **Motor `LiteSeInt.js` refactorizado para depender de `doc_errores.js`**: la ejecución ahora realiza validación previa centralizada antes de interpretar el código, evitando duplicación de reglas entre motor y editor. 
+
+- **Motor `LiteSeInt.js` refactorizado para depender de `doc_errores.js`**: la ejecución ahora realiza validación previa centralizada antes de interpretar el código, evitando duplicación de reglas entre motor y editor.
 - **Evaluador de expresiones reemplazado por parser con shunting-yard**: las expresiones ahora soportan correctamente paréntesis, precedencia de operadores, números, variables, strings, concatenación con `+` y validación de paréntesis desbalanceados. :contentReference[oaicite:7]{index=7}
-- **Asignaciones y lecturas ahora inicializan variables de forma explícita**: `Leer` y `<-` marcan la variable como inicializada en vez de asumir que el valor por defecto equivale a una inicialización válida. 
+- **Asignaciones y lecturas ahora inicializan variables de forma explícita**: `Leer` y `<-` marcan la variable como inicializada en vez de asumir que el valor por defecto equivale a una inicialización válida.
 - **Validación de `Definir` fortalecida**: ahora detecta tipos inválidos, texto sobrante, nombres faltantes, comas mal ubicadas, palabras reservadas usadas como variables y duplicados en la misma línea o en líneas posteriores. :contentReference[oaicite:9]{index=9}
-- **Manejo de `Escribir` mejorado**: las expresiones separadas por coma se validan de forma estructurada y cada identificador se comprueba contra la tabla de símbolos. 
-- **Autocompletado contextual**: las sugerencias ahora se bloquean correctamente dentro de strings y comentarios, usando análisis del contexto real de la línea en vez de reglas superficiales. 
+- **Manejo de `Escribir` mejorado**: las expresiones separadas por coma se validan de forma estructurada y cada identificador se comprueba contra la tabla de símbolos.
+- **Autocompletado contextual**: las sugerencias ahora se bloquean correctamente dentro de strings y comentarios, usando análisis del contexto real de la línea en vez de reglas superficiales.
 - **Resaltado de sintaxis actualizado**: el operador `<-` pasa a tener una clase visual separada (`sh-assign`) y se pinta con color blanco para distinguirlo del resto de operadores. :contentReference[oaicite:12]{index=12}
-- **Branding de la aplicación actualizado a LiteSeInt**: se renombró la app en la interfaz para alinearla con el nombre del motor. 
+- **Branding de la aplicación actualizado a LiteSeInt**: se renombró la app en la interfaz para alinearla con el nombre del motor.
 - **UX de errores visuales ajustada**: el destacado rojo de errores queda reservado al flujo de ejecución y se limpia al editar, al limpiar consola o al reiniciar el contenido, evitando errores “pegados” sobre código ya modificado. :contentReference[oaicite:14]{index=14}
 - **Toolbar y layout reorganizados**: los botones principales se centran visualmente, el botón Detener adquiere un estilo diferenciado, el botón Limpiar consola se integra al panel de consola y el layout general se ajusta mejor al viewport. :contentReference[oaicite:15]{index=15}
 - **Editor con menor cantidad inicial de líneas**: el mínimo visual del editor se reduce para iniciar con 10 líneas en lugar de 20. :contentReference[oaicite:16]{index=16}
 - **Footer inferior integrado**: se agregó un pie de app discreto con crédito visible al autor. :contentReference[oaicite:17]{index=17}
 
 ### Corregido
-- **Variables no definidas ahora informan el error correcto**: expresiones como `Escribir nombres` dejan de reportarse como “expresión no reconocida” y pasan a mostrarse como `Variable "nombres" no definida.`. 
+
+- **Variables no definidas ahora informan el error correcto**: expresiones como `Escribir nombres` dejan de reportarse como “expresión no reconocida” y pasan a mostrarse como `Variable "nombres" no definida.`.
 - **Variables no inicializadas ya no pueden imprimirse**: si una variable fue declarada pero nunca recibió valor, `Escribir` ahora genera `Variable "X" no inicializada.` en tiempo de ejecución. :contentReference[oaicite:19]{index=19}
 - **Errores múltiples por línea**: una misma línea puede acumular varios errores simultáneos, incluyendo combinación de coma inválida y variable duplicada en `Definir`. :contentReference[oaicite:20]{index=20}
-- **Subrayado preciso de tokens inválidos**: además del mensaje en consola, ahora se subrayan exactamente símbolos conflictivos como comas incorrectas o variables duplicadas. 
+- **Subrayado preciso de tokens inválidos**: además del mensaje en consola, ahora se subrayan exactamente símbolos conflictivos como comas incorrectas o variables duplicadas.
 - **Separación correcta entre syntax highlight y capa de error**: se evitó mezclar el HTML del resaltado con el HTML de decoraciones, reduciendo errores de render y facilitando mantenimiento. :contentReference[oaicite:22]{index=22}
 - **Flujo visual de error más consistente**: los badges, tooltips, overlays y subrayados se limpian y reconstruyen de forma controlada, evitando residuos visuales tras editar o reiniciar. :contentReference[oaicite:23]{index=23}
 
 ### Interno
+
 - **API estática del motor mantenida por compatibilidad**: `LiteSeInt` sigue exponiendo helpers como `stripComment()` y `extraerVariablesDelCodigo()`, pero ahora delegando en `doc_errores.js`. :contentReference[oaicite:24]{index=24}
 - **Conversión uniforme de errores a decoraciones**: se añadieron helpers para transformar errores en estructuras útiles para subrayado y tooltips por línea. :contentReference[oaicite:25]{index=25}
-- **Mayor desacoplamiento entre core y UI**: la interfaz consume resultados del analizador en vez de reimplementar reglas de validación en handlers del editor. 
+- **Mayor desacoplamiento entre core y UI**: la interfaz consume resultados del analizador en vez de reimplementar reglas de validación en handlers del editor.
 
 ## [0.1.2] — 2026-04-17
 
 ### Agregado
+
 - **Comentarios con `//`**: todo lo que aparece después de `//` (fuera de strings) se ignora en la ejecución. Los comentarios se renderizan en gris itálica en el editor.
 - **Resaltado de sintaxis completo**: capa visual (`#syntaxLayer`) superpuesta al textarea que colorea palabras reservadas (rosa), strings (amarillo), variables (azul), números (verde menta), operadores (gris) y comentarios (gris itálica).
 - **Autocompletado de variables del usuario**: las variables declaradas con `Definir` se detectan dinámicamente y aparecen como sugerencias en el dropdown, etiquetadas como `variable`.
@@ -67,6 +79,7 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 - Comentarios de ejemplo en los programas precargados.
 
 ### Cambiado
+
 - **Opacidad de resaltado aumentada ~30%**: `--exec-highlight-bg` y `--error-highlight-bg` pasaron de `0.08` a `0.16`, haciendo más visibles las líneas en ejecución y con error.
 - **Tooltip de error reubicado**: el badge `!` se movió del gutter al costado derecho de la línea de código (dentro del overlay), con tooltip Bootstrap en dirección `left`.
 - El autocompletado ahora se desactiva automáticamente cuando el cursor está dentro de un comentario.
@@ -74,13 +87,16 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 - Gutter ampliado de 50px a 58px para acomodar el indicador `>`.
 
 ### Corregido
+
 - El motor ahora procesa correctamente líneas con comentarios inline (ej: `x <- 10 // asignación`) sin fallar en la interpretación.
 - Se corrigió un desfase visual en el editor: al escribir o autocompletar variables, el texto podía renderizarse una línea más abajo por un salto de línea extra en la capa de resaltado de sintaxis.
+
 ---
 
 ## [0.1.1] — 2026-04-17
 
 ### Agregado
+
 - **Separación del core en `LiteSeInt.js`**: clase independiente de la UI que expone `ejecutar()`, `detener()`, `getVariables()` y se comunica con la interfaz a través de callbacks (`onEscribir`, `onLeer`, `onError`, `onLineaActiva`, `onSistema`, `onFin`).
 - **Input inline en consola**: la instrucción `Leer` ahora muestra un campo de texto directamente en la consola con prompt `? variable:` y botón `↵`, reemplazando el modal overlay anterior.
 - **Definir múltiples variables por línea**: soporte para `Definir a, b, c Como Tipo` separando nombres por coma.
@@ -91,11 +107,13 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 - Indicador de estado en toolbar (`Ejecutando...`, `Listo`, `Error`, `Detenido`).
 
 ### Cambiado
+
 - **Tipo `Cadena` renombrado a `Caracter`**: en toda la lógica del motor, palabras reservadas y autocompletado.
 - Los eventos de los botones se registran con jQuery `.on()` en lugar de atributos `onclick` inline.
 - La capa de overlays y el fondo del editor se separaron en elementos independientes (`editor-bg-layer`, `editor-line-overlays`).
 
 ### Eliminado
+
 - Modal overlay (`input-overlay`) para la instrucción `Leer` — reemplazado por input inline en consola.
 
 ---
@@ -103,6 +121,7 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 ## [0.1.0] — 2026-04-17
 
 ### Agregado
+
 - **Editor de pseudocódigo**: textarea con numeración de líneas, placeholder descriptivo y soporte para Tab (inserta 2 espacios).
 - **Consola de salida**: panel HTML donde se muestran los mensajes de `Escribir`, errores y mensajes del sistema.
 - **Botón Ejecutar**: inicia la interpretación completa del código línea por línea.
