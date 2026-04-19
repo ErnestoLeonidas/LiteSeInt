@@ -818,6 +818,119 @@
       }, 10);
     });
 
+    function getLineIndices(texto, selStart, selEnd) {
+      const beforeStart = texto.substring(0, selStart);
+      const beforeEnd = texto.substring(0, selEnd);
+      const lineIdxStart = beforeStart.split('\n').length - 1;
+      const lineIdxEnd = beforeEnd.split('\n').length - 1;
+      return { lineIdxStart, lineIdxEnd };
+    }
+
+    function tabularLineas(editor) {
+      const s = editor.selectionStart;
+      const en = editor.selectionEnd;
+      const v = editor.value;
+      const lastNL = v.lastIndexOf('\nFinProceso');
+
+      if (s < PROCESO_PREFIX_LEN || s > lastNL || en > lastNL) return;
+
+      const { lineIdxStart, lineIdxEnd } = getLineIndices(v, s, en);
+      const lineas = v.split('\n');
+      const firstProcLine = 1;
+      const lastProcLine = lineas.length - 2;
+
+      const startIdx = Math.max(lineIdxStart, firstProcLine);
+      const endIdx = Math.min(lineIdxEnd, lastProcLine);
+
+      // Calculate offset within start and end lines before modification
+      let positionCounter = 0;
+      let offsetInStartLine = 0, offsetInEndLine = 0;
+      for (let i = 0; i < lineas.length; i++) {
+        if (i === lineIdxStart) offsetInStartLine = s - positionCounter;
+        if (i === lineIdxEnd) offsetInEndLine = en - positionCounter;
+        positionCounter += lineas[i].length + 1;
+      }
+
+      // Tabulate
+      for (let i = startIdx; i <= endIdx; i++) {
+        lineas[i] = '  ' + lineas[i];
+      }
+
+      // Recalculate absolute positions
+      positionCounter = 0;
+      let newSelStart = 0, newSelEnd = 0;
+      for (let i = 0; i < lineas.length; i++) {
+        if (i === lineIdxStart) {
+          newSelStart = positionCounter + offsetInStartLine + (i >= startIdx && i <= endIdx ? 2 : 0);
+        }
+        if (i === lineIdxEnd) {
+          newSelEnd = positionCounter + offsetInEndLine + (i >= startIdx && i <= endIdx ? 2 : 0);
+        }
+        positionCounter += lineas[i].length + 1;
+      }
+
+      editor.value = lineas.join('\n');
+      editor.selectionStart = newSelStart;
+      editor.selectionEnd = newSelEnd;
+      actualizarLineas();
+    }
+
+    function destabularLineas(editor) {
+      const s = editor.selectionStart;
+      const en = editor.selectionEnd;
+      const v = editor.value;
+      const lastNL = v.lastIndexOf('\nFinProceso');
+
+      if (s < PROCESO_PREFIX_LEN || s > lastNL || en > lastNL) return;
+
+      const { lineIdxStart, lineIdxEnd } = getLineIndices(v, s, en);
+      const lineas = v.split('\n');
+      const firstProcLine = 1;
+      const lastProcLine = lineas.length - 2;
+
+      const startIdx = Math.max(lineIdxStart, firstProcLine);
+      const endIdx = Math.min(lineIdxEnd, lastProcLine);
+
+      // Calculate offset within start and end lines before modification
+      let positionCounter = 0;
+      let offsetInStartLine = 0, offsetInEndLine = 0;
+      for (let i = 0; i < lineas.length; i++) {
+        if (i === lineIdxStart) offsetInStartLine = s - positionCounter;
+        if (i === lineIdxEnd) offsetInEndLine = en - positionCounter;
+        positionCounter += lineas[i].length + 1;
+      }
+
+      // Destabulate and track removals per line
+      const removalsPerLine = new Array(lineas.length).fill(0);
+      for (let i = startIdx; i <= endIdx; i++) {
+        if (lineas[i].startsWith('  ')) {
+          lineas[i] = lineas[i].substring(2);
+          removalsPerLine[i] = 2;
+        } else if (lineas[i].startsWith('\t')) {
+          lineas[i] = lineas[i].substring(1);
+          removalsPerLine[i] = 1;
+        }
+      }
+
+      // Recalculate absolute positions
+      positionCounter = 0;
+      let newSelStart = 0, newSelEnd = 0;
+      for (let i = 0; i < lineas.length; i++) {
+        if (i === lineIdxStart) {
+          newSelStart = Math.max(positionCounter + offsetInStartLine - removalsPerLine[i], positionCounter);
+        }
+        if (i === lineIdxEnd) {
+          newSelEnd = Math.max(positionCounter + offsetInEndLine - removalsPerLine[i], positionCounter);
+        }
+        positionCounter += lineas[i].length + 1;
+      }
+
+      editor.value = lineas.join('\n');
+      editor.selectionStart = newSelStart;
+      editor.selectionEnd = newSelEnd;
+      actualizarLineas();
+    }
+
     $('#editor').on('keydown', function(e) {
       const $dd = $('#autocompleteDropdown');
       const visible = $dd.hasClass('visible');
@@ -846,13 +959,11 @@
 
       if (e.key === 'Tab' && !visible) {
         e.preventDefault();
-        const s = this.selectionStart, en = this.selectionEnd;
-        const v = this.value;
-        const lastNL = v.lastIndexOf('\nFinProceso');
-        if (s < PROCESO_PREFIX_LEN || s > lastNL || en > lastNL) return;
-        this.value = v.substring(0, s) + '  ' + v.substring(en);
-        this.selectionStart = this.selectionEnd = s + 2;
-        actualizarLineas();
+        if (e.shiftKey) {
+          destabularLineas(this);
+        } else {
+          tabularLineas(this);
+        }
       }
     });
 
