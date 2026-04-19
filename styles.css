@@ -215,7 +215,7 @@ body::before {
 
 /* ---- Gutter ---- */
 .line-numbers {
-  width: 45px; padding: 16px 0;
+  width: 45px; padding: 8px 0;
   background: rgba(0,0,0,0.15); border-right: 1px solid var(--border-color);
   font-size: 13px; color: var(--line-number); line-height: var(--line-height-val);
   overflow: hidden; user-select: none; flex-shrink: 0;
@@ -285,7 +285,7 @@ body::before {
 /* ---- Line overlays ---- */
 .editor-line-overlays {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none; padding-top: 16px; z-index: 1; overflow: hidden;
+  pointer-events: none; padding-top: 8px; z-index: 1; overflow: hidden;
 }
 .line-overlay {
   height: var(--line-px); width: 100%; transition: background 0.15s;
@@ -298,7 +298,7 @@ body::before {
 #editor {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   background: transparent; color: transparent;
-  border: none; outline: none; padding: 16px;
+  border: none; outline: none; padding: 8px 8px 8px 16px;
   font-family: var(--font-code); font-size: 13px; line-height: var(--line-height-val);
   resize: none; tab-size: 2; white-space: pre;
   overflow-wrap: normal; overflow-x: auto;
@@ -335,7 +335,7 @@ body::before {
 /* Syntax highlight layer */
 .syntax-highlight-layer {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  padding: 16px; z-index: 3; pointer-events: none;
+  padding: 8px 8px 8px 16px; z-index: 3; pointer-events: none;
   font-family: var(--font-code); font-size: 13px;
   line-height: var(--line-height-val);
   white-space: pre; overflow: hidden;
@@ -355,7 +355,7 @@ body::before {
 /* ---- Error decoration layer (underlines) ---- */
 .error-decoration-layer {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  padding: 16px; z-index: 2; pointer-events: none;
+  padding: 8px 8px 8px 16px; z-index: 2; pointer-events: none;
   font-family: var(--font-code); font-size: 13px;
   line-height: var(--line-height-val);
   white-space: pre; overflow: hidden;
@@ -441,7 +441,7 @@ body::before {
 
 /* Inline input in console */
 .console-input-row {
-  display: flex; align-items: center; gap: 8px; padding: 6px 0;
+  display: flex; align-items: center; gap: 8px; padding: 2px 0;
   animation: fadeInLine 0.15s ease;
 }
 .console-input-row .prompt-symbol { color: var(--warning); font-weight: 600; flex-shrink: 0; }
@@ -450,7 +450,7 @@ body::before {
 .console-input-field {
   flex: 1; background: rgba(255,255,255,0.04);
   border: 1px solid var(--border-color); border-radius: 4px;
-  color: var(--text-primary); padding: 5px 10px;
+  color: var(--text-primary); padding: 4px 8px;
   font-family: var(--font-code); font-size: 13px;
   outline: none; transition: border-color 0.2s; min-width: 0;
 }
@@ -526,6 +526,7 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   border-top: 1px solid var(--border-color);
   background: rgba(0,0,0,0.15);
   font-size: 10px;
@@ -533,6 +534,12 @@ body::before {
   letter-spacing: 0.5px;
 }
 .app-footer .heart { color: var(--error); margin: 0 4px; font-size: 11px; }
+
+.app-footer .app-version {
+  position: absolute;
+  right: 12px;
+  bottom: 5px;
+}
 
 /* ========================================
     TOOLTIP OVERRIDE (Bootstrap dark)
@@ -573,31 +580,34 @@ body::before {
   }
 
   .toolbar {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     height: auto;
     padding: 10px 14px;
-    gap: 10px;
+    gap: 8px;
+    justify-content: space-between;
   }
 
   .toolbar-center {
-    width: 100%;
-    justify-content: center;
+    width: auto;
+    justify-content: flex-start;
     gap: 8px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    flex: 1 1 auto;
   }
 
   .toolbar-right {
     position: static;
     transform: none;
-    width: 100%;
-    justify-content: center;
+    width: auto;
+    justify-content: flex-end;
     display: flex;
+    flex-shrink: 0;
   }
 
   .btn-exec,
   .btn-stop,
   .btn-secondary {
-    min-height: 40px;
+    min-height: 30px;
     padding: 8px 12px;
     font-size: 11px;
     border-radius: 8px;
@@ -620,6 +630,10 @@ body::before {
   .status-indicator {
     justify-content: center;
     font-size: 11px;
+  }
+
+  #btnDescargar {
+    display: none;
   }
 }
 

@@ -19,7 +19,6 @@
         <div class="app-logo-icon">L</div>
         <div class="app-logo-text">Lite<span>SeInt</span></div>
       </div>
-      <div class="app-version">v0.2.0</div>
     </header>
 
     <!-- ========== TOOLBAR ========== -->
@@ -42,10 +41,10 @@
       <div class="editor-panel">
         <div class="panel-header">
           <div class="panel-header-dot"></div>
-            Editor de pseudocódigo
+            Editor
           <div class="console-header-actions">
             <button class="btn-console-clear" id="btnDescargar">↓ Descargar</button>
-            <button class="btn-console-clear" id="btnLimpiarTodo">✕ Borrar todo</button>
+            <button class="btn-console-clear" id="btnLimpiarTodo">✕ Borrar</button>
           </div>
         </div>
         <div class="editor-wrapper">
@@ -80,12 +79,9 @@
       <div class="console-panel">
         <div class="console-header">
           <div class="panel-header-dot" style="background: var(--info);"></div>
-          Consola de salida
+          Consola
           <div class="console-header-actions">
-            <button class="btn-console-clear" id="btnLimpiarConsola">
-              <i data-lucide="delete"></i>
-              Borrar
-            </button>        
+            <button class="btn-console-clear" id="btnLimpiarConsola">✕ Borrar</button>        
           </div>
         </div>
         <div id="consola"></div>
@@ -96,6 +92,7 @@
     <footer class="app-footer">
       Desarrollado con<span class="heart">♥</span>por 
       <a href="https://github.com/ernestoleonidas" target="_blank" rel="noopener noreferrer" class="ps-1"> Ernesto Velásquez</a>
+      <div class="app-version">v0.2.1</div>
     </footer>
 
   </div>
@@ -450,31 +447,83 @@
       const sl = this.scrollLeft;
       document.getElementById('lineNumbers').scrollTop = st;
       document.getElementById('lineOverlays').scrollTop = st;
-      document.getElementById('indentGuideLayer').scrollTop = st;
-      document.getElementById('indentGuideLayer').scrollLeft = sl;
       document.getElementById('syntaxLayer').scrollTop = st;
       document.getElementById('syntaxLayer').scrollLeft = sl;
       document.getElementById('errorDecoLayer').scrollTop = st;
       document.getElementById('errorDecoLayer').scrollLeft = sl;
+      actualizarIndentGuides();
     });
 
     // =========================================
     // 7. INDENT GUIDES
     // =========================================
 
-    const GUIDE_CHAR_W   = 7.8;
-    const GUIDE_LINE_H   = 21.45;
-    const GUIDE_PAD_TOP  = 16;
-    const GUIDE_PAD_LEFT = 16;
-    const INDENT_STEP    = 2;
+    const DEFAULT_INDENT_STEP = 2;
+    let indentGuideRenderPending = false;
+    let indentGuideNeedsMeasure = true;
+    let resizeObserver = null;
 
-    function getLeadingIndentColumns(linea) {
+    function parseCssPx(value, fallback = 0) {
+      const parsed = parseFloat(value);
+      return Number.isFinite(parsed) ? parsed : fallback;
+    }
+
+    function getCursorLineIndex(texto, selectionStart) {
+      return texto.substring(0, selectionStart).split('\n').length - 1;
+    }
+
+    function getIndentGuideMetrics(force = false) {
+      const editor = document.getElementById('editor');
+      if (!editor) return null;
+
+      if (!force && editor._indentGuideMetrics) {
+        return editor._indentGuideMetrics;
+      }
+
+      const computed = window.getComputedStyle(editor);
+      const lineHeight = parseCssPx(computed.lineHeight, parseCssPx(computed.fontSize, 13) * 1.65);
+      const paddingTop = parseCssPx(computed.paddingTop, 8);
+      const paddingLeft = parseCssPx(computed.paddingLeft, 16);
+      const tabSize = Math.max(
+        1,
+        parseInt(computed.tabSize || computed.getPropertyValue('tab-size') || DEFAULT_INDENT_STEP, 10) || DEFAULT_INDENT_STEP
+      );
+
+      const measurer = document.createElement('span');
+      measurer.textContent = '0'.repeat(32);
+      measurer.style.position = 'absolute';
+      measurer.style.visibility = 'hidden';
+      measurer.style.pointerEvents = 'none';
+      measurer.style.whiteSpace = 'pre';
+      measurer.style.fontFamily = computed.fontFamily;
+      measurer.style.fontSize = computed.fontSize;
+      measurer.style.fontWeight = computed.fontWeight;
+      measurer.style.letterSpacing = computed.letterSpacing;
+      measurer.style.lineHeight = computed.lineHeight;
+
+      editor.parentElement.appendChild(measurer);
+      const charWidth = measurer.getBoundingClientRect().width / 32;
+      measurer.remove();
+
+      const metrics = {
+        charWidth: Number.isFinite(charWidth) && charWidth > 0 ? charWidth : 7.8,
+        lineHeight,
+        paddingTop,
+        paddingLeft,
+        tabSize
+      };
+
+      editor._indentGuideMetrics = metrics;
+      return metrics;
+    }
+
+    function getLeadingIndentColumns(linea, tabSize) {
       let width = 0;
       for (const ch of linea) {
         if (ch === ' ') {
           width += 1;
         } else if (ch === '\t') {
-          width += INDENT_STEP;
+          width += tabSize - (width % tabSize);
         } else {
           break;
         }
@@ -482,13 +531,24 @@
       return width;
     }
 
-    function computeGuideColumns(lineas) {
+    function getVisualColumns(texto, tabSize) {
+      let width = 0;
+      for (const ch of texto) {
+        if (ch === '\t') {
+          width += tabSize - (width % tabSize);
+        } else {
+          width += 1;
+        }
+      }
+      return width;
+    }
+
+    function computeEffectiveIndents(lineas, tabSize) {
       const n = lineas.length;
-      const cols = Array.from({ length: n }, () => []);
       const effectiveIndents = new Array(n).fill(0);
       const actualIndents = lineas.map(linea => {
         if (linea.trim() === '') return null;
-        return getLeadingIndentColumns(linea);
+        return getLeadingIndentColumns(linea, tabSize);
       });
 
       for (let i = 0; i < n; i++) {
@@ -524,37 +584,126 @@
         }
       }
 
-      for (let i = 0; i < n; i++) {
-        const indent = effectiveIndents[i];
-        if (indent < INDENT_STEP) continue;
-
-        for (let col = INDENT_STEP; col <= indent; col += INDENT_STEP) {
-          cols[i].push(col);
-        }
-      }
-
-      return { cols, effectiveIndents };
+      return effectiveIndents;
     }
 
-    function actualizarIndentGuides() {
-      const editor = document.getElementById('editor');
-      const layer  = document.getElementById('indentGuideLayer');
-      const texto  = editor.value;
-      const lineas = texto.split('\n');
-      const cursorLine = texto.substring(0, editor.selectionStart).split('\n').length - 1;
-      const { cols: guideCols, effectiveIndents } = computeGuideColumns(lineas);
-      const activeIndent = effectiveIndents[cursorLine] || 0;
+    function getVisibleGuideColumns(indentWidth, tabSize) {
+      if (indentWidth <= 0) return [];
 
-      let html = '';
-      for (let i = 0; i < lineas.length; i++) {
-        const y = GUIDE_PAD_TOP + i * GUIDE_LINE_H;
-        for (const col of guideCols[i]) {
-          const x = GUIDE_PAD_LEFT + col * GUIDE_CHAR_W;
-          const cls = i === cursorLine && col <= activeIndent ? ' active' : '';
-          html += `<div class="indent-guide${cls}" style="left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;height:${GUIDE_LINE_H.toFixed(1)}px"></div>`;
+      const cols = [];
+      const maxCol = Math.ceil(indentWidth / tabSize) * tabSize;
+
+      for (let col = tabSize; col <= maxCol; col += tabSize) {
+        const guideCenter = col - (tabSize / 2);
+        if (guideCenter <= indentWidth) {
+          cols.push(col);
         }
       }
+
+      return cols;
+    }
+
+    function computeGuideSegments(visibleGuideColsByLine, tabSize) {
+      const segments = [];
+      const maxIndent = Math.max(
+        0,
+        ...visibleGuideColsByLine.map(cols => cols.length ? cols[cols.length - 1] : 0)
+      );
+
+      for (let col = tabSize; col <= maxIndent; col += tabSize) {
+        let start = null;
+
+        for (let i = 0; i < visibleGuideColsByLine.length; i++) {
+          const hasGuide = visibleGuideColsByLine[i].includes(col);
+          if (hasGuide && start === null) {
+            start = i;
+          } else if (!hasGuide && start !== null) {
+            segments.push({ col, startLine: start, endLine: i - 1 });
+            start = null;
+          }
+        }
+
+        if (start !== null) {
+          segments.push({ col, startLine: start, endLine: visibleGuideColsByLine.length - 1 });
+        }
+      }
+
+      return segments;
+    }
+
+    function getGuideX(col, metrics) {
+      const visualCenterCol = col - metrics.tabSize;
+      const rawX = metrics.paddingLeft + visualCenterCol * metrics.charWidth;
+      return Math.round(rawX) + 0.5;
+    }
+
+    function renderIndentGuides() {
+      const editor = document.getElementById('editor');
+      const layer = document.getElementById('indentGuideLayer');
+      if (!editor || !layer) return;
+
+      const metrics = getIndentGuideMetrics(indentGuideNeedsMeasure);
+      indentGuideNeedsMeasure = false;
+      if (!metrics) return;
+
+      const texto = editor.value;
+      const lineas = texto.split('\n');
+      const cursorLine = getCursorLineIndex(texto, editor.selectionStart);
+      const currentLineText = lineas[cursorLine] || '';
+      const lineStartOffset = texto.lastIndexOf('\n', Math.max(0, editor.selectionStart - 1)) + 1;
+      const currentLinePrefix = currentLineText.substring(0, Math.max(0, editor.selectionStart - lineStartOffset));
+      const currentLineIndent = getLeadingIndentColumns(currentLineText, metrics.tabSize);
+      const effectiveIndents = computeEffectiveIndents(lineas, metrics.tabSize);
+      const visibleGuideColsByLine = effectiveIndents.map(indentWidth =>
+        getVisibleGuideColumns(indentWidth, metrics.tabSize)
+      );
+      const segments = computeGuideSegments(visibleGuideColsByLine, metrics.tabSize);
+      const activeGuideLimit = Math.min(
+        getVisualColumns(currentLinePrefix, metrics.tabSize),
+        currentLineIndent
+      );
+      const activeGuideCols = getVisibleGuideColumns(activeGuideLimit, metrics.tabSize);
+      const scrollTop = editor.scrollTop;
+      const scrollLeft = editor.scrollLeft;
+
+      let html = '';
+
+      for (const segment of segments) {
+        const x = getGuideX(segment.col, metrics) - scrollLeft;
+        const y = metrics.paddingTop + segment.startLine * metrics.lineHeight - scrollTop;
+        const height = (segment.endLine - segment.startLine + 1) * metrics.lineHeight;
+        html += `<div class="indent-guide" style="left:${x.toFixed(2)}px;top:${y.toFixed(2)}px;height:${height.toFixed(2)}px"></div>`;
+      }
+
+      if (cursorLine >= 0 && cursorLine < lineas.length && activeGuideCols.length > 0) {
+        const activeY = metrics.paddingTop + cursorLine * metrics.lineHeight - scrollTop;
+        for (const col of activeGuideCols) {
+          const x = getGuideX(col, metrics) - scrollLeft;
+          html += `<div class="indent-guide active" style="left:${x.toFixed(2)}px;top:${activeY.toFixed(2)}px;height:${metrics.lineHeight.toFixed(2)}px"></div>`;
+        }
+      }
+
       layer.innerHTML = html;
+    }
+
+    function scheduleIndentGuideRender({ remeasure = false } = {}) {
+      if (remeasure) {
+        indentGuideNeedsMeasure = true;
+        const editor = document.getElementById('editor');
+        if (editor) delete editor._indentGuideMetrics;
+      }
+
+      if (indentGuideRenderPending) return;
+      indentGuideRenderPending = true;
+
+      requestAnimationFrame(() => {
+        indentGuideRenderPending = false;
+        renderIndentGuides();
+      });
+    }
+
+    function actualizarIndentGuides(options) {
+      scheduleIndentGuideRender(options);
     }
 
     // Update guides on cursor move (without content change)
@@ -763,9 +912,16 @@
       const lnIdx = lineas.length - 1;
       const col = lineas[lineas.length - 1].length;
       const wr = document.querySelector('.editor-wrapper').getBoundingClientRect();
+      const metrics = getIndentGuideMetrics();
+      const gutter = document.getElementById('lineNumbers');
+      const lineHeight = metrics ? metrics.lineHeight : 21.45;
+      const paddingTop = metrics ? metrics.paddingTop : 8;
+      const paddingLeft = metrics ? metrics.paddingLeft : 16;
+      const charWidth = metrics ? metrics.charWidth : 7.8;
+      const gutterWidth = gutter ? gutter.offsetWidth : 45;
 
-      const top = (lnIdx + 1) * 21.45 + 16 - editor.scrollTop;
-      const left = col * 7.8 + 58 + 16 - editor.scrollLeft;
+      const top = (lnIdx + 1) * lineHeight + paddingTop - editor.scrollTop;
+      const left = col * charWidth + gutterWidth + paddingLeft - editor.scrollLeft;
 
       $dd.css({
         top: Math.min(top, wr.height - 190) + 'px',
@@ -1009,6 +1165,26 @@ FinSegun`,
       const pos = ESTRUCTURA_INICIAL.indexOf('\n') + 1;
       editor.setSelectionRange(pos, pos);
       editor.focus();
+      actualizarIndentGuides({ remeasure: true });
+
+      if (window.ResizeObserver) {
+        resizeObserver = new ResizeObserver(() => {
+          actualizarIndentGuides({ remeasure: true });
+        });
+        resizeObserver.observe(editor);
+        const editorArea = editor.parentElement;
+        if (editorArea) resizeObserver.observe(editorArea);
+      }
+
+      window.addEventListener('resize', () => {
+        actualizarIndentGuides({ remeasure: true });
+      });
+
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => {
+          actualizarIndentGuides({ remeasure: true });
+        });
+      }
 
       // Protect Proceso prefix and FinProceso from editing
       editor.addEventListener('beforeinput', function(e) {
