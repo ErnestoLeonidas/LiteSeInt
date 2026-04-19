@@ -415,6 +415,19 @@ function validarLinea(sig, allTokens, lineaIdx, tabla) {
   }
 
   // ── 3. Standard instruction validation ──
+  const colonIdx = sig.findIndex(t => t.type === TK.COLON);
+  const esCasoSegun =
+    colonIdx > 0 &&
+    !(sig[0].type === TK.KEYWORD && sig[0].value.toLowerCase() === 'de');
+
+  if (esCasoSegun) {
+    const restoSig = sig.slice(colonIdx + 1);
+    if (restoSig.length > 0) {
+      errores.push(...validarLinea(restoSig, restoSig, lineaIdx, tabla));
+    }
+    return errores;
+  }
+
   const primerToken = sig[0];
   const instruccion = primerToken.type === TK.KEYWORD ? primerToken.value.toLowerCase() : null;
 

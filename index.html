@@ -112,6 +112,7 @@
     // =========================================
 
     let inputResolver = null;
+    const mobileConsoleQuery = window.matchMedia('(max-width: 768px)');
 
     /**
      * Estado visual de errores — separado del estado de edición.
@@ -184,6 +185,18 @@
     function scrollConsola() {
       const el = document.getElementById('consola');
       el.scrollTop = el.scrollHeight;
+    }
+
+    function setMobileConsoleCollapsed(collapsed) {
+      const shell = document.querySelector('.app-shell');
+      if (!shell) return;
+      shell.classList.toggle('mobile-console-collapsed', mobileConsoleQuery.matches && collapsed);
+    }
+
+    function toggleMobileConsoleCollapsed() {
+      const shell = document.querySelector('.app-shell');
+      if (!shell || !mobileConsoleQuery.matches) return;
+      shell.classList.toggle('mobile-console-collapsed');
     }
 
     const ESTRUCTURA_INICIAL = 'Proceso nombre_proceso\n\n\n\n\n\n\n\n\nFinProceso';
@@ -971,6 +984,8 @@
     async function ejecutar() {
       if (interprete.ejecutando) return;
 
+      setMobileConsoleCollapsed(false);
+
       // Clean everything
       limpiarConsola();          // also calls invalidarErroresVisuales()
       limpiarEjecucionHighlight();
@@ -1212,6 +1227,23 @@ FinSegun`,
       $('#btnLimpiarConsola').on('click', limpiarConsola);
       $('#btnLimpiarTodo').on('click', limpiarTodo);
       $('#btnDescargar').on('click', descargar);
+      $('.console-header').on('click', function(e) {
+        if ($(e.target).closest('.console-header-actions, button').length) return;
+        toggleMobileConsoleCollapsed();
+      });
+
+      const handleMobileConsoleChange = () => {
+        if (!mobileConsoleQuery.matches) {
+          setMobileConsoleCollapsed(false);
+        }
+      };
+
+      if (mobileConsoleQuery.addEventListener) {
+        mobileConsoleQuery.addEventListener('change', handleMobileConsoleChange);
+      } else if (mobileConsoleQuery.addListener) {
+        mobileConsoleQuery.addListener(handleMobileConsoleChange);
+      }
+
       $(document).on('click', '.example-btn', function() {
         cargarEjemplo($(this).data('ejemplo'));
       });

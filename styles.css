@@ -33,7 +33,7 @@
   --line-px: 21.45px;
   --header-h: 52px;
   --toolbar-h: 44px;
-  --example-bar-h: 32px;
+  --example-bar-h: 40px;
   --header-panel-h: 32px;
   --footer-h: 32px;
 }
@@ -293,6 +293,19 @@ body::before {
 }
 .line-overlay.executing { background: var(--exec-highlight-bg); }
 .line-overlay.has-error { background: var(--error-highlight-bg); }
+/* .line-overlay.has-error::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: calc(var(--line-px) / 2) solid transparent;
+  border-bottom: calc(var(--line-px) / 2) solid transparent;
+  border-left: 12px solid #EE5A5A;
+  pointer-events: none;
+} */
 
 /* ---- Textarea ---- */
 #editor {
@@ -500,7 +513,9 @@ body::before {
   padding: 0 16px;
   border-top: 1px solid var(--border-color);
   background: rgba(0,0,0,0.15); display: flex; align-items: center;
-  gap: 8px; flex-wrap: nowrap; overflow: hidden;
+  gap: 8px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
 }
 .example-bar span {
   font-size: 10px; color: var(--text-muted);
@@ -515,6 +530,19 @@ body::before {
 }
 .example-btn:hover {
   border-color: var(--accent-dim); color: var(--accent); background: var(--accent-bg);
+}
+
+.example-bar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.example-bar::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 999px;
+}
+
+.example-bar::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* ========================================
@@ -577,6 +605,37 @@ body::before {
 
   .console-panel {
     flex: 1;
+  }
+
+  .console-header {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .app-shell.mobile-console-collapsed .main-container {
+    padding-bottom: calc(var(--header-panel-h) + var(--footer-h));
+  }
+
+  .app-shell.mobile-console-collapsed .editor-panel {
+    border-bottom: none;
+  }
+
+  .app-shell.mobile-console-collapsed .console-panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: var(--footer-h);
+    height: var(--header-panel-h);
+    min-height: 0;
+    flex: none;
+    z-index: 40;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-panel);
+    box-shadow: 0 -10px 24px rgba(0,0,0,0.28);
+  }
+
+  .app-shell.mobile-console-collapsed #consola {
+    display: none;
   }
 
   .toolbar {
