@@ -28,6 +28,9 @@
   --syntax-comment: #5c6a7a;
   --syntax-number: #a8e6cf;
   --syntax-assign: #c8d6e5;
+  --bracket-0: #ffd700;
+  --bracket-1: #56cdfc;
+  --bracket-2: #c99be8;
   --font-code: 'JetBrains Mono', 'Space Mono', monospace;
   --line-height-val: 1.65;
   --line-px: 21.45px;
@@ -364,6 +367,9 @@ body::before {
 .syntax-highlight-layer .sh-operator { color: var(--text-secondary); }
 .syntax-highlight-layer .sh-assign { color: var(--syntax-assign); }
 .syntax-highlight-layer .sh-plain { color: var(--text-primary); }
+.syntax-highlight-layer .sh-bracket-0 { color: var(--bracket-0); font-weight: 500; }
+.syntax-highlight-layer .sh-bracket-1 { color: var(--bracket-1); font-weight: 500; }
+.syntax-highlight-layer .sh-bracket-2 { color: var(--bracket-2); font-weight: 500; }
 
 /* ---- Error decoration layer (underlines) ---- */
 .error-decoration-layer {

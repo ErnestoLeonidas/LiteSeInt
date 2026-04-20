@@ -6,6 +6,21 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.3.0] - 2026-04-19
+
+### Cambiado
+
+- **Controlador UI extraído a `js/app.js`**: toda la lógica de interfaz que antes vivía embebida en `index.html` ahora se carga desde un archivo JavaScript dedicado, dejando la estructura HTML más limpia y preparada para seguir creciendo.
+- **Estructura de assets reorganizada**: `LiteSeInt.js`, `doc_errores.js` y `styles.css` se movieron a carpetas `js/` y `css/`, alineando la base del proyecto con una organización más mantenible.
+- **Carga de scripts y estilos actualizada**: `index.html` ahora referencia rutas externas (`css/styles.css`, `js/doc_errores.js`, `js/LiteSeInt.js`, `js/app.js`) en lugar de depender de bloques inline extensos.
+- **Versión** actualizada a `v0.3.0` en la interfaz.
+
+### Interno
+
+- **Separación de responsabilidades reforzada**: la capa de presentación queda mejor delimitada entre marcado, estilos, motor, validación y controlador UI, facilitando mantenimiento, depuración y futuras iteraciones.
+
+---
+
 ## [0.2.1] - 2026-04-19
 
 ### Cambiado
