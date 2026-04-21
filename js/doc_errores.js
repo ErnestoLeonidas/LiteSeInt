@@ -337,13 +337,11 @@ function validarDocumento(codigo) {
     for (const e of erroresLinea) agregarError(i, e);
   }
 
-  // Paso 2: balance de bloques
+  // Paso 2: balance de bloques (Si/FinSi y Segun/FinSegun se manejan en Paso 3/4)
   const BLOQUES = [
-    { abre: 'si',       cierra: 'finsi',        etiqueta: 'Si',       cierraLabel: 'FinSi' },
     { abre: 'mientras', cierra: 'finmientras',   etiqueta: 'Mientras', cierraLabel: 'FinMientras' },
     { abre: 'repetir',  cierra: 'hastaque',      etiqueta: 'Repetir',  cierraLabel: 'HastaQue' },
     { abre: 'para',     cierra: 'finpara',       etiqueta: 'Para',     cierraLabel: 'FinPara' },
-    { abre: 'segun',    cierra: 'finsegun',      etiqueta: 'Segun',    cierraLabel: 'FinSegun' },
   ];
 
   const stackBloques = [];
@@ -378,7 +376,550 @@ function validarDocumento(codigo) {
     ));
   }
 
+  // Paso 3: validación estructural de Si / Sino / FinSi
+  validarBloquesSi(lineas, agregarError);
+
+  // Paso 4: validación estructural de Segun / De Otro Modo / FinSegun
+  validarBloquesSegun(lineas, agregarError);
+
   return { errores: todosErrores, tablaSimbolos: tabla, erroresPorLinea };
+}
+
+// ─────────────────────────────────────────────
+//  VALIDATION: Si / Sino / FinSi
+// ─────────────────────────────────────────────
+
+/**
+ * Pasada estructural sobre el documento completo.
+ * Rastrea bloques Si abiertos con una pila para soportar anidación.
+ * Emite errores de:
+ *   - cabecera inválida (condición, Entonces, texto extra)
+ *   - Sino fuera de bloque, Sino duplicado, Sino con texto extra
+ *   - FinSi fuera de bloque, FinSi con texto extra
+ *   - ramas vacías (entre Si/Sino y Sino/FinSi)
+ *   - Si no cerrado al fin del documento
+ */
+function validarBloquesSi(lineas, agregarError) {
+  const stack = [];
+
+  const contarContenido = (top) => {
+    if (top.tieneSino) top.contenidoFalse++;
+    else top.contenidoTrue++;
+  };
+
+  for (let i = 0; i < lineas.length; i++) {
+    const lineaRaw = lineas[i];
+    const allTokens = tokenizarLinea(lineaRaw);
+    const sig = tokensSignificativos(allTokens);
+    if (sig.length === 0) continue;
+
+    const primera = sig[0];
+    const palabra = primera.type === TK.KEYWORD ? primera.value.toLowerCase() : null;
+
+    if (palabra === 'si') {
+      if (stack.length > 0) contarContenido(stack[stack.length - 1]);
+      validarCabeceraSi(lineaRaw, sig, i, agregarError);
+      stack.push({ lineaSi: i, tieneSino: false, contenidoTrue: 0, contenidoFalse: 0 });
+      continue;
+    }
+
+    if (palabra === 'sino') {
+      if (stack.length === 0) {
+        agregarError(i, crearError(
+          i, primera.col, primera.end, 'sino_sin_si',
+          '"Sino" sin una sentencia "Si" abierta.', primera.value
+        ));
+      } else {
+        const top = stack[stack.length - 1];
+        if (top.tieneSino) {
+          agregarError(i, crearError(
+            i, primera.col, primera.end, 'sino_duplicado',
+            'La sentencia "Si" ya contiene un bloque "Sino".', primera.value
+          ));
+        } else {
+          if (top.contenidoTrue === 0) {
+            agregarError(i, crearError(
+              i, primera.col, primera.end, 'rama_verdadera_vacia',
+              'Debe haber al menos una instrucción entre "Si ... Entonces" y "Sino" o "FinSi".', ''
+            ));
+          }
+          top.tieneSino = true;
+        }
+      }
+      if (sig.length > 1) {
+        const extra = sig[1];
+        const last = sig[sig.length - 1];
+        agregarError(i, crearError(
+          i, extra.col, last.end, 'sino_texto_extra',
+          '"Sino" no debe tener argumentos ni texto adicional.', ''
+        ));
+      }
+      continue;
+    }
+
+    if (palabra === 'finsi') {
+      if (stack.length === 0) {
+        agregarError(i, crearError(
+          i, primera.col, primera.end, 'finsi_sin_si',
+          '"FinSi" sin una sentencia "Si" abierta.', primera.value
+        ));
+      } else {
+        const top = stack.pop();
+        if (top.tieneSino) {
+          if (top.contenidoFalse === 0) {
+            agregarError(i, crearError(
+              i, primera.col, primera.end, 'rama_falsa_vacia',
+              'Debe haber al menos una instrucción entre "Sino" y "FinSi".', ''
+            ));
+          }
+        } else {
+          if (top.contenidoTrue === 0) {
+            agregarError(i, crearError(
+              i, primera.col, primera.end, 'rama_verdadera_vacia',
+              'Debe haber al menos una instrucción entre "Si ... Entonces" y "Sino" o "FinSi".', ''
+            ));
+          }
+        }
+      }
+      if (sig.length > 1) {
+        const extra = sig[1];
+        const last = sig[sig.length - 1];
+        agregarError(i, crearError(
+          i, extra.col, last.end, 'finsi_texto_extra',
+          '"FinSi" no debe tener argumentos ni texto adicional.', ''
+        ));
+      }
+      continue;
+    }
+
+    // Cualquier otra línea no vacía cuenta como instrucción real
+    if (stack.length > 0) contarContenido(stack[stack.length - 1]);
+  }
+
+  for (const ctx of stack) {
+    const longitud = lineas[ctx.lineaSi] ? lineas[ctx.lineaSi].length : 0;
+    agregarError(ctx.lineaSi, crearError(
+      ctx.lineaSi, 0, longitud, 'si_sin_cerrar',
+      'Falta "FinSi" para cerrar la sentencia "Si".', ''
+    ));
+  }
+}
+
+function validarCabeceraSi(lineaRaw, sig, lineaIdx, agregarError) {
+  const siToken = sig[0];
+
+  let entoncesIdx = -1;
+  for (let i = 1; i < sig.length; i++) {
+    if (sig[i].type === TK.KEYWORD && sig[i].value.toLowerCase() === 'entonces') {
+      entoncesIdx = i;
+      break;
+    }
+  }
+
+  const condTokens = entoncesIdx === -1 ? sig.slice(1) : sig.slice(1, entoncesIdx);
+
+  if (condTokens.length === 0) {
+    const colFin = entoncesIdx === -1 ? siToken.end : sig[entoncesIdx].end;
+    agregarError(lineaIdx, crearError(
+      lineaIdx, siToken.col, colFin, 'si_sin_condicion',
+      'Falta la condición en la sentencia "Si".', ''
+    ));
+  }
+
+  if (entoncesIdx === -1) {
+    agregarError(lineaIdx, crearError(
+      lineaIdx, siToken.col, sig[sig.length - 1].end, 'si_sin_entonces',
+      'Falta la palabra clave "Entonces" en la sentencia "Si".', ''
+    ));
+    return;
+  }
+
+  if (entoncesIdx + 1 < sig.length) {
+    const extra = sig[entoncesIdx + 1];
+    const last = sig[sig.length - 1];
+    agregarError(lineaIdx, crearError(
+      lineaIdx, extra.col, last.end, 'entonces_texto_extra',
+      'No debe haber texto después de "Entonces".', ''
+    ));
+  }
+
+  validarComparacionesEnCondicion(
+    lineaRaw, siToken.end, sig[entoncesIdx].col, lineaIdx, agregarError
+  );
+}
+
+/**
+ * Recorre el rango de la condición (entre Si y Entonces) respetando
+ * strings y comentarios, y reporta operadores de comparación no permitidos.
+ * Permitidos: ==, <>, <=, >=, !=, <, >
+ * Cualquier otro (ej. =, !, <-, =<, =>) es error.
+ */
+function validarComparacionesEnCondicion(lineaRaw, colInicio, colFin, lineaIdx, agregarError) {
+  const VALIDOS_DOBLE = new Set(['==', '<>', '<=', '>=', '!=']);
+  let inStr = false;
+  let i = colInicio;
+
+  while (i < colFin) {
+    const ch = lineaRaw[i];
+    if (ch === '"') { inStr = !inStr; i++; continue; }
+    if (inStr) { i++; continue; }
+    if (ch === '/' && lineaRaw[i + 1] === '/') break;
+
+    if (ch === '<' || ch === '>' || ch === '=' || ch === '!') {
+      const two = lineaRaw.substring(i, i + 2);
+
+      if (two === '<-') {
+        agregarError(lineaIdx, crearError(
+          lineaIdx, i, i + 2, 'comparador_invalido',
+          'Operador de comparación no válido en la condición del "Si".', '<-'
+        ));
+        i += 2;
+        continue;
+      }
+
+      if (VALIDOS_DOBLE.has(two)) {
+        i += 2;
+        continue;
+      }
+
+      if (ch === '<' || ch === '>') {
+        i++;
+        continue;
+      }
+
+      agregarError(lineaIdx, crearError(
+        lineaIdx, i, i + 1, 'comparador_invalido',
+        'Operador de comparación no válido en la condición del "Si".', ch
+      ));
+      i++;
+      continue;
+    }
+
+    i++;
+  }
+}
+
+// ─────────────────────────────────────────────
+//  VALIDATION: Segun / De Otro Modo / FinSegun
+// ─────────────────────────────────────────────
+
+/**
+ * Pasada estructural sobre el documento completo para Segun.
+ * Mantiene una pila para soportar anidación. Rastrea:
+ *   - cabecera (expresión y palabra "Hacer")
+ *   - etiquetas de caso (valores + ":")
+ *   - valores duplicados dentro del mismo Segun
+ *   - "De Otro Modo:" único y posterior a los casos
+ *   - contenido real por cada segmento (caso o De Otro Modo)
+ *   - cierre con "FinSegun"
+ */
+function validarBloquesSegun(lineas, agregarError) {
+  const stack = [];
+
+  for (let i = 0; i < lineas.length; i++) {
+    const lineaRaw = lineas[i];
+    const allTokens = tokenizarLinea(lineaRaw);
+    const sig = tokensSignificativos(allTokens);
+    if (sig.length === 0) continue;
+
+    const primera = sig[0];
+    const palabra = primera.type === TK.KEYWORD ? primera.value.toLowerCase() : null;
+
+    if (palabra === 'segun') {
+      if (stack.length > 0 && stack[stack.length - 1].ultimoSegmento) {
+        stack[stack.length - 1].ultimoSegmento.contenido++;
+      }
+      validarCabeceraSegun(sig, i, agregarError);
+      stack.push({
+        lineaSegun: i,
+        tieneDeOtroModo: false,
+        casos: new Set(),
+        ultimoSegmento: null,
+        tieneAlgunCaso: false,
+      });
+      continue;
+    }
+
+    if (palabra === 'finsegun') {
+      if (stack.length === 0) {
+        agregarError(i, crearError(
+          i, primera.col, primera.end, 'finsegun_sin_segun',
+          '"FinSegun" sin una sentencia "Segun" abierta.', primera.value
+        ));
+      } else {
+        const top = stack.pop();
+        finalizarSegmentoAntesFinSegun(top, agregarError);
+        if (!top.tieneAlgunCaso && !top.tieneDeOtroModo) {
+          agregarError(i, crearError(
+            i, primera.col, primera.end, 'segun_sin_casos',
+            'La sentencia "Segun" debe tener al menos un caso o un bloque "De Otro Modo".', ''
+          ));
+        }
+      }
+      if (sig.length > 1) {
+        const extra = sig[1];
+        const last = sig[sig.length - 1];
+        agregarError(i, crearError(
+          i, extra.col, last.end, 'finsegun_texto_extra',
+          '"FinSegun" no debe tener argumentos ni texto adicional.', ''
+        ));
+      }
+      continue;
+    }
+
+    if (palabra === 'de' && esDeOtroModo(sig)) {
+      if (stack.length === 0) {
+        agregarError(i, crearError(
+          i, primera.col, sig[2].end, 'deotromodo_sin_segun',
+          '"De Otro Modo" sin una sentencia "Segun" abierta.', ''
+        ));
+      } else {
+        const top = stack[stack.length - 1];
+        finalizarSegmentoEnMedio(top, agregarError);
+        if (top.tieneDeOtroModo) {
+          agregarError(i, crearError(
+            i, primera.col, sig[2].end, 'deotromodo_duplicado',
+            'La sentencia "Segun" ya contiene un bloque "De Otro Modo".', ''
+          ));
+        } else {
+          if (!top.tieneAlgunCaso) {
+            agregarError(i, crearError(
+              i, primera.col, sig[2].end, 'deotromodo_antes_casos',
+              '"De Otro Modo" debe aparecer después de al menos un caso.', ''
+            ));
+          }
+          top.tieneDeOtroModo = true;
+        }
+        top.ultimoSegmento = { tipo: 'deotromodo', contenido: 0, linea: i };
+      }
+
+      if (sig.length === 3) {
+        agregarError(i, crearError(
+          i, sig[0].col, sig[2].end, 'deotromodo_sin_colon',
+          '"De Otro Modo" debe terminar con ":".', ''
+        ));
+      } else if (sig[3].type !== TK.COLON) {
+        agregarError(i, crearError(
+          i, sig[3].col, sig[sig.length - 1].end, 'deotromodo_texto_extra',
+          '"De Otro Modo" no debe tener texto adicional.', ''
+        ));
+      } else if (sig.length > 4) {
+        const extra = sig[4];
+        const last = sig[sig.length - 1];
+        agregarError(i, crearError(
+          i, extra.col, last.end, 'deotromodo_texto_extra',
+          '"De Otro Modo" no debe tener texto adicional.', ''
+        ));
+      }
+      continue;
+    }
+
+    // Etiqueta de caso: contiene ":" y estamos dentro de un Segun abierto
+    const colonIdx = sig.findIndex(t => t.type === TK.COLON);
+    if (colonIdx >= 0 && stack.length > 0) {
+      const top = stack[stack.length - 1];
+      finalizarSegmentoEnMedio(top, agregarError);
+
+      if (top.tieneDeOtroModo) {
+        const last = sig[sig.length - 1];
+        agregarError(i, crearError(
+          i, primera.col, last.end, 'caso_despues_deotromodo',
+          'No puede haber casos después de "De Otro Modo".', ''
+        ));
+      }
+
+      validarEtiquetaCaso(sig, colonIdx, i, top, agregarError);
+
+      if (!top.tieneDeOtroModo) {
+        top.tieneAlgunCaso = true;
+      }
+      top.ultimoSegmento = { tipo: 'caso', contenido: 0, linea: i };
+      continue;
+    }
+
+    // Cualquier otra línea cuenta como contenido del segmento actual
+    if (stack.length > 0 && stack[stack.length - 1].ultimoSegmento) {
+      stack[stack.length - 1].ultimoSegmento.contenido++;
+    }
+  }
+
+  for (const ctx of stack) {
+    const longitud = lineas[ctx.lineaSegun] ? lineas[ctx.lineaSegun].length : 0;
+    agregarError(ctx.lineaSegun, crearError(
+      ctx.lineaSegun, 0, longitud, 'segun_sin_cerrar',
+      'Falta "FinSegun" para cerrar la sentencia "Segun".', ''
+    ));
+  }
+}
+
+function esDeOtroModo(sig) {
+  if (sig.length < 3) return false;
+  if (sig[0].type !== TK.KEYWORD || sig[0].value.toLowerCase() !== 'de') return false;
+  if (sig[1].type !== TK.KEYWORD || sig[1].value.toLowerCase() !== 'otro') return false;
+  if (sig[2].type !== TK.KEYWORD || sig[2].value.toLowerCase() !== 'modo') return false;
+  return true;
+}
+
+function validarCabeceraSegun(sig, lineaIdx, agregarError) {
+  const segunToken = sig[0];
+
+  let hacerIdx = -1;
+  for (let i = 1; i < sig.length; i++) {
+    if (sig[i].type === TK.KEYWORD && sig[i].value.toLowerCase() === 'hacer') {
+      hacerIdx = i;
+      break;
+    }
+  }
+
+  const exprTokens = hacerIdx === -1 ? sig.slice(1) : sig.slice(1, hacerIdx);
+
+  if (exprTokens.length === 0) {
+    const colFin = hacerIdx === -1 ? segunToken.end : sig[hacerIdx].end;
+    agregarError(lineaIdx, crearError(
+      lineaIdx, segunToken.col, colFin, 'segun_sin_expresion',
+      'Falta la expresión en la sentencia "Segun".', ''
+    ));
+  }
+
+  if (hacerIdx === -1) {
+    agregarError(lineaIdx, crearError(
+      lineaIdx, segunToken.col, sig[sig.length - 1].end, 'segun_sin_hacer',
+      'Falta la palabra clave "Hacer" en la sentencia "Segun".', ''
+    ));
+    return;
+  }
+
+  if (hacerIdx + 1 < sig.length) {
+    const extra = sig[hacerIdx + 1];
+    const last = sig[sig.length - 1];
+    agregarError(lineaIdx, crearError(
+      lineaIdx, extra.col, last.end, 'hacer_texto_extra',
+      'No debe haber texto después de "Hacer".', ''
+    ));
+  }
+}
+
+function validarEtiquetaCaso(sig, colonIdx, lineaIdx, top, agregarError) {
+  const colonToken = sig[colonIdx];
+  const valoresTokens = sig.slice(0, colonIdx);
+  const afterColon = sig.slice(colonIdx + 1);
+
+  if (afterColon.length > 0) {
+    const first = afterColon[0];
+    const last = afterColon[afterColon.length - 1];
+    agregarError(lineaIdx, crearError(
+      lineaIdx, first.col, last.end, 'caso_texto_extra',
+      'No debe haber texto después de ":" en la línea del caso.', ''
+    ));
+  }
+
+  if (valoresTokens.length === 0) {
+    agregarError(lineaIdx, crearError(
+      lineaIdx, colonToken.col, colonToken.end, 'caso_sin_valor',
+      'Falta al menos un valor en el caso del "Segun".', ''
+    ));
+    return;
+  }
+
+  let esperandoValor = true;
+  let ultimaEraComa = false;
+  let ultimoTokenComa = null;
+  let huboValor = false;
+
+  for (const tk of valoresTokens) {
+    if (tk.type === TK.COMMA) {
+      if (esperandoValor) {
+        agregarError(lineaIdx, crearError(
+          lineaIdx, tk.col, tk.end, 'caso_coma_invalida',
+          'Coma inválida en la lista de valores del caso.', ','
+        ));
+      }
+      esperandoValor = true;
+      ultimaEraComa = true;
+      ultimoTokenComa = tk;
+    } else {
+      ultimaEraComa = false;
+      if (esperandoValor) {
+        if (esValorDeCaso(tk)) {
+          const key = valorDeCasoKey(tk);
+          if (top.casos.has(key)) {
+            agregarError(lineaIdx, crearError(
+              lineaIdx, tk.col, tk.end, 'caso_duplicado',
+              'Valor de caso duplicado en la sentencia "Segun".', tk.value
+            ));
+          } else {
+            top.casos.add(key);
+          }
+          huboValor = true;
+        } else {
+          agregarError(lineaIdx, crearError(
+            lineaIdx, tk.col, tk.end, 'caso_valor_invalido',
+            `Valor de caso no válido: "${tk.value}".`, tk.value
+          ));
+        }
+        esperandoValor = false;
+      } else {
+        agregarError(lineaIdx, crearError(
+          lineaIdx, tk.col, tk.end, 'caso_sintaxis',
+          'Se esperaba una coma entre los valores del caso.', ''
+        ));
+      }
+    }
+  }
+
+  if (ultimaEraComa) {
+    agregarError(lineaIdx, crearError(
+      lineaIdx, ultimoTokenComa.col, ultimoTokenComa.end, 'caso_coma_invalida',
+      'Coma inválida en la lista de valores del caso.', ','
+    ));
+  }
+
+  if (!huboValor) {
+    agregarError(lineaIdx, crearError(
+      lineaIdx, colonToken.col, colonToken.end, 'caso_sin_valor',
+      'Falta al menos un valor en el caso del "Segun".', ''
+    ));
+  }
+}
+
+function esValorDeCaso(tk) {
+  return tk.type === TK.NUMBER || tk.type === TK.STRING || tk.type === TK.IDENTIFIER;
+}
+
+function valorDeCasoKey(tk) {
+  if (tk.type === TK.NUMBER) return `num:${tk.value}`;
+  if (tk.type === TK.STRING) return `str:${tk.value}`;
+  if (tk.type === TK.IDENTIFIER) return `id:${tk.value.toLowerCase()}`;
+  return `raw:${tk.value}`;
+}
+
+function finalizarSegmentoEnMedio(top, agregarError) {
+  if (!top.ultimoSegmento) return;
+  if (top.ultimoSegmento.contenido > 0) return;
+  const prev = top.ultimoSegmento;
+  if (prev.tipo === 'caso') {
+    agregarError(prev.linea, crearError(
+      prev.linea, 0, 0, 'caso_vacio',
+      'Debe haber al menos una instrucción después de este caso del "Segun".', ''
+    ));
+  }
+}
+
+function finalizarSegmentoAntesFinSegun(top, agregarError) {
+  if (!top.ultimoSegmento) return;
+  if (top.ultimoSegmento.contenido > 0) return;
+  const prev = top.ultimoSegmento;
+  if (prev.tipo === 'deotromodo') {
+    agregarError(prev.linea, crearError(
+      prev.linea, 0, 0, 'deotromodo_vacio',
+      'Debe haber al menos una instrucción entre "De Otro Modo:" y "FinSegun".', ''
+    ));
+  } else if (prev.tipo === 'caso') {
+    agregarError(prev.linea, crearError(
+      prev.linea, 0, 0, 'ultimo_bloque_vacio',
+      'Falta contenido en el último bloque del "Segun" antes de "FinSegun".', ''
+    ));
+  }
 }
 
 /**

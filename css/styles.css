@@ -724,3 +724,13 @@ body::before {
   color: var(--accent);
   text-shadow: 0 0 8px rgba(0,255,136,0.25);
 }
+
+.nombre-proceso-highlight {
+  position: absolute;
+  background: rgba(247, 208, 70, 0.28);
+  box-shadow: 0 0 0 1px rgba(247, 208, 70, 0.85);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.15s ease;
+}

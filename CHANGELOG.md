@@ -6,6 +6,19 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.3.1] — 2026-04-21
+
+### Agregado
+- **Validación estructural para bloques `Si / Sino / FinSi`**: se incorporó validación estática del bloque condicional completo, incluyendo condición obligatoria, uso correcto de `Entonces`, detección de `Sino` duplicado, cierres faltantes con `FinSi` y ramas vacías.
+- **Validación estructural para bloques `Segun / De Otro Modo / FinSegun`**: ahora se valida la cabecera con `Hacer`, los casos con `:`, valores duplicados, bloques vacíos, uso correcto de `De Otro Modo` y cierre obligatorio con `FinSegun`.
+- **Validación estructural para bloques `Mientras / FinMientras`**: se añadió validación de condición, presencia de `Hacer`, detección de bloques vacíos y control de cierres correctos con `FinMientras`.
+- **Nuevas palabras reservadas del lenguaje**: se amplió el analizador para reconocer las estructuras `Si`, `Entonces`, `Sino`, `FinSi`, `Segun`, `Hacer`, `De Otro Modo`, `FinSegun`, `Mientras`, `FinMientras`, `Repetir`, `Hasta` y `Que`.
+- **Validación de operadores de comparación en condiciones**: las condiciones de `Si`, `Mientras` y `Hasta Que` ahora aceptan únicamente `==`, `<>`, `<`, `>`, `<=`, `>=` y `!=`, marcando como error cualquier operador no permitido.
+
+### Corregido
+- **Errores más precisos en estructuras de control**: ahora se reportan mensajes específicos para condiciones faltantes, bloques vacíos, cierres ausentes, texto extra en sentencias de control y uso inválido de operadores comparativos.
+- **Soporte de anidación validada**: los bloques de control ahora pueden validarse correctamente cuando están anidados, evitando falsos positivos en cierres y estructuras internas.
+
 ## [0.3.0] - 2026-04-19
 
 ### Cambiado

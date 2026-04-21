@@ -9,7 +9,7 @@
 // =========================================
 
 let inputResolver = null;
-const mobileConsoleQuery = window.matchMedia('(max-width: 768px)');
+const mobileConsoleQuery = window.matchMedia("(max-width: 768px)");
 
 let errorVisualState = {
   activo: false,
@@ -28,9 +28,8 @@ function resetErrorVisualState() {
 // =========================================
 
 const interprete = new LiteSeInt({
-
   onEscribir(texto) {
-    consolaImprimir(texto, 'output');
+    consolaImprimir(texto, "output");
   },
 
   onLeer(nombreVar) {
@@ -44,9 +43,9 @@ const interprete = new LiteSeInt({
     if (!errorVisualState.erroresMapa[lineaIdx]) {
       errorVisualState.erroresMapa[lineaIdx] = mensaje;
     } else {
-      errorVisualState.erroresMapa[lineaIdx] += '\n' + mensaje;
+      errorVisualState.erroresMapa[lineaIdx] += "\n" + mensaje;
     }
-    consolaImprimir(`Error en línea ${lineaIdx + 1}: ${mensaje}`, 'error');
+    consolaImprimir(`Error en línea ${lineaIdx + 1}: ${mensaje}`, "error");
     marcarErrorLinea(lineaIdx, errorVisualState.erroresMapa[lineaIdx]);
     errorVisualState.activo = true;
   },
@@ -56,52 +55,55 @@ const interprete = new LiteSeInt({
   },
 
   onSistema(texto) {
-    consolaImprimir(texto, 'input-echo');
+    consolaImprimir(texto, "input-echo");
   },
 
-  onFin() { /* handled in ejecutar() */ },
+  onFin() {
+    /* handled in ejecutar() */
+  },
 });
 
 // =========================================
 // 3. CONSOLA
 // =========================================
 
-function consolaImprimir(texto, tipo = 'output') {
-  $('#consola').append(
-    $('<div>').addClass(`console-line ${tipo}`).text(texto)
-  );
+function consolaImprimir(texto, tipo = "output") {
+  $("#consola").append($("<div>").addClass(`console-line ${tipo}`).text(texto));
   scrollConsola();
 }
 
 function scrollConsola() {
-  const el = document.getElementById('consola');
+  const el = document.getElementById("consola");
   el.scrollTop = el.scrollHeight;
 }
 
 function setMobileConsoleCollapsed(collapsed) {
-  const shell = document.querySelector('.app-shell');
+  const shell = document.querySelector(".app-shell");
   if (!shell) return;
-  shell.classList.toggle('mobile-console-collapsed', mobileConsoleQuery.matches && collapsed);
+  shell.classList.toggle(
+    "mobile-console-collapsed",
+    mobileConsoleQuery.matches && collapsed,
+  );
 }
 
 function toggleMobileConsoleCollapsed() {
-  const shell = document.querySelector('.app-shell');
+  const shell = document.querySelector(".app-shell");
   if (!shell || !mobileConsoleQuery.matches) return;
-  shell.classList.toggle('mobile-console-collapsed');
+  shell.classList.toggle("mobile-console-collapsed");
 }
 
-const ESTRUCTURA_INICIAL = 'Proceso nombre_proceso\n\n\n\n\n\n\n\n\nFinProceso';
-const PROCESO_PREFIX_LEN = 'Proceso '.length; // 8
+const ESTRUCTURA_INICIAL = "Proceso nombre_proceso\n\n\n\n\n\n\n\n\nFinProceso";
+const PROCESO_PREFIX_LEN = "Proceso ".length; // 8
 
 function obtenerNombreProceso() {
-  const primera = $('#editor').val().split('\n')[0];
+  const primera = $("#editor").val().split("\n")[0];
   const m = primera.match(/^Proceso\s+(.+?)\s*$/i);
-  return m ? m[1] : 'nombre_proceso';
+  return m ? m[1] : "nombre_proceso";
 }
 
 function limpiarConsola() {
   detener();
-  $('#consola').empty();
+  $("#consola").empty();
   invalidarErroresVisuales();
 }
 
@@ -109,22 +111,87 @@ function limpiarTodo() {
   detener();
   const nombre = obtenerNombreProceso();
   const estructura = `Proceso ${nombre}\n\n\n\n\n\n\n\n\nFinProceso`;
-  $('#editor').val(estructura);
-  $('#consola').empty();
+  $("#editor").val(estructura);
+  $("#consola").empty();
   invalidarErroresVisuales();
   actualizarLineas();
-  const editor = document.getElementById('editor');
-  const pos = estructura.indexOf('\n') + 1;
+  const editor = document.getElementById("editor");
+  const pos = estructura.indexOf("\n") + 1;
   editor.setSelectionRange(pos, pos);
   editor.focus();
 }
 
+const NOMBRE_HIGHLIGHT_ID = "nombreProcesoHighlight";
+
+function obtenerRangoNombreProceso() {
+  const primera = $("#editor").val().split("\n")[0];
+  const m = primera.match(/^(Proceso\s+)(\S.*?)(\s*)$/i);
+  if (!m) return null;
+  const colInicio = m[1].length;
+  const colFin = colInicio + m[2].length;
+  return { colInicio, colFin };
+}
+
+function posicionarResalteNombre(el) {
+  const rango = obtenerRangoNombreProceso();
+  const editor = document.getElementById("editor");
+  if (!rango || !editor) {
+    el.style.display = "none";
+    return;
+  }
+  const metrics = getIndentGuideMetrics();
+  const cw = metrics ? metrics.charWidth : 7.8;
+  const lh = metrics ? metrics.lineHeight : 21.45;
+  const pt = metrics ? metrics.paddingTop : 8;
+  const pl = metrics ? metrics.paddingLeft : 16;
+
+  const top = pt - editor.scrollTop;
+  const left = pl + rango.colInicio * cw - editor.scrollLeft;
+  const width = (rango.colFin - rango.colInicio) * cw;
+
+  el.style.display = "block";
+  el.style.top = `${top}px`;
+  el.style.left = `${left}px`;
+  el.style.width = `${width}px`;
+  el.style.height = `${lh}px`;
+}
+
+function resaltarNombreInvalido() {
+  const area = document.querySelector(".editor-code-area");
+  if (!area) return;
+  let el = document.getElementById(NOMBRE_HIGHLIGHT_ID);
+  if (!el) {
+    el = document.createElement("div");
+    el.id = NOMBRE_HIGHLIGHT_ID;
+    el.className = "nombre-proceso-highlight";
+    area.appendChild(el);
+  }
+  posicionarResalteNombre(el);
+}
+
+function quitarResalteNombreInvalido() {
+  const el = document.getElementById(NOMBRE_HIGHLIGHT_ID);
+  if (el) el.remove();
+}
+
 function descargar() {
-  const contenido = $('#editor').val();
   const nombre = obtenerNombreProceso();
-  const blob = new Blob([contenido], { type: 'text/plain' });
+  if (nombre === "nombre_proceso") {
+    resaltarNombreInvalido();
+    Swal.fire({
+      icon: "warning",
+      title: "Nombre de proceso inválido",
+      text: 'Cambia "nombre_proceso" por un nombre válido antes de descargar.',
+      confirmButtonColor: "#00cc77",
+      background: "#161b22",
+      color: "#e6edf3",
+    });
+    return;
+  }
+  const contenido = $("#editor").val();
+  const blob = new Blob([contenido], { type: "text/plain" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
+  const a = document.createElement("a");
   a.href = url;
   a.download = `${nombre}.psc`;
   a.click();
@@ -136,7 +203,7 @@ function descargar() {
 // =========================================
 
 function mostrarInputConsola(nombreVar) {
-  const $row = $('<div>').addClass('console-input-row');
+  const $row = $("<div>").addClass("console-input-row");
   $row.html(`
     <span class="prompt-symbol">?</span>
     <span class="var-label">${nombreVar}:</span>
@@ -145,20 +212,25 @@ function mostrarInputConsola(nombreVar) {
     <button class="console-input-send" id="consolaInputBtn">↵</button>
   `);
 
-  $('#consola').append($row);
+  $("#consola").append($row);
   scrollConsola();
-  setTimeout(() => $('#consolaInputField').focus(), 50);
+  setTimeout(() => $("#consolaInputField").focus(), 50);
 
-  $row.find('#consolaInputField').on('keydown', function(e) {
-    if (e.key === 'Enter') { e.preventDefault(); confirmarInputConsola($row); }
+  $row.find("#consolaInputField").on("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      confirmarInputConsola($row);
+    }
   });
-  $row.find('#consolaInputBtn').on('click', () => confirmarInputConsola($row));
+  $row.find("#consolaInputBtn").on("click", () => confirmarInputConsola($row));
 }
 
 function confirmarInputConsola($row) {
-  const valor = $row.find('#consolaInputField').val();
+  const valor = $row.find("#consolaInputField").val();
   $row.replaceWith(
-    $('<div>').addClass('console-line input-echo').text(`  ↳ entrada: ${valor}`)
+    $("<div>")
+      .addClass("console-line input-echo")
+      .text(`  ↳ entrada: ${valor}`),
   );
   if (inputResolver) {
     const resolver = inputResolver;
@@ -173,18 +245,18 @@ function confirmarInputConsola($row) {
 
 function invalidarErroresVisuales() {
   resetErrorVisualState();
-  $('.line-num-row').removeClass('has-error');
-  $('.line-overlay').removeClass('has-error');
-  $('.error-badge-btn').each(function() {
+  $(".line-num-row").removeClass("has-error");
+  $(".line-overlay").removeClass("has-error");
+  $(".error-badge-btn").each(function () {
     const tip = bootstrap.Tooltip.getInstance(this);
     if (tip) tip.dispose();
   });
-  document.getElementById('errorDecoLayer').innerHTML = '';
+  document.getElementById("errorDecoLayer").innerHTML = "";
 }
 
 function limpiarEjecucionHighlight() {
-  $('.line-num-row.executing').removeClass('executing');
-  $('.line-overlay.executing').removeClass('executing');
+  $(".line-num-row.executing").removeClass("executing");
+  $(".line-overlay.executing").removeClass("executing");
 }
 
 function aplicarErroresVisuales(erroresPorLinea) {
@@ -193,7 +265,7 @@ function aplicarErroresVisuales(erroresPorLinea) {
   errorVisualState.erroresPorLinea = erroresPorLinea;
 
   for (const [lineaIdx, erroresLinea] of erroresPorLinea) {
-    const mensajes = erroresLinea.map(e => e.mensaje).join('\n');
+    const mensajes = erroresLinea.map((e) => e.mensaje).join("\n");
     errorVisualState.erroresMapa[lineaIdx] = mensajes;
     marcarErrorLinea(lineaIdx, mensajes);
   }
@@ -203,42 +275,48 @@ function aplicarErroresVisuales(erroresPorLinea) {
 
 function marcarErrorLinea(lineaIdx, mensaje) {
   const $row = $(`.line-num-row[data-line="${lineaIdx}"]`);
-  $row.addClass('has-error').removeClass('executing');
+  $row.addClass("has-error").removeClass("executing");
 
   const $overlay = $(`.line-overlay[data-line="${lineaIdx}"]`);
-  $overlay.removeClass('executing').addClass('has-error');
+  $overlay.removeClass("executing").addClass("has-error");
 
-  const $btn = $overlay.find('.error-badge-btn');
-  $btn.attr('title', mensaje);
+  const $btn = $overlay.find(".error-badge-btn");
+  $btn.attr("title", mensaje);
 
   const existing = bootstrap.Tooltip.getInstance($btn[0]);
   if (existing) existing.dispose();
-  new bootstrap.Tooltip($btn[0], { placement: 'left', trigger: 'hover focus', html: false });
+  new bootstrap.Tooltip($btn[0], {
+    placement: "left",
+    trigger: "hover focus",
+    html: false,
+  });
 }
 
 function renderizarSubrayados() {
-  const texto = $('#editor').val();
-  const lineas = texto.split('\n');
+  const texto = $("#editor").val();
+  const lineas = texto.split("\n");
   const errPorLinea = errorVisualState.erroresPorLinea;
 
   if (!errPorLinea || errPorLinea.size === 0) {
-    document.getElementById('errorDecoLayer').innerHTML = lineas.map(() => '').join('\n');
+    document.getElementById("errorDecoLayer").innerHTML = lineas
+      .map(() => "")
+      .join("\n");
     return;
   }
 
   const htmlLines = lineas.map((linea, idx) => {
     const erroresLinea = errPorLinea.get(idx);
     if (!erroresLinea || erroresLinea.length === 0) {
-      return ' '.repeat(linea.length);
+      return " ".repeat(linea.length);
     }
     return renderErrorUnderlines(linea, erroresLinea);
   });
 
-  document.getElementById('errorDecoLayer').innerHTML = htmlLines.join('\n');
+  document.getElementById("errorDecoLayer").innerHTML = htmlLines.join("\n");
 }
 
 function renderErrorUnderlines(linea, errores) {
-  if (linea.length === 0) return '';
+  if (linea.length === 0) return "";
 
   const errorMap = new Array(linea.length).fill(false);
   for (const err of errores) {
@@ -249,7 +327,7 @@ function renderErrorUnderlines(linea, errores) {
     }
   }
 
-  let result = '';
+  let result = "";
   let i = 0;
   while (i < linea.length) {
     const isError = errorMap[i];
@@ -273,26 +351,32 @@ function renderErrorUnderlines(linea, errores) {
 // =========================================
 
 function actualizarLineas() {
-  const texto = $('#editor').val();
-  const numLineas = texto.split('\n').length;
+  const texto = $("#editor").val();
+  const numLineas = texto.split("\n").length;
   const total = Math.max(numLineas, 10);
-  const $gutter = $('#lineNumbers');
-  const $overlays = $('#lineOverlays');
+  const $gutter = $("#lineNumbers");
+  const $overlays = $("#lineOverlays");
 
   $gutter.empty();
   $overlays.empty();
 
   for (let i = 0; i < total; i++) {
-    const $row = $('<div>').addClass('line-num-row').attr('data-line', i);
-    $row.append($('<span>').addClass('exec-arrow').text('>'));
-    $row.append($('<span>').addClass('num-text').text(i + 1));
+    const $row = $("<div>").addClass("line-num-row").attr("data-line", i);
+    $row.append($("<span>").addClass("exec-arrow").text(">"));
+    $row.append(
+      $("<span>")
+        .addClass("num-text")
+        .text(i + 1),
+    );
     $gutter.append($row);
 
-    const $overlay = $('<div>').addClass('line-overlay').attr('data-line', i);
+    const $overlay = $("<div>").addClass("line-overlay").attr("data-line", i);
     $overlay.append(
-      $('<div>').addClass('error-badge-container').html(
-        `<button class="error-badge-btn" data-line="${i}" tabindex="-1">!</button>`
-      )
+      $("<div>")
+        .addClass("error-badge-container")
+        .html(
+          `<button class="error-badge-btn" data-line="${i}" tabindex="-1">!</button>`,
+        ),
     );
     $overlays.append($overlay);
   }
@@ -308,21 +392,23 @@ function actualizarLineas() {
 }
 
 function resaltarLineaEjecutando(lineaIdx) {
-  $('.line-num-row.executing').removeClass('executing');
-  $('.line-overlay.executing').removeClass('executing');
-  $(`.line-num-row[data-line="${lineaIdx}"]`).addClass('executing');
-  $(`.line-overlay[data-line="${lineaIdx}"]`).addClass('executing');
+  $(".line-num-row.executing").removeClass("executing");
+  $(".line-overlay.executing").removeClass("executing");
+  $(`.line-num-row[data-line="${lineaIdx}"]`).addClass("executing");
+  $(`.line-overlay[data-line="${lineaIdx}"]`).addClass("executing");
 }
 
-$('#editor').on('scroll', function() {
+$("#editor").on("scroll", function () {
   const st = this.scrollTop;
   const sl = this.scrollLeft;
-  document.getElementById('lineNumbers').scrollTop = st;
-  document.getElementById('lineOverlays').scrollTop = st;
-  document.getElementById('syntaxLayer').scrollTop = st;
-  document.getElementById('syntaxLayer').scrollLeft = sl;
-  document.getElementById('errorDecoLayer').scrollTop = st;
-  document.getElementById('errorDecoLayer').scrollLeft = sl;
+  document.getElementById("lineNumbers").scrollTop = st;
+  document.getElementById("lineOverlays").scrollTop = st;
+  document.getElementById("syntaxLayer").scrollTop = st;
+  document.getElementById("syntaxLayer").scrollLeft = sl;
+  document.getElementById("errorDecoLayer").scrollTop = st;
+  document.getElementById("errorDecoLayer").scrollLeft = sl;
+  const hl = document.getElementById(NOMBRE_HIGHLIGHT_ID);
+  if (hl) posicionarResalteNombre(hl);
   actualizarIndentGuides();
 });
 
@@ -341,11 +427,11 @@ function parseCssPx(value, fallback = 0) {
 }
 
 function getCursorLineIndex(texto, selectionStart) {
-  return texto.substring(0, selectionStart).split('\n').length - 1;
+  return texto.substring(0, selectionStart).split("\n").length - 1;
 }
 
 function getIndentGuideMetrics(force = false) {
-  const editor = document.getElementById('editor');
+  const editor = document.getElementById("editor");
   if (!editor) return null;
 
   if (!force && editor._indentGuideMetrics) {
@@ -353,20 +439,28 @@ function getIndentGuideMetrics(force = false) {
   }
 
   const computed = window.getComputedStyle(editor);
-  const lineHeight = parseCssPx(computed.lineHeight, parseCssPx(computed.fontSize, 13) * 1.65);
+  const lineHeight = parseCssPx(
+    computed.lineHeight,
+    parseCssPx(computed.fontSize, 13) * 1.65,
+  );
   const paddingTop = parseCssPx(computed.paddingTop, 8);
   const paddingLeft = parseCssPx(computed.paddingLeft, 16);
   const tabSize = Math.max(
     1,
-    parseInt(computed.tabSize || computed.getPropertyValue('tab-size') || DEFAULT_INDENT_STEP, 10) || DEFAULT_INDENT_STEP
+    parseInt(
+      computed.tabSize ||
+        computed.getPropertyValue("tab-size") ||
+        DEFAULT_INDENT_STEP,
+      10,
+    ) || DEFAULT_INDENT_STEP,
   );
 
-  const measurer = document.createElement('span');
-  measurer.textContent = '0'.repeat(32);
-  measurer.style.position = 'absolute';
-  measurer.style.visibility = 'hidden';
-  measurer.style.pointerEvents = 'none';
-  measurer.style.whiteSpace = 'pre';
+  const measurer = document.createElement("span");
+  measurer.textContent = "0".repeat(32);
+  measurer.style.position = "absolute";
+  measurer.style.visibility = "hidden";
+  measurer.style.pointerEvents = "none";
+  measurer.style.whiteSpace = "pre";
   measurer.style.fontFamily = computed.fontFamily;
   measurer.style.fontSize = computed.fontSize;
   measurer.style.fontWeight = computed.fontWeight;
@@ -382,7 +476,7 @@ function getIndentGuideMetrics(force = false) {
     lineHeight,
     paddingTop,
     paddingLeft,
-    tabSize
+    tabSize,
   };
 
   editor._indentGuideMetrics = metrics;
@@ -392,9 +486,9 @@ function getIndentGuideMetrics(force = false) {
 function getLeadingIndentColumns(linea, tabSize) {
   let width = 0;
   for (const ch of linea) {
-    if (ch === ' ') {
+    if (ch === " ") {
       width += 1;
-    } else if (ch === '\t') {
+    } else if (ch === "\t") {
       width += tabSize - (width % tabSize);
     } else {
       break;
@@ -406,7 +500,7 @@ function getLeadingIndentColumns(linea, tabSize) {
 function getVisualColumns(texto, tabSize) {
   let width = 0;
   for (const ch of texto) {
-    if (ch === '\t') {
+    if (ch === "\t") {
       width += tabSize - (width % tabSize);
     } else {
       width += 1;
@@ -418,8 +512,8 @@ function getVisualColumns(texto, tabSize) {
 function computeEffectiveIndents(lineas, tabSize) {
   const n = lineas.length;
   const effectiveIndents = new Array(n).fill(0);
-  const actualIndents = lineas.map(linea => {
-    if (linea.trim() === '') return null;
+  const actualIndents = lineas.map((linea) => {
+    if (linea.trim() === "") return null;
     return getLeadingIndentColumns(linea, tabSize);
   });
 
@@ -431,12 +525,18 @@ function computeEffectiveIndents(lineas, tabSize) {
 
     let prev = null;
     for (let j = i - 1; j >= 0; j--) {
-      if (actualIndents[j] !== null) { prev = actualIndents[j]; break; }
+      if (actualIndents[j] !== null) {
+        prev = actualIndents[j];
+        break;
+      }
     }
 
     let next = null;
     for (let j = i + 1; j < n; j++) {
-      if (actualIndents[j] !== null) { next = actualIndents[j]; break; }
+      if (actualIndents[j] !== null) {
+        next = actualIndents[j];
+        break;
+      }
     }
 
     if (prev === null && next === null) {
@@ -460,7 +560,7 @@ function getVisibleGuideColumns(indentWidth, tabSize) {
   const maxCol = Math.ceil(indentWidth / tabSize) * tabSize;
 
   for (let col = tabSize; col <= maxCol; col += tabSize) {
-    const guideCenter = col - (tabSize / 2);
+    const guideCenter = col - tabSize / 2;
     if (guideCenter <= indentWidth) {
       cols.push(col);
     }
@@ -473,7 +573,9 @@ function computeGuideSegments(visibleGuideColsByLine, tabSize) {
   const segments = [];
   const maxIndent = Math.max(
     0,
-    ...visibleGuideColsByLine.map(cols => cols.length ? cols[cols.length - 1] : 0)
+    ...visibleGuideColsByLine.map((cols) =>
+      cols.length ? cols[cols.length - 1] : 0,
+    ),
   );
 
   for (let col = tabSize; col <= maxIndent; col += tabSize) {
@@ -490,7 +592,11 @@ function computeGuideSegments(visibleGuideColsByLine, tabSize) {
     }
 
     if (start !== null) {
-      segments.push({ col, startLine: start, endLine: visibleGuideColsByLine.length - 1 });
+      segments.push({
+        col,
+        startLine: start,
+        endLine: visibleGuideColsByLine.length - 1,
+      });
     }
   }
 
@@ -504,8 +610,8 @@ function getGuideX(col, metrics) {
 }
 
 function renderIndentGuides() {
-  const editor = document.getElementById('editor');
-  const layer = document.getElementById('indentGuideLayer');
+  const editor = document.getElementById("editor");
+  const layer = document.getElementById("indentGuideLayer");
   if (!editor || !layer) return;
 
   const metrics = getIndentGuideMetrics(indentGuideNeedsMeasure);
@@ -513,36 +619,56 @@ function renderIndentGuides() {
   if (!metrics) return;
 
   const texto = editor.value;
-  const lineas = texto.split('\n');
+  const lineas = texto.split("\n");
   const cursorLine = getCursorLineIndex(texto, editor.selectionStart);
-  const currentLineText = lineas[cursorLine] || '';
-  const lineStartOffset = texto.lastIndexOf('\n', Math.max(0, editor.selectionStart - 1)) + 1;
-  const currentLinePrefix = currentLineText.substring(0, Math.max(0, editor.selectionStart - lineStartOffset));
-  const currentLineIndent = getLeadingIndentColumns(currentLineText, metrics.tabSize);
-  const effectiveIndents = computeEffectiveIndents(lineas, metrics.tabSize);
-  const visibleGuideColsByLine = effectiveIndents.map(indentWidth =>
-    getVisibleGuideColumns(indentWidth, metrics.tabSize)
+  const currentLineText = lineas[cursorLine] || "";
+  const lineStartOffset =
+    texto.lastIndexOf("\n", Math.max(0, editor.selectionStart - 1)) + 1;
+  const currentLinePrefix = currentLineText.substring(
+    0,
+    Math.max(0, editor.selectionStart - lineStartOffset),
   );
-  const segments = computeGuideSegments(visibleGuideColsByLine, metrics.tabSize);
+  const currentLineIndent = getLeadingIndentColumns(
+    currentLineText,
+    metrics.tabSize,
+  );
+  const effectiveIndents = computeEffectiveIndents(lineas, metrics.tabSize);
+  const visibleGuideColsByLine = effectiveIndents.map((indentWidth) =>
+    getVisibleGuideColumns(indentWidth, metrics.tabSize),
+  );
+  const segments = computeGuideSegments(
+    visibleGuideColsByLine,
+    metrics.tabSize,
+  );
   const activeGuideLimit = Math.min(
     getVisualColumns(currentLinePrefix, metrics.tabSize),
-    currentLineIndent
+    currentLineIndent,
   );
-  const activeGuideCols = getVisibleGuideColumns(activeGuideLimit, metrics.tabSize);
+  const activeGuideCols = getVisibleGuideColumns(
+    activeGuideLimit,
+    metrics.tabSize,
+  );
   const scrollTop = editor.scrollTop;
   const scrollLeft = editor.scrollLeft;
 
-  let html = '';
+  let html = "";
 
   for (const segment of segments) {
     const x = getGuideX(segment.col, metrics) - scrollLeft;
-    const y = metrics.paddingTop + segment.startLine * metrics.lineHeight - scrollTop;
-    const height = (segment.endLine - segment.startLine + 1) * metrics.lineHeight;
+    const y =
+      metrics.paddingTop + segment.startLine * metrics.lineHeight - scrollTop;
+    const height =
+      (segment.endLine - segment.startLine + 1) * metrics.lineHeight;
     html += `<div class="indent-guide" style="left:${x.toFixed(2)}px;top:${y.toFixed(2)}px;height:${height.toFixed(2)}px"></div>`;
   }
 
-  if (cursorLine >= 0 && cursorLine < lineas.length && activeGuideCols.length > 0) {
-    const activeY = metrics.paddingTop + cursorLine * metrics.lineHeight - scrollTop;
+  if (
+    cursorLine >= 0 &&
+    cursorLine < lineas.length &&
+    activeGuideCols.length > 0
+  ) {
+    const activeY =
+      metrics.paddingTop + cursorLine * metrics.lineHeight - scrollTop;
     for (const col of activeGuideCols) {
       const x = getGuideX(col, metrics) - scrollLeft;
       html += `<div class="indent-guide active" style="left:${x.toFixed(2)}px;top:${activeY.toFixed(2)}px;height:${metrics.lineHeight.toFixed(2)}px"></div>`;
@@ -555,7 +681,7 @@ function renderIndentGuides() {
 function scheduleIndentGuideRender({ remeasure = false } = {}) {
   if (remeasure) {
     indentGuideNeedsMeasure = true;
-    const editor = document.getElementById('editor');
+    const editor = document.getElementById("editor");
     if (editor) delete editor._indentGuideMetrics;
   }
 
@@ -572,7 +698,7 @@ function actualizarIndentGuides(options) {
   scheduleIndentGuideRender(options);
 }
 
-$('#editor').on('click keyup mouseup', function() {
+$("#editor").on("click keyup mouseup", function () {
   actualizarIndentGuides();
 });
 
@@ -581,25 +707,25 @@ $('#editor').on('click keyup mouseup', function() {
 // =========================================
 
 function actualizarSyntaxHighlight() {
-  const texto = $('#editor').val();
-  const lineas = texto.split('\n');
+  const texto = $("#editor").val();
+  const lineas = texto.split("\n");
   const userVars = DocErrores.extraerVariablesDelCodigo(texto);
-  const userVarsSet = new Set(userVars.map(v => v.toLowerCase()));
+  const userVarsSet = new Set(userVars.map((v) => v.toLowerCase()));
 
   let depth = 0;
-  const htmlLines = lineas.map(linea => {
+  const htmlLines = lineas.map((linea) => {
     const r = resaltarLinea_syntax(linea, userVarsSet, depth);
     depth = r.depth;
     return r.html;
   });
-  document.getElementById('syntaxLayer').innerHTML = htmlLines.join('\n');
+  document.getElementById("syntaxLayer").innerHTML = htmlLines.join("\n");
 }
 
 function resaltarLinea_syntax(linea, userVarsSet, depth = 0) {
-  if (linea === '') return { html: '', depth };
+  if (linea === "") return { html: "", depth };
 
   const tokens = DocErrores.tokenizarLinea(linea);
-  let result = '';
+  let result = "";
 
   for (const tk of tokens) {
     const escaped = escapeHtml(tk.value);
@@ -649,10 +775,10 @@ function resaltarLinea_syntax(linea, userVarsSet, depth = 0) {
 
 function escapeHtml(str) {
   return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 // =========================================
@@ -661,15 +787,16 @@ function escapeHtml(str) {
 
 let acIndice = -1;
 
-$('#editor').on('input', function() {
+$("#editor").on("input", function () {
   if (errorVisualState.activo) {
     invalidarErroresVisuales();
   }
+  quitarResalteNombreInvalido();
   actualizarLineas();
   mostrarAutocompletado();
 });
 
-$('#editor').on('paste', function() {
+$("#editor").on("paste", function () {
   setTimeout(() => {
     if (errorVisualState.activo) {
       invalidarErroresVisuales();
@@ -681,8 +808,8 @@ $('#editor').on('paste', function() {
 function getLineIndices(texto, selStart, selEnd) {
   const beforeStart = texto.substring(0, selStart);
   const beforeEnd = texto.substring(0, selEnd);
-  const lineIdxStart = beforeStart.split('\n').length - 1;
-  const lineIdxEnd = beforeEnd.split('\n').length - 1;
+  const lineIdxStart = beforeStart.split("\n").length - 1;
+  const lineIdxEnd = beforeEnd.split("\n").length - 1;
   return { lineIdxStart, lineIdxEnd };
 }
 
@@ -690,12 +817,12 @@ function tabularLineas(editor) {
   const s = editor.selectionStart;
   const en = editor.selectionEnd;
   const v = editor.value;
-  const lastNL = v.lastIndexOf('\nFinProceso');
+  const lastNL = v.lastIndexOf("\nFinProceso");
 
   if (s < PROCESO_PREFIX_LEN || s > lastNL || en > lastNL) return;
 
   const { lineIdxStart, lineIdxEnd } = getLineIndices(v, s, en);
-  const lineas = v.split('\n');
+  const lineas = v.split("\n");
   const firstProcLine = 1;
   const lastProcLine = lineas.length - 2;
 
@@ -703,7 +830,8 @@ function tabularLineas(editor) {
   const endIdx = Math.min(lineIdxEnd, lastProcLine);
 
   let positionCounter = 0;
-  let offsetInStartLine = 0, offsetInEndLine = 0;
+  let offsetInStartLine = 0,
+    offsetInEndLine = 0;
   for (let i = 0; i < lineas.length; i++) {
     if (i === lineIdxStart) offsetInStartLine = s - positionCounter;
     if (i === lineIdxEnd) offsetInEndLine = en - positionCounter;
@@ -711,22 +839,29 @@ function tabularLineas(editor) {
   }
 
   for (let i = startIdx; i <= endIdx; i++) {
-    lineas[i] = '  ' + lineas[i];
+    lineas[i] = "  " + lineas[i];
   }
 
   positionCounter = 0;
-  let newSelStart = 0, newSelEnd = 0;
+  let newSelStart = 0,
+    newSelEnd = 0;
   for (let i = 0; i < lineas.length; i++) {
     if (i === lineIdxStart) {
-      newSelStart = positionCounter + offsetInStartLine + (i >= startIdx && i <= endIdx ? 2 : 0);
+      newSelStart =
+        positionCounter +
+        offsetInStartLine +
+        (i >= startIdx && i <= endIdx ? 2 : 0);
     }
     if (i === lineIdxEnd) {
-      newSelEnd = positionCounter + offsetInEndLine + (i >= startIdx && i <= endIdx ? 2 : 0);
+      newSelEnd =
+        positionCounter +
+        offsetInEndLine +
+        (i >= startIdx && i <= endIdx ? 2 : 0);
     }
     positionCounter += lineas[i].length + 1;
   }
 
-  editor.value = lineas.join('\n');
+  editor.value = lineas.join("\n");
   editor.selectionStart = newSelStart;
   editor.selectionEnd = newSelEnd;
   actualizarLineas();
@@ -736,12 +871,12 @@ function destabularLineas(editor) {
   const s = editor.selectionStart;
   const en = editor.selectionEnd;
   const v = editor.value;
-  const lastNL = v.lastIndexOf('\nFinProceso');
+  const lastNL = v.lastIndexOf("\nFinProceso");
 
   if (s < PROCESO_PREFIX_LEN || s > lastNL || en > lastNL) return;
 
   const { lineIdxStart, lineIdxEnd } = getLineIndices(v, s, en);
-  const lineas = v.split('\n');
+  const lineas = v.split("\n");
   const firstProcLine = 1;
   const lastProcLine = lineas.length - 2;
 
@@ -749,7 +884,8 @@ function destabularLineas(editor) {
   const endIdx = Math.min(lineIdxEnd, lastProcLine);
 
   let positionCounter = 0;
-  let offsetInStartLine = 0, offsetInEndLine = 0;
+  let offsetInStartLine = 0,
+    offsetInEndLine = 0;
   for (let i = 0; i < lineas.length; i++) {
     if (i === lineIdxStart) offsetInStartLine = s - positionCounter;
     if (i === lineIdxEnd) offsetInEndLine = en - positionCounter;
@@ -758,60 +894,73 @@ function destabularLineas(editor) {
 
   const removalsPerLine = new Array(lineas.length).fill(0);
   for (let i = startIdx; i <= endIdx; i++) {
-    if (lineas[i].startsWith('  ')) {
+    if (lineas[i].startsWith("  ")) {
       lineas[i] = lineas[i].substring(2);
       removalsPerLine[i] = 2;
-    } else if (lineas[i].startsWith('\t')) {
+    } else if (lineas[i].startsWith("\t")) {
       lineas[i] = lineas[i].substring(1);
       removalsPerLine[i] = 1;
     }
   }
 
   positionCounter = 0;
-  let newSelStart = 0, newSelEnd = 0;
+  let newSelStart = 0,
+    newSelEnd = 0;
   for (let i = 0; i < lineas.length; i++) {
     if (i === lineIdxStart) {
-      newSelStart = Math.max(positionCounter + offsetInStartLine - removalsPerLine[i], positionCounter);
+      newSelStart = Math.max(
+        positionCounter + offsetInStartLine - removalsPerLine[i],
+        positionCounter,
+      );
     }
     if (i === lineIdxEnd) {
-      newSelEnd = Math.max(positionCounter + offsetInEndLine - removalsPerLine[i], positionCounter);
+      newSelEnd = Math.max(
+        positionCounter + offsetInEndLine - removalsPerLine[i],
+        positionCounter,
+      );
     }
     positionCounter += lineas[i].length + 1;
   }
 
-  editor.value = lineas.join('\n');
+  editor.value = lineas.join("\n");
   editor.selectionStart = newSelStart;
   editor.selectionEnd = newSelEnd;
   actualizarLineas();
 }
 
-$('#editor').on('keydown', function(e) {
-  const $dd = $('#autocompleteDropdown');
-  const visible = $dd.hasClass('visible');
+$("#editor").on("keydown", function (e) {
+  const $dd = $("#autocompleteDropdown");
+  const visible = $dd.hasClass("visible");
 
   if (visible) {
-    const items = $dd.find('.autocomplete-item');
-    if (e.key === 'ArrowDown') {
+    const items = $dd.find(".autocomplete-item");
+    if (e.key === "ArrowDown") {
       e.preventDefault();
       acIndice = Math.min(acIndice + 1, items.length - 1);
-      actualizarSeleccionAC(items); return;
+      actualizarSeleccionAC(items);
+      return;
     }
-    if (e.key === 'ArrowUp') {
+    if (e.key === "ArrowUp") {
       e.preventDefault();
       acIndice = Math.max(acIndice - 1, 0);
-      actualizarSeleccionAC(items); return;
+      actualizarSeleccionAC(items);
+      return;
     }
-    if (e.key === 'Tab' || e.key === 'Enter') {
+    if (e.key === "Tab" || e.key === "Enter") {
       if (acIndice >= 0 && acIndice < items.length) {
         e.preventDefault();
-        insertarAutocompletado($(items[acIndice]).data('texto'));
-        ocultarAutocompletado(); return;
+        insertarAutocompletado($(items[acIndice]).data("texto"));
+        ocultarAutocompletado();
+        return;
       }
     }
-    if (e.key === 'Escape') { ocultarAutocompletado(); return; }
+    if (e.key === "Escape") {
+      ocultarAutocompletado();
+      return;
+    }
   }
 
-  if (e.key === 'Tab' && !visible) {
+  if (e.key === "Tab" && !visible) {
     e.preventDefault();
     if (e.shiftKey) {
       destabularLineas(this);
@@ -822,16 +971,16 @@ $('#editor').on('keydown', function(e) {
 });
 
 function mostrarAutocompletado() {
-  const editor = document.getElementById('editor');
+  const editor = document.getElementById("editor");
   const cur = editor.selectionStart;
   const txt = editor.value;
 
   const textBefore = txt.substring(0, cur);
-  const lastNewline = textBefore.lastIndexOf('\n');
+  const lastNewline = textBefore.lastIndexOf("\n");
   const lineUpToCursor = textBefore.substring(lastNewline + 1);
 
   const colInLine = lineUpToCursor.length;
-  const fullLine = txt.split('\n')[textBefore.split('\n').length - 1] || '';
+  const fullLine = txt.split("\n")[textBefore.split("\n").length - 1] || "";
   const context = DocErrores.cursorContext(fullLine, colInLine - 1);
 
   if (context.inString || context.inComment) {
@@ -844,54 +993,68 @@ function mostrarAutocompletado() {
   ini++;
   const palabra = txt.substring(ini, cur);
 
-  if (palabra.length < 2) { ocultarAutocompletado(); return; }
+  if (palabra.length < 2) {
+    ocultarAutocompletado();
+    return;
+  }
 
-  const userVars = DocErrores.extraerVariablesDelCodigo(txt).map(v => ({
-    texto: v, tipo: 'variable'
+  const userVars = DocErrores.extraerVariablesDelCodigo(txt).map((v) => ({
+    texto: v,
+    tipo: "variable",
   }));
   const todas = [...LiteSeInt.PALABRAS_RESERVADAS, ...userVars];
 
-  const matches = todas.filter(p =>
-    p.texto.toLowerCase().startsWith(palabra.toLowerCase()) &&
-    p.texto.toLowerCase() !== palabra.toLowerCase()
+  const matches = todas.filter(
+    (p) =>
+      p.texto.toLowerCase().startsWith(palabra.toLowerCase()) &&
+      p.texto.toLowerCase() !== palabra.toLowerCase(),
   );
 
   const seen = new Set();
-  const unique = matches.filter(m => {
+  const unique = matches.filter((m) => {
     const key = m.texto.toLowerCase();
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
   });
 
-  if (!unique.length) { ocultarAutocompletado(); return; }
+  if (!unique.length) {
+    ocultarAutocompletado();
+    return;
+  }
 
-  const $dd = $('#autocompleteDropdown').empty();
+  const $dd = $("#autocompleteDropdown").empty();
   acIndice = 0;
 
   unique.forEach((item, idx) => {
-    const $it = $('<div>').addClass('autocomplete-item')
-      .attr('data-texto', item.texto)
-      .html(`<span>${item.texto}</span><span class="kw-badge">${item.tipo}</span>`)
-      .on('click', () => { insertarAutocompletado(item.texto); ocultarAutocompletado(); });
-    if (idx === 0) $it.addClass('selected');
+    const $it = $("<div>")
+      .addClass("autocomplete-item")
+      .attr("data-texto", item.texto)
+      .html(
+        `<span>${item.texto}</span><span class="kw-badge">${item.tipo}</span>`,
+      )
+      .on("click", () => {
+        insertarAutocompletado(item.texto);
+        ocultarAutocompletado();
+      });
+    if (idx === 0) $it.addClass("selected");
     $dd.append($it);
   });
 
   posicionarDropdown(cur);
-  $dd.addClass('visible');
+  $dd.addClass("visible");
 }
 
 function posicionarDropdown(cursorPos) {
-  const editor = document.getElementById('editor');
-  const $dd = $('#autocompleteDropdown');
+  const editor = document.getElementById("editor");
+  const $dd = $("#autocompleteDropdown");
   const txt = editor.value.substring(0, cursorPos);
-  const lineas = txt.split('\n');
+  const lineas = txt.split("\n");
   const lnIdx = lineas.length - 1;
   const col = lineas[lineas.length - 1].length;
-  const wr = document.querySelector('.editor-wrapper').getBoundingClientRect();
+  const wr = document.querySelector(".editor-wrapper").getBoundingClientRect();
   const metrics = getIndentGuideMetrics();
-  const gutter = document.getElementById('lineNumbers');
+  const gutter = document.getElementById("lineNumbers");
   const lineHeight = metrics ? metrics.lineHeight : 21.45;
   const paddingTop = metrics ? metrics.paddingTop : 8;
   const paddingLeft = metrics ? metrics.paddingLeft : 16;
@@ -902,13 +1065,13 @@ function posicionarDropdown(cursorPos) {
   const left = col * charWidth + gutterWidth + paddingLeft - editor.scrollLeft;
 
   $dd.css({
-    top: Math.min(top, wr.height - 190) + 'px',
-    left: Math.min(left, wr.width - 170) + 'px'
+    top: Math.min(top, wr.height - 190) + "px",
+    left: Math.min(left, wr.width - 170) + "px",
   });
 }
 
 function insertarAutocompletado(palabra) {
-  const editor = document.getElementById('editor');
+  const editor = document.getElementById("editor");
   const cur = editor.selectionStart;
   const txt = editor.value;
 
@@ -916,7 +1079,7 @@ function insertarAutocompletado(palabra) {
   while (ini >= 0 && /[\wáéíóúüñÁÉÍÓÚÜÑ]/.test(txt[ini])) ini--;
   ini++;
 
-  editor.value = txt.substring(0, ini) + palabra + ' ' + txt.substring(cur);
+  editor.value = txt.substring(0, ini) + palabra + " " + txt.substring(cur);
   const pos = ini + palabra.length + 1;
   editor.selectionStart = editor.selectionEnd = pos;
   editor.focus();
@@ -924,17 +1087,18 @@ function insertarAutocompletado(palabra) {
 }
 
 function actualizarSeleccionAC(items) {
-  items.removeClass('selected');
-  $(items[acIndice]).addClass('selected');
+  items.removeClass("selected");
+  $(items[acIndice]).addClass("selected");
 }
 
 function ocultarAutocompletado() {
-  $('#autocompleteDropdown').removeClass('visible');
+  $("#autocompleteDropdown").removeClass("visible");
   acIndice = -1;
 }
 
-$(document).on('click', function(e) {
-  if (!$(e.target).closest('#editor, #autocompleteDropdown').length) ocultarAutocompletado();
+$(document).on("click", function (e) {
+  if (!$(e.target).closest("#editor, #autocompleteDropdown").length)
+    ocultarAutocompletado();
 });
 
 // =========================================
@@ -942,8 +1106,8 @@ $(document).on('click', function(e) {
 // =========================================
 
 function setEstado(estado, texto) {
-  $('#statusDot').removeClass('running error').addClass(estado);
-  $('#statusText').text(texto);
+  $("#statusDot").removeClass("running error").addClass(estado);
+  $("#statusText").text(texto);
 }
 
 async function ejecutar() {
@@ -954,33 +1118,36 @@ async function ejecutar() {
   limpiarEjecucionHighlight();
   actualizarLineas();
 
-  const codigo = $('#editor').val();
-  if (codigo.trim() === '') return;
+  const codigo = $("#editor").val();
+  if (codigo.trim() === "") return;
 
   const validacion = DocErrores.validarDocumento(codigo);
 
   if (validacion.errores.length > 0) {
     for (const err of validacion.errores) {
-      consolaImprimir(`Error en línea ${err.linea + 1}: ${err.mensaje}`, 'error');
+      consolaImprimir(
+        `Error en línea ${err.linea + 1}: ${err.mensaje}`,
+        "error",
+      );
     }
     aplicarErroresVisuales(validacion.erroresPorLinea);
-    setEstado('error', 'Error');
+    setEstado("error", "Error");
     return;
   }
 
-  setEstado('running', 'Ejecutando...');
-  $('#btnEjecutar').prop('disabled', true);
-  $('#btnDetener').show();
+  setEstado("running", "Ejecutando...");
+  $("#btnEjecutar").prop("disabled", true);
+  $("#btnDetener").show();
 
-  consolaImprimir('Inicio de ejecución', 'system');
+  consolaImprimir("Inicio de ejecución", "system");
 
   const resultado = await interprete.ejecutar(codigo);
 
   if (resultado.exito) {
-    consolaImprimir('Fin de ejecución', 'system');
-    setEstado('', 'Listo');
+    consolaImprimir("Fin de ejecución", "system");
+    setEstado("", "Listo");
   } else {
-    setEstado('error', 'Error');
+    setEstado("error", "Error");
     if (resultado.erroresPorLinea && resultado.erroresPorLinea.size > 0) {
       errorVisualState.erroresPorLinea = resultado.erroresPorLinea;
       renderizarSubrayados();
@@ -988,20 +1155,24 @@ async function ejecutar() {
   }
 
   limpiarEjecucionHighlight();
-  $('#btnEjecutar').prop('disabled', false);
-  $('#btnDetener').hide();
+  $("#btnEjecutar").prop("disabled", false);
+  $("#btnDetener").hide();
 }
 
 function detener() {
   const estabaEjecutando = interprete.ejecutando;
   interprete.detener();
-  if (inputResolver) { const r = inputResolver; inputResolver = null; r(''); }
-  if (estabaEjecutando) {
-    consolaImprimir('Ejecución detenida por el usuario.', 'system');
-    setEstado('', 'Detenido');
+  if (inputResolver) {
+    const r = inputResolver;
+    inputResolver = null;
+    r("");
   }
-  $('#btnEjecutar').prop('disabled', false);
-  $('#btnDetener').hide();
+  if (estabaEjecutando) {
+    consolaImprimir("Ejecución detenida por el usuario.", "system");
+    setEstado("", "Detenido");
+  }
+  $("#btnEjecutar").prop("disabled", false);
+  $("#btnDetener").hide();
   limpiarEjecucionHighlight();
 }
 
@@ -1011,113 +1182,129 @@ function detener() {
 
 const EJEMPLOS = {
   hola: `// Mi primer programa
-Escribir "Hola mundo"`,
+  Escribir "Hola mundo"
+  `,
 
   saludo: `// Programa de saludo personalizado
-Definir nombre Como Caracter
-Escribir "¿Cómo te llamas?"
-Leer nombre
-Escribir "¡Hola, ", nombre, "! Bienvenido."  // saludo final`,
+  Definir nombre Como Caracter
+  Escribir "¿Cómo te llamas?"
+  Leer nombre
+  Escribir "¡Hola, ", nombre, "! Bienvenido."  // saludo final
+  `,
 
   notas: `// Calculadora de promedio de notas
-Definir nota1 Como Real
-Definir nota2 Como Real
-Definir promedio Como Real
+  Definir nota1 Como Real
+  Definir nota2 Como Real
+  Definir promedio Como Real
 
-Escribir "Ingresa la primera nota:"
-Leer nota1
-Escribir "Ingresa la segunda nota:"
-Leer nota2
+  Escribir "Ingresa la primera nota:"
+  Leer nota1
+  Escribir "Ingresa la segunda nota:"
+  Leer nota2
 
-promedio <- (nota1 + nota2) / 2  // calcula promedio
+  promedio <- (nota1 + nota2) / 2  // calcula promedio
 
-Escribir "El promedio es: ", promedio`,
+  Escribir "El promedio es: ", promedio
+  `,
 
   multivar: `// Ejemplo con múltiples variables en una línea
-Definir nombre, apellido, ciudad Como Caracter
-Definir edad Como Entero
+  Definir nombre, apellido, ciudad Como Caracter
+  Definir edad Como Entero
 
-Escribir "Ingresa tu nombre:"
-Leer nombre
-Escribir "Ingresa tu apellido:"
-Leer apellido
-Escribir "Ingresa tu ciudad:"
-Leer ciudad
-Escribir "Ingresa tu edad:"
-Leer edad
+  Escribir "Ingresa tu nombre:"
+  Leer nombre
+  Escribir "Ingresa tu apellido:"
+  Leer apellido
+  Escribir "Ingresa tu ciudad:"
+  Leer ciudad
+  Escribir "Ingresa tu edad:"
+  Leer edad
 
-// Mostrar resultados
-Escribir "--- Datos ingresados ---"
-Escribir "Nombre: ", nombre, " ", apellido
-Escribir "Ciudad: ", ciudad
-Escribir "Edad: ", edad`,
+  // Mostrar resultados
+  Escribir "--- Datos ingresados ---"
+  Escribir "Nombre: ", nombre, " ", apellido
+  Escribir "Ciudad: ", ciudad
+  Escribir "Edad: ", edad
+  `,
 
   mayor: `// Determina cuál de dos números es mayor
-Definir a, b Como Real
+  Definir a, b Como Real
 
-Escribir "Ingresa el primer número:"
-Leer a
-Escribir "Ingresa el segundo número:"
-Leer b
+  Escribir "Ingresa el primer número:"
+  Leer a
+  Escribir "Ingresa el segundo número:"
+  Leer b
 
-Si a > b Entonces
-  Escribir "El mayor es: ", a
-Sino
-  Si b > a Entonces
-    Escribir "El mayor es: ", b
+  Si a > b Entonces
+    Escribir "El mayor es: ", a
   Sino
-    Escribir "Los dos números son iguales."
+    Si b > a Entonces
+      Escribir "El mayor es: ", b
+    Sino
+      Escribir "Los dos números son iguales."
+    FinSi
   FinSi
-FinSi`,
-
+  `,
   contador: `// Suma los números del 1 al N ingresado por el usuario
-Definir n, i, suma Como Entero
+  Definir n, i, suma Como Entero
 
-Escribir "¿Hasta qué número sumar?"
-Leer n
-suma <- 0
-i <- 1
+  Escribir "¿Hasta qué número sumar?"
+  Leer n
+  suma <- 0
+  i <- 1
 
-Mientras i <= n Hacer
-  suma <- suma + i
-  i <- i + 1
-FinMientras
+  Mientras i <= n Hacer
+    suma <- suma + i
+    i <- i + 1
+  FinMientras
 
-Escribir "La suma de 1 a ", n, " es: ", suma`,
+  Escribir "La suma de 1 a ", n, " es: ", suma
+  `,
 
   tabla: `// Tabla de multiplicar de un número
-Definir num, i Como Entero
+  Definir num, i Como Entero
 
-Escribir "¿De qué número quieres la tabla?"
-Leer num
+  Escribir "¿De qué número quieres la tabla?"
+  Leer num
 
-Para i <- 1 Hasta 10 Hacer
-  Escribir num, " x ", i, " = ", num * i
-FinPara`,
+  Para i <- 1 Hasta 10 Hacer
+    Escribir num, " x ", i, " = ", num * i
+  FinPara
+  `,
 
   diasemana: `// Nombre del día según su número (1=Lunes ... 7=Domingo)
-Definir dia Como Entero
+  Definir dia Como Entero
 
-Escribir "Ingresa el número del día (1-7):"
-Leer dia
+  Escribir "Ingresa el número del día (1-7):"
+  Leer dia
 
-Segun dia Hacer
-  1: Escribir "Lunes"
-  2: Escribir "Martes"
-  3: Escribir "Miércoles"
-  4: Escribir "Jueves"
-  5: Escribir "Viernes"
-  6: Escribir "Sábado"
-  7: Escribir "Domingo"
-  De Otro Modo:
-    Escribir "Número inválido. Ingresa del 1 al 7."
-FinSegun`,
+  Segun dia Hacer
+    1:
+      Escribir "Lunes"
+    2:
+      Escribir "Martes"
+    3:
+      Escribir "Miércoles"
+    4:
+      Escribir "Jueves"
+    5:
+      Escribir "Viernes"
+    6:
+      Escribir "Sábado"
+    7:
+      Escribir "Domingo"
+    De Otro Modo:
+      Escribir "Número inválido. Ingresa del 1 al 7."
+  FinSegun
+  `,
 };
 
 function cargarEjemplo(nombre) {
   if (EJEMPLOS[nombre]) {
     const nombreProceso = obtenerNombreProceso();
-    $('#editor').val(`Proceso ${nombreProceso}\n${EJEMPLOS[nombre]}\nFinProceso`);
+    $("#editor").val(
+      `Proceso ${nombreProceso}\n${EJEMPLOS[nombre]}\nFinProceso`,
+    );
     limpiarConsola();
     actualizarLineas();
   }
@@ -1127,12 +1314,12 @@ function cargarEjemplo(nombre) {
 // 12. INIT
 // =========================================
 
-$(document).ready(function() {
-  const editor = document.getElementById('editor');
+$(document).ready(function () {
+  const editor = document.getElementById("editor");
   editor.value = ESTRUCTURA_INICIAL;
   actualizarLineas();
 
-  const pos = ESTRUCTURA_INICIAL.indexOf('\n') + 1;
+  const pos = ESTRUCTURA_INICIAL.indexOf("\n") + 1;
   editor.setSelectionRange(pos, pos);
   editor.focus();
   actualizarIndentGuides({ remeasure: true });
@@ -1146,7 +1333,7 @@ $(document).ready(function() {
     if (editorArea) resizeObserver.observe(editorArea);
   }
 
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     actualizarIndentGuides({ remeasure: true });
   });
 
@@ -1156,33 +1343,33 @@ $(document).ready(function() {
     });
   }
 
-  editor.addEventListener('beforeinput', function(e) {
+  editor.addEventListener("beforeinput", function (e) {
     const val = this.value;
     const s = this.selectionStart;
     const se = this.selectionEnd;
-    const lastNL = val.lastIndexOf('\nFinProceso');
+    const lastNL = val.lastIndexOf("\nFinProceso");
     if (lastNL < 0) return;
 
     const isBackward = ['deleteContentBackward','deleteWordBackward','deleteSoftLineBackward','deleteHardLineBackward'].includes(e.inputType);
     const isForward  = ['deleteContentForward','deleteWordForward','deleteSoftLineForward','deleteHardLineForward'].includes(e.inputType);
 
     let rStart = s;
-    let rEnd   = se;
+    let rEnd = se;
     if (isBackward && s === se) rStart = s - 1;
-    if (isForward  && s === se) rEnd   = se + 1;
+    if (isForward && s === se) rEnd = se + 1;
 
     if (rStart < PROCESO_PREFIX_LEN || rEnd > lastNL) {
       e.preventDefault();
     }
   });
 
-  $('#btnEjecutar').on('click', ejecutar);
-  $('#btnDetener').on('click', detener);
-  $('#btnLimpiarConsola').on('click', limpiarConsola);
-  $('#btnLimpiarTodo').on('click', limpiarTodo);
-  $('#btnDescargar').on('click', descargar);
-  $('.console-header').on('click', function(e) {
-    if ($(e.target).closest('.console-header-actions, button').length) return;
+  $("#btnEjecutar").on("click", ejecutar);
+  $("#btnDetener").on("click", detener);
+  $("#btnLimpiarConsola").on("click", limpiarConsola);
+  $("#btnLimpiarTodo").on("click", limpiarTodo);
+  $("#btnDescargar").on("click", descargar);
+  $(".console-header").on("click", function (e) {
+    if ($(e.target).closest(".console-header-actions, button").length) return;
     toggleMobileConsoleCollapsed();
   });
 
@@ -1193,13 +1380,13 @@ $(document).ready(function() {
   };
 
   if (mobileConsoleQuery.addEventListener) {
-    mobileConsoleQuery.addEventListener('change', handleMobileConsoleChange);
+    mobileConsoleQuery.addEventListener("change", handleMobileConsoleChange);
   } else if (mobileConsoleQuery.addListener) {
     mobileConsoleQuery.addListener(handleMobileConsoleChange);
   }
 
-  $(document).on('click', '.example-btn', function() {
-    cargarEjemplo($(this).data('ejemplo'));
+  $(document).on("click", ".example-btn", function () {
+    cargarEjemplo($(this).data("ejemplo"));
   });
 
   lucide.createIcons();
