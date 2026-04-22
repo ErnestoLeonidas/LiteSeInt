@@ -6,6 +6,15 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.3.2] — 2026-04-22
+
+### Cambiado
+- **Operador de asignación ahora es `=`**: se reemplazó `<-` por `=` como único operador de asignación en todo el lenguaje. Se actualizaron tokenizador, validador estático, ejecutor, ejemplos y documentación.
+- **Operadores relacionales sin ambigüedad**: en condiciones se requiere `==` para igualdad (antes se aceptaba `=`). Quedan válidos `==`, `!=`, `<>`, `<`, `>`, `<=`, `>=`.
+
+### Eliminado
+- **Operador `<-`**: deja de reconocerse como asignación en todo el sistema (tokenizador, ejecutor, ejemplos y documentación).
+
 ## [0.3.1] — 2026-04-21
 
 ### Agregado

@@ -1202,7 +1202,7 @@ const EJEMPLOS = {
   Escribir "Ingresa la segunda nota:"
   Leer nota2
 
-  promedio <- (nota1 + nota2) / 2  // calcula promedio
+  promedio = (nota1 + nota2) / 2  // calcula promedio
 
   Escribir "El promedio es: ", promedio
   `,
@@ -1250,12 +1250,12 @@ const EJEMPLOS = {
 
   Escribir "¿Hasta qué número sumar?"
   Leer n
-  suma <- 0
-  i <- 1
+  suma = 0
+  i = 1
 
   Mientras i <= n Hacer
-    suma <- suma + i
-    i <- i + 1
+    suma = suma + i
+    i = i + 1
   FinMientras
 
   Escribir "La suma de 1 a ", n, " es: ", suma
@@ -1267,7 +1267,7 @@ const EJEMPLOS = {
   Escribir "¿De qué número quieres la tabla?"
   Leer num
 
-  Para i <- 1 Hasta 10 Hacer
+  Para i = 1 Hasta 10 Hacer
     Escribir num, " x ", i, " = ", num * i
   FinPara
   `,

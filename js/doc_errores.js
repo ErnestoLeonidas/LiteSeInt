@@ -22,7 +22,7 @@ const PALABRAS_RESERVADAS_SET = new Set([
   'proceso', 'finproceso',
   'si', 'entonces', 'sino', 'finsi',
   'mientras', 'hacer', 'finmientras',
-  'repetir', 'hastaque',
+  'repetir', 'hastaque', 'que',
   'para', 'hasta', 'con', 'paso', 'finpara',
   'segun', 'finsegun', 'de', 'otro', 'modo',
   'y', 'o', 'no',
@@ -41,7 +41,7 @@ const TK = Object.freeze({
   STRING_UNCLOSED:  'string_unclosed',   // opening " without closing "
   NUMBER:           'number',
   OPERATOR:         'operator',          // + - * /
-  ASSIGN:           'assign',            // <-
+  ASSIGN:           'assign',            // =
   COMMA:            'comma',
   COLON:            'colon',             // : used in Segun case labels
   LPAREN:           'lparen',
@@ -128,22 +128,31 @@ function tokenizarLinea(linea) {
       continue;
     }
 
-    // ── Assignment operator <- ──
-    if (linea[i] === '<' && linea[i + 1] === '-') {
-      tokens.push({ type: TK.ASSIGN, value: '<-', col: start, end: start + 2 });
-      i += 2;
-      continue;
+    // ── Comparison operators (2 chars): ==, <=, >=, !=, <> ──
+    if ('=<>!'.includes(linea[i])) {
+      const two = linea.substring(i, i + 2);
+      if (two === '==' || two === '<=' || two === '>=' || two === '!=' || two === '<>') {
+        tokens.push({ type: TK.OPERATOR, value: two, col: start, end: start + 2 });
+        i += 2;
+        continue;
+      }
+      // ── Assignment operator: single '=' ──
+      if (linea[i] === '=') {
+        tokens.push({ type: TK.ASSIGN, value: '=', col: start, end: start + 1 });
+        i++;
+        continue;
+      }
+      // ── Comparison: single '<' or '>' ──
+      if (linea[i] === '<' || linea[i] === '>') {
+        tokens.push({ type: TK.OPERATOR, value: linea[i], col: start, end: start + 1 });
+        i++;
+        continue;
+      }
+      // '!' solo → cae a UNKNOWN
     }
 
     // ── Arithmetic operators ──
     if ('+-*/'.includes(linea[i])) {
-      tokens.push({ type: TK.OPERATOR, value: linea[i], col: start, end: start + 1 });
-      i++;
-      continue;
-    }
-
-    // ── Comparison-like: < or > alone (not part of <-) ──
-    if (linea[i] === '<' || linea[i] === '>') {
       tokens.push({ type: TK.OPERATOR, value: linea[i], col: start, end: start + 1 });
       i++;
       continue;
@@ -337,11 +346,9 @@ function validarDocumento(codigo) {
     for (const e of erroresLinea) agregarError(i, e);
   }
 
-  // Paso 2: balance de bloques (Si/FinSi y Segun/FinSegun se manejan en Paso 3/4)
+  // Paso 2: balance de bloques (Si, Segun, Repetir y Para se manejan en Paso 3/4/5/6)
   const BLOQUES = [
     { abre: 'mientras', cierra: 'finmientras',   etiqueta: 'Mientras', cierraLabel: 'FinMientras' },
-    { abre: 'repetir',  cierra: 'hastaque',      etiqueta: 'Repetir',  cierraLabel: 'HastaQue' },
-    { abre: 'para',     cierra: 'finpara',       etiqueta: 'Para',     cierraLabel: 'FinPara' },
   ];
 
   const stackBloques = [];
@@ -381,6 +388,12 @@ function validarDocumento(codigo) {
 
   // Paso 4: validación estructural de Segun / De Otro Modo / FinSegun
   validarBloquesSegun(lineas, agregarError);
+
+  // Paso 5: validación estructural de Repetir / Hasta Que
+  validarBloquesRepetir(lineas, agregarError);
+
+  // Paso 6: validación estructural de Para / FinPara
+  validarBloquesPara(lineas, tabla, agregarError);
 
   return { errores: todosErrores, tablaSimbolos: tabla, erroresPorLinea };
 }
@@ -549,13 +562,16 @@ function validarCabeceraSi(lineaRaw, sig, lineaIdx, agregarError) {
 }
 
 /**
- * Recorre el rango de la condición (entre Si y Entonces) respetando
- * strings y comentarios, y reporta operadores de comparación no permitidos.
+ * Recorre un rango de condición respetando strings y comentarios, y
+ * reporta operadores de comparación no permitidos.
  * Permitidos: ==, <>, <=, >=, !=, <, >
- * Cualquier otro (ej. =, !, <-, =<, =>) es error.
+ * Cualquier otro (ej. =, !, =<, =>) es error. El operador "=" es asignación,
+ * no comparación, por lo que tampoco es válido aquí.
+ * `contexto` nombra la estructura para el mensaje (ej. "Si", "Hasta Que").
  */
-function validarComparacionesEnCondicion(lineaRaw, colInicio, colFin, lineaIdx, agregarError) {
+function validarComparacionesEnCondicion(lineaRaw, colInicio, colFin, lineaIdx, agregarError, contexto) {
   const VALIDOS_DOBLE = new Set(['==', '<>', '<=', '>=', '!=']);
+  const nombreCtx = contexto || 'Si';
   let inStr = false;
   let i = colInicio;
 
@@ -567,15 +583,6 @@ function validarComparacionesEnCondicion(lineaRaw, colInicio, colFin, lineaIdx, 
 
     if (ch === '<' || ch === '>' || ch === '=' || ch === '!') {
       const two = lineaRaw.substring(i, i + 2);
-
-      if (two === '<-') {
-        agregarError(lineaIdx, crearError(
-          lineaIdx, i, i + 2, 'comparador_invalido',
-          'Operador de comparación no válido en la condición del "Si".', '<-'
-        ));
-        i += 2;
-        continue;
-      }
 
       if (VALIDOS_DOBLE.has(two)) {
         i += 2;
@@ -589,7 +596,7 @@ function validarComparacionesEnCondicion(lineaRaw, colInicio, colFin, lineaIdx, 
 
       agregarError(lineaIdx, crearError(
         lineaIdx, i, i + 1, 'comparador_invalido',
-        'Operador de comparación no válido en la condición del "Si".', ch
+        `Operador de comparación no válido en la condición del "${nombreCtx}".`, ch
       ));
       i++;
       continue;
@@ -922,6 +929,394 @@ function finalizarSegmentoAntesFinSegun(top, agregarError) {
   }
 }
 
+// ─────────────────────────────────────────────
+//  VALIDATION: Repetir / Hasta Que
+// ─────────────────────────────────────────────
+
+/**
+ * Pasada estructural sobre el documento completo para Repetir.
+ * Mantiene una pila para soportar anidación. Valida:
+ *   - "Repetir" en línea propia, sin texto adicional
+ *   - "Hasta Que <condición>" con condición no vacía
+ *   - operadores de comparación permitidos en la condición
+ *   - al menos una instrucción real entre "Repetir" y "Hasta Que"
+ *   - "Hasta" incompleto sin "Que"
+ *   - "Hasta Que" sin un "Repetir" abierto
+ *   - "Repetir" sin cerrar al final del documento
+ */
+function validarBloquesRepetir(lineas, agregarError) {
+  const stack = [];
+
+  for (let i = 0; i < lineas.length; i++) {
+    const lineaRaw = lineas[i];
+    const allTokens = tokenizarLinea(lineaRaw);
+    const sig = tokensSignificativos(allTokens);
+    if (sig.length === 0) continue;
+
+    const primera = sig[0];
+    const palabra = primera.type === TK.KEYWORD ? primera.value.toLowerCase() : null;
+
+    if (palabra === 'repetir') {
+      if (stack.length > 0) stack[stack.length - 1].contenido++;
+
+      if (sig.length > 1) {
+        const extra = sig[1];
+        const last = sig[sig.length - 1];
+        agregarError(i, crearError(
+          i, extra.col, last.end, 'repetir_texto_extra',
+          '"Repetir" no debe tener argumentos ni texto adicional.', ''
+        ));
+      }
+
+      stack.push({ lineaRepetir: i, contenido: 0 });
+      continue;
+    }
+
+    if (palabra === 'hasta') {
+      const esHastaQue = sig.length >= 2
+        && sig[1].type === TK.KEYWORD
+        && sig[1].value.toLowerCase() === 'que';
+
+      if (!esHastaQue) {
+        agregarError(i, crearError(
+          i, primera.col, sig[sig.length - 1].end, 'hastaque_incompleto',
+          'La sentencia "Hasta Que" está incompleta.', ''
+        ));
+        continue;
+      }
+
+      const queToken = sig[1];
+      const condTokens = sig.slice(2);
+
+      if (stack.length === 0) {
+        const last = sig[sig.length - 1];
+        agregarError(i, crearError(
+          i, primera.col, last.end, 'hastaque_sin_repetir',
+          '"Hasta Que" sin una sentencia "Repetir" abierta.', ''
+        ));
+      }
+
+      if (condTokens.length === 0) {
+        agregarError(i, crearError(
+          i, primera.col, queToken.end, 'hastaque_sin_condicion',
+          'Falta la condición en la sentencia "Hasta Que".', ''
+        ));
+      } else {
+        validarComparacionesEnCondicion(
+          lineaRaw, queToken.end, lineaRaw.length, i, agregarError, 'Hasta Que'
+        );
+      }
+
+      if (stack.length > 0) {
+        const top = stack.pop();
+        if (top.contenido === 0) {
+          agregarError(i, crearError(
+            i, primera.col, queToken.end, 'repetir_vacio',
+            'Debe haber al menos una instrucción entre "Repetir" y "Hasta Que".', ''
+          ));
+        }
+      }
+      continue;
+    }
+
+    if (stack.length > 0) stack[stack.length - 1].contenido++;
+  }
+
+  for (const ctx of stack) {
+    const longitud = lineas[ctx.lineaRepetir] ? lineas[ctx.lineaRepetir].length : 0;
+    agregarError(ctx.lineaRepetir, crearError(
+      ctx.lineaRepetir, 0, longitud, 'repetir_sin_cerrar',
+      'Falta "Hasta Que" para cerrar la sentencia "Repetir".', ''
+    ));
+  }
+}
+
+// ─────────────────────────────────────────────
+//  VALIDATION: Para / FinPara
+// ─────────────────────────────────────────────
+
+/**
+ * Pasada estructural sobre el documento completo para Para.
+ * Mantiene una pila para soportar anidación. Valida:
+ *   - cabecera: variable de control, =, expr inicial, Hasta, expr final,
+ *     Con Paso opcional (sin duplicados, con expresión, no cero literal), Hacer
+ *   - texto extra después de Hacer
+ *   - variable de control e identificadores en expresiones definidos
+ *   - al menos una instrucción real entre la cabecera y FinPara
+ *   - FinPara en línea propia, sin texto extra
+ *   - FinPara sin Para abierto
+ *   - Para sin cerrar al final del documento
+ */
+function validarBloquesPara(lineas, tabla, agregarError) {
+  const stack = [];
+
+  for (let i = 0; i < lineas.length; i++) {
+    const lineaRaw = lineas[i];
+    const allTokens = tokenizarLinea(lineaRaw);
+    const sig = tokensSignificativos(allTokens);
+    if (sig.length === 0) continue;
+
+    const primera = sig[0];
+    const palabra = primera.type === TK.KEYWORD ? primera.value.toLowerCase() : null;
+
+    if (palabra === 'para') {
+      if (stack.length > 0) stack[stack.length - 1].contenido++;
+      validarCabeceraPara(sig, i, tabla, agregarError);
+      stack.push({ lineaPara: i, contenido: 0 });
+      continue;
+    }
+
+    if (palabra === 'finpara') {
+      if (stack.length === 0) {
+        agregarError(i, crearError(
+          i, primera.col, primera.end, 'finpara_sin_para',
+          '"FinPara" sin una sentencia "Para" abierta.', primera.value
+        ));
+      } else {
+        const top = stack.pop();
+        if (top.contenido === 0) {
+          agregarError(i, crearError(
+            i, primera.col, primera.end, 'para_vacio',
+            'Debe haber al menos una instrucción entre "Para ... Hacer" y "FinPara".', ''
+          ));
+        }
+      }
+      if (sig.length > 1) {
+        const extra = sig[1];
+        const last = sig[sig.length - 1];
+        agregarError(i, crearError(
+          i, extra.col, last.end, 'finpara_texto_extra',
+          '"FinPara" no debe tener argumentos ni texto adicional.', ''
+        ));
+      }
+      continue;
+    }
+
+    if (stack.length > 0) stack[stack.length - 1].contenido++;
+  }
+
+  for (const ctx of stack) {
+    const longitud = lineas[ctx.lineaPara] ? lineas[ctx.lineaPara].length : 0;
+    agregarError(ctx.lineaPara, crearError(
+      ctx.lineaPara, 0, longitud, 'para_sin_cerrar',
+      'Falta "FinPara" para cerrar la sentencia "Para".', ''
+    ));
+  }
+}
+
+function esKeyword(tk, nombre) {
+  return tk && tk.type === TK.KEYWORD && tk.value.toLowerCase() === nombre;
+}
+
+function buscarKeywordEnRango(sig, desde, nombre) {
+  for (let i = desde; i < sig.length; i++) {
+    if (esKeyword(sig[i], nombre)) return i;
+  }
+  return -1;
+}
+
+function validarIdentificadoresDefinidos(tokens, lineaIdx, tabla, agregarError, tipoErr, mensaje) {
+  for (const tk of tokens) {
+    if (tk.type !== TK.IDENTIFIER) continue;
+    if (!tabla.existeVariable(tk.value)) {
+      agregarError(lineaIdx, crearError(
+        lineaIdx, tk.col, tk.end, tipoErr, mensaje, tk.value
+      ));
+    }
+  }
+}
+
+function validarCabeceraPara(sig, lineaIdx, tabla, agregarError) {
+  const paraTok = sig[0];
+  let idx = 1;
+
+  // 1. Variable de control
+  if (idx >= sig.length) {
+    agregarError(lineaIdx, crearError(
+      lineaIdx, paraTok.col, paraTok.end, 'para_sin_variable',
+      'Falta la variable de control en la sentencia "Para".', ''
+    ));
+    return;
+  }
+
+  if (sig[idx].type !== TK.IDENTIFIER) {
+    if (sig[idx].type === TK.ASSIGN) {
+      agregarError(lineaIdx, crearError(
+        lineaIdx, paraTok.col, sig[idx].end, 'para_sin_variable',
+        'Falta la variable de control en la sentencia "Para".', ''
+      ));
+    } else {
+      agregarError(lineaIdx, crearError(
+        lineaIdx, sig[idx].col, sig[idx].end, 'para_variable_invalida',
+        'Se esperaba una variable válida en la sentencia "Para".', sig[idx].value
+      ));
+    }
+    return;
+  }
+
+  const varControl = sig[idx];
+  if (!tabla.existeVariable(varControl.value)) {
+    agregarError(lineaIdx, crearError(
+      lineaIdx, varControl.col, varControl.end, 'para_variable_no_definida',
+      'Variable de control no definida en la sentencia "Para".', varControl.value
+    ));
+  }
+  idx++;
+
+  // 2. Operador =
+  if (idx >= sig.length || sig[idx].type !== TK.ASSIGN) {
+    const col = idx < sig.length ? sig[idx].col : varControl.end;
+    const end = idx < sig.length ? sig[idx].end : varControl.end;
+    agregarError(lineaIdx, crearError(
+      lineaIdx, varControl.col, end, 'para_sin_asignacion',
+      'Falta el operador "=" en la sentencia "Para".', ''
+    ));
+    return;
+  }
+  const assignTok = sig[idx];
+  idx++;
+
+  // 3. Expresión inicial hasta "Hasta"
+  const hastaIdx = buscarKeywordEnRango(sig, idx, 'hasta');
+  if (hastaIdx === -1) {
+    if (idx >= sig.length) {
+      agregarError(lineaIdx, crearError(
+        lineaIdx, assignTok.col, assignTok.end, 'para_sin_expresion_inicial',
+        'Falta la expresión inicial en la sentencia "Para".', ''
+      ));
+    }
+    agregarError(lineaIdx, crearError(
+      lineaIdx, paraTok.col, sig[sig.length - 1].end, 'para_sin_hasta',
+      'Falta la palabra clave "Hasta" en la sentencia "Para".', ''
+    ));
+    return;
+  }
+
+  const exprInicial = sig.slice(idx, hastaIdx);
+  if (exprInicial.length === 0) {
+    agregarError(lineaIdx, crearError(
+      lineaIdx, assignTok.col, sig[hastaIdx].end, 'para_sin_expresion_inicial',
+      'Falta la expresión inicial en la sentencia "Para".', ''
+    ));
+  } else {
+    validarIdentificadoresDefinidos(
+      exprInicial, lineaIdx, tabla, agregarError,
+      'variable_no_definida_para', 'Variable no definida en la cabecera de la sentencia "Para".'
+    );
+  }
+  const hastaTok = sig[hastaIdx];
+  idx = hastaIdx + 1;
+
+  // 4. Expresión final hasta "Con" o "Hacer"
+  const conIdx = buscarKeywordEnRango(sig, idx, 'con');
+  const hacerIdx0 = buscarKeywordEnRango(sig, idx, 'hacer');
+  let finalEnd;
+  if (conIdx !== -1 && (hacerIdx0 === -1 || conIdx < hacerIdx0)) {
+    finalEnd = conIdx;
+  } else if (hacerIdx0 !== -1) {
+    finalEnd = hacerIdx0;
+  } else {
+    finalEnd = sig.length;
+  }
+
+  const exprFinal = sig.slice(idx, finalEnd);
+  if (exprFinal.length === 0) {
+    const colFin = finalEnd < sig.length ? sig[finalEnd].end : hastaTok.end;
+    agregarError(lineaIdx, crearError(
+      lineaIdx, hastaTok.col, colFin, 'para_sin_expresion_final',
+      'Falta la expresión final en la sentencia "Para".', ''
+    ));
+  } else {
+    validarIdentificadoresDefinidos(
+      exprFinal, lineaIdx, tabla, agregarError,
+      'variable_no_definida_para', 'Variable no definida en la cabecera de la sentencia "Para".'
+    );
+  }
+  idx = finalEnd;
+
+  // 5. Con Paso opcional (uno o más detectados; >1 dispara duplicado)
+  let tienePaso = false;
+  while (idx < sig.length && esKeyword(sig[idx], 'con')) {
+    const conTok = sig[idx];
+    if (tienePaso) {
+      agregarError(lineaIdx, crearError(
+        lineaIdx, conTok.col, conTok.end, 'para_con_paso_duplicado',
+        'La sentencia "Para" ya contiene un bloque "Con Paso".', ''
+      ));
+    }
+    idx++;
+
+    if (idx >= sig.length || !esKeyword(sig[idx], 'paso')) {
+      const colFin = idx < sig.length ? sig[idx].end : conTok.end;
+      agregarError(lineaIdx, crearError(
+        lineaIdx, conTok.col, colFin, 'con_sin_paso',
+        'Después de "Con" debe ir la palabra clave "Paso".', ''
+      ));
+      break;
+    }
+    const pasoTok = sig[idx];
+    idx++;
+
+    const nextCon = buscarKeywordEnRango(sig, idx, 'con');
+    const nextHacer = buscarKeywordEnRango(sig, idx, 'hacer');
+    let pasoEnd;
+    if (nextCon !== -1 && (nextHacer === -1 || nextCon < nextHacer)) {
+      pasoEnd = nextCon;
+    } else if (nextHacer !== -1) {
+      pasoEnd = nextHacer;
+    } else {
+      pasoEnd = sig.length;
+    }
+
+    const exprPaso = sig.slice(idx, pasoEnd);
+    if (exprPaso.length === 0) {
+      const colFin = pasoEnd < sig.length ? sig[pasoEnd].end : pasoTok.end;
+      agregarError(lineaIdx, crearError(
+        lineaIdx, pasoTok.col, colFin, 'para_sin_expresion_paso',
+        'Falta la expresión de paso en la sentencia "Para".', ''
+      ));
+    } else {
+      validarIdentificadoresDefinidos(
+        exprPaso, lineaIdx, tabla, agregarError,
+        'variable_no_definida_para', 'Variable no definida en la cabecera de la sentencia "Para".'
+      );
+      if (exprPaso.length === 1 && exprPaso[0].type === TK.NUMBER) {
+        const n = parseFloat(exprPaso[0].value);
+        if (!isNaN(n) && n === 0) {
+          agregarError(lineaIdx, crearError(
+            lineaIdx, exprPaso[0].col, exprPaso[0].end, 'paso_cero',
+            'El valor de "Paso" no puede ser cero.', exprPaso[0].value
+          ));
+        }
+      }
+    }
+
+    idx = pasoEnd;
+    tienePaso = true;
+  }
+
+  // 6. Hacer
+  if (idx >= sig.length || !esKeyword(sig[idx], 'hacer')) {
+    const last = sig[sig.length - 1];
+    agregarError(lineaIdx, crearError(
+      lineaIdx, paraTok.col, last.end, 'para_sin_hacer',
+      'Falta la palabra clave "Hacer" en la sentencia "Para".', ''
+    ));
+    return;
+  }
+  idx++;
+
+  // 7. Texto después de Hacer
+  if (idx < sig.length) {
+    const extra = sig[idx];
+    const last = sig[sig.length - 1];
+    agregarError(lineaIdx, crearError(
+      lineaIdx, extra.col, last.end, 'hacer_texto_extra',
+      'No debe haber texto después de "Hacer".', ''
+    ));
+  }
+}
+
 /**
  * Validates a single line given its tokens and the current symbol table.
  * Mutates tabla (adds Definir variables, marks initialized for assignments/Leer).
@@ -1005,6 +1400,7 @@ function validarLinea(sig, allTokens, lineaIdx, tabla) {
     case 'entonces': // no debería aparecer solo, pero evita falso positivo
     case 'hacer':
     case 'hasta':
+    case 'que':
     case 'con':
     case 'paso':
     case 'otro':
@@ -1337,7 +1733,7 @@ function validarLeer(sig, lineaIdx, tabla, errores) {
 }
 
 // ─────────────────────────────────────────────
-//  VALIDATION: Asignación (var <- expr)
+//  VALIDATION: Asignación (var = expr)
 // ─────────────────────────────────────────────
 
 function validarAsignacion(sig, lineaIdx, tabla, errores) {
@@ -1347,7 +1743,7 @@ function validarAsignacion(sig, lineaIdx, tabla, errores) {
     errores.push(crearError(
       lineaIdx, varToken.col, varToken.end,
       'sintaxis_asignacion',
-      `Se esperaba una variable antes de "<-", se encontró: "${varToken.value}"`,
+      `Se esperaba una variable antes de "=", se encontró: "${varToken.value}"`,
       varToken.value
     ));
     return;
@@ -1368,7 +1764,7 @@ function validarAsignacion(sig, lineaIdx, tabla, errores) {
     errores.push(crearError(
       lineaIdx, sig[1].col, sig[1].end,
       'sintaxis_asignacion',
-      'Falta la expresión después de "<-".',
+      'Falta la expresión después de "=".',
       ''
     ));
     return;

@@ -23,7 +23,7 @@ El motor de interpretacion es independiente de la interfaz, lo que facilita su m
 | Instruccion | Formato | Ejemplo |
 |---|---|---|
 | Definir | `Definir var1, var2 Como Tipo` | `Definir nombre Como Caracter` |
-| Asignar | `variable <- expresion` | `total <- nota1 + nota2` |
+| Asignar | `variable = expresion` | `total = nota1 + nota2` |
 | Escribir | `Escribir expr1, expr2, ...` | `Escribir "Hola, ", nombre` |
 | Leer | `Leer variable` | `Leer edad` |
 | Comentario | `// texto` | `// esto es un comentario` |
@@ -36,12 +36,12 @@ El motor de interpretacion es independiente de la interfaz, lo que facilita su m
 | Condicional con sino | `Si condicion Entonces ... Sino ... FinSi` |
 | Bucle Mientras | `Mientras condicion Hacer ... FinMientras` |
 | Bucle Repetir | `Repetir ... HastaQue condicion` |
-| Bucle Para | `Para var <- inicio Hasta fin [Con Paso n] Hacer ... FinPara` |
+| Bucle Para | `Para var = inicio Hasta fin [Con Paso n] Hacer ... FinPara` |
 | Segun | `Segun variable Hacer ... FinSegun` |
 
 ### Operadores relacionales
 
-`=`, `<>`, `<`, `>`, `<=`, `>=`
+`==`, `!=`, `<>`, `<`, `>`, `<=`, `>=`
 
 ### Operadores logicos
 
@@ -64,11 +64,11 @@ FinSi
 
 ```
 Definir i, suma Como Entero
-i <- 1
-suma <- 0
+i = 1
+suma = 0
 Mientras i <= 10 Hacer
-  suma <- suma + i
-  i <- i + 1
+  suma = suma + i
+  i = i + 1
 FinMientras
 Escribir "Suma: ", suma
 ```
@@ -77,7 +77,7 @@ Escribir "Suma: ", suma
 
 ```
 Definir i Como Entero
-Para i <- 1 Hasta 10 Hacer
+Para i = 1 Hasta 10 Hacer
   Escribir i
 FinPara
 ```

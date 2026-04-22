@@ -6,7 +6,7 @@
  *  Depende de doc_errores.js para validación y tokenización.
  *
  *  Tipos soportados: Entero, Real, Caracter
- *  Instrucciones: Definir, Escribir, Leer, Asignación (<-)
+ *  Instrucciones: Definir, Escribir, Leer, Asignación (=)
  *  Estructuras de control: Si/FinSi, Mientras/FinMientras,
  *    Repetir/HastaQue, Para/FinPara, Segun/FinSegun
  * ============================================================
@@ -187,9 +187,9 @@ class LiteSeInt {
         continue;
       }
 
-      // ── Para var <- inicio Hasta fin [Con Paso paso] Hacer ──
+      // ── Para var = inicio Hasta fin [Con Paso paso] Hacer ──
       const paraMatch = linea.match(
-        /^para\s+(\w+)\s*<-\s*(.+?)\s+hasta\s+(.+?)(?:\s+con\s+paso\s+(.+?))?\s+hacer$/i
+        /^para\s+(\w+)\s*=(?!=)\s*(.+?)\s+hasta\s+(.+?)(?:\s+con\s+paso\s+(.+?))?\s+hacer$/i
       );
       if (paraMatch) {
         const nodo = {
@@ -280,8 +280,28 @@ class LiteSeInt {
     if (/^definir\s+/i.test(linea))  return { tipo: 'definir',    linea: lineaIdx, texto: linea };
     if (/^escribir\s+/i.test(linea)) return { tipo: 'escribir',   linea: lineaIdx, texto: linea };
     if (/^leer\s+/i.test(linea))     return { tipo: 'leer',       linea: lineaIdx, texto: linea };
-    if (linea.includes('<-'))         return { tipo: 'asignacion', linea: lineaIdx, texto: linea };
+    if (this._encontrarPosAsignacion(linea) >= 0)
+                                      return { tipo: 'asignacion', linea: lineaIdx, texto: linea };
     return { tipo: 'desconocido', linea: lineaIdx, texto: linea };
+  }
+
+  // Busca la posición del "=" de asignación respetando strings.
+  // Ignora "==", "<=", ">=", "!=" (operadores relacionales).
+  _encontrarPosAsignacion(linea) {
+    let inStr = false;
+    for (let i = 0; i < linea.length; i++) {
+      const ch = linea[i];
+      if (ch === '"') { inStr = !inStr; continue; }
+      if (inStr) continue;
+      if (ch === '=') {
+        const prev = linea[i - 1];
+        const next = linea[i + 1];
+        if (prev === '=' || prev === '<' || prev === '>' || prev === '!') continue;
+        if (next === '=') { i++; continue; }
+        return i;
+      }
+    }
+    return -1;
   }
 
   // ===========================================================
@@ -506,8 +526,8 @@ class LiteSeInt {
       return this._evaluarCondicion(condStr.slice(1, -1), lineaIdx);
     }
 
-    // Operadores relacionales: <=, >=, <>, <, >, =
-    const m = condStr.match(/^(.*?)\s*(<=|>=|<>|<(?!-)|>|=)\s*(.+)$/);
+    // Operadores relacionales: ==, !=, <=, >=, <>, <, >
+    const m = condStr.match(/^(.*?)\s*(==|!=|<=|>=|<>|<|>)\s*(.+)$/);
     if (m) {
       const izq = this._evaluarExpresion(m[1].trim(), lineaIdx);
       const der = this._evaluarExpresion(m[3].trim(), lineaIdx);
@@ -520,7 +540,8 @@ class LiteSeInt {
 
   _aplicarRelop(izq, op, der) {
     switch (op) {
-      case '=':  return izq == der;
+      case '==': return izq == der;
+      case '!=': return izq != der;
       case '<>': return izq != der;
       case '<':  return izq < der;
       case '>':  return izq > der;
@@ -599,13 +620,13 @@ class LiteSeInt {
   }
 
   _ejecutarAsignacion(linea, lineaIdx) {
-    const partes = linea.split('<-');
-    if (partes.length !== 2) {
-      throw new Error('Sintaxis de asignación inválida. Use: variable <- valor');
+    const pos = this._encontrarPosAsignacion(linea);
+    if (pos < 0) {
+      throw new Error('Sintaxis de asignación inválida. Use: variable = valor');
     }
 
-    const nombre = partes[0].trim().toLowerCase();
-    const expresion = partes[1].trim();
+    const nombre = linea.substring(0, pos).trim().toLowerCase();
+    const expresion = linea.substring(pos + 1).trim();
 
     if (!this.variables.hasOwnProperty(nombre)) {
       throw new Error(`Variable "${nombre}" no definida. Use "Definir ${nombre} Como Tipo" primero.`);

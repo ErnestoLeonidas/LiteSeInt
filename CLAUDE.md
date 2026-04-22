@@ -53,7 +53,7 @@ Supported language elements currently include:
 - `Definir`
 - `Escribir`
 - `Leer`
-- assignment with `<-`
+- assignment with `=`
 - types: `Entero`, `Real`, `Caracter`
 - comments with `//`
 - arithmetic expressions with precedence and parentheses
