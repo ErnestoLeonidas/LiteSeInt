@@ -1,120 +1,85 @@
-# LiteSeInt — Interprete de Pseudocodigo Web
+# LiteSeInt
 
-**LiteSeInt** es un interprete de pseudocodigo ejecutable en navegador, orientado a fines educativos. Permite escribir instrucciones estilo PSeInt, ejecutarlas y ver los resultados en una consola visual integrada.
+**LiteSeInt** es un intérprete web de pseudocódigo inspirado en PSeInt y orientado a fines educativos. Permite escribir programas en un editor integrado, validarlos en tiempo real y ejecutarlos directamente en el navegador, sin instalación ni proceso de compilación.
 
-El motor de interpretacion es independiente de la interfaz, lo que facilita su mantenimiento y reutilizacion.
+El proyecto separa la lógica del intérprete de la interfaz visual, lo que facilita su mantenimiento, evolución y reutilización.
 
----
+## Estado actual
 
-## Caracteristicas
+- Versión visible en la app: `v0.4.0`
+- Ejecución completamente en el navegador
+- Sin build step ni backend
+- Proyecto basado en HTML, CSS y JavaScript vanilla
 
-- Editor de pseudocodigo con numeracion de lineas y resaltado de sintaxis.
-- Consola de salida integrada con entrada inline para `Leer`.
-- Ejecucion paso a paso con indicador visual `>` en la linea activa.
-- Autocompletado de palabras reservadas y variables del usuario.
-- Soporte de comentarios con `//` (inline y linea completa).
-- Indicadores de error con badge `!` y tooltip descriptivo junto a la linea.
-- Estructura Proceso/FinProceso protegida contra edicion accidental.
-- Exportar el pseudocodigo como archivo `.psc`.
-- Ejemplos precargados listos para ejecutar.
+## Características
 
-## Instrucciones soportadas
+- Editor de pseudocódigo con numeración de líneas.
+- Resaltado de sintaxis y guías visuales de indentación.
+- Validación estática con errores por línea, badge visual y tooltip descriptivo.
+- Consola integrada con entrada inline para instrucciones `Leer`.
+- Ejecución con resaltado de la línea activa.
+- Botones para ejecutar, detener, limpiar y descargar el código como `.psc`.
+- Autocompletado de palabras reservadas, tipos, literales y variables definidas por el usuario.
+- Estructura inicial `Proceso ... FinProceso` protegida en la experiencia de edición.
+- Ejemplos precargados para probar el lenguaje rápidamente.
+- Soporte para comentarios con `//` en línea completa o al final de una instrucción.
 
-| Instruccion | Formato | Ejemplo |
+## Lenguaje soportado
+
+### Instrucciones básicas
+
+| Instrucción | Sintaxis | Ejemplo |
 |---|---|---|
 | Definir | `Definir var1, var2 Como Tipo` | `Definir nombre Como Caracter` |
-| Asignar | `variable = expresion` | `total = nota1 + nota2` |
+| Asignación | `variable = expresion` | `total = nota1 + nota2` |
 | Escribir | `Escribir expr1, expr2, ...` | `Escribir "Hola, ", nombre` |
 | Leer | `Leer variable` | `Leer edad` |
 | Comentario | `// texto` | `// esto es un comentario` |
 
-## Estructuras de control
+### Estructuras de control
 
 | Estructura | Sintaxis |
 |---|---|
 | Condicional | `Si condicion Entonces ... FinSi` |
-| Condicional con sino | `Si condicion Entonces ... Sino ... FinSi` |
-| Bucle Mientras | `Mientras condicion Hacer ... FinMientras` |
-| Bucle Repetir | `Repetir ... HastaQue condicion` (alias aceptado: `Hasta Que condicion`) |
-| Bucle Para | `Para var = inicio Hasta fin [Con Paso n] Hacer ... FinPara` |
-| Segun | `Segun variable Hacer ... FinSegun` (casos inline o multilínea, varios valores con coma) |
+| Condicional con alternativa | `Si condicion Entonces ... Sino ... FinSi` |
+| Bucle `Mientras` | `Mientras condicion Hacer ... FinMientras` |
+| Bucle `Repetir` | `Repetir ... HastaQue condicion` |
+| Alias aceptado | `Hasta Que condicion` |
+| Bucle `Para` | `Para var = inicio Hasta fin [Con Paso n] Hacer ... FinPara` |
+| `Segun` | `Segun expresion Hacer ... FinSegun` |
 
-### Operadores relacionales
+### Operadores
+
+**Relacionales**
 
 `==`, `!=`, `<>`, `<`, `>`, `<=`, `>=`
 
-### Operadores logicos
+**Lógicos**
 
-`Y` (AND), `O` (OR), `No` (NOT)
+`Y`, `O`, `No`
 
-### Ejemplo: Si/FinSi
-
-```
-Definir a, b Como Real
-Leer a
-Leer b
-Si a > b Entonces
-  Escribir "El mayor es: ", a
-Sino
-  Escribir "El mayor es: ", b
-FinSi
-```
-
-### Ejemplo: Mientras/FinMientras
-
-```
-Definir i, suma Como Entero
-i = 1
-suma = 0
-Mientras i <= 10 Hacer
-  suma = suma + i
-  i = i + 1
-FinMientras
-Escribir "Suma: ", suma
-```
-
-### Ejemplo: Para/FinPara
-
-```
-Definir i Como Entero
-Para i = 1 Hasta 10 Hacer
-  Escribir i
-FinPara
-```
-
-### Ejemplo: Segun/FinSegun
-
-Los casos admiten formato inline (instrucción en la misma línea),
-multilínea (instrucciones debajo), y varios valores separados por coma.
-
-```
-Definir dia Como Entero
-Leer dia
-Segun dia Hacer
-  1: Escribir "Lunes"
-  2: Escribir "Martes"
-  3, 4, 5:
-    Escribir "Mitad de semana"
-  De Otro Modo:
-    Escribir "Otro dia"
-FinSegun
-```
-
-## Tipos de datos
+### Tipos de datos
 
 | Tipo | Valor por defecto |
 |---|---|
-| Entero | `0` |
-| Real | `0.0` |
-| Caracter | `""` |
-| Logico | `Falso` |
+| `Entero` | `0` |
+| `Real` | `0.0` |
+| `Caracter` | `""` |
+| `Logico` | `Falso` |
 
-### Tipo Logico
+### Tipo `Logico`
 
-Los valores del tipo `Logico` se expresan con los literales `Verdadero` y `Falso`.
-Soportan los operadores `Y`, `O` y `No`, tanto en condiciones como en asignaciones.
+LiteSeInt soporta el tipo `Logico` con los literales `Verdadero` y `Falso`.
 
-```
+- Puede declararse con `Definir`.
+- Puede leerse con `Leer`.
+- Puede imprimirse con `Escribir`.
+- Puede usarse en condiciones y expresiones.
+- La negación `No` funciona tanto en condiciones como en asignaciones.
+
+Ejemplo:
+
+```txt
 Definir activo, permitido Como Logico
 
 activo = Verdadero
@@ -125,59 +90,124 @@ Si activo Y No permitido Entonces
 Sino
   Escribir "Otro estado"
 FinSi
+
+permitido = No permitido
+Escribir "permitido ahora vale: ", permitido
 ```
 
-Al leer desde la consola, `Leer variable` acepta `Verdadero` o `Falso`.
-Al escribir (`Escribir activo`), el valor se muestra como `Verdadero` o `Falso`.
+Cuando se imprime un booleano, la salida se muestra como `Verdadero` o `Falso`, no como `true` o `false`.
 
-## Tecnologias
+### `Segun`
 
-- HTML5, CSS3, JavaScript vanilla
-- Bootstrap 5.3.3 (layout y tooltips)
-- jQuery 3.7.1 (DOM de la UI)
+La estructura `Segun` admite:
 
-No se usan frameworks ni librerias externas para la logica del interprete.
+- Casos inline: `1: Escribir "Lunes"`
+- Casos multilínea
+- Varios valores por caso separados por coma
+- Bloque `De Otro Modo:`
 
-## Estructura de archivos
+Ejemplo:
 
-```
-index.html        # Interfaz completa (HTML + CSS + JS de UI)
-LiteSeInt.js      # Motor del interprete (parser + ejecutor AST)
-doc_errores.js    # Tokenizador, validacion estatica, tabla de simbolos
-styles.css        # Estilos
-README.md
-CHANGELOG.md
-```
+```txt
+Definir dia Como Entero
+Leer dia
 
-## Uso rapido
-
-1. Descarga `index.html`, `LiteSeInt.js`, `doc_errores.js` y `styles.css` en la misma carpeta.
-2. Abre `index.html` en cualquier navegador moderno.
-3. Escribe pseudocodigo en el editor o selecciona un ejemplo.
-4. Presiona **Ejecutar**.
-
-## Arquitectura
-
-```
-index.html (UI)
-    |-- LiteSeInt.js (parser + ejecutor)
-    |       |-- _parsear()       construye AST
-    |       |-- _ejecutarBloque() recorre nodos recursivamente
-    |       |-- _evaluarCondicion() operadores relacionales y logicos
-    |       |-- _evaluarExpresion() shunting-yard
-    |
-    |-- doc_errores.js (analisis estatico)
-            |-- tokenizarLinea()
-            |-- validarDocumento()  incluye balance de bloques
-            |-- TablaSimbolos
+Segun dia Hacer
+  1: Escribir "Lunes"
+  2: Escribir "Martes"
+  3, 4, 5:
+    Escribir "Mitad de semana"
+  De Otro Modo:
+    Escribir "Otro día"
+FinSegun
 ```
 
-## Roadmap
+## Ejemplos incluidos
 
-- Arreglos: `Dimension`
-- Funciones de usuario
+La interfaz carga ejemplos listos para ejecutar:
+
+- `Hola Mundo`
+- `Saludo`
+- `Notas`
+- `Multi-variable`
+- `Mayor de dos`
+- `Contador`
+- `Tabla`
+- `Día de semana`
+- `Lógico`
+
+## Tecnologías
+
+- HTML5
+- CSS3
+- JavaScript vanilla
+- Bootstrap `5.3.3`
+- Bootstrap Icons `1.11.3`
+- jQuery `3.7.1`
+- SweetAlert2
+- Lucide
+- Google Fonts (`JetBrains Mono` y `Space Mono`)
+
+La lógica del intérprete no depende de frameworks de frontend.
+
+## Estructura del proyecto
+
+```txt
+.
+├── index.html
+├── README.md
+├── CHANGELOG.md
+├── css/
+│   └── styles.css
+└── js/
+    ├── app.js
+    ├── doc_errores.js
+    └── LiteSeInt.js
+```
+
+### Archivos principales
+
+- [index.html](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/index.html): estructura de la interfaz y carga de dependencias.
+- [css/styles.css](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/css/styles.css): estilos de la aplicación.
+- [js/app.js](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/js/app.js): controlador de interfaz, consola, editor, autocompletado y ejemplos.
+- [js/doc_errores.js](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/js/doc_errores.js): tokenización, validación estática, decoraciones y tabla de símbolos.
+- [js/LiteSeInt.js](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/js/LiteSeInt.js): parser, AST, ejecución y evaluación de expresiones/condiciones.
+
+## Uso rápido
+
+1. Clona o descarga este repositorio.
+2. Abre [index.html](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/index.html) en un navegador moderno.
+3. Escribe pseudocódigo o carga uno de los ejemplos.
+4. Presiona `Ejecutar`.
+5. Si el programa usa `Leer`, responde desde la consola integrada.
+
+## Arquitectura general
+
+```txt
+index.html
+  ├── css/styles.css
+  └── js/app.js
+       ├── usa js/doc_errores.js para validación y ayudas del editor
+       └── usa js/LiteSeInt.js para interpretar y ejecutar
+```
+
+### Responsabilidades
+
+- `LiteSeInt.js`
+  Parser del pseudocódigo, construcción del AST, ejecución por bloques y evaluación de expresiones.
+
+- `doc_errores.js`
+  Tokenización, validación estructural del documento, detección de errores y soporte para autocompletado.
+
+- `app.js`
+  Integración con la UI: editor, consola, ejemplos, descargas y estados visuales de ejecución/error.
+
+## Hoja de ruta
+
+- Soporte para arreglos con `Dimension`
+- Funciones definidas por el usuario
 - Historial de ejecuciones
-- Modo paso a paso con controles avanzados
+- Mejoras al modo paso a paso
 
 ## Licencia
 
