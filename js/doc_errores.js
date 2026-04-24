@@ -18,7 +18,7 @@
 // ─────────────────────────────────────────────
 
 const PALABRAS_RESERVADAS_SET = new Set([
-  'definir', 'escribir', 'leer', 'como', 'entero', 'real', 'caracter',
+  'definir', 'escribir', 'leer', 'como', 'entero', 'real', 'caracter', 'logico',
   'proceso', 'finproceso',
   'si', 'entonces', 'sino', 'finsi',
   'mientras', 'hacer', 'finmientras',
@@ -26,9 +26,16 @@ const PALABRAS_RESERVADAS_SET = new Set([
   'para', 'hasta', 'con', 'paso', 'finpara',
   'segun', 'finsegun', 'de', 'otro', 'modo',
   'y', 'o', 'no',
+  'verdadero', 'falso',
 ]);
 
-const TIPOS_VALIDOS = new Set(['entero', 'real', 'caracter']);
+const TIPOS_VALIDOS = new Set(['entero', 'real', 'caracter', 'logico']);
+
+// Palabras reservadas permitidas dentro de expresiones y condiciones:
+//   - 'verdadero' / 'falso': literales booleanos
+//   - 'no':                  operador unario lógico (prefijo)
+//   - 'y' / 'o':             operadores binarios lógicos
+const KEYWORDS_EXPR_OK = new Set(['verdadero', 'falso', 'no', 'y', 'o']);
 
 // ─────────────────────────────────────────────
 //  TOKEN TYPES
@@ -722,8 +729,8 @@ function validarBloquesSegun(lineas, agregarError) {
     }
 
     // Etiqueta de caso: contiene ":" y estamos dentro de un Segun abierto
-    const colonIdx = sig.findIndex(t => t.type === TK.COLON);
-    if (colonIdx >= 0 && stack.length > 0) {
+    const caso = detectarEtiquetaCaso(sig);
+    if (caso && stack.length > 0) {
       const top = stack[stack.length - 1];
       finalizarSegmentoEnMedio(top, agregarError);
 
@@ -735,12 +742,17 @@ function validarBloquesSegun(lineas, agregarError) {
         ));
       }
 
-      validarEtiquetaCaso(sig, colonIdx, i, top, agregarError);
+      validarEtiquetaCaso(sig, caso.colonIdx, i, top, agregarError);
 
       if (!top.tieneDeOtroModo) {
         top.tieneAlgunCaso = true;
       }
-      top.ultimoSegmento = { tipo: 'caso', contenido: 0, linea: i };
+      // Inline: la instrucción después de ":" cuenta como contenido del caso.
+      top.ultimoSegmento = {
+        tipo: 'caso',
+        contenido: caso.inline.length > 0 ? 1 : 0,
+        linea: i,
+      };
       continue;
     }
 
@@ -765,6 +777,35 @@ function esDeOtroModo(sig) {
   if (sig[1].type !== TK.KEYWORD || sig[1].value.toLowerCase() !== 'otro') return false;
   if (sig[2].type !== TK.KEYWORD || sig[2].value.toLowerCase() !== 'modo') return false;
   return true;
+}
+
+/**
+ * Detecta si una línea (tokens significativos) es una etiqueta de caso
+ * de Segun, aceptando formato multilínea e inline:
+ *   "1:"                       (multilínea, inline vacío)
+ *   "1: Escribir ..."          (inline: una instrucción tras ":")
+ *   "1, 2, 3: Escribir ..."    (varios valores + inline)
+ *
+ * Devuelve null si no es caso (ej. empieza con "De", no hay ":", etc.).
+ * Si es caso devuelve { colonIdx, valores, inline }:
+ *   - colonIdx: índice del token ":"
+ *   - valores:  tokens antes de ":"
+ *   - inline:   tokens después de ":" (vacío si es multilínea)
+ *
+ * No valida el contenido ni decide contexto (eso es responsabilidad del
+ * validador estructural de Segun y del validador de línea).
+ */
+function detectarEtiquetaCaso(sig) {
+  if (sig.length === 0) return null;
+  // "De Otro Modo:" se gestiona aparte, no debe detectarse aquí.
+  if (sig[0].type === TK.KEYWORD && sig[0].value.toLowerCase() === 'de') return null;
+  const colonIdx = sig.findIndex(t => t.type === TK.COLON);
+  if (colonIdx <= 0) return null;
+  return {
+    colonIdx,
+    valores: sig.slice(0, colonIdx),
+    inline:  sig.slice(colonIdx + 1),
+  };
 }
 
 function validarCabeceraSegun(sig, lineaIdx, agregarError) {
@@ -809,16 +850,8 @@ function validarCabeceraSegun(sig, lineaIdx, agregarError) {
 function validarEtiquetaCaso(sig, colonIdx, lineaIdx, top, agregarError) {
   const colonToken = sig[colonIdx];
   const valoresTokens = sig.slice(0, colonIdx);
-  const afterColon = sig.slice(colonIdx + 1);
-
-  if (afterColon.length > 0) {
-    const first = afterColon[0];
-    const last = afterColon[afterColon.length - 1];
-    agregarError(lineaIdx, crearError(
-      lineaIdx, first.col, last.end, 'caso_texto_extra',
-      'No debe haber texto después de ":" en la línea del caso.', ''
-    ));
-  }
+  // Nota: el texto posterior a ":" (caso inline) se valida como una
+  // instrucción normal en validarLinea, no aquí.
 
   if (valoresTokens.length === 0) {
     agregarError(lineaIdx, crearError(
@@ -930,18 +963,54 @@ function finalizarSegmentoAntesFinSegun(top, agregarError) {
 }
 
 // ─────────────────────────────────────────────
-//  VALIDATION: Repetir / Hasta Que
+//  VALIDATION: Repetir / HastaQue
 // ─────────────────────────────────────────────
+
+/**
+ * Sintaxis oficial: "HastaQue <condición>".
+ * Alias aceptado:   "Hasta Que <condición>" (se trata como equivalente).
+ *
+ * Regex sobre la línea ya sin comentario y .trim()-eada.
+ * Grupo 1 = la condición cruda (aún puede contener strings y expresiones).
+ */
+const REGEX_HASTAQUE_LINEA = /^(?:hastaque|hasta\s+que)\s+(.+)$/i;
+
+/**
+ * Detección token-based del encabezado "HastaQue" (o alias "Hasta Que").
+ * Devuelve null si la línea no es un HastaQue. Si lo es, devuelve:
+ *   { forma, colInicio, colFin, condStart }
+ *     - forma:     'junto' | 'separado'
+ *     - colInicio: columna donde empieza la palabra clave
+ *     - colFin:    columna donde termina la palabra clave (antes de la condición)
+ *     - condStart: índice en `sig` donde empiezan los tokens de la condición
+ */
+function detectarHastaQue(sig) {
+  if (sig.length === 0) return null;
+  const first = sig[0];
+  if (first.type !== TK.KEYWORD) return null;
+  const w1 = first.value.toLowerCase();
+
+  if (w1 === 'hastaque') {
+    return { forma: 'junto', colInicio: first.col, colFin: first.end, condStart: 1 };
+  }
+  if (w1 === 'hasta'
+      && sig.length >= 2
+      && sig[1].type === TK.KEYWORD
+      && sig[1].value.toLowerCase() === 'que') {
+    return { forma: 'separado', colInicio: first.col, colFin: sig[1].end, condStart: 2 };
+  }
+  return null;
+}
 
 /**
  * Pasada estructural sobre el documento completo para Repetir.
  * Mantiene una pila para soportar anidación. Valida:
  *   - "Repetir" en línea propia, sin texto adicional
- *   - "Hasta Que <condición>" con condición no vacía
+ *   - "HastaQue <condición>" (o alias "Hasta Que") con condición no vacía
  *   - operadores de comparación permitidos en la condición
- *   - al menos una instrucción real entre "Repetir" y "Hasta Que"
- *   - "Hasta" incompleto sin "Que"
- *   - "Hasta Que" sin un "Repetir" abierto
+ *   - al menos una instrucción real entre "Repetir" y "HastaQue"
+ *   - "Hasta" incompleto sin "Que" (cabecera mal escrita)
+ *   - "HastaQue" sin un "Repetir" abierto
  *   - "Repetir" sin cerrar al final del documento
  */
 function validarBloquesRepetir(lineas, agregarError) {
@@ -972,38 +1041,26 @@ function validarBloquesRepetir(lineas, agregarError) {
       continue;
     }
 
-    if (palabra === 'hasta') {
-      const esHastaQue = sig.length >= 2
-        && sig[1].type === TK.KEYWORD
-        && sig[1].value.toLowerCase() === 'que';
-
-      if (!esHastaQue) {
-        agregarError(i, crearError(
-          i, primera.col, sig[sig.length - 1].end, 'hastaque_incompleto',
-          'La sentencia "Hasta Que" está incompleta.', ''
-        ));
-        continue;
-      }
-
-      const queToken = sig[1];
-      const condTokens = sig.slice(2);
+    const hq = detectarHastaQue(sig);
+    if (hq) {
+      const condTokens = sig.slice(hq.condStart);
 
       if (stack.length === 0) {
         const last = sig[sig.length - 1];
         agregarError(i, crearError(
-          i, primera.col, last.end, 'hastaque_sin_repetir',
-          '"Hasta Que" sin una sentencia "Repetir" abierta.', ''
+          i, hq.colInicio, last.end, 'hastaque_sin_repetir',
+          '"HastaQue" sin una sentencia "Repetir" abierta.', ''
         ));
       }
 
       if (condTokens.length === 0) {
         agregarError(i, crearError(
-          i, primera.col, queToken.end, 'hastaque_sin_condicion',
-          'Falta la condición en la sentencia "Hasta Que".', ''
+          i, hq.colInicio, hq.colFin, 'hastaque_sin_condicion',
+          'Falta la condición en la sentencia "HastaQue".', ''
         ));
       } else {
         validarComparacionesEnCondicion(
-          lineaRaw, queToken.end, lineaRaw.length, i, agregarError, 'Hasta Que'
+          lineaRaw, hq.colFin, lineaRaw.length, i, agregarError, 'HastaQue'
         );
       }
 
@@ -1011,11 +1068,20 @@ function validarBloquesRepetir(lineas, agregarError) {
         const top = stack.pop();
         if (top.contenido === 0) {
           agregarError(i, crearError(
-            i, primera.col, queToken.end, 'repetir_vacio',
-            'Debe haber al menos una instrucción entre "Repetir" y "Hasta Que".', ''
+            i, hq.colInicio, hq.colFin, 'repetir_vacio',
+            'Debe haber al menos una instrucción entre "Repetir" y "HastaQue".', ''
           ));
         }
       }
+      continue;
+    }
+
+    // "Hasta" al inicio sin "Que" → cabecera mal escrita
+    if (palabra === 'hasta') {
+      agregarError(i, crearError(
+        i, primera.col, sig[sig.length - 1].end, 'hastaque_incompleto',
+        'La sentencia "HastaQue" está incompleta.', ''
+      ));
       continue;
     }
 
@@ -1026,7 +1092,7 @@ function validarBloquesRepetir(lineas, agregarError) {
     const longitud = lineas[ctx.lineaRepetir] ? lineas[ctx.lineaRepetir].length : 0;
     agregarError(ctx.lineaRepetir, crearError(
       ctx.lineaRepetir, 0, longitud, 'repetir_sin_cerrar',
-      'Falta "Hasta Que" para cerrar la sentencia "Repetir".', ''
+      'Falta "HastaQue" para cerrar la sentencia "Repetir".', ''
     ));
   }
 }
@@ -1351,15 +1417,12 @@ function validarLinea(sig, allTokens, lineaIdx, tabla) {
   }
 
   // ── 3. Standard instruction validation ──
-  const colonIdx = sig.findIndex(t => t.type === TK.COLON);
-  const esCasoSegun =
-    colonIdx > 0 &&
-    !(sig[0].type === TK.KEYWORD && sig[0].value.toLowerCase() === 'de');
-
-  if (esCasoSegun) {
-    const restoSig = sig.slice(colonIdx + 1);
-    if (restoSig.length > 0) {
-      errores.push(...validarLinea(restoSig, restoSig, lineaIdx, tabla));
+  // Etiquetas de caso ("1:", "1, 2: Escribir ..."): si hay contenido inline
+  // tras ":", se valida recursivamente como si fuese una línea normal.
+  const casoLinea = detectarEtiquetaCaso(sig);
+  if (casoLinea) {
+    if (casoLinea.inline.length > 0) {
+      errores.push(...validarLinea(casoLinea.inline, casoLinea.inline, lineaIdx, tabla));
     }
     return errores;
   }
@@ -1504,7 +1567,7 @@ function validarDefinir(sig, lineaIdx, tabla, errores) {
     errores.push(crearError(
       lineaIdx, sig[0].col, sig[sig.length - 1].end,
       'sintaxis_definir',
-      'Sintaxis inválida. Use: Definir <var1>, <var2> Como <Entero|Real|Caracter>',
+      'Sintaxis inválida. Use: Definir <var1>, <var2> Como <Entero|Real|Caracter|Logico>',
       ''
     ));
     return;
@@ -1532,7 +1595,7 @@ function validarDefinir(sig, lineaIdx, tabla, errores) {
     errores.push(crearError(
       lineaIdx, sig[comoIdx].col, sig[comoIdx].end,
       'sintaxis_definir',
-      'Falta el tipo de dato después de "Como". Use: Entero, Real o Caracter.',
+      'Falta el tipo de dato después de "Como". Use: Entero, Real, Caracter o Logico.',
       ''
     ));
     return;
@@ -1543,7 +1606,7 @@ function validarDefinir(sig, lineaIdx, tabla, errores) {
     errores.push(crearError(
       lineaIdx, tipoToken.col, tipoToken.end,
       'tipo_invalido',
-      `Tipo de dato no reconocido: "${tipoToken.value}". Use: Entero, Real o Caracter.`,
+      `Tipo de dato no reconocido: "${tipoToken.value}". Use: Entero, Real, Caracter o Logico.`,
       tipoToken.value
     ));
   }
@@ -1830,6 +1893,7 @@ function validarExpresionTokens(tokens, lineaIdx, tabla, errores) {
                tk.type === TK.RPAREN || tk.type === TK.ASSIGN) {
       // Valid expression tokens (STRING_UNCLOSED already has its own error)
     } else if (tk.type === TK.KEYWORD) {
+      if (KEYWORDS_EXPR_OK.has(tk.value.toLowerCase())) continue;
       errores.push(crearError(
         lineaIdx, tk.col, tk.end,
         'token_inesperado',
@@ -1936,4 +2000,7 @@ const DocErrores = {
   erroresADecoraciones,
   mensajesDeLinea,
   stripComment,
+  REGEX_HASTAQUE_LINEA,
+  detectarHastaQue,
+  detectarEtiquetaCaso,
 };

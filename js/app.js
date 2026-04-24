@@ -1272,6 +1272,23 @@ const EJEMPLOS = {
   FinPara
   `,
 
+  logico: `// Ejemplo del tipo Logico con Verdadero, Falso y No
+  Definir activo, permitido Como Logico
+
+  activo = Verdadero
+  permitido = Falso
+
+  Si activo Y No permitido Entonces
+    Escribir "Acceso parcial: activo pero sin permiso"
+  Sino
+    Escribir "Otro estado"
+  FinSi
+
+  // Negación sobre variable
+  permitido = No permitido
+  Escribir "permitido ahora vale: ", permitido
+  `,
+
   diasemana: `// Nombre del día según su número (1=Lunes ... 7=Domingo)
   Definir dia Como Entero
 
@@ -1279,20 +1296,13 @@ const EJEMPLOS = {
   Leer dia
 
   Segun dia Hacer
-    1:
-      Escribir "Lunes"
-    2:
-      Escribir "Martes"
-    3:
-      Escribir "Miércoles"
-    4:
-      Escribir "Jueves"
-    5:
-      Escribir "Viernes"
-    6:
-      Escribir "Sábado"
-    7:
-      Escribir "Domingo"
+    1: Escribir "Lunes"
+    2: Escribir "Martes"
+    3: Escribir "Miércoles"
+    4: Escribir "Jueves"
+    5: Escribir "Viernes"
+    6, 7:
+      Escribir "Fin de semana"
     De Otro Modo:
       Escribir "Número inválido. Ingresa del 1 al 7."
   FinSegun

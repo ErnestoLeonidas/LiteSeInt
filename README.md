@@ -35,9 +35,9 @@ El motor de interpretacion es independiente de la interfaz, lo que facilita su m
 | Condicional | `Si condicion Entonces ... FinSi` |
 | Condicional con sino | `Si condicion Entonces ... Sino ... FinSi` |
 | Bucle Mientras | `Mientras condicion Hacer ... FinMientras` |
-| Bucle Repetir | `Repetir ... HastaQue condicion` |
+| Bucle Repetir | `Repetir ... HastaQue condicion` (alias aceptado: `Hasta Que condicion`) |
 | Bucle Para | `Para var = inicio Hasta fin [Con Paso n] Hacer ... FinPara` |
-| Segun | `Segun variable Hacer ... FinSegun` |
+| Segun | `Segun variable Hacer ... FinSegun` (casos inline o multilínea, varios valores con coma) |
 
 ### Operadores relacionales
 
@@ -84,12 +84,17 @@ FinPara
 
 ### Ejemplo: Segun/FinSegun
 
+Los casos admiten formato inline (instrucción en la misma línea),
+multilínea (instrucciones debajo), y varios valores separados por coma.
+
 ```
 Definir dia Como Entero
 Leer dia
 Segun dia Hacer
   1: Escribir "Lunes"
   2: Escribir "Martes"
+  3, 4, 5:
+    Escribir "Mitad de semana"
   De Otro Modo:
     Escribir "Otro dia"
 FinSegun
@@ -102,6 +107,28 @@ FinSegun
 | Entero | `0` |
 | Real | `0.0` |
 | Caracter | `""` |
+| Logico | `Falso` |
+
+### Tipo Logico
+
+Los valores del tipo `Logico` se expresan con los literales `Verdadero` y `Falso`.
+Soportan los operadores `Y`, `O` y `No`, tanto en condiciones como en asignaciones.
+
+```
+Definir activo, permitido Como Logico
+
+activo = Verdadero
+permitido = Falso
+
+Si activo Y No permitido Entonces
+  Escribir "Acceso parcial"
+Sino
+  Escribir "Otro estado"
+FinSi
+```
+
+Al leer desde la consola, `Leer variable` acepta `Verdadero` o `Falso`.
+Al escribir (`Escribir activo`), el valor se muestra como `Verdadero` o `Falso`.
 
 ## Tecnologias
 

@@ -6,6 +6,41 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.4.0] — 2026-04-24
+
+### Agregado
+- **Tipo `Logico`**: nuevo tipo de dato primitivo con valor por defecto `Falso`. Soportado en `Definir`, asignación, `Leer`, `Escribir` y en condiciones de `Si`, `Mientras`, `Repetir/HastaQue` y `Para`.
+- **Literales booleanos `Verdadero` y `Falso`**: reconocidos por el tokenizador, validados como literales en expresiones y evaluados nativamente en el runtime.
+- **Operador `No` en expresiones**: ya se aceptaba en condiciones; ahora también en el lado derecho de asignaciones (p. ej. `activo = No activo`).
+- **Ejemplo precargado `logico`**: nuevo botón en la barra de ejemplos que demuestra el uso de `Logico`, `Verdadero`, `Falso`, `Y` y `No`.
+- **Autocompletado**: se sugieren `Logico`, `Verdadero` y `Falso`.
+
+### Cambiado
+- **`Escribir` para booleanos**: los valores `true`/`false` del runtime se imprimen como `Verdadero`/`Falso` para mantener consistencia visual con la sintaxis del lenguaje.
+- **Mensajes de error de `Definir`**: mencionan `Logico` además de `Entero`, `Real` y `Caracter`.
+- **Versión visible**: `v0.4.0`.
+
+## [0.3.4] — 2026-04-24
+
+### Corregido
+- **Inconsistencia en `Segun / FinSegun`**: el parser aceptaba casos inline (`1: Escribir "Lunes"`, `2, 3: Escribir "Otro"`) pero la validación estática los marcaba como `caso_texto_extra`. Todo caso inline válido fallaba al validar. Ahora validador y parser aceptan la misma sintaxis.
+
+### Cambiado
+- **Sintaxis oficial de `Segun`**: casos multilínea, inline (una instrucción tras `:`) y con varios valores separados por coma son todos soportados oficialmente. `De Otro Modo:` sigue siendo solo multilínea.
+- **Detección de etiqueta de caso centralizada**: nuevo helper `DocErrores.detectarEtiquetaCaso(sig)` (token-based) reutilizado por el validador de línea y por el validador estructural de `Segun`, evitando reglas duplicadas.
+
+### Interno
+- **Ejemplo `diasemana`** actualizado para demostrar casos inline y casos con varios valores.
+
+## [0.3.3] — 2026-04-24
+
+### Corregido
+- **Inconsistencia en `Repetir / HastaQue`**: el parser reconocía solo `HastaQue` (una palabra) y el validador solo `Hasta Que` (dos palabras), por lo que todo bloque válido fallaba en una capa u otra. Ahora ambas capas aceptan las dos formas.
+
+### Cambiado
+- **Sintaxis oficial**: `Repetir ... HastaQue condicion`. Se acepta `Hasta Que` como alias. La detección se centraliza en `DocErrores.REGEX_HASTAQUE_LINEA` (regex, para el parser) y `DocErrores.detectarHastaQue(sig)` (token-based, para el validador).
+- **Mensajes de error de Repetir/HastaQue**: se unifican usando la forma oficial `HastaQue` en los textos mostrados al usuario.
+
 ## [0.3.2] — 2026-04-22
 
 ### Cambiado

@@ -5,7 +5,7 @@
  *  Core independiente de la UI.
  *  Depende de doc_errores.js para validación y tokenización.
  *
- *  Tipos soportados: Entero, Real, Caracter
+ *  Tipos soportados: Entero, Real, Caracter, Logico
  *  Instrucciones: Definir, Escribir, Leer, Asignación (=)
  *  Estructuras de control: Si/FinSi, Mientras/FinMientras,
  *    Repetir/HastaQue, Para/FinPara, Segun/FinSegun
@@ -173,9 +173,10 @@ class LiteSeInt {
         continue;
       }
 
-      // ── HastaQue condicion ──
-      if (/^hastaque\s+.+$/i.test(linea)) {
-        const condicion = linea.replace(/^hastaque\s+/i, '').trim();
+      // ── HastaQue condicion (alias: "Hasta Que condicion") ──
+      const hqMatch = linea.match(DocErrores.REGEX_HASTAQUE_LINEA);
+      if (hqMatch) {
+        const condicion = hqMatch[1].trim();
         const ctx = stack[stack.length - 1];
         if (ctx && ctx.tipo === 'repetir') {
           ctx.nodo.condicion = condicion;
@@ -591,9 +592,9 @@ class LiteSeInt {
   // ===========================================================
 
   _ejecutarDefinir(linea, lineaIdx) {
-    const match = linea.match(/^definir\s+(.+?)\s+como\s+(entero|real|caracter)\s*$/i);
+    const match = linea.match(/^definir\s+(.+?)\s+como\s+(entero|real|caracter|logico)\s*$/i);
     if (!match) {
-      throw new Error('Sintaxis inválida. Use: Definir <var1>, <var2> Como <Entero|Real|Caracter>');
+      throw new Error('Sintaxis inválida. Use: Definir <var1>, <var2> Como <Entero|Real|Caracter|Logico>');
     }
 
     const listaVars = match[1];
@@ -643,7 +644,7 @@ class LiteSeInt {
     let salida = '';
 
     for (const parte of partes) {
-      salida += String(this._evaluarExpresion(parte.trim(), lineaIdx));
+      salida += this._formatearSalida(this._evaluarExpresion(parte.trim(), lineaIdx));
     }
 
     this.callbacks.onEscribir(salida);
@@ -685,12 +686,25 @@ class LiteSeInt {
   // ===========================================================
 
   _evaluarExpresion(expr, lineaIdx) {
+    expr = expr.trim();
+
+    // Operador lógico unario "No <expr>" como prefijo (fuera de strings).
+    // Misma semántica que en _evaluarCondicion para mantener consistencia.
+    if (/^no\s+/i.test(expr)) {
+      const sub = this._evaluarExpresion(expr.replace(/^no\s+/i, '').trim(), lineaIdx);
+      return !Boolean(sub);
+    }
+
     const tokens = this._tokenizarExpresion(expr);
     if (tokens.length === 0) {
       throw new Error('Expresión vacía.');
     }
 
     if (tokens.length === 1 && tokens[0].type === 'string') {
+      return tokens[0].value;
+    }
+
+    if (tokens.length === 1 && tokens[0].type === 'boolean') {
       return tokens[0].value;
     }
 
@@ -716,11 +730,10 @@ class LiteSeInt {
     }
 
     for (const tk of processedTokens) {
-      if (tk.type === 'number' || tk.type === 'string' || tk.type === 'variable') {
+      if (tk.type === 'number' || tk.type === 'string' ||
+          tk.type === 'variable' || tk.type === 'boolean') {
         let val;
-        if (tk.type === 'number') {
-          val = tk.value;
-        } else if (tk.type === 'string') {
+        if (tk.type === 'number' || tk.type === 'string' || tk.type === 'boolean') {
           val = tk.value;
         } else {
           const nombre = tk.raw.toLowerCase();
@@ -827,7 +840,14 @@ class LiteSeInt {
         let j = i;
         while (j < expr.length && /[\wáéíóúüñÁÉÍÓÚÜÑ]/.test(expr[j])) j++;
         const word = expr.substring(i, j);
-        tokens.push({ type: 'variable', raw: word });
+        const lw = word.toLowerCase();
+        if (lw === 'verdadero') {
+          tokens.push({ type: 'boolean', value: true });
+        } else if (lw === 'falso') {
+          tokens.push({ type: 'boolean', value: false });
+        } else {
+          tokens.push({ type: 'variable', raw: word });
+        }
         i = j;
         continue;
       }
@@ -868,6 +888,10 @@ class LiteSeInt {
         return /^-?\d+(\.\d+)?$/.test(valor.trim());
       case 'caracter':
         return true;
+      case 'logico': {
+        const v = String(valor).trim().toLowerCase();
+        return v === 'verdadero' || v === 'falso' || v === 'true' || v === 'false';
+      }
       default:
         return true;
     }
@@ -887,6 +911,13 @@ class LiteSeInt {
       }
       case 'caracter':
         return String(valor);
+      case 'logico': {
+        if (typeof valor === 'boolean') return valor;
+        const v = String(valor).trim().toLowerCase();
+        if (v === 'verdadero' || v === 'true')  return true;
+        if (v === 'falso'     || v === 'false') return false;
+        throw new Error(`No se puede convertir "${valor}" a Logico.`);
+      }
       default:
         return valor;
     }
@@ -897,8 +928,17 @@ class LiteSeInt {
       case 'entero':   return 0;
       case 'real':     return 0.0;
       case 'caracter': return '';
+      case 'logico':   return false;
       default:         return null;
     }
+  }
+
+  // Formatea el valor para Escribir. Los booleanos se muestran como
+  // "Verdadero" / "Falso" (forma oficial del lenguaje), no "true"/"false".
+  _formatearSalida(v) {
+    if (v === true)  return 'Verdadero';
+    if (v === false) return 'Falso';
+    return String(v);
   }
 
   _separarPorComas(texto) {
@@ -945,6 +985,9 @@ class LiteSeInt {
     { texto: 'Entero',      tipo: 'tipo' },
     { texto: 'Real',        tipo: 'tipo' },
     { texto: 'Caracter',    tipo: 'tipo' },
+    { texto: 'Logico',      tipo: 'tipo' },
+    { texto: 'Verdadero',   tipo: 'literal' },
+    { texto: 'Falso',       tipo: 'literal' },
     { texto: 'Si',          tipo: 'estructura' },
     { texto: 'Entonces',    tipo: 'palabra clave' },
     { texto: 'Sino',        tipo: 'estructura' },
