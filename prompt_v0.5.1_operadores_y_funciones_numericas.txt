@@ -1,0 +1,220 @@
+Quiero que implementes la version 0.5.1 de LiteSeInt.
+
+Contexto del proyecto:
+
+- LiteSeInt es un interprete web de pseudocodigo con UI en `index.html`, estilos en `css/styles.css`, controlador en `js/app.js`, validador/tokenizador en `js/doc_errores.js` y runtime/parser en `js/LiteSeInt.js`.
+- La fase `0.5.0` debio dejar mejor organizada la arquitectura del sistema de expresiones.
+- Esta version `0.5.1` ya debe agregar features visibles del lenguaje.
+
+Objetivo de esta fase:
+
+Implementar la primera ampliacion real del nuevo sistema de expresiones, agregando:
+
+- operador `mod`
+- operador de potencia
+- funciones nativas numericas:
+  - `Abs(x)`
+  - `Redon(x)`
+  - `Trunc(x)`
+
+Importante:
+
+- Esta version debe construir sobre la base preparada en `0.5.0`.
+- La siguiente version `0.5.2` quedara reservada para:
+  - `Longitud(texto)`
+  - `Mayusculas(texto)`
+  - `Minusculas(texto)`
+  - mejoras adicionales de errores y ejemplos
+
+Por eso, en `0.5.1` debes enfocarte solo en operadores nuevos y funciones numericas nativas, sin mezclar alcance innecesario.
+
+Alcance funcional esperado:
+
+1. Operador `mod`
+
+- Debe funcionar dentro de expresiones numericas.
+- Debe respetar una precedencia clara y consistente.
+- Debe validar correctamente errores de uso.
+
+Ejemplos esperados:
+
+```txt
+Definir n Como Entero
+n = 10 mod 3
+Escribir n
+```
+
+```txt
+Si n mod 2 == 0 Entonces
+  Escribir "Par"
+FinSi
+```
+
+2. Operador de potencia
+
+- Define una sintaxis clara y consistente con el lenguaje actual.
+- Si debes elegir representacion, prioriza una que sea facil de tokenizar, validar y documentar.
+- Debe integrarse correctamente con parentesis y precedencia.
+
+Ejemplos orientativos:
+
+```txt
+resultado = 2 ^ 3
+```
+
+```txt
+resultado = (1 + 2) ^ 2
+```
+
+3. Funciones nativas numericas
+
+Implementa:
+
+- `Abs(x)`
+- `Redon(x)`
+- `Trunc(x)`
+
+Deben soportar llamadas dentro de expresiones y asignaciones.
+
+Ejemplos esperados:
+
+```txt
+Definir a Como Real
+a = Abs(-3.5)
+Escribir a
+```
+
+```txt
+Escribir Redon(3.6)
+Escribir Trunc(3.6)
+```
+
+4. Integracion con expresiones existentes
+
+- Las nuevas funciones y operadores deben convivir con:
+  - parentesis
+  - variables
+  - numeros enteros y reales
+  - strings cuando aplique
+  - operadores aritmeticos ya existentes
+  - operadores logicos y relacionales cuando corresponda
+
+Objetivos tecnicos:
+
+1. Runtime consistente
+
+- El runtime debe evaluar correctamente `mod`, potencia y funciones nativas.
+- Evita soluciones especiales aisladas si ya existe una arquitectura nueva para expresiones.
+- Si hay metadata de operadores o tabla de funciones, reutilizala o consolidala.
+
+2. Validacion estatica alineada
+
+- `js/doc_errores.js` debe reconocer la nueva sintaxis.
+- El validador no debe rechazar expresiones validas del runtime.
+- Tampoco debe aceptar como valido algo que luego falle por falta de implementacion real.
+
+3. Errores claros
+
+Agrega o mejora errores para casos como:
+
+- funcion desconocida
+- cantidad invalida de argumentos
+- tipos invalidos de argumento
+- operador mal ubicado
+- expresion mal formada
+
+Quiero mensajes lo bastante claros para uso educativo.
+
+No objetivos de `v0.5.1`:
+
+- No implementar aun funciones de texto como `Longitud`, `Mayusculas` o `Minusculas`.
+- No introducir arreglos, `Dimension`, persistencia local ni validacion en vivo.
+- No convertir esta fase en una expansion general de libreria estandar.
+- No agregar funciones de usuario ni `SubProceso` / `Funcion`.
+
+Cambios esperados por archivo:
+
+### `js/LiteSeInt.js`
+
+- Implementa soporte real para:
+  - `mod`
+  - potencia
+  - llamadas a `Abs`, `Redon`, `Trunc`
+- Asegura precedencia y asociatividad correctas.
+- Centraliza la resolucion de funciones nativas si la arquitectura lo permite.
+- Mejora errores de evaluacion relacionados con expresiones y llamadas.
+
+### `js/doc_errores.js`
+
+- Valida correctamente la sintaxis de los nuevos operadores.
+- Valida llamadas a funciones con parentesis y argumentos.
+- Marca con buen rango los errores de expresion cuando sea viable.
+- Evita falsas validaciones.
+
+### `js/app.js`
+
+- Agrega al autocompletado:
+  - `mod`
+  - `Abs`
+  - `Redon`
+  - `Trunc`
+  - el operador de potencia si corresponde como palabra o simbolo documentado
+- Agrega al menos un ejemplo precargado o actualiza uno existente para demostrar las nuevas capacidades.
+
+### `README.md`
+
+- Documenta los nuevos operadores y funciones numericas.
+- Incluye al menos un ejemplo simple de uso.
+
+### `CHANGELOG.md`
+
+- Registra `0.5.1` con los features agregados.
+
+### `index.html`
+
+- Ajusta la version visible a `v0.5.1` si el cambio queda terminado.
+
+Decisiones de implementacion que debes tomar con criterio:
+
+1. Sintaxis del operador de potencia
+
+- Elige una sintaxis concreta y mantenla consistente en tokenizador, validador, runtime, autocompletado, ejemplos y documentacion.
+- Prioriza simplicidad, claridad y bajo riesgo de conflicto con la sintaxis actual.
+
+2. Dominio de tipos
+
+- Define claramente que tipos aceptan `Abs`, `Redon` y `Trunc`.
+- Si se pasan strings o booleanos, el comportamiento debe estar bien resuelto:
+  - o conversion controlada
+  - o error claro
+
+3. Comportamiento de `mod`
+
+- Define si opera solo con enteros o tambien con numericos generales.
+- Si eliges restringirlo, documenta y valida esa decision.
+
+Criterios de salida:
+
+- Se pueden usar `mod`, potencia, `Abs`, `Redon` y `Trunc` en expresiones reales.
+- La validacion estatica y el runtime aceptan la misma sintaxis.
+- El autocompletado refleja las nuevas capacidades.
+- Existen ejemplos y documentacion actualizados.
+- No se rompen los programas validos anteriores.
+
+Entregables esperados:
+
+- codigo actualizado
+- `README.md` actualizado
+- `CHANGELOG.md` con entrada `0.5.1`
+- version visible `v0.5.1` si corresponde
+
+Instrucciones de trabajo:
+
+- Revisa primero la implementacion dejada por `0.5.0`.
+- No rehagas innecesariamente el refactor previo si ya resuelve bien la base.
+- Si encuentras una inconsistencia pequena del sistema de expresiones que bloquee esta version, corrigela dentro del mismo trabajo.
+- Mantén consistencia con el estilo actual del proyecto.
+
+Resumen ejecutivo de esta version:
+
+`v0.5.1` debe ser la version que convierte el nuevo sistema de expresiones en una mejora visible del lenguaje, incorporando operadores numericos y funciones nativas basicas sin invadir todavia el alcance de `v0.5.2`.

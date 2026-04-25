@@ -1,0 +1,146 @@
+Quiero que implementes la version 0.5.0 de LiteSeInt.
+
+Contexto del proyecto:
+
+- LiteSeInt es un interprete web de pseudocodigo con UI en `index.html`, estilos en `css/styles.css`, controlador en `js/app.js`, validador/tokenizador en `js/doc_errores.js` y runtime/parser en `js/LiteSeInt.js`.
+- La version actual visible del proyecto es `v0.4.0`.
+- Ya existe soporte para:
+  - `Definir`, `Leer`, `Escribir`, asignacion con `=`
+  - tipos `Entero`, `Real`, `Caracter`, `Logico`
+  - literales `Verdadero` y `Falso`
+  - estructuras `Si`, `Mientras`, `Repetir/HastaQue`, `Para`, `Segun`
+  - autocompletado, ejemplos precargados, validacion estatica y ejecucion en navegador
+
+Objetivo de esta fase:
+
+La version `0.5.0` NO debe enfocarse en agregar muchas features visibles. Su objetivo principal es refactorizar y preparar el sistema de expresiones para las versiones `0.5.1` y `0.5.2`.
+
+Importante:
+
+- `0.5.0` debe ser una fase de base arquitectonica.
+- `0.5.1` agregara:
+  - operador `mod`
+  - potencia
+  - funciones nativas numericas como `Abs`, `Redon` y `Trunc`
+- `0.5.2` agregara:
+  - funciones nativas de texto como `Longitud`, `Mayusculas` y `Minusculas`
+  - mejoras de errores y ejemplos
+
+Por lo tanto, en `0.5.0` debes dejar el terreno listo para esas dos versiones, sin mezclar su alcance si no es necesario.
+
+Meta tecnica principal:
+
+Refactorizar el evaluador de expresiones actual para separarlo en capas mas claras, reduciendo deuda tecnica y evitando que todo siga creciendo sobre una sola funcion grande.
+
+Quiero que trabajes principalmente sobre estas tres areas:
+
+1. `js/LiteSeInt.js`
+2. `js/doc_errores.js`
+3. documentacion/versionado si corresponde
+
+Alcance esperado para `v0.5.0`:
+
+1. Refactor del sistema de expresiones
+
+- Divide mejor el pipeline de expresiones en etapas reconocibles, por ejemplo:
+  - tokenizacion
+  - normalizacion o parseo intermedio
+  - evaluacion
+- No hace falta sobredisenar un compilador completo, pero si dejar una estructura mantenible.
+- Si actualmente `_evaluarExpresion()` concentra demasiada responsabilidad, separala en helpers internos reutilizables.
+- La nueva estructura debe dejar espacio para:
+  - nuevos operadores con precedencia propia
+  - llamadas a funciones con parentesis
+  - validacion mas precisa de argumentos
+  - diferenciacion entre variable y llamada futura
+
+2. Preparacion explicita para llamadas de funciones
+
+- Sin necesidad de exponer aun todas las funciones nuevas al usuario, deja preparada la base para reconocer el patron:
+  - `Identificador(...)`
+- Puedes agregar internals, helpers, estructuras o validaciones parciales si eso deja la arquitectura lista.
+- Si decides habilitar alguna parte minima de esta sintaxis en `0.5.0`, debe ser solo si mejora realmente la base y no rompe el plan de `0.5.1` / `0.5.2`.
+
+3. Robustecer errores de expresion
+
+- Mejora los mensajes de error del runtime y del validador cuando una expresion esta mal formada.
+- Prioriza errores claros para:
+  - parentesis desbalanceados
+  - operadores mal ubicados
+  - tokens inesperados
+  - posibles llamadas mal formadas
+- Mantén rangos de error precisos cuando sea viable.
+
+4. Compatibilidad hacia atras
+
+- No rompas programas ya validos en `v0.4.0`.
+- Las expresiones actuales deben seguir funcionando igual o mejor.
+- La precedencia existente no debe cambiar accidentalmente.
+
+No objetivos de `v0.5.0`:
+
+- No implementar todavia `mod` si no es estrictamente necesario como placeholder interno.
+- No exponer potencia al lenguaje aun, salvo que exista una razon tecnica muy clara y quede totalmente terminada.
+- No agregar todavia `Abs`, `Redon`, `Trunc`, `Longitud`, `Mayusculas` ni `Minusculas` como feature terminada de usuario en esta version.
+- No mezclar esta fase con persistencia, validacion en vivo, arreglos o funciones de usuario.
+
+Cambios esperados por archivo:
+
+### `js/LiteSeInt.js`
+
+- Refactoriza el flujo interno de evaluacion de expresiones.
+- Extrae helpers si hacen falta para:
+  - tokenizar expresiones
+  - clasificar operandos y operadores
+  - convertir a una estructura intermedia o cola evaluable
+  - evaluar esa estructura
+- Deja un punto claro para resolver funciones nativas mas adelante.
+- Si tiene sentido, centraliza metadata de operadores en una tabla reutilizable en vez de reglas dispersas.
+
+### `js/doc_errores.js`
+
+- Alinea la validacion estatica con la nueva arquitectura del evaluador.
+- Prepara validaciones que ayuden a soportar en siguientes versiones:
+  - llamadas tipo `Nombre(expr1, expr2)`
+  - nuevos operadores
+- No agregues reglas fantasma que marquen como valido algo que el runtime aun no puede resolver, salvo que dejes la implementacion realmente conectada.
+
+### `js/app.js`
+
+- Solo toca este archivo si hace falta por autocompletado, ejemplos o integracion menor.
+- Evita cambios grandes de UI en esta fase.
+
+### `README.md`
+
+- Actualiza solo si el comportamiento visible cambia de forma real.
+- Si el cambio es puramente interno, no hace falta sobredocumentar.
+
+### `CHANGELOG.md`
+
+- Registra `0.5.0` como una mejora interna/arquitectonica.
+- Si casi no hay features visibles, el changelog debe decirlo con honestidad.
+
+Criterios de salida:
+
+- El sistema de expresiones queda mas modular que en `v0.4.0`.
+- La arquitectura queda lista para que `0.5.1` agregue operadores y funciones numericas con menos friccion.
+- La arquitectura queda lista para que `0.5.2` agregue funciones de texto y mejores errores sin rehacer el core.
+- No se rompe la compatibilidad de los ejemplos actuales.
+- El proyecto sigue ejecutando correctamente los casos ya soportados.
+
+Entregables esperados:
+
+- codigo actualizado
+- `CHANGELOG.md` con entrada `0.5.0`
+- ajuste de version visible a `v0.5.0` solo si efectivamente corresponde al estado final de la implementacion
+
+Instrucciones de trabajo:
+
+- Revisa primero el codigo existente antes de editar.
+- No reescribas innecesariamente partes estables del proyecto.
+- Mantén consistencia con el estilo actual del repositorio.
+- Si detectas una oportunidad pequena de correccion relacionada directamente con el refactor de expresiones, puedes incluirla, pero no conviertas esta version en una mezcla de features.
+
+Resumen ejecutivo de la intencion de esta version:
+
+`v0.5.0` debe ser la version que ordena el motor de expresiones para que `v0.5.1` y `v0.5.2` sean faciles de implementar y mas seguras, aunque el usuario final vea pocos cambios nuevos.
