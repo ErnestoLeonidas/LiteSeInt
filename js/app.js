@@ -1289,6 +1289,27 @@ const EJEMPLOS = {
   Escribir "permitido ahora vale: ", permitido
   `,
 
+  texto: `// Funciones nativas de texto: Longitud, Mayusculas, Minusculas
+  Definir nombre, normalizado Como Caracter
+  Definir largo Como Entero
+
+  Escribir "Ingresa tu nombre:"
+  Leer nombre
+
+  normalizado = Mayusculas(nombre)
+  largo = Longitud(normalizado)
+
+  Escribir "En mayúsculas: ", normalizado
+  Escribir "Tiene ", largo, " caracteres"
+
+  Si Longitud(nombre) > 0 Entonces
+    Escribir "En minúsculas: ", Minusculas(nombre)
+  FinSi
+
+  // Llamadas anidadas en una sola expresión
+  Escribir "Largo del nombre en mayúsculas: ", Longitud(Mayusculas(nombre))
+  `,
+
   numerico: `// Operadores y funciones numéricas: mod, ^, Abs, Redon, Trunc
   Definir n, resto Como Entero
   Definir base, resultado Como Real

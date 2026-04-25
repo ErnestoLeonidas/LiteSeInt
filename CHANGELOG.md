@@ -6,6 +6,30 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.5.2] — 2026-04-25
+
+Cierre de la serie `0.5.x`. Suma funciones nativas de texto, mejora mensajes de error en torno a llamadas y enriquece ejemplos y documentación, sin invadir el alcance de `0.6.x` (validación en vivo).
+
+### Agregado
+- **Función nativa `Longitud(texto)`**: devuelve la cantidad de caracteres del argumento. Acepta variables de tipo `Caracter` y literales de texto.
+- **Función nativa `Mayusculas(texto)`**: devuelve el texto convertido a mayúsculas.
+- **Función nativa `Minusculas(texto)`**: devuelve el texto convertido a minúsculas.
+- **Ejemplo precargado `texto`**: nuevo botón en la barra de ejemplos que combina `Longitud`, `Mayusculas` y `Minusculas`, incluyendo una llamada anidada (`Longitud(Mayusculas(nombre))`).
+- **Autocompletado**: se sugieren `Longitud`, `Mayusculas` y `Minusculas` con badge `función`.
+
+### Cambiado
+- **Tabla `LiteSeInt._FUNCIONES_NATIVAS`**: se completa con `longitud`, `mayusculas` y `minusculas` siguiendo la firma `{ aridadMin, aridadMax, aplicar(args, ctx) }` definida en `0.5.0`. Las funciones de texto exigen tipo `Caracter` y reportan un mensaje específico si reciben otro tipo.
+- **Validador estático (`js/doc_errores.js`)**: el conjunto `FUNCIONES_NATIVAS_SET` incorpora las tres funciones nuevas para que no se reporten como `Función no reconocida`.
+- **Mensaje de error mejorado al usar un nombre de función nativa sin `(`**: en lugar de `Variable "Longitud" no definida.`, ahora se reporta `Falta "(" para llamar a la función "Longitud".` con el rango exacto del identificador (nuevo tipo de error `llamada_sin_parentesis`).
+- **Mensaje de error mejorado al dejar un argumento vacío antes de `,`**: ahora incluye el nombre de la función involucrada (`Argumento vacío antes de "," en la llamada a "Longitud".`).
+- **Versión visible**: `v0.5.2`.
+
+### Corregido
+- **Llamadas anidadas a funciones nativas**: el parser de expresiones contaba la aridad de la llamada exterior como `0` cuando un argumento era a su vez una llamada (`Longitud(Mayusculas(nombre))` se reportaba como `La función "Longitud" espera 1 argumento(s), recibió 0.`). El valor producido por la llamada interna ahora se marca como contenido del argumento exterior, habilitando anidación arbitraria sin paréntesis adicionales.
+
+### Compatibilidad
+- Los programas válidos en `v0.5.0` y `v0.5.1` siguen ejecutándose igual. La precedencia de operadores y el comportamiento de `Abs`, `Redon`, `Trunc`, `mod` y `^` no cambian. Los ejemplos `hola`, `notas`, `multivar`, `mayor`, `contador`, `tabla`, `logico`, `diasemana` y `numerico` siguen funcionando sin cambios.
+
 ## [0.5.1] — 2026-04-25
 
 Primera ampliación visible del nuevo motor de expresiones preparado en `0.5.0`. Agrega operadores aritméticos adicionales y funciones nativas numéricas, sin invadir el alcance de `0.5.2` (funciones de texto).

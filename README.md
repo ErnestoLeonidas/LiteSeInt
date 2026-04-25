@@ -6,7 +6,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v0.5.1`
+- Versión visible en la app: `v0.5.2`
 - Ejecución completamente en el navegador
 - Sin build step ni backend
 - Proyecto basado en HTML, CSS y JavaScript vanilla
@@ -68,11 +68,32 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ### Funciones nativas
 
+**Numéricas**
+
 | Función | Descripción | Ejemplo | Resultado |
 |---|---|---|---|
 | `Abs(x)` | Valor absoluto de un número | `Abs(-3.5)` | `3.5` |
 | `Redon(x)` | Redondea al entero más cercano | `Redon(3.6)` | `4` |
 | `Trunc(x)` | Trunca la parte decimal | `Trunc(3.9)` | `3` |
+
+**De texto**
+
+| Función | Descripción | Ejemplo | Resultado |
+|---|---|---|---|
+| `Longitud(texto)` | Cantidad de caracteres del texto | `Longitud("hola")` | `4` |
+| `Mayusculas(texto)` | Convierte el texto a mayúsculas | `Mayusculas("hola")` | `"HOLA"` |
+| `Minusculas(texto)` | Convierte el texto a minúsculas | `Minusculas("HOLA")` | `"hola"` |
+
+Las funciones de texto requieren un argumento de tipo `Caracter`. Las funciones numéricas requieren un argumento numérico (`Entero` o `Real`). Las llamadas pueden anidarse, por ejemplo:
+
+```txt
+Definir nombre Como Caracter
+Definir largo Como Entero
+
+nombre = "LiteSeInt"
+largo = Longitud(Mayusculas(nombre))
+Escribir "Largo: ", largo
+```
 
 Ejemplo combinando los nuevos operadores y funciones:
 
@@ -170,6 +191,7 @@ La interfaz carga ejemplos listos para ejecutar:
 - `Día de semana`
 - `Lógico`
 - `Numérico`
+- `Texto`
 
 ## Tecnologías
 

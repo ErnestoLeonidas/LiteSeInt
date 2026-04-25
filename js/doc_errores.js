@@ -43,9 +43,11 @@ const KEYWORDS_EXPR_OK = new Set(['verdadero', 'falso', 'no', 'y', 'o', 'mod']);
 // resuelve cada nombre contra LiteSeInt._FUNCIONES_NATIVAS y aplica la
 // validación de aridad y tipos. Aquí solo se listan los nombres aceptados
 // estáticamente para que el validador no marque como "Función no
-// reconocida" lo que el runtime sí sabe ejecutar. 0.5.2 agregará
-// Longitud / Mayusculas / Minusculas a este conjunto.
-const FUNCIONES_NATIVAS_SET = new Set(['abs', 'redon', 'trunc']);
+// reconocida" lo que el runtime sí sabe ejecutar.
+const FUNCIONES_NATIVAS_SET = new Set([
+  'abs', 'redon', 'trunc',
+  'longitud', 'mayusculas', 'minusculas',
+]);
 
 // ─────────────────────────────────────────────
 //  TOKEN TYPES
@@ -1923,6 +1925,18 @@ function validarExpresionTokens(tokens, lineaIdx, tabla, errores) {
           ));
         }
         // La validación profunda de aridad y argumentos llega en 0.5.1+.
+        continue;
+      }
+
+      if (FUNCIONES_NATIVAS_SET.has(tk.value.toLowerCase())) {
+        // Nombre de función nativa usado sin "(": el usuario probablemente
+        // intentó llamarla. Mensaje específico en lugar de "no definida".
+        errores.push(crearError(
+          lineaIdx, tk.col, tk.end,
+          'llamada_sin_parentesis',
+          `Falta "(" para llamar a la función "${tk.value}".`,
+          tk.value
+        ));
         continue;
       }
 

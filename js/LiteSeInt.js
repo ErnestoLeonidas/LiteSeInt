@@ -896,7 +896,15 @@ class LiteSeInt {
         }
         popHastaLparen();
         if (!argSeen[argSeen.length - 1]) {
-          throw new Error('Argumento vacío antes de "," en la llamada a función.');
+          // El nombre de la función vive justo debajo del lparen actual.
+          const lparenIdx = operadores.length - 1;
+          const fnTok = operadores[lparenIdx - 1];
+          const nombreFn = fnTok && fnTok.tipo === 'funcion' ? fnTok.nombre : null;
+          throw new Error(
+            nombreFn
+              ? `Argumento vacío antes de "," en la llamada a "${nombreFn}".`
+              : 'Argumento vacío antes de "," en la llamada a función.'
+          );
         }
         argCount[argCount.length - 1]++;
         argSeen[argSeen.length - 1] = false;
@@ -914,6 +922,9 @@ class LiteSeInt {
           if (huboArg) n++;
           operadores.pop();
           output.push({ tipo: 'funcion', nombre: top.nombre, aridad: n });
+          // El valor producido por esta llamada cuenta como contenido
+          // del argumento del posible call exterior (llamadas anidadas).
+          if (argSeen.length > 0) argSeen[argSeen.length - 1] = true;
         }
       }
       prev = tk;
@@ -1177,7 +1188,6 @@ class LiteSeInt {
   // expone `{ lineaIdx, runtime }` por si una función necesitara
   // contexto extra al lanzar errores. Las claves se almacenan en
   // minúsculas; el evaluador normaliza el nombre antes de buscar.
-  // 0.5.2 agregará Longitud/Mayusculas/Minusculas en esta misma tabla.
   static _FUNCIONES_NATIVAS = {
     abs: {
       aridadMin: 1,
@@ -1210,6 +1220,39 @@ class LiteSeInt {
           throw new Error('La función "Trunc" requiere un argumento numérico.');
         }
         return Math.trunc(x);
+      },
+    },
+    longitud: {
+      aridadMin: 1,
+      aridadMax: 1,
+      aplicar: (args) => {
+        const x = args[0];
+        if (typeof x !== 'string') {
+          throw new Error('La función "Longitud" requiere un argumento de tipo Caracter.');
+        }
+        return x.length;
+      },
+    },
+    mayusculas: {
+      aridadMin: 1,
+      aridadMax: 1,
+      aplicar: (args) => {
+        const x = args[0];
+        if (typeof x !== 'string') {
+          throw new Error('La función "Mayusculas" requiere un argumento de tipo Caracter.');
+        }
+        return x.toUpperCase();
+      },
+    },
+    minusculas: {
+      aridadMin: 1,
+      aridadMax: 1,
+      aplicar: (args) => {
+        const x = args[0];
+        if (typeof x !== 'string') {
+          throw new Error('La función "Minusculas" requiere un argumento de tipo Caracter.');
+        }
+        return x.toLowerCase();
       },
     },
   };
@@ -1245,6 +1288,9 @@ class LiteSeInt {
     { texto: 'Abs',         tipo: 'función' },
     { texto: 'Redon',       tipo: 'función' },
     { texto: 'Trunc',       tipo: 'función' },
+    { texto: 'Longitud',    tipo: 'función' },
+    { texto: 'Mayusculas',  tipo: 'función' },
+    { texto: 'Minusculas',  tipo: 'función' },
   ];
 
   static PALABRAS_RESERVADAS_SET = DocErrores.PALABRAS_RESERVADAS_SET;
