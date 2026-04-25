@@ -8,6 +8,7 @@ Contexto permanente para Claude Code al trabajar en este repositorio.
 - Prefer the smallest correct patch over broad rewrites.
 - Preserve existing behavior unless the request changes it.
 - Test the exact affected flow before declaring done.
+- For language or runtime changes, run `npm test`.
 - Keep output concise and directly useful.
 - User instructions always override this file.
 
@@ -22,6 +23,8 @@ Current file ownership:
 - `js/app.js`: UI controller, editor behavior, console, autocomplete, examples, visual state
 - `js/doc_errores.js`: tokenizer, static validator, symbol table, exact error ranges, autocomplete helpers
 - `js/LiteSeInt.js`: parser, AST, runtime execution, expression evaluation, runtime checks
+- `tests/run-tests.js`: Node-based regression tests for validator and runtime behavior
+- `package.json`: test script entrypoint
 - `README.md`: user-facing documentation
 - `CHANGELOG.md`: notable visible changes
 

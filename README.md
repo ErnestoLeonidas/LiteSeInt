@@ -203,11 +203,10 @@ La interfaz carga ejemplos listos para ejecutar:
 - CSS3
 - JavaScript vanilla
 - Bootstrap `5.3.3`
-- Bootstrap Icons `1.11.3`
 - jQuery `3.7.1`
 - SweetAlert2
-- Lucide
 - Google Fonts (`JetBrains Mono` y `Space Mono`)
+- Node.js para pruebas locales
 
 La lógica del intérprete no depende de frameworks de frontend.
 
@@ -218,12 +217,22 @@ La lógica del intérprete no depende de frameworks de frontend.
 ├── index.html
 ├── README.md
 ├── CHANGELOG.md
+├── package.json
 ├── css/
 │   └── styles.css
-└── js/
-    ├── app.js
-    ├── doc_errores.js
-    └── LiteSeInt.js
+├── js/
+│   ├── app.js
+│   ├── doc_errores.js
+│   └── LiteSeInt.js
+└── tests/
+    └── run-tests.js
+```
+
+Árbol de pruebas:
+
+```txt
+tests/
+└── run-tests.js
 ```
 
 ### Archivos principales
@@ -233,6 +242,7 @@ La lógica del intérprete no depende de frameworks de frontend.
 - [js/app.js](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/js/app.js): controlador de interfaz, consola, editor, autocompletado y ejemplos.
 - [js/doc_errores.js](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/js/doc_errores.js): tokenización, validación estática, decoraciones y tabla de símbolos.
 - [js/LiteSeInt.js](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/js/LiteSeInt.js): parser, AST, ejecución y evaluación de expresiones/condiciones.
+- [tests/run-tests.js](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/tests/run-tests.js): pruebas de regresión para validar cambios en el lenguaje.
 
 ## Uso rápido
 
@@ -241,6 +251,14 @@ La lógica del intérprete no depende de frameworks de frontend.
 3. Escribe pseudocódigo o carga uno de los ejemplos.
 4. Presiona `Ejecutar`.
 5. Si el programa usa `Leer`, responde desde la consola integrada.
+
+## Pruebas
+
+```bash
+npm test
+```
+
+Las pruebas cargan `doc_errores.js` y `LiteSeInt.js` en Node.js para validar reglas del lenguaje, ejecución y regresiones del flujo `Detener`.
 
 ## Arquitectura general
 

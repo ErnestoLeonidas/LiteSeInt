@@ -6,6 +6,18 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.5.4]
+
+### Agregado
+- **Pruebas de regresión sin dependencias**: nueva suite `npm test` en `tests/run-tests.js` para validar reglas del lenguaje, ejecución y detención.
+
+### Cambiado
+- **`Segun` con expresión**: el runtime ahora acepta expresiones en la cabecera, alineándose con la documentación y la validación estática.
+- **Operadores lógicos en expresiones**: `Y`, `O` y `No` funcionan dentro de asignaciones lógicas además de condiciones.
+- **Ejecución detenida**: el runtime reporta `detenido` y la UI evita mostrar `Fin de ejecución` cuando el usuario detiene durante un `Leer`.
+- **Validación de documento y bloques**: el validador detecta ausencia de `Proceso`/`FinProceso` y cierres cruzados entre bloques anidados.
+- **Dependencias externas**: se retiraron Bootstrap Icons y Lucide porque no estaban en uso.
+
 ## [0.5.3] — 2026-04-25
 
 Corrección focalizada del pipeline de expresiones para que el menos unario deje de degradarse al workaround `0 - x` y respete la precedencia real en expresiones compuestas.

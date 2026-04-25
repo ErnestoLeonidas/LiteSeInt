@@ -30,6 +30,7 @@ class LiteSeInt {
     this.variables = {};
 
     this.ejecutando = false;
+    this.detencionSolicitada = false;
     this.errores = [];
     this.velocidadPausa = 100;
   }
@@ -38,12 +39,13 @@ class LiteSeInt {
   //  API PÚBLICA
   // ===========================================================
 
-  async ejecutar(codigo) {
+  async ejecutar(codigo, validacionPrevia = null) {
     this.variables = {};
     this.errores = [];
     this.ejecutando = true;
+    this.detencionSolicitada = false;
 
-    const validacion = DocErrores.validarDocumento(codigo);
+    const validacion = validacionPrevia || DocErrores.validarDocumento(codigo);
 
     if (validacion.errores.length > 0) {
       for (const err of validacion.errores) {
@@ -82,17 +84,22 @@ class LiteSeInt {
       this.callbacks.onError(lineaErr, mensaje);
     }
 
+    const detenido = this.detencionSolicitada;
     this.ejecutando = false;
     this.callbacks.onFin();
 
     return {
-      exito: this.errores.length === 0,
+      exito: this.errores.length === 0 && !detenido,
+      detenido,
       errores: this.errores,
       erroresPorLinea: new Map(),
     };
   }
 
   detener() {
+    if (this.ejecutando) {
+      this.detencionSolicitada = true;
+    }
     this.ejecutando = false;
   }
 
@@ -216,13 +223,13 @@ class LiteSeInt {
         continue;
       }
 
-      // ── Segun variable Hacer ──
-      if (/^segun\s+\w+\s+hacer$/i.test(linea)) {
-        const varMatch = linea.match(/^segun\s+(\w+)\s+hacer$/i);
+      // ── Segun expresion Hacer ──
+      if (/^segun\s+.+\s+hacer$/i.test(linea)) {
+        const exprMatch = linea.match(/^segun\s+(.+?)\s+hacer$/i);
         const nodo = {
           tipo: 'segun',
           linea: i,
-          variable: varMatch[1].toLowerCase(),
+          expresion: exprMatch[1].trim(),
           casos: [],
           otro: null,
         };
@@ -458,20 +465,11 @@ class LiteSeInt {
   }
 
   async _ejecutarSegun(nodo) {
-    const varNombre = nodo.variable;
-
-    if (!this.variables.hasOwnProperty(varNombre)) {
-      throw new Error(`Variable "${varNombre}" no definida.`);
-    }
-    if (!this.variables[varNombre].inicializada) {
-      throw new Error(`Variable "${varNombre}" no inicializada.`);
-    }
-
-    const valor = this.variables[varNombre].valor;
-
     this.callbacks.onLineaActiva(nodo.linea);
     await this._pausa(this.velocidadPausa);
     if (!this.ejecutando) return;
+
+    const valor = this._evaluarExpresion(nodo.expresion, nodo.linea);
 
     let ejecutado = false;
     for (const caso of nodo.casos) {
@@ -787,6 +785,12 @@ class LiteSeInt {
           // Operador binario en forma de palabra. Se trata como cualquier
           // otro operador para que el shunting-yard aplique precedencia.
           tokens.push({ tipo: 'op', valor: 'mod' });
+        } else if (lw === 'y') {
+          tokens.push({ tipo: 'op', valor: 'Y' });
+        } else if (lw === 'o') {
+          tokens.push({ tipo: 'op', valor: 'O' });
+        } else if (lw === 'no') {
+          tokens.push({ tipo: 'op', valor: 'No' });
         } else {
           // Look-ahead: si lo sigue "(" (con o sin espacios), es una
           // llamada a función. El "(" se mantiene como token aparte
@@ -1223,6 +1227,14 @@ class LiteSeInt {
         return -a;
       },
     },
+    'No': {
+      aridad: 1,
+      esPrefijo: true,
+      simbolo: 'No',
+      precedencia: 3,
+      asociatividad: 'der',
+      aplicar: (a) => !Boolean(a),
+    },
     '^': {
       aridad: 2,
       precedencia: 4,
@@ -1233,6 +1245,20 @@ class LiteSeInt {
         }
         return Math.pow(a, b);
       },
+    },
+    'Y': {
+      aridad: 2,
+      simbolo: 'Y',
+      precedencia: 0,
+      asociatividad: 'izq',
+      aplicar: (a, b) => Boolean(a) && Boolean(b),
+    },
+    'O': {
+      aridad: 2,
+      simbolo: 'O',
+      precedencia: -1,
+      asociatividad: 'izq',
+      aplicar: (a, b) => Boolean(a) || Boolean(b),
     },
   };
 

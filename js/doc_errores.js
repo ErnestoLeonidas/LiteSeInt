@@ -365,7 +365,11 @@ function validarDocumento(codigo) {
     for (const e of erroresLinea) agregarError(i, e);
   }
 
-  // Paso 2: balance de bloques (Si, Segun, Repetir y Para se manejan en Paso 3/4/5/6)
+  // Paso 2: estructura global de documento y balance cruzado de bloques.
+  validarEstructuraProceso(lineas, agregarError);
+  validarBalanceGlobalBloques(lineas, agregarError);
+
+  // Paso 3: balance simple de Mientras (Si, Segun, Repetir y Para se manejan abajo)
   const BLOQUES = [
     { abre: 'mientras', cierra: 'finmientras',   etiqueta: 'Mientras', cierraLabel: 'FinMientras' },
   ];
@@ -402,19 +406,130 @@ function validarDocumento(codigo) {
     ));
   }
 
-  // Paso 3: validación estructural de Si / Sino / FinSi
+  // Paso 4: validación estructural de Si / Sino / FinSi
   validarBloquesSi(lineas, agregarError);
 
-  // Paso 4: validación estructural de Segun / De Otro Modo / FinSegun
-  validarBloquesSegun(lineas, agregarError);
+  // Paso 5: validación estructural de Segun / De Otro Modo / FinSegun
+  validarBloquesSegun(lineas, tabla, agregarError);
 
-  // Paso 5: validación estructural de Repetir / Hasta Que
+  // Paso 6: validación estructural de Repetir / Hasta Que
   validarBloquesRepetir(lineas, agregarError);
 
-  // Paso 6: validación estructural de Para / FinPara
+  // Paso 7: validación estructural de Para / FinPara
   validarBloquesPara(lineas, tabla, agregarError);
 
   return { errores: todosErrores, tablaSimbolos: tabla, erroresPorLinea };
+}
+
+// ─────────────────────────────────────────────
+//  VALIDATION: Proceso / FinProceso + cross-block balance
+// ─────────────────────────────────────────────
+
+function obtenerLineasSignificativas(lineas) {
+  const resultado = [];
+  for (let i = 0; i < lineas.length; i++) {
+    const sig = tokensSignificativos(tokenizarLinea(lineas[i]));
+    if (sig.length > 0) resultado.push({ lineaIdx: i, sig });
+  }
+  return resultado;
+}
+
+function validarEstructuraProceso(lineas, agregarError) {
+  const significativas = obtenerLineasSignificativas(lineas);
+  if (significativas.length === 0) return;
+
+  const primera = significativas[0];
+  const ultima = significativas[significativas.length - 1];
+  const primeraTk = primera.sig[0];
+  const ultimaTk = ultima.sig[0];
+
+  if (!esKeyword(primeraTk, 'proceso')) {
+    agregarError(primera.lineaIdx, crearError(
+      primera.lineaIdx, primeraTk.col, primeraTk.end, 'proceso_faltante',
+      'El documento debe comenzar con "Proceso nombre_proceso".', primeraTk.value
+    ));
+  } else if (primera.sig.length < 2) {
+    agregarError(primera.lineaIdx, crearError(
+      primera.lineaIdx, primeraTk.col, primeraTk.end, 'proceso_sin_nombre',
+      'Falta el nombre del proceso.', ''
+    ));
+  }
+
+  if (!esKeyword(ultimaTk, 'finproceso')) {
+    const last = ultima.sig[ultima.sig.length - 1];
+    agregarError(ultima.lineaIdx, crearError(
+      ultima.lineaIdx, ultimaTk.col, last.end, 'finproceso_faltante',
+      'El documento debe terminar con "FinProceso".', ''
+    ));
+  } else if (ultima.sig.length > 1) {
+    const extra = ultima.sig[1];
+    const last = ultima.sig[ultima.sig.length - 1];
+    agregarError(ultima.lineaIdx, crearError(
+      ultima.lineaIdx, extra.col, last.end, 'finproceso_texto_extra',
+      '"FinProceso" no debe tener argumentos ni texto adicional.', ''
+    ));
+  }
+}
+
+function validarBalanceGlobalBloques(lineas, agregarError) {
+  const apertura = {
+    si: { etiqueta: 'Si', cierra: 'finsi', cierraLabel: 'FinSi' },
+    mientras: { etiqueta: 'Mientras', cierra: 'finmientras', cierraLabel: 'FinMientras' },
+    repetir: { etiqueta: 'Repetir', cierra: 'hastaque', cierraLabel: 'HastaQue' },
+    para: { etiqueta: 'Para', cierra: 'finpara', cierraLabel: 'FinPara' },
+    segun: { etiqueta: 'Segun', cierra: 'finsegun', cierraLabel: 'FinSegun' },
+  };
+  const cierreLabel = {
+    finsi: 'FinSi',
+    finmientras: 'FinMientras',
+    hastaque: 'HastaQue',
+    finpara: 'FinPara',
+    finsegun: 'FinSegun',
+  };
+  const stack = [];
+
+  for (let i = 0; i < lineas.length; i++) {
+    const sig = tokensSignificativos(tokenizarLinea(lineas[i]));
+    if (sig.length === 0) continue;
+    const primera = sig[0];
+    const palabra = primera.type === TK.KEYWORD ? primera.value.toLowerCase() : null;
+    const hq = detectarHastaQue(sig);
+    const cierre = hq ? 'hastaque' : palabra;
+
+    if (apertura[palabra]) {
+      stack.push({ ...apertura[palabra], linea: i });
+      continue;
+    }
+
+    if (!cierreLabel[cierre]) continue;
+
+    if (stack.length === 0) {
+      agregarError(i, crearError(
+        i, primera.col, primera.end, 'bloque_cierre_sin_apertura',
+        `"${cierreLabel[cierre]}" sin bloque de apertura correspondiente.`, primera.value
+      ));
+      continue;
+    }
+
+    const top = stack[stack.length - 1];
+    if (top.cierra !== cierre) {
+      agregarError(i, crearError(
+        i, primera.col, primera.end, 'bloque_cierre_cruzado',
+        `"${cierreLabel[cierre]}" intenta cerrar un bloque, pero primero debe cerrarse "${top.etiqueta}" con ${top.cierraLabel}.`, primera.value
+      ));
+      continue;
+    }
+
+    stack.pop();
+  }
+
+  for (const ctx of stack) {
+    const longitud = lineas[ctx.linea] ? lineas[ctx.linea].length : 0;
+    agregarError(ctx.linea, crearError(
+      ctx.linea, 0, longitud, 'bloque_sin_cerrar',
+      `Bloque "${ctx.etiqueta}" sin cierre (falta ${ctx.cierraLabel}).`, ''
+    ));
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -639,7 +754,7 @@ function validarComparacionesEnCondicion(lineaRaw, colInicio, colFin, lineaIdx, 
  *   - contenido real por cada segmento (caso o De Otro Modo)
  *   - cierre con "FinSegun"
  */
-function validarBloquesSegun(lineas, agregarError) {
+function validarBloquesSegun(lineas, tabla, agregarError) {
   const stack = [];
 
   for (let i = 0; i < lineas.length; i++) {
@@ -655,7 +770,7 @@ function validarBloquesSegun(lineas, agregarError) {
       if (stack.length > 0 && stack[stack.length - 1].ultimoSegmento) {
         stack[stack.length - 1].ultimoSegmento.contenido++;
       }
-      validarCabeceraSegun(sig, i, agregarError);
+      validarCabeceraSegun(sig, i, tabla, agregarError);
       stack.push({
         lineaSegun: i,
         tieneDeOtroModo: false,
@@ -820,7 +935,7 @@ function detectarEtiquetaCaso(sig) {
   };
 }
 
-function validarCabeceraSegun(sig, lineaIdx, agregarError) {
+function validarCabeceraSegun(sig, lineaIdx, tabla, agregarError) {
   const segunToken = sig[0];
 
   let hacerIdx = -1;
@@ -839,6 +954,12 @@ function validarCabeceraSegun(sig, lineaIdx, agregarError) {
       lineaIdx, segunToken.col, colFin, 'segun_sin_expresion',
       'Falta la expresión en la sentencia "Segun".', ''
     ));
+  }
+
+  if (exprTokens.length > 0) {
+    const erroresExpr = [];
+    validarExpresionTokens(exprTokens, lineaIdx, tabla, erroresExpr);
+    for (const err of erroresExpr) agregarError(lineaIdx, err);
   }
 
   if (hacerIdx === -1) {

@@ -1,7 +1,7 @@
 /* ==============================================
    app.js — UI Controller
    Conecta LiteSeInt con la interfaz de usuario.
-   Depende de: Bootstrap, jQuery, doc_errores.js, LiteSeInt.js, lucide
+   Depende de: Bootstrap, jQuery, doc_errores.js, LiteSeInt.js
    ============================================== */
 
 // =========================================
@@ -1141,9 +1141,11 @@ async function ejecutar() {
 
   consolaImprimir("Inicio de ejecución", "system");
 
-  const resultado = await interprete.ejecutar(codigo);
+  const resultado = await interprete.ejecutar(codigo, validacion);
 
-  if (resultado.exito) {
+  if (resultado.detenido) {
+    setEstado("", "Detenido");
+  } else if (resultado.exito) {
     consolaImprimir("Fin de ejecución", "system");
     setEstado("", "Listo");
   } else {
@@ -1448,6 +1450,4 @@ $(document).ready(function () {
   $(document).on("click", ".example-btn", function () {
     cargarEjemplo($(this).data("ejemplo"));
   });
-
-  lucide.createIcons();
 });
