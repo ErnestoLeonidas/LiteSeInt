@@ -3,5 +3,5 @@
 /.claude/*
 !/.claude/skills/
 !/.claude/skills/**
+/prompt_v0.5.3_menos_unario_y_operandos_negativos.txt
 roadmap.md
-prompt_v0.5.2_funciones_texto_y_errores.txt

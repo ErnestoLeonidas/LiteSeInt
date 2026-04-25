@@ -6,6 +6,24 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.5.3] — 2026-04-25
+
+Corrección focalizada del pipeline de expresiones para que el menos unario deje de degradarse al workaround `0 - x` y respete la precedencia real en expresiones compuestas.
+
+### Cambiado
+- **Pipeline de expresiones en `LiteSeInt.js`**: el `-` prefijo ahora se normaliza como operador unario dedicado en lugar de reescribirse como resta binaria. El shunting-yard y la evaluación RPN distinguen operadores por aridad para resolver correctamente operandos negativos dentro de expresiones y llamadas.
+- **Precedencia explícita del menos unario**: `^` queda por encima del menos unario, y el menos unario por encima de `*`, `/` y `mod`. Esto deja consistentes casos como `2 ^ -3`, `-3 ^ 2` y `(-3) ^ 2`.
+- **Ejemplo `numerico` y documentación**: ahora muestran operandos negativos en expresiones compuestas sin paréntesis de workaround.
+- **Versión visible**: `v0.5.3`.
+
+### Corregido
+- **Operandos negativos después de operadores**: `2 * -3`, `2 / -3`, `2 ^ -3`, `2 mod -3` y `2 - -3` vuelven a evaluarse con el valor correcto.
+- **Funciones con expresiones negativas compuestas**: llamadas como `Abs(2 * -3)` ya no pierden precedencia ni devuelven resultados truncados por el viejo hack de `0 - x`.
+- **Mensajes de error en cierres mal formados**: expresiones como `Abs(-)` o `(-)` ahora reportan la falta de operando de forma más puntual alrededor de `)` y de la llamada involucrada.
+
+### Compatibilidad
+- **Validación estática y runtime**: ambos siguen aceptando la misma sintaxis válida para `-3`, `(-3)`, `Abs(-3.5)`, `Redon(-3.6)` y `Trunc(-3.6)`, sin cambios de alcance fuera de `v0.5.3`.
+
 ## [0.5.2] — 2026-04-25
 
 Cierre de la serie `0.5.x`. Suma funciones nativas de texto, mejora mensajes de error en torno a llamadas y enriquece ejemplos y documentación, sin invadir el alcance de `0.6.x` (validación en vivo).

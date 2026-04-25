@@ -6,7 +6,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v0.5.2`
+- Versión visible en la app: `v0.5.3`
 - Ejecución completamente en el navegador
 - Sin build step ni backend
 - Proyecto basado en HTML, CSS y JavaScript vanilla
@@ -57,6 +57,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 - `mod` calcula el resto de una división entre dos valores numéricos.
 - `^` es el operador de potencia (`base ^ exponente`) y es asociativo a la derecha.
 - La precedencia, de mayor a menor, es: `^` > `*`, `/`, `mod` > `+`, `-`.
+- El menos unario funciona al inicio de una expresión y también después de otro operador, `(` o `,`. Su precedencia es menor que `^` y mayor que `*`, `/` y `mod`, así que `2 ^ -3` produce `0.125` y `-3 ^ 2` se interpreta como `-(3 ^ 2)`.
 
 **Relacionales**
 
@@ -111,6 +112,9 @@ FinSi
 potencia = 2 ^ n
 Escribir "2 elevado a ", n, " = ", potencia
 Escribir "Distancia al origen: ", Abs(n)
+Escribir "2 * -3 = ", 2 * -3
+Escribir "2 ^ -3 = ", 2 ^ -3
+Escribir "Abs(2 * -3) = ", Abs(2 * -3)
 ```
 
 ### Tipos de datos

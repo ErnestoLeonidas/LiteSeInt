@@ -687,12 +687,12 @@ class LiteSeInt {
   //  Pipeline en cuatro etapas (cada una es un helper aislado):
   //
   //    1) _tokenizarExpresion  →  tokens crudos
-  //    2) _normalizarTokens    →  resuelve menos unario y simétricos
+  //    2) _normalizarTokens    →  marca el menos unario como operador propio
   //    3) _parsearRPN          →  Shunting-Yard con metadata de operadores
   //                               y soporte de llamadas a funciones
   //    4) _evaluarRPN          →  recorre la cola en notación postfija
   //
-  //  La metadata de operadores binarios vive en LiteSeInt._OPERADORES.
+  //  La metadata de operadores vive en LiteSeInt._OPERADORES.
   //  El registro de funciones nativas vive en LiteSeInt._FUNCIONES_NATIVAS.
   //  En 0.5.0 el registro está vacío; 0.5.1 (Abs, Redon, Trunc, mod, ^)
   //  y 0.5.2 (Longitud, Mayusculas, Minusculas) sólo deben tocar esas
@@ -811,10 +811,9 @@ class LiteSeInt {
 
   // ── Etapa 2: Normalización ───────────────────────────────
   //
-  // Único caso por ahora: convertir el menos unario en "0 - x" para
-  // que el parser binario funcione sin reglas especiales.
-  // (Cuando 0.5.1 agregue potencia, este es el lugar donde sumar
-  // soporte para "+x" si se decidiera tratarlo como unario.)
+  // Detecta el uso prefijo de "-" y lo remapea a un operador unario
+  // explícito. Esto preserva la precedencia real de expresiones como
+  // "2 * -3" o "2 ^ -3" sin degradarlas al truco "0 - x".
   _normalizarTokens(tokens) {
     const out = [];
     for (const tk of tokens) {
@@ -825,7 +824,8 @@ class LiteSeInt {
           prev.tipo === 'op' || prev.tipo === 'lparen' || prev.tipo === 'coma'
         );
         if (enInicio || trasOperador) {
-          out.push({ tipo: 'numero', valor: 0 });
+          out.push({ tipo: 'op', valor: 'u-' });
+          continue;
         }
       }
       out.push(tk);
@@ -854,6 +854,15 @@ class LiteSeInt {
       }
     };
 
+    const funcionPendienteActual = () => {
+      for (let i = operadores.length - 1; i >= 0; i--) {
+        if (operadores[i].tipo !== 'lparen') continue;
+        const debajo = operadores[i - 1];
+        return debajo && debajo.tipo === 'funcion' ? debajo : null;
+      }
+      return null;
+    };
+
     let prev = null;
 
     for (const tk of tokens) {
@@ -868,8 +877,16 @@ class LiteSeInt {
       else if (tk.tipo === 'op') {
         const meta = LiteSeInt._OPERADORES[tk.valor];
         if (!meta) throw new Error(`Operador desconocido: "${tk.valor}".`);
+        const operadorTexto = meta.simbolo || tk.valor;
+
+        if (meta.esPrefijo) {
+          operadores.push(tk);
+          prev = tk;
+          continue;
+        }
+
         if (!prev || prev.tipo === 'op' || prev.tipo === 'lparen' || prev.tipo === 'coma') {
-          throw new Error(`Operador "${tk.valor}" en posición inválida.`);
+          throw new Error(`Operador "${operadorTexto}" en posición inválida.`);
         }
         while (operadores.length > 0) {
           const top = operadores[operadores.length - 1];
@@ -910,6 +927,13 @@ class LiteSeInt {
         argSeen[argSeen.length - 1] = false;
       }
       else if (tk.tipo === 'rparen') {
+        if (prev && prev.tipo === 'op') {
+          const fnTok = funcionPendienteActual();
+          if (fnTok) {
+            throw new Error(`Argumento vacío antes de ")" en la llamada a "${fnTok.nombre}".`);
+          }
+          throw new Error('Falta operando antes de ")".');
+        }
         popHastaLparen();
         operadores.pop(); // descarta "("
         const top = operadores[operadores.length - 1];
@@ -931,7 +955,9 @@ class LiteSeInt {
     }
 
     if (prev && prev.tipo === 'op') {
-      throw new Error(`Falta operando después de "${prev.valor}".`);
+      const meta = LiteSeInt._OPERADORES[prev.valor];
+      const operadorTexto = meta ? (meta.simbolo || prev.valor) : prev.valor;
+      throw new Error(`Falta operando después de "${operadorTexto}".`);
     }
 
     while (operadores.length > 0) {
@@ -952,7 +978,7 @@ class LiteSeInt {
   //
   // Recorre la cola postfija aplicando operadores y funciones.
   // Es el único punto donde se materializa el valor de una variable,
-  // se invoca una función nativa o se aplica un operador binario.
+  // se invoca una función nativa o se aplica un operador.
   _evaluarRPN(rpn, lineaIdx) {
     if (rpn.length === 0) throw new Error('Expresión vacía.');
 
@@ -973,12 +999,23 @@ class LiteSeInt {
         stack.push(this.variables[key].valor);
       }
       else if (tk.tipo === 'op') {
+        const meta = LiteSeInt._OPERADORES[tk.valor];
+        const operadorTexto = meta.simbolo || tk.valor;
+
+        if (meta.aridad === 1) {
+          if (stack.length < 1) {
+            throw new Error(`Expresión mal formada cerca de "${operadorTexto}".`);
+          }
+          const valor = stack.pop();
+          stack.push(meta.aplicar(valor));
+          continue;
+        }
+
         if (stack.length < 2) {
-          throw new Error(`Expresión mal formada cerca de "${tk.valor}".`);
+          throw new Error(`Expresión mal formada cerca de "${operadorTexto}".`);
         }
         const der = stack.pop();
         const izq = stack.pop();
-        const meta = LiteSeInt._OPERADORES[tk.valor];
         stack.push(meta.aplicar(izq, der));
       }
       else if (tk.tipo === 'funcion') {
@@ -1112,11 +1149,12 @@ class LiteSeInt {
   //  TABLAS DE METADATA DEL EVALUADOR
   // ===========================================================
   //
-  // Operadores binarios. Centralizar la metadata aquí permite que
-  // 0.5.1 agregue `mod` y potencia tocando sólo esta tabla y el
-  // tokenizador, sin volver a tocar el shunting-yard.
+  // Operadores aritméticos. Centralizar la metadata aquí permite que
+  // futuras extensiones toquen sólo esta tabla y el tokenizador, sin
+  // volver a tocar el shunting-yard.
   static _OPERADORES = {
     '+': {
+      aridad: 2,
       precedencia: 1,
       asociatividad: 'izq',
       aplicar: (a, b) => {
@@ -1127,6 +1165,7 @@ class LiteSeInt {
       },
     },
     '-': {
+      aridad: 2,
       precedencia: 1,
       asociatividad: 'izq',
       aplicar: (a, b) => {
@@ -1137,6 +1176,7 @@ class LiteSeInt {
       },
     },
     '*': {
+      aridad: 2,
       precedencia: 2,
       asociatividad: 'izq',
       aplicar: (a, b) => {
@@ -1147,6 +1187,7 @@ class LiteSeInt {
       },
     },
     '/': {
+      aridad: 2,
       precedencia: 2,
       asociatividad: 'izq',
       aplicar: (a, b) => {
@@ -1158,6 +1199,7 @@ class LiteSeInt {
       },
     },
     'mod': {
+      aridad: 2,
       precedencia: 2,
       asociatividad: 'izq',
       aplicar: (a, b) => {
@@ -1168,8 +1210,22 @@ class LiteSeInt {
         return a % b;
       },
     },
-    '^': {
+    'u-': {
+      aridad: 1,
+      esPrefijo: true,
+      simbolo: '-',
       precedencia: 3,
+      asociatividad: 'der',
+      aplicar: (a) => {
+        if (typeof a !== 'number') {
+          throw new Error('Operador unario "-" requiere un operando numérico.');
+        }
+        return -a;
+      },
+    },
+    '^': {
+      aridad: 2,
+      precedencia: 4,
       asociatividad: 'der',
       aplicar: (a, b) => {
         if (typeof a !== 'number' || typeof b !== 'number') {

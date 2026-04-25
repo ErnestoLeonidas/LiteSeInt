@@ -1310,7 +1310,7 @@ const EJEMPLOS = {
   Escribir "Largo del nombre en mayúsculas: ", Longitud(Mayusculas(nombre))
   `,
 
-  numerico: `// Operadores y funciones numéricas: mod, ^, Abs, Redon, Trunc
+  numerico: `// Operadores y funciones numéricas: mod, ^, menos unario, Abs, Redon, Trunc
   Definir n, resto Como Entero
   Definir base, resultado Como Real
 
@@ -1328,6 +1328,12 @@ const EJEMPLOS = {
   Escribir "Abs(", base, ") = ", Abs(base)
   Escribir "Redon(", base, ") = ", Redon(base)
   Escribir "Trunc(", base, ") = ", Trunc(base)
+
+  resultado = 2 * -3
+  Escribir "2 * -3 = ", resultado
+
+  resultado = 2 ^ -3
+  Escribir "2 ^ -3 = ", resultado
 
   resultado = 2 ^ 10
   Escribir "2 ^ 10 = ", resultado
