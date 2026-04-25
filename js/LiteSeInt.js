@@ -682,122 +682,50 @@ class LiteSeInt {
   }
 
   // ===========================================================
-  //  EVALUADOR DE EXPRESIONES (Shunting-Yard)
+  //  EVALUADOR DE EXPRESIONES
+  //
+  //  Pipeline en cuatro etapas (cada una es un helper aislado):
+  //
+  //    1) _tokenizarExpresion  →  tokens crudos
+  //    2) _normalizarTokens    →  resuelve menos unario y simétricos
+  //    3) _parsearRPN          →  Shunting-Yard con metadata de operadores
+  //                               y soporte de llamadas a funciones
+  //    4) _evaluarRPN          →  recorre la cola en notación postfija
+  //
+  //  La metadata de operadores binarios vive en LiteSeInt._OPERADORES.
+  //  El registro de funciones nativas vive en LiteSeInt._FUNCIONES_NATIVAS.
+  //  En 0.5.0 el registro está vacío; 0.5.1 (Abs, Redon, Trunc, mod, ^)
+  //  y 0.5.2 (Longitud, Mayusculas, Minusculas) sólo deben tocar esas
+  //  tablas para extender el lenguaje.
   // ===========================================================
 
   _evaluarExpresion(expr, lineaIdx) {
     expr = expr.trim();
+    if (expr === '') throw new Error('Expresión vacía.');
 
     // Operador lógico unario "No <expr>" como prefijo (fuera de strings).
-    // Misma semántica que en _evaluarCondicion para mantener consistencia.
+    // Se resuelve en este nivel para mantener una semántica consistente
+    // con _evaluarCondicion sin contaminar el pipeline aritmético.
     if (/^no\s+/i.test(expr)) {
       const sub = this._evaluarExpresion(expr.replace(/^no\s+/i, '').trim(), lineaIdx);
       return !Boolean(sub);
     }
 
-    const tokens = this._tokenizarExpresion(expr);
-    if (tokens.length === 0) {
-      throw new Error('Expresión vacía.');
-    }
-
-    if (tokens.length === 1 && tokens[0].type === 'string') {
-      return tokens[0].value;
-    }
-
-    if (tokens.length === 1 && tokens[0].type === 'boolean') {
-      return tokens[0].value;
-    }
-
-    const outputQueue = [];
-    const operatorStack = [];
-
-    const precedencia = { '+': 1, '-': 1, '*': 2, '/': 2 };
-    const esOperador = (tk) => tk.type === 'op';
-
-    // Manejo de menos unario
-    const processedTokens = [];
-    for (let i = 0; i < tokens.length; i++) {
-      const tk = tokens[i];
-      if (tk.type === 'op' && tk.value === '-') {
-        const prev = processedTokens[processedTokens.length - 1];
-        if (!prev || prev.type === 'op' || prev.type === 'lparen') {
-          processedTokens.push({ type: 'number', value: 0 });
-          processedTokens.push({ type: 'op', value: '-' });
-          continue;
-        }
-      }
-      processedTokens.push(tk);
-    }
-
-    for (const tk of processedTokens) {
-      if (tk.type === 'number' || tk.type === 'string' ||
-          tk.type === 'variable' || tk.type === 'boolean') {
-        let val;
-        if (tk.type === 'number' || tk.type === 'string' || tk.type === 'boolean') {
-          val = tk.value;
-        } else {
-          const nombre = tk.raw.toLowerCase();
-          if (!this.variables.hasOwnProperty(nombre)) {
-            throw new Error(`Variable "${tk.raw}" no definida.`);
-          }
-          if (!this.variables[nombre].inicializada) {
-            throw new Error(`Variable "${tk.raw}" no inicializada.`);
-          }
-          val = this.variables[nombre].valor;
-        }
-        outputQueue.push(val);
-      } else if (esOperador(tk)) {
-        while (
-          operatorStack.length > 0 &&
-          esOperador(operatorStack[operatorStack.length - 1]) &&
-          precedencia[operatorStack[operatorStack.length - 1].value] >= precedencia[tk.value]
-        ) {
-          outputQueue.push(operatorStack.pop());
-        }
-        operatorStack.push(tk);
-      } else if (tk.type === 'lparen') {
-        operatorStack.push(tk);
-      } else if (tk.type === 'rparen') {
-        while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1].type !== 'lparen') {
-          outputQueue.push(operatorStack.pop());
-        }
-        if (operatorStack.length === 0) {
-          throw new Error('Paréntesis desbalanceados en la expresión.');
-        }
-        operatorStack.pop();
-      }
-    }
-
-    while (operatorStack.length > 0) {
-      const op = operatorStack.pop();
-      if (op.type === 'lparen') {
-        throw new Error('Paréntesis desbalanceados en la expresión.');
-      }
-      outputQueue.push(op);
-    }
-
-    const evalStack = [];
-    for (const item of outputQueue) {
-      if (typeof item !== 'object' || item === null) {
-        evalStack.push(item);
-      } else {
-        if (evalStack.length < 2) {
-          throw new Error('Expresión mal formada.');
-        }
-        const der = evalStack.pop();
-        const izq = evalStack.pop();
-        const result = this._aplicarOperador(izq, item.value, der);
-        evalStack.push(result);
-      }
-    }
-
-    if (evalStack.length !== 1) {
-      throw new Error('Expresión mal formada.');
-    }
-
-    return evalStack[0];
+    const tokens       = this._tokenizarExpresion(expr);
+    const normalizados = this._normalizarTokens(tokens);
+    const rpn          = this._parsearRPN(normalizados);
+    return this._evaluarRPN(rpn, lineaIdx);
   }
 
+  // ── Etapa 1: Tokenización ────────────────────────────────
+  //
+  // Reconoce: números (enteros y reales), cadenas con comillas dobles,
+  // booleanos (Verdadero / Falso), variables, llamadas a función
+  // (Identificador seguido de "("), operadores aritméticos, paréntesis
+  // y comas.
+  //
+  // El reconocimiento del patrón Identificador(...) se hace aquí con
+  // look-ahead — el parser sólo necesita decidir cómo combinarlos.
   _tokenizarExpresion(expr) {
     const tokens = [];
     let i = 0;
@@ -805,15 +733,19 @@ class LiteSeInt {
     while (i < expr.length) {
       if (/\s/.test(expr[i])) { i++; continue; }
 
+      // Cadena
       if (expr[i] === '"') {
         let j = i + 1;
         while (j < expr.length && expr[j] !== '"') j++;
-        if (j < expr.length) j++;
-        tokens.push({ type: 'string', value: expr.substring(i + 1, j - 1) });
-        i = j;
+        if (j >= expr.length) {
+          throw new Error('Texto sin cerrar con comillas dobles.');
+        }
+        tokens.push({ tipo: 'cadena', valor: expr.substring(i + 1, j) });
+        i = j + 1;
         continue;
       }
 
+      // Número
       if (/\d/.test(expr[i])) {
         let j = i;
         while (j < expr.length && /\d/.test(expr[j])) j++;
@@ -822,58 +754,242 @@ class LiteSeInt {
           while (j < expr.length && /\d/.test(expr[j])) j++;
         }
         const numStr = expr.substring(i, j);
-        tokens.push({ type: 'number', value: numStr.includes('.') ? parseFloat(numStr) : parseInt(numStr, 10) });
+        tokens.push({
+          tipo: 'numero',
+          valor: numStr.includes('.') ? parseFloat(numStr) : parseInt(numStr, 10),
+        });
         i = j;
         continue;
       }
 
-      if (expr[i] === '(') { tokens.push({ type: 'lparen' }); i++; continue; }
-      if (expr[i] === ')') { tokens.push({ type: 'rparen' }); i++; continue; }
+      if (expr[i] === '(') { tokens.push({ tipo: 'lparen' }); i++; continue; }
+      if (expr[i] === ')') { tokens.push({ tipo: 'rparen' }); i++; continue; }
+      if (expr[i] === ',') { tokens.push({ tipo: 'coma'   }); i++; continue; }
 
       if ('+-*/'.includes(expr[i])) {
-        tokens.push({ type: 'op', value: expr[i] });
+        tokens.push({ tipo: 'op', valor: expr[i] });
         i++;
         continue;
       }
 
+      // Identificador, booleano o llamada a función
       if (/[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ_]/.test(expr[i])) {
         let j = i;
         while (j < expr.length && /[\wáéíóúüñÁÉÍÓÚÜÑ]/.test(expr[j])) j++;
-        const word = expr.substring(i, j);
-        const lw = word.toLowerCase();
+        const palabra = expr.substring(i, j);
+        const lw = palabra.toLowerCase();
+
         if (lw === 'verdadero') {
-          tokens.push({ type: 'boolean', value: true });
+          tokens.push({ tipo: 'booleano', valor: true });
         } else if (lw === 'falso') {
-          tokens.push({ type: 'boolean', value: false });
+          tokens.push({ tipo: 'booleano', valor: false });
         } else {
-          tokens.push({ type: 'variable', raw: word });
+          // Look-ahead: si lo sigue "(" (con o sin espacios), es una
+          // llamada a función. El "(" se mantiene como token aparte
+          // para que el parser arme la lista de argumentos.
+          let k = j;
+          while (k < expr.length && /\s/.test(expr[k])) k++;
+          if (k < expr.length && expr[k] === '(') {
+            tokens.push({ tipo: 'funcion', nombre: palabra });
+          } else {
+            tokens.push({ tipo: 'variable', nombre: palabra });
+          }
         }
         i = j;
         continue;
       }
 
-      throw new Error(`Carácter inesperado en expresión: "${expr[i]}"`);
+      throw new Error(`Carácter inesperado en expresión: "${expr[i]}".`);
     }
 
     return tokens;
   }
 
-  _aplicarOperador(izq, op, der) {
-    if (typeof izq === 'string' || typeof der === 'string') {
-      if (op === '+') return String(izq) + String(der);
-      throw new Error('Operación aritmética no válida con cadenas.');
+  // ── Etapa 2: Normalización ───────────────────────────────
+  //
+  // Único caso por ahora: convertir el menos unario en "0 - x" para
+  // que el parser binario funcione sin reglas especiales.
+  // (Cuando 0.5.1 agregue potencia, este es el lugar donde sumar
+  // soporte para "+x" si se decidiera tratarlo como unario.)
+  _normalizarTokens(tokens) {
+    const out = [];
+    for (const tk of tokens) {
+      if (tk.tipo === 'op' && tk.valor === '-') {
+        const prev = out[out.length - 1];
+        const enInicio = !prev;
+        const trasOperador = prev && (
+          prev.tipo === 'op' || prev.tipo === 'lparen' || prev.tipo === 'coma'
+        );
+        if (enInicio || trasOperador) {
+          out.push({ tipo: 'numero', valor: 0 });
+        }
+      }
+      out.push(tk);
+    }
+    return out;
+  }
+
+  // ── Etapa 3: Parseo a RPN (Shunting-Yard) ────────────────
+  //
+  // Maneja precedencia y asociatividad consultando _OPERADORES,
+  // y soporta llamadas a función con cualquier aridad. El resultado
+  // es una cola en notación postfija que el evaluador puede recorrer
+  // linealmente.
+  _parsearRPN(tokens) {
+    const output      = [];
+    const operadores  = []; // pila de operadores / lparen / funcion
+    const argCount    = []; // arity stack: cuántos argumentos vistos
+    const argSeen     = []; // ¿hubo contenido en el argumento actual?
+
+    const popHastaLparen = () => {
+      while (operadores.length > 0 && operadores[operadores.length - 1].tipo !== 'lparen') {
+        output.push(operadores.pop());
+      }
+      if (operadores.length === 0) {
+        throw new Error('Paréntesis desbalanceados: falta "(" en la expresión.');
+      }
+    };
+
+    let prev = null;
+
+    for (const tk of tokens) {
+      if (tk.tipo === 'numero' || tk.tipo === 'cadena' ||
+          tk.tipo === 'booleano' || tk.tipo === 'variable') {
+        output.push(tk);
+        if (argSeen.length > 0) argSeen[argSeen.length - 1] = true;
+      }
+      else if (tk.tipo === 'funcion') {
+        operadores.push(tk);
+      }
+      else if (tk.tipo === 'op') {
+        const meta = LiteSeInt._OPERADORES[tk.valor];
+        if (!meta) throw new Error(`Operador desconocido: "${tk.valor}".`);
+        if (!prev || prev.tipo === 'op' || prev.tipo === 'lparen' || prev.tipo === 'coma') {
+          throw new Error(`Operador "${tk.valor}" en posición inválida.`);
+        }
+        while (operadores.length > 0) {
+          const top = operadores[operadores.length - 1];
+          if (top.tipo !== 'op') break;
+          const topMeta = LiteSeInt._OPERADORES[top.valor];
+          const desplazaIzq = meta.asociatividad === 'izq' && topMeta.precedencia >= meta.precedencia;
+          const desplazaDer = meta.asociatividad === 'der' && topMeta.precedencia >  meta.precedencia;
+          if (desplazaIzq || desplazaDer) output.push(operadores.pop());
+          else break;
+        }
+        operadores.push(tk);
+      }
+      else if (tk.tipo === 'lparen') {
+        operadores.push(tk);
+        const debajo = operadores[operadores.length - 2];
+        if (debajo && debajo.tipo === 'funcion') {
+          argCount.push(0);
+          argSeen.push(false);
+        }
+      }
+      else if (tk.tipo === 'coma') {
+        if (argSeen.length === 0) {
+          throw new Error('Coma inesperada fuera de una llamada a función.');
+        }
+        popHastaLparen();
+        if (!argSeen[argSeen.length - 1]) {
+          throw new Error('Argumento vacío antes de "," en la llamada a función.');
+        }
+        argCount[argCount.length - 1]++;
+        argSeen[argSeen.length - 1] = false;
+      }
+      else if (tk.tipo === 'rparen') {
+        popHastaLparen();
+        operadores.pop(); // descarta "("
+        const top = operadores[operadores.length - 1];
+        if (top && top.tipo === 'funcion') {
+          const huboArg = argSeen.pop();
+          let n = argCount.pop();
+          if (n > 0 && !huboArg) {
+            throw new Error(`Argumento vacío antes de ")" en la llamada a "${top.nombre}".`);
+          }
+          if (huboArg) n++;
+          operadores.pop();
+          output.push({ tipo: 'funcion', nombre: top.nombre, aridad: n });
+        }
+      }
+      prev = tk;
     }
 
-    switch (op) {
-      case '+': return izq + der;
-      case '-': return izq - der;
-      case '*': return izq * der;
-      case '/':
-        if (der === 0) throw new Error('División por cero.');
-        return izq / der;
-      default:
-        throw new Error(`Operador desconocido: "${op}"`);
+    if (prev && prev.tipo === 'op') {
+      throw new Error(`Falta operando después de "${prev.valor}".`);
     }
+
+    while (operadores.length > 0) {
+      const top = operadores.pop();
+      if (top.tipo === 'lparen') {
+        throw new Error('Paréntesis desbalanceados: falta ")" en la expresión.');
+      }
+      if (top.tipo === 'funcion') {
+        throw new Error(`Llamada a "${top.nombre}" sin cerrar con ")".`);
+      }
+      output.push(top);
+    }
+
+    return output;
+  }
+
+  // ── Etapa 4: Evaluación de la RPN ────────────────────────
+  //
+  // Recorre la cola postfija aplicando operadores y funciones.
+  // Es el único punto donde se materializa el valor de una variable,
+  // se invoca una función nativa o se aplica un operador binario.
+  _evaluarRPN(rpn, lineaIdx) {
+    if (rpn.length === 0) throw new Error('Expresión vacía.');
+
+    const stack = [];
+
+    for (const tk of rpn) {
+      if (tk.tipo === 'numero' || tk.tipo === 'cadena' || tk.tipo === 'booleano') {
+        stack.push(tk.valor);
+      }
+      else if (tk.tipo === 'variable') {
+        const key = tk.nombre.toLowerCase();
+        if (!this.variables.hasOwnProperty(key)) {
+          throw new Error(`Variable "${tk.nombre}" no definida.`);
+        }
+        if (!this.variables[key].inicializada) {
+          throw new Error(`Variable "${tk.nombre}" no inicializada.`);
+        }
+        stack.push(this.variables[key].valor);
+      }
+      else if (tk.tipo === 'op') {
+        if (stack.length < 2) {
+          throw new Error(`Expresión mal formada cerca de "${tk.valor}".`);
+        }
+        const der = stack.pop();
+        const izq = stack.pop();
+        const meta = LiteSeInt._OPERADORES[tk.valor];
+        stack.push(meta.aplicar(izq, der));
+      }
+      else if (tk.tipo === 'funcion') {
+        const fn = LiteSeInt._FUNCIONES_NATIVAS[tk.nombre.toLowerCase()];
+        if (!fn) {
+          throw new Error(`Función "${tk.nombre}" no reconocida.`);
+        }
+        if (stack.length < tk.aridad) {
+          throw new Error(`Llamada a "${tk.nombre}" mal formada.`);
+        }
+        if (tk.aridad < fn.aridadMin || tk.aridad > fn.aridadMax) {
+          const esperados = fn.aridadMin === fn.aridadMax
+            ? `${fn.aridadMin}`
+            : `${fn.aridadMin} a ${fn.aridadMax}`;
+          throw new Error(
+            `La función "${tk.nombre}" espera ${esperados} argumento(s), recibió ${tk.aridad}.`
+          );
+        }
+        const args = new Array(tk.aridad);
+        for (let i = tk.aridad - 1; i >= 0; i--) args[i] = stack.pop();
+        stack.push(fn.aplicar(args, { lineaIdx, runtime: this }));
+      }
+    }
+
+    if (stack.length !== 1) throw new Error('Expresión mal formada.');
+    return stack[0];
   }
 
   // ===========================================================
@@ -976,6 +1092,69 @@ class LiteSeInt {
   // ===========================================================
   //  STATIC HELPERS (compatibilidad + autocompletado)
   // ===========================================================
+
+  // ===========================================================
+  //  TABLAS DE METADATA DEL EVALUADOR
+  // ===========================================================
+  //
+  // Operadores binarios. Centralizar la metadata aquí permite que
+  // 0.5.1 agregue `mod` y potencia tocando sólo esta tabla y el
+  // tokenizador, sin volver a tocar el shunting-yard.
+  static _OPERADORES = {
+    '+': {
+      precedencia: 1,
+      asociatividad: 'izq',
+      aplicar: (a, b) => {
+        if (typeof a === 'string' || typeof b === 'string') {
+          return String(a) + String(b);
+        }
+        return a + b;
+      },
+    },
+    '-': {
+      precedencia: 1,
+      asociatividad: 'izq',
+      aplicar: (a, b) => {
+        if (typeof a === 'string' || typeof b === 'string') {
+          throw new Error('Operación aritmética "-" no válida con cadenas.');
+        }
+        return a - b;
+      },
+    },
+    '*': {
+      precedencia: 2,
+      asociatividad: 'izq',
+      aplicar: (a, b) => {
+        if (typeof a === 'string' || typeof b === 'string') {
+          throw new Error('Operación aritmética "*" no válida con cadenas.');
+        }
+        return a * b;
+      },
+    },
+    '/': {
+      precedencia: 2,
+      asociatividad: 'izq',
+      aplicar: (a, b) => {
+        if (typeof a === 'string' || typeof b === 'string') {
+          throw new Error('Operación aritmética "/" no válida con cadenas.');
+        }
+        if (b === 0) throw new Error('División por cero.');
+        return a / b;
+      },
+    },
+  };
+
+  // Registro de funciones nativas. Vacío en 0.5.0 a propósito: el
+  // motor ya reconoce el patrón Identificador(args) y lanza un error
+  // claro si la función no está registrada. 0.5.1 agregará Abs/Redon/
+  // Trunc y 0.5.2 agregará Longitud/Mayusculas/Minusculas con la forma:
+  //
+  //   nombre: { aridadMin, aridadMax, aplicar(args, ctx) }
+  //
+  // donde `args` es el arreglo de argumentos ya evaluados y `ctx`
+  // expone `{ lineaIdx, runtime }` por si una función necesitara
+  // contexto extra al lanzar errores.
+  static _FUNCIONES_NATIVAS = {};
 
   static PALABRAS_RESERVADAS = [
     { texto: 'Definir',     tipo: 'instrucción' },

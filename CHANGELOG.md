@@ -6,6 +6,25 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.5.0] — 2026-04-25
+
+Versión de base arquitectónica. El usuario final ve pocos cambios visibles: el objetivo es ordenar el motor de expresiones para que `0.5.1` (operadores `mod`, potencia, funciones numéricas `Abs`, `Redon`, `Trunc`) y `0.5.2` (funciones de texto `Longitud`, `Mayusculas`, `Minusculas`) se puedan implementar con menos fricción.
+
+### Interno
+- **Pipeline de expresiones por etapas**: el evaluador en `js/LiteSeInt.js` se separó en cuatro helpers reconocibles — `_tokenizarExpresion`, `_normalizarTokens`, `_parsearRPN` y `_evaluarRPN` — sustituyendo la función monolítica anterior. Cada etapa tiene una responsabilidad acotada y se puede extender sin tocar las demás.
+- **Metadata de operadores centralizada**: nueva tabla `LiteSeInt._OPERADORES` con `precedencia`, `asociatividad` y `aplicar` por operador. Agregar `mod` o potencia en `0.5.1` se reduce a sumar entradas a esta tabla y al tokenizador.
+- **Registro de funciones nativas preparado**: nuevo `LiteSeInt._FUNCIONES_NATIVAS` (vacío en esta versión) con la firma `{ aridadMin, aridadMax, aplicar(args, ctx) }`. El evaluador ya invoca este registro y aplica validación de aridad.
+- **Reconocimiento de llamadas a función**: el tokenizador de expresiones detecta el patrón `Identificador(args)` con look-ahead y emite un token `funcion` que el parser convierte en una entrada postfija con su aridad. Soporta cero, uno o múltiples argumentos.
+- **Detección espejo en el validador estático**: `js/doc_errores.js` reconoce el mismo patrón y lo reporta como `Función "X" no reconocida` en lugar de `Variable "X" no definida`. El conjunto `FUNCIONES_NATIVAS_SET` queda vacío a propósito — no se "aprueba" ninguna función que el runtime aún no implemente.
+- **Lista de expresiones de `Escribir` respeta paréntesis**: `validarListaExpresiones` ahora separa por comas sólo en el nivel exterior, dejando que comas internas sean argumentos de una llamada a función válida en el futuro.
+
+### Cambiado
+- **Errores de expresión más precisos**: paréntesis desbalanceados distinguen entre falta de `(` y falta de `)`; los operadores en posición inválida y los operandos faltantes (`a = 1 +`) reportan mensajes específicos; las llamadas a función abiertas y los argumentos vacíos en una llamada (`f(a,)`, `f(a, ,b)`) tienen sus propios mensajes.
+- **Versión visible**: `v0.5.0`.
+
+### Compatibilidad
+- Los programas válidos en `v0.4.0` siguen ejecutándose igual. La precedencia de `+`, `-`, `*`, `/` no cambia; el menos unario, el operador `No`, los literales `Verdadero`/`Falso`, las cadenas y la concatenación con `+` se comportan idéntico. Los ejemplos precargados (`hola`, `notas`, `multivar`, `mayor`, `contador`, `tabla`, `logico`, `diasemana`) siguen funcionando sin cambios.
+
 ## [0.4.0] — 2026-04-24
 
 ### Agregado

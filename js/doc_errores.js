@@ -37,6 +37,14 @@ const TIPOS_VALIDOS = new Set(['entero', 'real', 'caracter', 'logico']);
 //   - 'y' / 'o':             operadores binarios lógicos
 const KEYWORDS_EXPR_OK = new Set(['verdadero', 'falso', 'no', 'y', 'o']);
 
+// Funciones nativas reconocidas en expresiones. Vacío en 0.5.0:
+// el evaluador ya entiende el patrón Identificador(args) y emite un
+// error claro si la función no existe, dejando esta tabla lista para
+// que 0.5.1 (Abs / Redon / Trunc) y 0.5.2 (Longitud / Mayusculas /
+// Minusculas) sólo la pueblen aquí cuando el runtime tenga la
+// implementación conectada.
+const FUNCIONES_NATIVAS_SET = new Set([]);
+
 // ─────────────────────────────────────────────
 //  TOKEN TYPES
 // ─────────────────────────────────────────────
@@ -1845,9 +1853,24 @@ function validarAsignacion(sig, lineaIdx, tabla, errores) {
 function validarListaExpresiones(tokens, lineaIdx, tabla, errores) {
   const grupos = [];
   let grupoActual = [];
+  let nivelParen = 0;
 
+  // Sólo dividimos por comas en el nivel exterior. Las comas dentro
+  // de paréntesis son argumentos de una llamada a función y se validan
+  // como parte de su expresión, no como separadores de la lista de
+  // Escribir.
   for (const tk of tokens) {
-    if (tk.type === TK.COMMA) {
+    if (tk.type === TK.LPAREN) {
+      nivelParen++;
+      grupoActual.push(tk);
+      continue;
+    }
+    if (tk.type === TK.RPAREN) {
+      nivelParen = Math.max(0, nivelParen - 1);
+      grupoActual.push(tk);
+      continue;
+    }
+    if (tk.type === TK.COMMA && nivelParen === 0) {
       if (grupoActual.length > 0) {
         grupos.push(grupoActual);
       } else {
@@ -1877,8 +1900,30 @@ function validarListaExpresiones(tokens, lineaIdx, tabla, errores) {
 // ─────────────────────────────────────────────
 
 function validarExpresionTokens(tokens, lineaIdx, tabla, errores) {
-  for (const tk of tokens) {
+  for (let i = 0; i < tokens.length; i++) {
+    const tk = tokens[i];
+
     if (tk.type === TK.IDENTIFIER) {
+      // Identificador inmediatamente seguido de "(" → llamada a función.
+      // En 0.5.0 el conjunto FUNCIONES_NATIVAS_SET está vacío a propósito,
+      // por lo que cualquier llamada se reporta como "Función no
+      // reconocida". Esto deja la base lista para 0.5.1 sin marcar como
+      // válido nada que el runtime aún no pueda resolver.
+      const next = tokens[i + 1];
+      const esLlamada = next && next.type === TK.LPAREN;
+      if (esLlamada) {
+        if (!FUNCIONES_NATIVAS_SET.has(tk.value.toLowerCase())) {
+          errores.push(crearError(
+            lineaIdx, tk.col, tk.end,
+            'funcion_no_reconocida',
+            `Función "${tk.value}" no reconocida.`,
+            tk.value
+          ));
+        }
+        // La validación profunda de aridad y argumentos llega en 0.5.1+.
+        continue;
+      }
+
       if (!tabla.existeVariable(tk.value)) {
         errores.push(crearError(
           lineaIdx, tk.col, tk.end,
@@ -1890,8 +1935,11 @@ function validarExpresionTokens(tokens, lineaIdx, tabla, errores) {
     } else if (tk.type === TK.STRING || tk.type === TK.STRING_UNCLOSED ||
                tk.type === TK.NUMBER ||
                tk.type === TK.OPERATOR || tk.type === TK.LPAREN ||
-               tk.type === TK.RPAREN || tk.type === TK.ASSIGN) {
-      // Valid expression tokens (STRING_UNCLOSED already has its own error)
+               tk.type === TK.RPAREN || tk.type === TK.ASSIGN ||
+               tk.type === TK.COMMA) {
+      // Tokens válidos dentro de una expresión.
+      // Las comas sólo aparecen aquí cuando vienen dentro de una llamada
+      // a función — la lista de Escribir ya se separó en otro nivel.
     } else if (tk.type === TK.KEYWORD) {
       if (KEYWORDS_EXPR_OK.has(tk.value.toLowerCase())) continue;
       errores.push(crearError(
@@ -1989,6 +2037,7 @@ const DocErrores = {
   TK,
   PALABRAS_RESERVADAS_SET,
   TIPOS_VALIDOS,
+  FUNCIONES_NATIVAS_SET,
   tokenizarLinea,
   tokensSignificativos,
   cursorContext,
