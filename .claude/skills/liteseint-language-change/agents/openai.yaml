@@ -1,0 +1,4 @@
+interface:
+  display_name: "LiteSeInt Language Change"
+  short_description: "Implementa cambios del lenguaje en LiteSeInt"
+  default_prompt: "Use $liteseint-language-change to implement or review a LiteSeInt language change consistently across validation, runtime, UI helpers, and docs."

@@ -1,52 +1,45 @@
 # CLAUDE.md
 
-Guía de contexto para Claude Code al trabajar en este repositorio.
+Contexto permanente para Claude Code al trabajar en este repositorio.
 
-## Approach
+## Working Style
 
-- Think before acting. Read existing files before writing code.
-- Be concise in output but thorough in reasoning.
-- Prefer editing over rewriting whole files.
-- Do not re-read files you have already read unless the file may have changed.
-- Test your code before declaring done.
-- No sycophantic openers or closing fluff.
-- Keep solutions simple and direct.
+- Read the relevant files before editing.
+- Prefer the smallest correct patch over broad rewrites.
+- Preserve existing behavior unless the request changes it.
+- Test the exact affected flow before declaring done.
+- Keep output concise and directly useful.
 - User instructions always override this file.
-
-## Output
-
-- Return code first. Explanation after, only if non-obvious.
-- No inline prose inside code unless it is an actual code comment.
-- Use comments sparingly. Only where logic is unclear.
-- No boilerplate unless explicitly requested.
-- When modifying files, show the exact changed blocks or a focused diff when possible.
-- Do not dump entire files unless the user asks for the full file.
 
 ## Project Snapshot
 
 LiteSeInt is a browser-based pseudocode interpreter for educational use.
 
-Current architecture:
+Current file ownership:
 
-- `index.html`: full UI shell, CSS theme, editor overlays, console, toolbar, examples, and UI controller logic
-- `LiteSeInt.js`: interpreter core, execution flow, expression evaluation, runtime checks, callback-based bridge to UI
-- `doc_errores.js`: tokenizer, static validator, symbol table, line/column error ranges, helpers for autocomplete and editor decorations
-- `README.md`: user-facing project overview
-- `CHANGELOG.md`: notable changes by version
+- `index.html`: app shell and script loading
+- `css/styles.css`: visual system and responsive layout
+- `js/app.js`: UI controller, editor behavior, console, autocomplete, examples, visual state
+- `js/doc_errores.js`: tokenizer, static validator, symbol table, exact error ranges, autocomplete helpers
+- `js/LiteSeInt.js`: parser, AST, runtime execution, expression evaluation, runtime checks
+- `README.md`: user-facing documentation
+- `CHANGELOG.md`: notable visible changes
 
 ## Core Architecture Rules
 
 - Respect layer boundaries.
-- `doc_errores.js` must not depend on DOM, jQuery, Bootstrap, or UI state.
-- `LiteSeInt.js` must remain UI-agnostic. No direct DOM access.
-- `index.html` is allowed to orchestrate UI, visual state, events, overlays, tooltips, console, and editor interactions.
+- `js/doc_errores.js` must not depend on DOM, jQuery, Bootstrap, or UI state.
+- `js/LiteSeInt.js` must remain UI-agnostic. No direct DOM access.
+- `js/app.js` owns UI orchestration and should consume the validator and runtime instead of reimplementing them.
+- `index.html` should stay focused on shell markup and loading, not absorb language logic.
 - Do not move validation logic into the UI.
 - Do not duplicate parser or validation rules across files unless strictly necessary.
-- If a rule belongs to lexical analysis or static validation, put it in `doc_errores.js`.
-- If a rule belongs to execution semantics, put it in `LiteSeInt.js`.
-- If a rule belongs to presentation only, keep it in `index.html`.
+- If a rule belongs to lexical analysis or static validation, put it in `js/doc_errores.js`.
+- If a rule belongs to execution semantics, put it in `js/LiteSeInt.js`.
+- If a rule belongs to UI behavior or examples, put it in `js/app.js`.
+- If a rule belongs to presentation only, keep it in HTML/CSS.
 
-## Language Model of the Project
+## Current Language Surface
 
 Supported language elements currently include:
 
@@ -54,20 +47,28 @@ Supported language elements currently include:
 - `Escribir`
 - `Leer`
 - assignment with `=`
-- types: `Entero`, `Real`, `Caracter`
 - comments with `//`
+- types: `Entero`, `Real`, `Caracter`, `Logico`
+- boolean literals: `Verdadero`, `Falso`
 - arithmetic expressions with precedence and parentheses
-- string literals with double quotes
+- relational operators: `==`, `!=`, `<>`, `<`, `>`, `<=`, `>=`
+- logical operators: `Y`, `O`, `No`
+- control structures:
+  - `Si / Sino / FinSi`
+  - `Mientras / FinMientras`
+  - `Repetir / HastaQue` with `Hasta Que` accepted as alias
+  - `Para / FinPara`
+  - `Segun / De Otro Modo / FinSegun`
 
 Use the current naming conventions:
 
 - `Caracter`, not `Cadena`
 - `LiteSeInt`, not old project names
-- pseudocode syntax should match the current interpreter behavior, not generic PSeInt assumptions
+- Match the current interpreter behavior, not generic PSeInt assumptions
 
 ## File-Specific Guidance
 
-### `doc_errores.js`
+### `js/doc_errores.js`
 
 This file owns:
 
@@ -88,7 +89,7 @@ Rules:
 - Avoid UI-oriented language or DOM assumptions here.
 - Keep helpers generic and reusable.
 
-### `LiteSeInt.js`
+### `js/LiteSeInt.js`
 
 This file owns:
 
@@ -107,34 +108,33 @@ Rules:
 - Do not reimplement static validation here unless needed for runtime safety.
 - If runtime semantics change, keep them aligned with static validation expectations.
 
-### `index.html`
+### `js/app.js`
 
-This file currently contains:
+This file owns:
 
-- app layout
-- theme variables
-- responsive CSS
-- editor overlay system
-- line gutter
-- syntax highlighting layer
-- error underline layer
-- console UI
-- autocomplete UI
+- editor event wiring
+- console flow and inline input UX
+- autocomplete UI and suggestion rendering
 - example loading
-- full UI controller logic
+- visual error lifecycle
+- execution status and toolbar state
 
 Rules:
 
-- Prefer focused edits. This file is large and mixes CSS, HTML, and JS intentionally.
-- Do not split this file into multiple files unless the user explicitly asks for a restructure.
-- Preserve overlay stacking and scroll sync behavior.
-- Preserve the error visual lifecycle:
-  - errors appear after execute
-  - editing invalidates visual errors immediately
-- Preserve mobile behavior unless the user asks otherwise.
-- If changing toolbar or controls, verify the mobile breakpoint behavior too.
+- Reuse helpers from `js/doc_errores.js` and `js/LiteSeInt.js` instead of duplicating language rules.
+- Preserve the current console, editor, overlay, and autocomplete flows unless the request changes them.
+- If a user-visible language feature changes, update examples and relevant autocomplete entries here.
 
-## Editor and UI Invariants
+### `index.html`
+
+Rules:
+
+- Prefer focused edits.
+- Do not turn it back into a monolithic UI controller file.
+- Keep labels in Spanish unless the user asks otherwise.
+- Update the visible app version only when the corresponding implementation is actually complete.
+
+## Editor And UI Invariants
 
 - Syntax highlight is a visual layer over a transparent textarea.
 - Error decorations are separate from syntax highlighting.
@@ -143,20 +143,22 @@ Rules:
 - Scroll positions across editor, gutter, syntax layer, and error layer must stay synchronized.
 - Autocomplete must not activate inside strings or comments.
 - Clearing the console currently also invalidates visual error state. Do not change this silently.
-- The minimum visible editor line count is intentional.
+- Preserve mobile behavior unless the user explicitly asks otherwise.
 
-## Validation and Execution Rules
+## Language Change Workflow
+
+For user-visible language changes, use the project skill `/liteseint-language-change` or follow the same workflow manually.
 
 When adding or changing language behavior:
 
-1. Update static analysis in `doc_errores.js`
-2. Update runtime semantics in `LiteSeInt.js` if needed
-3. Update syntax highlight or autocomplete in `index.html` if the token model changed
-4. Update examples if the feature is user-visible
-5. Update `README.md` if the feature changes supported syntax or usage
-6. Update `CHANGELOG.md` for notable user-visible changes
+1. Update static analysis in `js/doc_errores.js`.
+2. Update runtime semantics in `js/LiteSeInt.js`.
+3. Update autocomplete, examples, or UI helpers in `js/app.js` if the feature is user-visible.
+4. Update `README.md` if supported syntax or behavior changed.
+5. Update `CHANGELOG.md` for notable visible changes.
+6. Update the visible version in `index.html` only if the phase is actually complete.
 
-Never implement a language feature in only one layer if it affects parsing, validation, and execution.
+Use `prompt_v*.txt` files at repo root as scope guards when the request maps to a planned phase.
 
 ## Error Handling Standards
 
@@ -184,101 +186,41 @@ If an error should be visible in the editor, make sure the validation output sti
 - Avoid unnecessary abstractions.
 - Avoid introducing classes or utilities for one-off behavior.
 - Prefer clear conditionals over clever compact code.
-- No docstrings or type annotations on untouched code.
 - No speculative refactors.
 
 ### CSS
 
 - Reuse existing CSS variables from `:root`.
-- Preserve the current visual language: dark terminal-like UI, monospaced typography, restrained neon accents.
+- Preserve the current visual language.
 - Do not introduce random one-off colors when a variable already exists.
 - Keep responsive behavior intact.
-- For mobile fixes, patch the smallest relevant rule set first.
 
-### HTML/UI text
+### UI Text
 
-- Keep labels in Spanish, matching the current UI.
-- Keep internal code identifiers consistent with existing project naming.
+- Keep labels in Spanish.
+- Keep internal identifiers consistent with existing project naming.
 - Do not silently rename visible UI text unless requested.
-
-## Review Rules
-
-- State the bug.
-- Show the fix.
-- Stop.
-- No extra suggestions outside scope.
-- No praise, no filler.
-
-## Debugging Rules
-
-- Never speculate without reading the relevant code first.
-- State what you found, where it is, and the fix.
-- If the root cause is uncertain, say so.
-- Do not invent causes to sound confident.
-
-## Testing Rules
-
-Before declaring a change done, validate the affected behavior with focused examples.
-
-Minimum manual checks when relevant:
-
-- `Definir` with one and multiple variables
-- duplicate variable declarations
-- reserved words used as variables
-- `Escribir` with strings, variables, numbers, and comma-separated expressions
-- unclosed double quotes
-- adjacent value tokens missing a comma
-- `Leer` with valid and invalid input by type
-- assignment with arithmetic expressions and parentheses
-- undefined variable usage
-- uninitialized variable usage
-- comments with `//`
-- runtime stop flow if the change touches execution
-- mobile layout if the change touches toolbar, panels, spacing, or controls
-
-Do not claim something is fixed if you did not verify the exact path affected.
-
-## Preferred Change Strategy
-
-- Smallest correct patch first.
-- Preserve architecture.
-- Preserve user-visible behavior unless the requested fix changes it.
-- Avoid broad rewrites in `index.html`.
-- Do not rename functions, variables, or selectors without reason.
-- Do not change public behavior and internal structure in the same patch unless necessary.
 
 ## Documentation Discipline
 
-Update docs when behavior changes:
-
-- `README.md` for user-facing features, syntax, usage, architecture overview
-- `CHANGELOG.md` for notable changes
-- `CLAUDE.md` only when working conventions or architecture expectations change
-
-If the change is purely internal and not user-visible, avoid unnecessary README edits.
+- Update `README.md` for user-facing syntax, behavior, and usage changes.
+- Update `CHANGELOG.md` for notable visible changes.
+- Update `CLAUDE.md` only when repo conventions, architecture, or permanent guidance change.
 
 ## Non-Goals
 
 - Do not add frameworks.
 - Do not migrate to TypeScript unless explicitly requested.
-- Do not split the monolithic UI file unless explicitly requested.
+- Do not split the project into a new architecture unless explicitly requested.
 - Do not redesign the product while fixing a bug.
-- Do not add features that were not requested.
-- Do not "clean up" unrelated code.
+- Do not add unrelated features or cleanup.
 
-## Simple Formatting
-
-- No em dashes, smart quotes, or decorative Unicode symbols.
-- Plain hyphens and straight quotes only.
-- Natural language characters are fine when content requires them.
-- Code output must be copy-paste safe.
-
-## Definition of Done
+## Definition Of Done
 
 A task is done when:
 
-- the relevant file(s) were actually read
+- the relevant files were actually read
 - the smallest correct change was made
 - the affected flow was tested
-- output is concise and directly usable
+- the response is concise and directly usable
 - no unrelated code was changed
