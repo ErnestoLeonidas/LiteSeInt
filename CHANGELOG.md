@@ -6,6 +6,14 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.5.5]
+
+### Agregado
+- **Deshacer y rehacer en el editor**: se agregó historial propio para `Ctrl+Z` / `Cmd+Z` y rehacer con `Ctrl+Y` o `Ctrl+Shift+Z`, cubriendo escritura normal y cambios programáticos como autocompletado, tabulación, borrar todo y carga de ejemplos.
+
+### Cambiado
+- **Versión visible**: `v0.5.5`.
+
 ## [0.5.4]
 
 ### Agregado

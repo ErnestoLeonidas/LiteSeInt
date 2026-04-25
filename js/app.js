@@ -10,6 +10,13 @@
 
 let inputResolver = null;
 const mobileConsoleQuery = window.matchMedia("(max-width: 768px)");
+const EDITOR_HISTORY_LIMIT = 100;
+
+const editorHistory = {
+  undo: [],
+  redo: [],
+  applying: false,
+};
 
 let errorVisualState = {
   activo: false,
@@ -111,6 +118,7 @@ function limpiarTodo() {
   detener();
   const nombre = obtenerNombreProceso();
   const estructura = `Proceso ${nombre}\n\n\n\n\n\n\n\n\nFinProceso`;
+  registrarHistorialEditor();
   $("#editor").val(estructura);
   $("#consola").empty();
   invalidarErroresVisuales();
@@ -119,6 +127,91 @@ function limpiarTodo() {
   const pos = estructura.indexOf("\n") + 1;
   editor.setSelectionRange(pos, pos);
   editor.focus();
+}
+
+function getEditorHistorySnapshot(editor = document.getElementById("editor")) {
+  if (!editor) return null;
+  return {
+    value: editor.value,
+    selectionStart: editor.selectionStart,
+    selectionEnd: editor.selectionEnd,
+    scrollTop: editor.scrollTop,
+    scrollLeft: editor.scrollLeft,
+  };
+}
+
+function snapshotsIguales(a, b) {
+  return (
+    a &&
+    b &&
+    a.value === b.value &&
+    a.selectionStart === b.selectionStart &&
+    a.selectionEnd === b.selectionEnd
+  );
+}
+
+function registrarHistorialEditor(editor = document.getElementById("editor")) {
+  if (!editor || editorHistory.applying) return;
+  const snapshot = getEditorHistorySnapshot(editor);
+  const last = editorHistory.undo[editorHistory.undo.length - 1];
+  if (snapshotsIguales(last, snapshot)) return;
+
+  editorHistory.undo.push(snapshot);
+  if (editorHistory.undo.length > EDITOR_HISTORY_LIMIT) {
+    editorHistory.undo.shift();
+  }
+  editorHistory.redo = [];
+}
+
+function restaurarSnapshotEditor(snapshot) {
+  const editor = document.getElementById("editor");
+  if (!editor || !snapshot) return;
+
+  editorHistory.applying = true;
+  editor.value = snapshot.value;
+  const maxPos = editor.value.length;
+  editor.setSelectionRange(
+    Math.min(snapshot.selectionStart, maxPos),
+    Math.min(snapshot.selectionEnd, maxPos),
+  );
+  editor.scrollTop = snapshot.scrollTop;
+  editor.scrollLeft = snapshot.scrollLeft;
+  editorHistory.applying = false;
+
+  ocultarAutocompletado();
+  invalidarErroresVisuales();
+  quitarResalteNombreInvalido();
+  actualizarLineas();
+  editor.focus();
+}
+
+function deshacerEditor() {
+  const editor = document.getElementById("editor");
+  if (!editor || editorHistory.undo.length === 0) return false;
+  const actual = getEditorHistorySnapshot(editor);
+  const previo = editorHistory.undo.pop();
+  editorHistory.redo.push(actual);
+  restaurarSnapshotEditor(previo);
+  return true;
+}
+
+function rehacerEditor() {
+  const editor = document.getElementById("editor");
+  if (!editor || editorHistory.redo.length === 0) return false;
+  const actual = getEditorHistorySnapshot(editor);
+  const siguiente = editorHistory.redo.pop();
+  editorHistory.undo.push(actual);
+  restaurarSnapshotEditor(siguiente);
+  return true;
+}
+
+function esAtajoDeshacer(e) {
+  return (e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === "z";
+}
+
+function esAtajoRehacer(e) {
+  const mod = e.ctrlKey || e.metaKey;
+  return mod && (e.key.toLowerCase() === "y" || (e.shiftKey && e.key.toLowerCase() === "z"));
 }
 
 const NOMBRE_HIGHLIGHT_ID = "nombreProcesoHighlight";
@@ -820,7 +913,6 @@ function tabularLineas(editor) {
   const lastNL = v.lastIndexOf("\nFinProceso");
 
   if (s < PROCESO_PREFIX_LEN || s > lastNL || en > lastNL) return;
-
   const { lineIdxStart, lineIdxEnd } = getLineIndices(v, s, en);
   const lineas = v.split("\n");
   const firstProcLine = 1;
@@ -828,6 +920,8 @@ function tabularLineas(editor) {
 
   const startIdx = Math.max(lineIdxStart, firstProcLine);
   const endIdx = Math.min(lineIdxEnd, lastProcLine);
+  if (startIdx > endIdx) return;
+  registrarHistorialEditor(editor);
 
   let positionCounter = 0;
   let offsetInStartLine = 0,
@@ -893,15 +987,21 @@ function destabularLineas(editor) {
   }
 
   const removalsPerLine = new Array(lineas.length).fill(0);
+  let huboCambio = false;
   for (let i = startIdx; i <= endIdx; i++) {
     if (lineas[i].startsWith("  ")) {
       lineas[i] = lineas[i].substring(2);
       removalsPerLine[i] = 2;
+      huboCambio = true;
     } else if (lineas[i].startsWith("\t")) {
       lineas[i] = lineas[i].substring(1);
       removalsPerLine[i] = 1;
+      huboCambio = true;
     }
   }
+
+  if (!huboCambio) return;
+  registrarHistorialEditor(editor);
 
   positionCounter = 0;
   let newSelStart = 0,
@@ -931,6 +1031,18 @@ function destabularLineas(editor) {
 $("#editor").on("keydown", function (e) {
   const $dd = $("#autocompleteDropdown");
   const visible = $dd.hasClass("visible");
+
+  if (esAtajoDeshacer(e)) {
+    e.preventDefault();
+    deshacerEditor();
+    return;
+  }
+
+  if (esAtajoRehacer(e)) {
+    e.preventDefault();
+    rehacerEditor();
+    return;
+  }
 
   if (visible) {
     const items = $dd.find(".autocomplete-item");
@@ -1079,6 +1191,7 @@ function insertarAutocompletado(palabra) {
   while (ini >= 0 && /[\wáéíóúüñÁÉÍÓÚÜÑ]/.test(txt[ini])) ini--;
   ini++;
 
+  registrarHistorialEditor(editor);
   editor.value = txt.substring(0, ini) + palabra + " " + txt.substring(cur);
   const pos = ini + palabra.length + 1;
   editor.selectionStart = editor.selectionEnd = pos;
@@ -1364,6 +1477,7 @@ const EJEMPLOS = {
 function cargarEjemplo(nombre) {
   if (EJEMPLOS[nombre]) {
     const nombreProceso = obtenerNombreProceso();
+    registrarHistorialEditor();
     $("#editor").val(
       `Proceso ${nombreProceso}\n${EJEMPLOS[nombre]}\nFinProceso`,
     );
@@ -1406,6 +1520,17 @@ $(document).ready(function () {
   }
 
   editor.addEventListener("beforeinput", function (e) {
+    if (e.inputType === "historyUndo") {
+      e.preventDefault();
+      deshacerEditor();
+      return;
+    }
+    if (e.inputType === "historyRedo") {
+      e.preventDefault();
+      rehacerEditor();
+      return;
+    }
+
     const val = this.value;
     const s = this.selectionStart;
     const se = this.selectionEnd;
@@ -1422,7 +1547,10 @@ $(document).ready(function () {
 
     if (rStart < PROCESO_PREFIX_LEN || rEnd > lastNL) {
       e.preventDefault();
+      return;
     }
+
+    registrarHistorialEditor(this);
   });
 
   $("#btnEjecutar").on("click", ejecutar);

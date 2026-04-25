@@ -6,7 +6,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v0.5.3`
+- Versión visible en la app: `v0.5.5`
 - Ejecución completamente en el navegador
 - Sin build step ni backend
 - Proyecto basado en HTML, CSS y JavaScript vanilla
@@ -20,6 +20,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 - Ejecución con resaltado de la línea activa.
 - Botones para ejecutar, detener, limpiar y descargar el código como `.psc`.
 - Autocompletado de palabras reservadas, tipos, literales y variables definidas por el usuario.
+- Deshacer cambios del editor con `Ctrl+Z` o `Cmd+Z`.
 - Estructura inicial `Proceso ... FinProceso` protegida en la experiencia de edición.
 - Ejemplos precargados para probar el lenguaje rápidamente.
 - Soporte para comentarios con `//` en línea completa o al final de una instrucción.
