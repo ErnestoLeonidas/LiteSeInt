@@ -766,7 +766,7 @@ class LiteSeInt {
       if (expr[i] === ')') { tokens.push({ tipo: 'rparen' }); i++; continue; }
       if (expr[i] === ',') { tokens.push({ tipo: 'coma'   }); i++; continue; }
 
-      if ('+-*/'.includes(expr[i])) {
+      if ('+-*/^'.includes(expr[i])) {
         tokens.push({ tipo: 'op', valor: expr[i] });
         i++;
         continue;
@@ -783,6 +783,10 @@ class LiteSeInt {
           tokens.push({ tipo: 'booleano', valor: true });
         } else if (lw === 'falso') {
           tokens.push({ tipo: 'booleano', valor: false });
+        } else if (lw === 'mod') {
+          // Operador binario en forma de palabra. Se trata como cualquier
+          // otro operador para que el shunting-yard aplique precedencia.
+          tokens.push({ tipo: 'op', valor: 'mod' });
         } else {
           // Look-ahead: si lo sigue "(" (con o sin espacios), es una
           // llamada a función. El "(" se mantiene como token aparte
@@ -1142,19 +1146,73 @@ class LiteSeInt {
         return a / b;
       },
     },
+    'mod': {
+      precedencia: 2,
+      asociatividad: 'izq',
+      aplicar: (a, b) => {
+        if (typeof a !== 'number' || typeof b !== 'number') {
+          throw new Error('Operador "mod" requiere operandos numéricos.');
+        }
+        if (b === 0) throw new Error('División por cero en operación "mod".');
+        return a % b;
+      },
+    },
+    '^': {
+      precedencia: 3,
+      asociatividad: 'der',
+      aplicar: (a, b) => {
+        if (typeof a !== 'number' || typeof b !== 'number') {
+          throw new Error('Operador "^" requiere operandos numéricos.');
+        }
+        return Math.pow(a, b);
+      },
+    },
   };
 
-  // Registro de funciones nativas. Vacío en 0.5.0 a propósito: el
-  // motor ya reconoce el patrón Identificador(args) y lanza un error
-  // claro si la función no está registrada. 0.5.1 agregará Abs/Redon/
-  // Trunc y 0.5.2 agregará Longitud/Mayusculas/Minusculas con la forma:
+  // Registro de funciones nativas. Forma esperada de cada entrada:
   //
   //   nombre: { aridadMin, aridadMax, aplicar(args, ctx) }
   //
   // donde `args` es el arreglo de argumentos ya evaluados y `ctx`
   // expone `{ lineaIdx, runtime }` por si una función necesitara
-  // contexto extra al lanzar errores.
-  static _FUNCIONES_NATIVAS = {};
+  // contexto extra al lanzar errores. Las claves se almacenan en
+  // minúsculas; el evaluador normaliza el nombre antes de buscar.
+  // 0.5.2 agregará Longitud/Mayusculas/Minusculas en esta misma tabla.
+  static _FUNCIONES_NATIVAS = {
+    abs: {
+      aridadMin: 1,
+      aridadMax: 1,
+      aplicar: (args) => {
+        const x = args[0];
+        if (typeof x !== 'number') {
+          throw new Error('La función "Abs" requiere un argumento numérico.');
+        }
+        return Math.abs(x);
+      },
+    },
+    redon: {
+      aridadMin: 1,
+      aridadMax: 1,
+      aplicar: (args) => {
+        const x = args[0];
+        if (typeof x !== 'number') {
+          throw new Error('La función "Redon" requiere un argumento numérico.');
+        }
+        return Math.round(x);
+      },
+    },
+    trunc: {
+      aridadMin: 1,
+      aridadMax: 1,
+      aplicar: (args) => {
+        const x = args[0];
+        if (typeof x !== 'number') {
+          throw new Error('La función "Trunc" requiere un argumento numérico.');
+        }
+        return Math.trunc(x);
+      },
+    },
+  };
 
   static PALABRAS_RESERVADAS = [
     { texto: 'Definir',     tipo: 'instrucción' },
@@ -1183,6 +1241,10 @@ class LiteSeInt {
     { texto: 'FinPara',     tipo: 'estructura' },
     { texto: 'Segun',       tipo: 'estructura' },
     { texto: 'FinSegun',    tipo: 'estructura' },
+    { texto: 'mod',         tipo: 'operador' },
+    { texto: 'Abs',         tipo: 'función' },
+    { texto: 'Redon',       tipo: 'función' },
+    { texto: 'Trunc',       tipo: 'función' },
   ];
 
   static PALABRAS_RESERVADAS_SET = DocErrores.PALABRAS_RESERVADAS_SET;

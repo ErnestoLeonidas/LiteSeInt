@@ -2,10 +2,11 @@ Quiero que implementes la version 0.5.2 de LiteSeInt.
 
 Contexto del proyecto:
 
-- LiteSeInt es un interprete web de pseudocodigo con UI en `index.html`, estilos en `css/styles.css`, controlador en `js/app.js`, validador/tokenizador en `js/doc_errores.js` y runtime/parser en `js/LiteSeInt.js`.
+- LiteSeInt es un interprete web de pseudocodigo con shell y carga de scripts en `index.html`, estilos en `css/styles.css`, controlador de UI en `js/app.js`, validador/tokenizador en `js/doc_errores.js` y runtime/parser en `js/LiteSeInt.js`.
 - La fase `0.5.0` debio dejar mejor organizado el sistema de expresiones.
 - La fase `0.5.1` debio agregar operadores nuevos y funciones numericas nativas.
 - Esta version `0.5.2` debe cerrar la serie `0.5.x` con funciones nativas de texto y una mejora general de errores, ejemplos y documentacion.
+- Respeta la arquitectura y los limites por archivo descritos en `CLAUDE.md`.
 
 Objetivo de esta fase:
 
@@ -25,6 +26,7 @@ Y aprovechar esta version para mejorar:
 Importante:
 
 - Esta version debe construir sobre la arquitectura de expresiones ya refactorizada.
+- Si detectas que la base de `0.5.1` no esta completa o tiene pequenas inconsistencias que bloquean `0.5.2`, corrige solo lo minimo necesario para soportar esta fase sin reabrir el alcance completo de `0.5.1`.
 - No debe invadir el alcance de `v0.6.x`, que segun el roadmap corresponde a validacion en vivo dentro del editor.
 - Tampoco debe mezclar arreglos, persistencia local ni funciones de usuario.
 

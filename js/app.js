@@ -1289,6 +1289,29 @@ const EJEMPLOS = {
   Escribir "permitido ahora vale: ", permitido
   `,
 
+  numerico: `// Operadores y funciones numéricas: mod, ^, Abs, Redon, Trunc
+  Definir n, resto Como Entero
+  Definir base, resultado Como Real
+
+  Escribir "Ingresa un número entero:"
+  Leer n
+
+  resto = n mod 2
+  Si resto == 0 Entonces
+    Escribir n, " es par"
+  Sino
+    Escribir n, " es impar"
+  FinSi
+
+  base = -3.6
+  Escribir "Abs(", base, ") = ", Abs(base)
+  Escribir "Redon(", base, ") = ", Redon(base)
+  Escribir "Trunc(", base, ") = ", Trunc(base)
+
+  resultado = 2 ^ 10
+  Escribir "2 ^ 10 = ", resultado
+  `,
+
   diasemana: `// Nombre del día según su número (1=Lunes ... 7=Domingo)
   Definir dia Como Entero
 

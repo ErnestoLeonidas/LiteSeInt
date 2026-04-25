@@ -6,7 +6,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v0.5.0`
+- Versión visible en la app: `v0.5.1`
 - Ejecución completamente en el navegador
 - Sin build step ni backend
 - Proyecto basado en HTML, CSS y JavaScript vanilla
@@ -50,6 +50,14 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ### Operadores
 
+**Aritméticos**
+
+`+`, `-`, `*`, `/`, `mod`, `^`
+
+- `mod` calcula el resto de una división entre dos valores numéricos.
+- `^` es el operador de potencia (`base ^ exponente`) y es asociativo a la derecha.
+- La precedencia, de mayor a menor, es: `^` > `*`, `/`, `mod` > `+`, `-`.
+
 **Relacionales**
 
 `==`, `!=`, `<>`, `<`, `>`, `<=`, `>=`
@@ -57,6 +65,32 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 **Lógicos**
 
 `Y`, `O`, `No`
+
+### Funciones nativas
+
+| Función | Descripción | Ejemplo | Resultado |
+|---|---|---|---|
+| `Abs(x)` | Valor absoluto de un número | `Abs(-3.5)` | `3.5` |
+| `Redon(x)` | Redondea al entero más cercano | `Redon(3.6)` | `4` |
+| `Trunc(x)` | Trunca la parte decimal | `Trunc(3.9)` | `3` |
+
+Ejemplo combinando los nuevos operadores y funciones:
+
+```txt
+Definir n Como Entero
+Definir potencia Como Real
+
+Leer n
+Si n mod 2 == 0 Entonces
+  Escribir n, " es par"
+Sino
+  Escribir n, " es impar"
+FinSi
+
+potencia = 2 ^ n
+Escribir "2 elevado a ", n, " = ", potencia
+Escribir "Distancia al origen: ", Abs(n)
+```
 
 ### Tipos de datos
 
@@ -135,6 +169,7 @@ La interfaz carga ejemplos listos para ejecutar:
 - `Tabla`
 - `Día de semana`
 - `Lógico`
+- `Numérico`
 
 ## Tecnologías
 

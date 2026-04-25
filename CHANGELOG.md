@@ -6,6 +6,29 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.5.1] — 2026-04-25
+
+Primera ampliación visible del nuevo motor de expresiones preparado en `0.5.0`. Agrega operadores aritméticos adicionales y funciones nativas numéricas, sin invadir el alcance de `0.5.2` (funciones de texto).
+
+### Agregado
+- **Operador `mod`**: calcula el resto de la división entre dos valores numéricos. Misma precedencia que `*` y `/`, asociatividad a la izquierda. Reporta error claro si los operandos no son numéricos o si el divisor es `0`.
+- **Operador `^` (potencia)**: precedencia mayor que `*`, `/` y `mod`, asociatividad a la derecha (`2 ^ 3 ^ 2` evalúa como `2 ^ (3 ^ 2)`). Acepta exponentes enteros y reales.
+- **Función nativa `Abs(x)`**: valor absoluto de un número.
+- **Función nativa `Redon(x)`**: redondeo al entero más cercano.
+- **Función nativa `Trunc(x)`**: trunca la parte decimal.
+- **Ejemplo precargado `numerico`**: nuevo botón en la barra de ejemplos que demuestra `mod`, `^`, `Abs`, `Redon` y `Trunc` en una misma ejecución.
+- **Autocompletado**: se sugieren `mod`, `Abs`, `Redon` y `Trunc` con sus tipos visibles (`operador` / `función`).
+
+### Cambiado
+- **Tabla `LiteSeInt._OPERADORES`**: incorpora `mod` (precedencia 2, izquierda) y `^` (precedencia 3, derecha) con sus reglas de evaluación y mensajes de error específicos.
+- **Tabla `LiteSeInt._FUNCIONES_NATIVAS`**: pasa de estar vacía a registrar `abs`, `redon` y `trunc` con la firma `{ aridadMin, aridadMax, aplicar(args, ctx) }` definida en `0.5.0`. La validación de aridad y de tipos sigue siendo responsabilidad del runtime.
+- **Tokenizador estático (`js/doc_errores.js`)**: reconoce `^` como `OPERATOR` y `mod` como `KEYWORD` aceptado dentro de expresiones (`KEYWORDS_EXPR_OK`). El conjunto `FUNCIONES_NATIVAS_SET` lista `abs`, `redon` y `trunc` para que el validador no marque como "Función no reconocida" lo que el runtime ya implementa.
+- **Resaltado de sintaxis**: hereda automáticamente el comportamiento del tokenizador, por lo que `^` se pinta como operador y `mod` como palabra reservada sin reglas adicionales.
+- **Versión visible**: `v0.5.1`.
+
+### Compatibilidad
+- Los programas válidos en `v0.5.0` siguen ejecutándose igual. La precedencia de `+`, `-`, `*`, `/` no cambia y los nuevos operadores se sitúan en niveles superiores sin alterar la asociatividad de los anteriores. Los ejemplos `hola`, `notas`, `multivar`, `mayor`, `contador`, `tabla`, `logico` y `diasemana` siguen funcionando sin cambios.
+
 ## [0.5.0] — 2026-04-25
 
 Versión de base arquitectónica. El usuario final ve pocos cambios visibles: el objetivo es ordenar el motor de expresiones para que `0.5.1` (operadores `mod`, potencia, funciones numéricas `Abs`, `Redon`, `Trunc`) y `0.5.2` (funciones de texto `Longitud`, `Mayusculas`, `Minusculas`) se puedan implementar con menos fricción.

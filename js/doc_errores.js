@@ -27,6 +27,7 @@ const PALABRAS_RESERVADAS_SET = new Set([
   'segun', 'finsegun', 'de', 'otro', 'modo',
   'y', 'o', 'no',
   'verdadero', 'falso',
+  'mod',
 ]);
 
 const TIPOS_VALIDOS = new Set(['entero', 'real', 'caracter', 'logico']);
@@ -35,15 +36,16 @@ const TIPOS_VALIDOS = new Set(['entero', 'real', 'caracter', 'logico']);
 //   - 'verdadero' / 'falso': literales booleanos
 //   - 'no':                  operador unario lógico (prefijo)
 //   - 'y' / 'o':             operadores binarios lógicos
-const KEYWORDS_EXPR_OK = new Set(['verdadero', 'falso', 'no', 'y', 'o']);
+//   - 'mod':                 operador binario aritmético (resto entero)
+const KEYWORDS_EXPR_OK = new Set(['verdadero', 'falso', 'no', 'y', 'o', 'mod']);
 
-// Funciones nativas reconocidas en expresiones. Vacío en 0.5.0:
-// el evaluador ya entiende el patrón Identificador(args) y emite un
-// error claro si la función no existe, dejando esta tabla lista para
-// que 0.5.1 (Abs / Redon / Trunc) y 0.5.2 (Longitud / Mayusculas /
-// Minusculas) sólo la pueblen aquí cuando el runtime tenga la
-// implementación conectada.
-const FUNCIONES_NATIVAS_SET = new Set([]);
+// Funciones nativas reconocidas en expresiones. El evaluador del runtime
+// resuelve cada nombre contra LiteSeInt._FUNCIONES_NATIVAS y aplica la
+// validación de aridad y tipos. Aquí solo se listan los nombres aceptados
+// estáticamente para que el validador no marque como "Función no
+// reconocida" lo que el runtime sí sabe ejecutar. 0.5.2 agregará
+// Longitud / Mayusculas / Minusculas a este conjunto.
+const FUNCIONES_NATIVAS_SET = new Set(['abs', 'redon', 'trunc']);
 
 // ─────────────────────────────────────────────
 //  TOKEN TYPES
@@ -167,7 +169,7 @@ function tokenizarLinea(linea) {
     }
 
     // ── Arithmetic operators ──
-    if ('+-*/'.includes(linea[i])) {
+    if ('+-*/^'.includes(linea[i])) {
       tokens.push({ type: TK.OPERATOR, value: linea[i], col: start, end: start + 1 });
       i++;
       continue;
