@@ -6,7 +6,8 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v0.5.5`
+- Versión visible en la app: `v0.6.0`
+- Núcleo del lenguaje congelado para 1.0 (ver "Matriz de compatibilidad").
 - Ejecución completamente en el navegador
 - Sin build step ni backend
 - Proyecto basado en HTML, CSS y JavaScript vanilla
@@ -25,81 +26,118 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 - Ejemplos precargados para probar el lenguaje rápidamente.
 - Soporte para comentarios con `//` en línea completa o al final de una instrucción.
 
-## Lenguaje soportado
+## Matriz de compatibilidad (v0.6.0)
+
+LiteSeInt v0.6.0 declara y congela el subconjunto mínimo del lenguaje que será la base de la versión 1.0. La meta del proyecto **no** es portar PSeInt completo, sino ofrecer un núcleo pequeño, predecible y bien probado.
+
+### Estructura del programa
+
+| Construcción | Sintaxis canónica |
+|---|---|
+| Encabezado | `Proceso nombre_proceso` |
+| Cierre | `FinProceso` |
+| Comentario | `// texto` |
+
+Todo programa válido empieza con `Proceso nombre` y termina con `FinProceso`. Los comentarios `//` son válidos en una línea completa o al final de una instrucción.
 
 ### Instrucciones básicas
 
-| Instrucción | Sintaxis | Ejemplo |
+| Instrucción | Sintaxis canónica | Ejemplo |
 |---|---|---|
-| Definir | `Definir var1, var2 Como Tipo` | `Definir nombre Como Caracter` |
+| Declaración | `Definir var1[, var2, ...] Como Entero\|Real\|Caracter\|Logico` | `Definir nombre Como Caracter` |
 | Asignación | `variable = expresion` | `total = nota1 + nota2` |
-| Escribir | `Escribir expr1, expr2, ...` | `Escribir "Hola, ", nombre` |
-| Leer | `Leer variable` | `Leer edad` |
-| Comentario | `// texto` | `// esto es un comentario` |
+| Salida | `Escribir expr1[, expr2, ...]` | `Escribir "Hola, ", nombre` |
+| Entrada | `Leer variable` | `Leer edad` |
 
 ### Estructuras de control
 
-| Estructura | Sintaxis |
+| Estructura | Sintaxis canónica |
 |---|---|
 | Condicional | `Si condicion Entonces ... FinSi` |
 | Condicional con alternativa | `Si condicion Entonces ... Sino ... FinSi` |
 | Bucle `Mientras` | `Mientras condicion Hacer ... FinMientras` |
 | Bucle `Repetir` | `Repetir ... HastaQue condicion` |
-| Alias aceptado | `Hasta Que condicion` |
-| Bucle `Para` | `Para var = inicio Hasta fin [Con Paso n] Hacer ... FinPara` |
-| `Segun` | `Segun expresion Hacer ... FinSegun` |
+| Bucle `Para` | `Para var = inicio Hasta fin [Con Paso paso] Hacer ... FinPara` |
+| Selección múltiple | `Segun expresion Hacer` + casos `valor:` + `De Otro Modo:` + `FinSegun` |
+
+### Tipos
+
+| Tipo | Valor por defecto | Literales |
+|---|---|---|
+| `Entero` | `0` | `0`, `1`, `-3`, `42` |
+| `Real` | `0.0` | `3.14`, `-2.5`, `0.0` |
+| `Caracter` | `""` | `"texto"` (comillas dobles) |
+| `Logico` | `Falso` | `Verdadero`, `Falso` |
 
 ### Operadores
 
-**Aritméticos**
-
-`+`, `-`, `*`, `/`, `mod`, `^`
-
-- `mod` calcula el resto de una división entre dos valores numéricos.
-- `^` es el operador de potencia (`base ^ exponente`) y es asociativo a la derecha.
-- La precedencia, de mayor a menor, es: `^` > `*`, `/`, `mod` > `+`, `-`.
-- El menos unario funciona al inicio de una expresión y también después de otro operador, `(` o `,`. Su precedencia es menor que `^` y mayor que `*`, `/` y `mod`, así que `2 ^ -3` produce `0.125` y `-3 ^ 2` se interpreta como `-(3 ^ 2)`.
-
-**Relacionales**
-
-`==`, `!=`, `<>`, `<`, `>`, `<=`, `>=`
-
-**Lógicos**
-
-`Y`, `O`, `No`
+| Categoría | Operadores |
+|---|---|
+| Aritméticos | `+`, `-`, `*`, `/`, `mod`, `^` |
+| Relacionales | `==`, `!=`, `<>`, `<`, `>`, `<=`, `>=` |
+| Lógicos | `Y`, `O`, `No` |
 
 ### Funciones nativas
 
-**Numéricas**
+| Función | Tipo de argumento | Resultado |
+|---|---|---|
+| `Abs(x)` | numérico | valor absoluto |
+| `Redon(x)` | numérico | redondeo al entero más cercano |
+| `Trunc(x)` | numérico | trunca la parte decimal |
+| `Longitud(t)` | `Caracter` | cantidad de caracteres |
+| `Mayusculas(t)` | `Caracter` | texto en mayúsculas |
+| `Minusculas(t)` | `Caracter` | texto en minúsculas |
 
-| Función | Descripción | Ejemplo | Resultado |
-|---|---|---|---|
-| `Abs(x)` | Valor absoluto de un número | `Abs(-3.5)` | `3.5` |
-| `Redon(x)` | Redondea al entero más cercano | `Redon(3.6)` | `4` |
-| `Trunc(x)` | Trunca la parte decimal | `Trunc(3.9)` | `3` |
+### Variantes aceptadas
 
-**De texto**
+- `HastaQue condicion` y `Hasta Que condicion` (alias) son ambos válidos para cerrar `Repetir`.
+- Las palabras clave son **insensibles a mayúsculas/minúsculas** (`Definir`, `definir` y `DEFINIR` son equivalentes). Los nombres de variables se comparan normalizados a minúsculas.
+- Las cadenas se delimitan **solo con comillas dobles** (`"texto"`).
+- Los números reales usan **punto decimal** (`3.14`).
+- Los nombres de variables admiten letras (incluyendo `áéíóúüñ`), dígitos y `_`. No pueden empezar por dígito ni coincidir con una palabra reservada.
+- Una línea `Definir` puede declarar múltiples variables del mismo tipo separadas por coma.
+- Los casos en `Segun` aceptan: caso multilínea, caso inline (`1: Escribir "Lunes"`) y varios valores por caso (`3, 4, 5: Escribir "..."`).
 
-| Función | Descripción | Ejemplo | Resultado |
-|---|---|---|---|
-| `Longitud(texto)` | Cantidad de caracteres del texto | `Longitud("hola")` | `4` |
-| `Mayusculas(texto)` | Convierte el texto a mayúsculas | `Mayusculas("hola")` | `"HOLA"` |
-| `Minusculas(texto)` | Convierte el texto a minúsculas | `Minusculas("HOLA")` | `"hola"` |
+### No soportado en v0.6.0
 
-Las funciones de texto requieren un argumento de tipo `Caracter`. Las funciones numéricas requieren un argumento numérico (`Entero` o `Real`). Las llamadas pueden anidarse, por ejemplo:
+Las siguientes construcciones de PSeInt **no** están soportadas en LiteSeInt v0.6.0 y emiten un mensaje pedagógico cuando aparecen:
+
+- `Dimension` y arreglos.
+- `SubProceso` / `FinSubProceso`.
+- Funciones definidas por el usuario (`Funcion` / `FinFuncion`).
+- Diagramas de flujo.
+- Exportación a otros lenguajes.
+- Editor multiarchivo.
+- Persistencia de proyectos.
+- Operador de asignación `<-` (en LiteSeInt la asignación es `=`).
+- `=` como comparador en condiciones (en LiteSeInt la igualdad es `==`).
+
+### Detalles de operadores
+
+- `mod` calcula el resto de una división entre dos valores numéricos.
+- `^` es el operador de potencia (`base ^ exponente`) y es asociativo a la derecha.
+- La precedencia, de mayor a menor, es: `^` > menos unario > `*`, `/`, `mod` > `+`, `-`.
+- El menos unario funciona al inicio de una expresión y también después de otro operador, `(` o `,`. `2 ^ -3` produce `0.125` y `-3 ^ 2` se interpreta como `-(3 ^ 2)`.
+
+### Detalles de funciones nativas
+
+Las funciones de texto requieren un argumento de tipo `Caracter`. Las funciones numéricas requieren un argumento numérico (`Entero` o `Real`). Las llamadas pueden anidarse:
 
 ```txt
+Proceso ejemplo
 Definir nombre Como Caracter
 Definir largo Como Entero
 
 nombre = "LiteSeInt"
 largo = Longitud(Mayusculas(nombre))
 Escribir "Largo: ", largo
+FinProceso
 ```
 
-Ejemplo combinando los nuevos operadores y funciones:
+Ejemplo combinando operadores y funciones numéricas:
 
 ```txt
+Proceso ejemplo
 Definir n Como Entero
 Definir potencia Como Real
 
@@ -113,19 +151,8 @@ FinSi
 potencia = 2 ^ n
 Escribir "2 elevado a ", n, " = ", potencia
 Escribir "Distancia al origen: ", Abs(n)
-Escribir "2 * -3 = ", 2 * -3
-Escribir "2 ^ -3 = ", 2 ^ -3
-Escribir "Abs(2 * -3) = ", Abs(2 * -3)
+FinProceso
 ```
-
-### Tipos de datos
-
-| Tipo | Valor por defecto |
-|---|---|
-| `Entero` | `0` |
-| `Real` | `0.0` |
-| `Caracter` | `""` |
-| `Logico` | `Falso` |
 
 ### Tipo `Logico`
 
@@ -140,6 +167,7 @@ LiteSeInt soporta el tipo `Logico` con los literales `Verdadero` y `Falso`.
 Ejemplo:
 
 ```txt
+Proceso ejemplo
 Definir activo, permitido Como Logico
 
 activo = Verdadero
@@ -153,6 +181,7 @@ FinSi
 
 permitido = No permitido
 Escribir "permitido ahora vale: ", permitido
+FinProceso
 ```
 
 Cuando se imprime un booleano, la salida se muestra como `Verdadero` o `Falso`, no como `true` o `false`.
@@ -169,6 +198,7 @@ La estructura `Segun` admite:
 Ejemplo:
 
 ```txt
+Proceso ejemplo
 Definir dia Como Entero
 Leer dia
 
@@ -180,6 +210,7 @@ Segun dia Hacer
   De Otro Modo:
     Escribir "Otro día"
 FinSegun
+FinProceso
 ```
 
 ## Ejemplos incluidos
@@ -238,17 +269,17 @@ tests/
 
 ### Archivos principales
 
-- [index.html](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/index.html): estructura de la interfaz y carga de dependencias.
-- [css/styles.css](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/css/styles.css): estilos de la aplicación.
-- [js/app.js](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/js/app.js): controlador de interfaz, consola, editor, autocompletado y ejemplos.
-- [js/doc_errores.js](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/js/doc_errores.js): tokenización, validación estática, decoraciones y tabla de símbolos.
-- [js/LiteSeInt.js](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/js/LiteSeInt.js): parser, AST, ejecución y evaluación de expresiones/condiciones.
-- [tests/run-tests.js](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/tests/run-tests.js): pruebas de regresión para validar cambios en el lenguaje.
+- [index.html](index.html): estructura de la interfaz y carga de dependencias.
+- [css/styles.css](css/styles.css): estilos de la aplicación.
+- [js/app.js](js/app.js): controlador de interfaz, consola, editor, autocompletado y ejemplos.
+- [js/doc_errores.js](js/doc_errores.js): tokenización, validación estática, decoraciones y tabla de símbolos.
+- [js/LiteSeInt.js](js/LiteSeInt.js): parser, AST, ejecución y evaluación de expresiones/condiciones.
+- [tests/run-tests.js](tests/run-tests.js): pruebas de regresión para validar cambios en el lenguaje.
 
 ## Uso rápido
 
 1. Clona o descarga este repositorio.
-2. Abre [index.html](/Users/ernestoleonidas/Documents/Guaren/LiteSeInt/index.html) en un navegador moderno.
+2. Abre [index.html](index.html) en un navegador moderno.
 3. Escribe pseudocódigo o carga uno de los ejemplos.
 4. Presiona `Ejecutar`.
 5. Si el programa usa `Leer`, responde desde la consola integrada.

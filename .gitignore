@@ -3,5 +3,6 @@
 /.claude/*
 !/.claude/skills/
 !/.claude/skills/**
-/prompt_v0.5.3_menos_unario_y_operandos_negativos.txt
+/prompt_v0.6.0_congelar_nucleo_lenguaje.txt
 roadmap.md
+!/ROADMAP.md

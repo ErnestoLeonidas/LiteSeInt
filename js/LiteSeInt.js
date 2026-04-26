@@ -1340,6 +1340,8 @@ class LiteSeInt {
   };
 
   static PALABRAS_RESERVADAS = [
+    { texto: 'Proceso',     tipo: 'estructura' },
+    { texto: 'FinProceso',  tipo: 'estructura' },
     { texto: 'Definir',     tipo: 'instrucción' },
     { texto: 'Escribir',    tipo: 'instrucción' },
     { texto: 'Leer',        tipo: 'instrucción' },
@@ -1366,6 +1368,9 @@ class LiteSeInt {
     { texto: 'FinPara',     tipo: 'estructura' },
     { texto: 'Segun',       tipo: 'estructura' },
     { texto: 'FinSegun',    tipo: 'estructura' },
+    { texto: 'Y',           tipo: 'operador' },
+    { texto: 'O',           tipo: 'operador' },
+    { texto: 'No',          tipo: 'operador' },
     { texto: 'mod',         tipo: 'operador' },
     { texto: 'Abs',         tipo: 'función' },
     { texto: 'Redon',       tipo: 'función' },

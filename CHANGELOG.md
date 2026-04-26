@@ -6,6 +6,29 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.6.0] — 2026-04-26
+
+Cierre de la fase "Congelar el núcleo del lenguaje". Esta versión declara, documenta y estabiliza el subconjunto mínimo del lenguaje que será la base de la versión 1.0. No agrega nuevas estructuras: ordena lo existente y deja explícito qué queda fuera de alcance.
+
+### Agregado
+- **Matriz de compatibilidad en `README.md`**: nueva sección que enumera estructura del programa, instrucciones, tipos, operadores, funciones nativas, estructuras de control, variantes aceptadas y construcciones explícitamente no soportadas en v0.6.0.
+- **Sintaxis canónica documentada** para cada instrucción soportada: `Proceso/FinProceso`, `Definir`, asignación con `=`, `Escribir`, `Leer`, `Si/Sino/FinSi`, `Mientras/FinMientras`, `Repetir/HastaQue`, `Para/FinPara`, `Segun/De Otro Modo/FinSegun` y comentarios `//`.
+- **Mensaje pedagógico para construcciones fuera de alcance**: nuevo tipo de error `fuera_de_alcance` reportado por `js/doc_errores.js` cuando aparece como primer token `Dimension`, `Dimensionar`, `SubProceso`, `FinSubProceso`, `Funcion` o `FinFuncion`. El mensaje aclara que esa construcción no está soportada en LiteSeInt v0.6.0 sin pretender implementarla.
+
+### Cambiado
+- **Lista de palabras reservadas para autocompletado (`LiteSeInt.PALABRAS_RESERVADAS`)**: se completó con `Proceso`, `FinProceso`, `Y`, `O` y `No` para alinearla con el conjunto que ya reconocía el validador y el resaltado.
+- **README**: se reorganizó la sección de lenguaje en torno a la matriz de compatibilidad y se añadió `Proceso ... FinProceso` a los ejemplos cortos.
+- **Versión visible**: `v0.6.0`.
+
+### Compatibilidad
+- Los programas válidos en `v0.5.x` siguen ejecutándose igual. No se agregaron operadores, funciones nativas ni estructuras nuevas. La precedencia de operadores, el comportamiento de `Abs`, `Redon`, `Trunc`, `Longitud`, `Mayusculas`, `Minusculas`, `mod` y `^`, y la sintaxis de cada estructura de control se conservan sin cambios.
+
+### Fuera de alcance de v0.6.0
+- `Dimension` y arreglos.
+- `SubProceso` / `FinSubProceso`.
+- Funciones definidas por el usuario.
+- Diagramas, exportadores, editor multiarchivo y persistencia de proyectos.
+
 ## [0.5.5]
 
 ### Agregado

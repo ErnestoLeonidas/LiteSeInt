@@ -9,13 +9,13 @@ Use this skill to keep LiteSeInt language work aligned across every layer that m
 
 Read `CLAUDE.md` first.
 
-If the request names a version, phase, or roadmap item, locate the matching repo prompt with:
+If the request names a version, phase, or roadmap item, first check whether this repo currently includes phase prompt files:
 
 ```bash
 rg --files -g 'prompt_v*.txt'
 ```
 
-Read only the prompt that matches the requested scope.
+If a matching prompt exists, read only that prompt and use it as the scope guard. If no matching prompt exists, use `CLAUDE.md`, `README.md`, `CHANGELOG.md`, and the current implementation as the source of truth for the requested scope.
 
 If no prompt is named, inspect the request and decide whether the task is:
 
@@ -58,11 +58,7 @@ If the change is internal only, avoid unnecessary README or version edits.
 
 Honor the requested phase and its non-goals.
 
-Use the phase prompts at repo root as scope guards:
-
-- `prompt_v0.5.0_refactor_expresiones.txt`: expression architecture groundwork
-- `prompt_v0.5.1_operadores_y_funciones_numericas.txt`: `mod`, power, `Abs`, `Redon`, `Trunc`
-- `prompt_v0.5.2_funciones_texto_y_errores.txt`: `Longitud`, `Mayusculas`, `Minusculas`, error improvements
+Use phase prompts at repo root as scope guards only when they exist in the current checkout. Do not assume older prompt filenames are still present.
 
 Do not silently pull in roadmap items such as `Dimension`, arrays, user-defined functions, `Funcion`, `SubProceso`, persistence, or live validation unless the request explicitly changes scope.
 

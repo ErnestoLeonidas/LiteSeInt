@@ -49,6 +49,18 @@ const FUNCIONES_NATIVAS_SET = new Set([
   'longitud', 'mayusculas', 'minusculas',
 ]);
 
+// Construcciones de PSeInt fuera del alcance de LiteSeInt v0.6.0.
+// Si aparecen como primer token de una línea, el validador emite un
+// mensaje pedagógico en lugar de "Instrucción no reconocida".
+const CONSTRUCCIONES_FUERA_DE_ALCANCE = {
+  'dimension':       'La instrucción "Dimension" y los arreglos no están soportados en LiteSeInt v0.6.0.',
+  'dimensionar':     'La instrucción "Dimensionar" y los arreglos no están soportados en LiteSeInt v0.6.0.',
+  'subproceso':      'Los "SubProceso" no están soportados en LiteSeInt v0.6.0.',
+  'finsubproceso':   'Los "SubProceso" no están soportados en LiteSeInt v0.6.0.',
+  'funcion':         'Las funciones definidas por el usuario no están soportadas en LiteSeInt v0.6.0.',
+  'finfuncion':      'Las funciones definidas por el usuario no están soportadas en LiteSeInt v0.6.0.',
+};
+
 // ─────────────────────────────────────────────
 //  TOKEN TYPES
 // ─────────────────────────────────────────────
@@ -1562,6 +1574,21 @@ function validarLinea(sig, allTokens, lineaIdx, tabla) {
 
   const primerToken = sig[0];
   const instruccion = primerToken.type === TK.KEYWORD ? primerToken.value.toLowerCase() : null;
+
+  // ── Construcciones de PSeInt fuera de alcance en LiteSeInt v0.6.0 ──
+  // Mensajes pedagógicos en lugar del genérico "Instrucción no reconocida".
+  if (primerToken.type === TK.IDENTIFIER) {
+    const fuera = CONSTRUCCIONES_FUERA_DE_ALCANCE[primerToken.value.toLowerCase()];
+    if (fuera) {
+      errores.push(crearError(
+        lineaIdx, primerToken.col, sig[sig.length - 1].end,
+        'fuera_de_alcance',
+        fuera,
+        primerToken.value
+      ));
+      return errores;
+    }
+  }
 
   switch (instruccion) {
     case 'definir':
