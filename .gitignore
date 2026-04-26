@@ -3,6 +3,6 @@
 /.claude/*
 !/.claude/skills/
 !/.claude/skills/**
-/prompt_v0.6.0_congelar_nucleo_lenguaje.txt
+/prompt_v0.7.0.txt
 roadmap.md
 !/ROADMAP.md

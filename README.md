@@ -6,7 +6,9 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v0.6.5`
+- Versión visible en la app: `v0.7.0`
+- Nuevo layout educativo: editor arriba, **consola debajo del editor** (redimensionable verticalmente) y **panel derecho** con la ruta de aprendizaje (niveles 0-9).
+- Ejemplos accesibles desde un menú desplegable en la cabecera del editor, agrupados por concepto.
 - Núcleo del lenguaje congelado para 1.0 (ver "Matriz de compatibilidad").
 - Reglas de adaptación de ejercicios documentadas en [`EJERCICIOS.md`](EJERCICIOS.md).
 - Estructura de aprendizaje LiteSeInt 1.0 propuesta en [`EJERCICIOS.md`](EJERCICIOS.md): niveles 0-9, grados de ayuda y progresión desde observar código hasta crear soluciones.
@@ -17,6 +19,9 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 ## Características
 
 - Editor de pseudocódigo con numeración de líneas.
+- Consola **debajo del editor**, redimensionable verticalmente (la altura se persiste en `localStorage`).
+- **Panel derecho** con los niveles 0-9 de la ruta de aprendizaje LiteSeInt.
+- Selector de **ejemplos en menú desplegable**, agrupados por concepto (primeros programas, variables, expresiones, condicionales, ciclos, `Segun`).
 - Resaltado de sintaxis y guías visuales de indentación.
 - Validación estática con errores por línea, badge visual y tooltip descriptivo.
 - Consola integrada con entrada inline para instrucciones `Leer`.
@@ -25,7 +30,6 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 - Autocompletado de palabras reservadas, tipos, literales y variables definidas por el usuario.
 - Deshacer cambios del editor con `Ctrl+Z` o `Cmd+Z`.
 - Estructura inicial `Proceso ... FinProceso` protegida en la experiencia de edición.
-- Ejemplos precargados para probar el lenguaje rápidamente.
 - Soporte para comentarios con `//` en línea completa o al final de una instrucción.
 
 ## Matriz de compatibilidad (v0.6.0)

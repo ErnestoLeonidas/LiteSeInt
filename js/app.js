@@ -1487,6 +1487,225 @@ function cargarEjemplo(nombre) {
 }
 
 // =========================================
+// 11.b PANEL DE APRENDIZAJE (niveles 0-9)
+// =========================================
+
+const NIVELES_APRENDIZAJE = [
+  {
+    id: 0,
+    titulo: "Orientación",
+    resumen: "Conocer la app: editor, consola, ejecutar y leer errores.",
+    conceptos: ["interfaz", "editor", "consola", "ejecutar", "errores"],
+  },
+  {
+    id: 1,
+    titulo: "Secuencia y salida",
+    resumen: "Programas lineales con Escribir y comentarios.",
+    conceptos: ["Proceso", "FinProceso", "Escribir", "comentarios //"],
+  },
+  {
+    id: 2,
+    titulo: "Variables, tipos y entrada",
+    resumen: "Guardar datos y leer información del usuario.",
+    conceptos: ["Definir", "Leer", "asignación =", "Entero", "Real", "Caracter", "Logico"],
+  },
+  {
+    id: 3,
+    titulo: "Expresiones y E·P·S",
+    resumen: "Fórmulas, operadores, paréntesis y funciones nativas.",
+    conceptos: ["+ - * / mod ^", "Abs", "Redon", "Trunc", "Longitud", "Mayusculas", "Minusculas"],
+  },
+  {
+    id: 4,
+    titulo: "Decisiones simples",
+    resumen: "Elegir entre dos caminos con una condición.",
+    conceptos: ["Si / Sino / FinSi", "==", "<", ">", "<=", ">="],
+  },
+  {
+    id: 5,
+    titulo: "Decisiones múltiples",
+    resumen: "Resolver reglas con varios casos y operadores lógicos.",
+    conceptos: ["Si anidado", "Segun / De Otro Modo / FinSegun", "Y", "O", "No"],
+  },
+  {
+    id: 6,
+    titulo: "Repetición controlada",
+    resumen: "Repetir instrucciones con ciclos.",
+    conceptos: ["Mientras", "Repetir / HastaQue", "Para"],
+  },
+  {
+    id: 7,
+    titulo: "Patrones de procesamiento",
+    resumen: "Contador, acumulador, promedio, máximo y mínimo.",
+    conceptos: ["contador", "acumulador", "promedio", "máximo", "mínimo"],
+  },
+  {
+    id: 8,
+    titulo: "Programas integradores",
+    resumen: "Programas con menú persistente y análisis final.",
+    conceptos: ["menú", "Mientras persistente", "Segun", "validación de opción"],
+  },
+  {
+    id: 9,
+    titulo: "Puente hacia Python",
+    resumen: "Conectar lo aprendido con la sintaxis de Python.",
+    conceptos: ["Escribir → print", "Leer → input", "Si → if", "Mientras → while", "Para → for"],
+  },
+];
+
+function renderizarNivelesAprendizaje() {
+  const $lista = $("#learningLevels");
+  if (!$lista.length) return;
+
+  $lista.empty();
+  for (const nivel of NIVELES_APRENDIZAJE) {
+    const $item = $("<li>")
+      .addClass("learning-level")
+      .attr("data-nivel", nivel.id)
+      .attr("role", "button")
+      .attr("tabindex", "0");
+    $item.append($("<div>").addClass("learning-level-num").text(nivel.id));
+    const $info = $("<div>").addClass("learning-level-info");
+    $info.append($("<p>").addClass("learning-level-title").text(nivel.titulo));
+    $info.append($("<div>").addClass("learning-level-status").text("próximamente"));
+    $item.append($info);
+    $lista.append($item);
+  }
+}
+
+function mostrarDetalleNivel(nivelId) {
+  const nivel = NIVELES_APRENDIZAJE.find((n) => n.id === nivelId);
+  const $detalle = $("#learningDetail");
+  if (!nivel || !$detalle.length) return;
+
+  $detalle.empty();
+  $detalle.append($("<span>").addClass("learning-detail-tag").text("Próximamente"));
+  $detalle.append($("<h4>").text(`Nivel ${nivel.id} — ${nivel.titulo}`));
+  $detalle.append($("<p>").text(nivel.resumen));
+
+  if (nivel.conceptos && nivel.conceptos.length) {
+    const $ul = $("<ul>");
+    for (const c of nivel.conceptos) {
+      $ul.append($("<li>").text(c));
+    }
+    $detalle.append($ul);
+  }
+
+  $detalle.append(
+    $("<p>").html(
+      'Los ejercicios se integrarán adaptados al dialecto LiteSeInt. ' +
+      'Detalles en <code>EJERCICIOS.md</code>.',
+    ),
+  );
+}
+
+function seleccionarNivel(nivelId) {
+  $(".learning-level").removeClass("selected");
+  $(`.learning-level[data-nivel="${nivelId}"]`).addClass("selected");
+  mostrarDetalleNivel(nivelId);
+}
+
+// =========================================
+// 11.c CONSOLA REDIMENSIONABLE
+// =========================================
+
+const CONSOLE_HEIGHT_KEY = "liteseint:consoleHeight";
+const CONSOLE_MIN_PX = 96;
+
+function clampConsoleHeight(px) {
+  const workspace = document.querySelector(".workspace-column");
+  if (!workspace) return px;
+  const total = workspace.getBoundingClientRect().height;
+  const handle = document.getElementById("consoleResizeHandle");
+  const handleH = handle ? handle.getBoundingClientRect().height : 6;
+  const editorMin = 120;
+  const max = Math.max(CONSOLE_MIN_PX, total - editorMin - handleH);
+  return Math.min(Math.max(px, CONSOLE_MIN_PX), max);
+}
+
+function aplicarAlturaConsola(px) {
+  const panel = document.getElementById("consolePanel");
+  if (!panel) return;
+  const altura = clampConsoleHeight(px);
+  panel.style.height = `${altura}px`;
+  scheduleIndentGuideRender({ remeasure: true });
+}
+
+function cargarAlturaConsolaPersistida() {
+  try {
+    const v = localStorage.getItem(CONSOLE_HEIGHT_KEY);
+    if (!v) return;
+    const px = parseInt(v, 10);
+    if (Number.isFinite(px) && px > 0) aplicarAlturaConsola(px);
+  } catch (_) {
+    /* localStorage no disponible: ignorar */
+  }
+}
+
+function guardarAlturaConsola(px) {
+  try {
+    localStorage.setItem(CONSOLE_HEIGHT_KEY, String(Math.round(px)));
+  } catch (_) {
+    /* localStorage no disponible: ignorar */
+  }
+}
+
+function inicializarResizeConsola() {
+  const handle = document.getElementById("consoleResizeHandle");
+  const panel = document.getElementById("consolePanel");
+  if (!handle || !panel) return;
+
+  let dragging = false;
+  let startY = 0;
+  let startH = 0;
+
+  const onPointerMove = (e) => {
+    if (!dragging) return;
+    const delta = startY - e.clientY;
+    aplicarAlturaConsola(startH + delta);
+  };
+
+  const onPointerUp = (e) => {
+    if (!dragging) return;
+    dragging = false;
+    handle.classList.remove("dragging");
+    document.body.style.cursor = "";
+    document.body.style.userSelect = "";
+    window.removeEventListener("pointermove", onPointerMove);
+    window.removeEventListener("pointerup", onPointerUp);
+    const final = panel.getBoundingClientRect().height;
+    guardarAlturaConsola(final);
+  };
+
+  handle.addEventListener("pointerdown", (e) => {
+    if (mobileConsoleQuery.matches) return;
+    e.preventDefault();
+    dragging = true;
+    startY = e.clientY;
+    startH = panel.getBoundingClientRect().height;
+    handle.classList.add("dragging");
+    document.body.style.cursor = "row-resize";
+    document.body.style.userSelect = "none";
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+  });
+
+  handle.addEventListener("keydown", (e) => {
+    const step = e.shiftKey ? 32 : 8;
+    const current = panel.getBoundingClientRect().height;
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      aplicarAlturaConsola(current + step);
+      guardarAlturaConsola(panel.getBoundingClientRect().height);
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      aplicarAlturaConsola(current - step);
+      guardarAlturaConsola(panel.getBoundingClientRect().height);
+    }
+  });
+}
+
+// =========================================
 // 12. INIT
 // =========================================
 
@@ -1575,7 +1794,38 @@ $(document).ready(function () {
     mobileConsoleQuery.addListener(handleMobileConsoleChange);
   }
 
-  $(document).on("click", ".example-btn", function () {
-    cargarEjemplo($(this).data("ejemplo"));
+  $("#ejemplosSelect").on("change", function () {
+    const nombre = $(this).val();
+    if (!nombre) return;
+    cargarEjemplo(nombre);
+    $(this).val("");
+  });
+
+  // Panel de aprendizaje: render + selección + colapsar en móvil
+  renderizarNivelesAprendizaje();
+  $(document).on("click", ".learning-level", function () {
+    const id = parseInt($(this).attr("data-nivel"), 10);
+    if (Number.isFinite(id)) seleccionarNivel(id);
+  });
+  $(document).on("keydown", ".learning-level", function (e) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      const id = parseInt($(this).attr("data-nivel"), 10);
+      if (Number.isFinite(id)) seleccionarNivel(id);
+    }
+  });
+  $("#learningPanelToggle").on("click", function (e) {
+    e.stopPropagation();
+    $("#learningPanel").toggleClass("collapsed");
+  });
+
+  // Consola redimensionable
+  inicializarResizeConsola();
+  cargarAlturaConsolaPersistida();
+  window.addEventListener("resize", () => {
+    const panel = document.getElementById("consolePanel");
+    if (panel) {
+      aplicarAlturaConsola(panel.getBoundingClientRect().height);
+    }
   });
 });

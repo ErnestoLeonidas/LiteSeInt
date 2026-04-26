@@ -6,6 +6,38 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.7.0] — 2026-04-26
+
+Cierre de la fase "Nuevo layout de aprendizaje". Esta versión reorganiza la pantalla principal para que LiteSeInt empiece a sentirse como una plataforma de aprendizaje, sin tocar el lenguaje ni el runtime.
+
+### Agregado
+- **Layout en dos columnas**: columna izquierda con editor y consola apilados; columna derecha reservada al panel de aprendizaje.
+- **Consola debajo del editor**: la salida de `Escribir`, los errores, los mensajes de sistema y el input inline de `Leer` ahora ocurren bajo el editor, no al costado.
+- **Consola redimensionable**: nuevo divisor `console-resize-handle` que permite arrastrar para ajustar la altura de la consola con el ratón o con `↑/↓` cuando el divisor tiene foco. La altura se persiste en `localStorage` (`liteseint:consoleHeight`).
+- **Panel derecho de aprendizaje**: nueva columna `learning-panel` con los **niveles 0-9** (`Orientación`, `Secuencia y salida`, `Variables, tipos y entrada`, `Expresiones y E·P·S`, `Decisiones simples`, `Decisiones múltiples`, `Repetición controlada`, `Patrones de procesamiento`, `Programas integradores`, `Puente hacia Python`). Cada nivel muestra estado "próximamente", resumen y conceptos asociados al seleccionarlo. Aviso explícito de que los ejercicios se integrarán adaptados al dialecto LiteSeInt según `EJERCICIOS.md`.
+- **Menú desplegable de ejemplos**: la barra horizontal de botones se reemplazó por un `<select>` en la cabecera del editor, con los ejemplos agrupados en `optgroup` por concepto (Primeros programas, Variables y entrada/salida, Expresiones y funciones, Condicionales, Ciclos, `Segun`).
+
+### Cambiado
+- **`index.html`**: nueva jerarquía `main-container` → `workspace-column` (`editor-panel` + `console-resize-handle` + `console-panel`) + `learning-panel`. La cabecera del editor ahora aloja el selector de ejemplos junto a `Descargar` y `Borrar`.
+- **`css/styles.css`**: nuevas variables (`--learning-panel-w`, `--console-min-h`, `--console-default-h`, `--resize-handle-h`), estilos para `.workspace-column`, `.console-resize-handle`, `.learning-panel` y `.ejemplos-select`. Se elimina la regla `.example-bar`/`.example-btn`.
+- **`js/app.js`**: catálogo `NIVELES_APRENDIZAJE`, helpers `renderizarNivelesAprendizaje`, `seleccionarNivel`, `mostrarDetalleNivel`, `aplicarAlturaConsola`, `inicializarResizeConsola`, `cargarAlturaConsolaPersistida` y `guardarAlturaConsola`. El binding `.example-btn` se reemplaza por `change` sobre `#ejemplosSelect` que reusa `cargarEjemplo`.
+- **Versión visible**: `v0.7.0`.
+
+### Responsive
+- En anchos `≤ 768px` la columna derecha se apila debajo del workspace, puede colapsarse desde su cabecera y la consola conserva el comportamiento previo de toggle desde la cabecera. El divisor de redimensionado se oculta en móvil.
+- En anchos `≤ 1024px` el panel derecho se reduce a `240px` para no comprimir el editor.
+
+### Compatibilidad
+- Sin cambios en el lenguaje, en `js/doc_errores.js` ni en `js/LiteSeInt.js`. Los programas válidos en `v0.6.5` siguen ejecutándose igual.
+- El flujo `Leer` y `inputResolver` se preserva: el input inline aparece dentro de la consola, debajo del editor.
+- El listado de ejemplos no cambió: los 11 ejemplos previos siguen disponibles desde el dropdown.
+
+### Fuera de alcance de v0.7.0
+- No se integran los 245 ejercicios de `ejercicios/guia.html`. El panel derecho muestra solo placeholders por nivel.
+- No se implementa progreso persistente por ejercicio.
+- No se agrega documentación de comandos en la app (eso pertenece a 0.8.5).
+- No se agrega el puente a Python (eso pertenece a 0.9.5).
+
 ## [0.6.5] — 2026-04-26
 
 Cierre de la fase "Base educativa". Esta versión es **documental**: no cambia el lenguaje ni el runtime. Deja por escrito cómo se adaptarán los 245 ejercicios de `ejercicios/guia.html` al dialecto LiteSeInt y qué se va a probar antes de declarar un ejercicio integrado.

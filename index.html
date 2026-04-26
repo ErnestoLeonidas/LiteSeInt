@@ -36,65 +36,105 @@
 
     <!-- ========== MAIN ========== -->
     <div class="main-container">
-      <!-- Editor -->
-      <div class="editor-panel">
-        <div class="panel-header">
-          <div class="panel-header-dot"></div>
-            Editor
-          <div class="console-header-actions">
-            <button class="btn-console-clear" id="btnDescargar">↓ Descargar</button>
-            <button class="btn-console-clear" id="btnLimpiarTodo">✕ Borrar</button>
+      <!-- Workspace: editor + console stacked -->
+      <div class="workspace-column">
+        <!-- Editor -->
+        <div class="editor-panel">
+          <div class="panel-header">
+            <div class="panel-header-dot"></div>
+              Editor
+            <div class="console-header-actions">
+              <select class="ejemplos-select" id="ejemplosSelect" aria-label="Cargar ejemplo">
+                <option value="">Cargar ejemplo…</option>
+                <optgroup label="Primeros programas">
+                  <option value="hola">Hola Mundo</option>
+                </optgroup>
+                <optgroup label="Variables y entrada/salida">
+                  <option value="saludo">Saludo</option>
+                  <option value="multivar">Multi-variable</option>
+                </optgroup>
+                <optgroup label="Expresiones y funciones">
+                  <option value="notas">Notas</option>
+                  <option value="numerico">Numérico</option>
+                  <option value="texto">Texto</option>
+                </optgroup>
+                <optgroup label="Condicionales">
+                  <option value="mayor">Mayor de dos</option>
+                  <option value="logico">Lógico</option>
+                </optgroup>
+                <optgroup label="Ciclos">
+                  <option value="contador">Contador</option>
+                  <option value="tabla">Tabla</option>
+                </optgroup>
+                <optgroup label="Segun">
+                  <option value="diasemana">Día de semana</option>
+                </optgroup>
+              </select>
+              <button class="btn-console-clear" id="btnDescargar">↓ Descargar</button>
+              <button class="btn-console-clear" id="btnLimpiarTodo">✕ Borrar</button>
+            </div>
+          </div>
+          <div class="editor-wrapper">
+            <div class="line-numbers" id="lineNumbers"></div>
+            <div class="editor-code-area">
+              <div class="editor-bg-layer"></div>
+              <div class="indent-guide-layer" id="indentGuideLayer"></div>
+              <div class="editor-line-overlays" id="lineOverlays"></div>
+              <div class="error-decoration-layer" id="errorDecoLayer"></div>
+              <div class="syntax-highlight-layer" id="syntaxLayer"></div>
+              <textarea
+                id="editor"
+                spellcheck="false"
+              ></textarea>
+            </div>
+            <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
           </div>
         </div>
-        <div class="editor-wrapper">
-          <div class="line-numbers" id="lineNumbers"></div>
-          <div class="editor-code-area">
-            <div class="editor-bg-layer"></div>
-            <div class="indent-guide-layer" id="indentGuideLayer"></div>
-            <div class="editor-line-overlays" id="lineOverlays"></div>
-            <div class="error-decoration-layer" id="errorDecoLayer"></div>
-            <div class="syntax-highlight-layer" id="syntaxLayer"></div>
-            <textarea
-              id="editor"
-              spellcheck="false"
-            ></textarea>
+
+        <!-- Resize handle -->
+        <div class="console-resize-handle" id="consoleResizeHandle" role="separator" aria-orientation="horizontal" aria-label="Redimensionar consola" tabindex="0"></div>
+
+        <!-- Consola -->
+        <div class="console-panel" id="consolePanel">
+          <div class="console-header">
+            <div class="panel-header-dot" style="background: var(--info);"></div>
+            Consola
+            <div class="console-header-actions">
+              <button class="btn-console-clear" id="btnLimpiarConsola">✕ Borrar</button>
+            </div>
           </div>
-          <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
-        </div>
-        <div class="example-bar">
-          <span>Ejemplos:</span>
-          <button class="example-btn" data-ejemplo="hola">Hola Mundo</button>
-          <button class="example-btn" data-ejemplo="saludo">Saludo</button>
-          <button class="example-btn" data-ejemplo="notas">Notas</button>
-          <button class="example-btn" data-ejemplo="multivar">Multi-variable</button>
-          <button class="example-btn" data-ejemplo="mayor">Mayor de dos</button>
-          <button class="example-btn" data-ejemplo="contador">Contador</button>
-          <button class="example-btn" data-ejemplo="tabla">Tabla</button>
-          <button class="example-btn" data-ejemplo="diasemana">Dia de semana</button>
-          <button class="example-btn" data-ejemplo="logico">Lógico</button>
-          <button class="example-btn" data-ejemplo="numerico">Numérico</button>
-          <button class="example-btn" data-ejemplo="texto">Texto</button>
+          <div id="consola"></div>
         </div>
       </div>
 
-      <!-- Consola -->
-      <div class="console-panel">
-        <div class="console-header">
-          <div class="panel-header-dot" style="background: var(--info);"></div>
-          Consola
-          <div class="console-header-actions">
-            <button class="btn-console-clear" id="btnLimpiarConsola">✕ Borrar</button>
+      <!-- Learning panel (right) -->
+      <aside class="learning-panel" id="learningPanel" aria-label="Ruta de aprendizaje">
+        <div class="learning-panel-header">
+          <div class="panel-header-dot" style="background: var(--warning);"></div>
+          Aprendizaje
+          <button class="learning-panel-toggle" id="learningPanelToggle" aria-label="Mostrar u ocultar panel de aprendizaje">▾</button>
+        </div>
+        <div class="learning-panel-body" id="learningPanelBody">
+          <p class="learning-panel-intro">
+            Ruta progresiva de LiteSeInt 1.0. Los ejercicios de
+            <code>ejercicios/guia.html</code> se integrarán adaptados al dialecto
+            LiteSeInt. Detalle en <code>EJERCICIOS.md</code>.
+          </p>
+          <ul class="learning-levels" id="learningLevels"></ul>
+          <div class="learning-detail" id="learningDetail">
+            <p class="learning-detail-empty">
+              Selecciona un nivel para ver su descripción.
+            </p>
           </div>
         </div>
-        <div id="consola"></div>
-      </div>
+      </aside>
     </div>
 
     <!-- ========== FOOTER ========== -->
     <footer class="app-footer">
       Desarrollado con<span class="heart">♥</span>por
       <a href="https://github.com/ernestoleonidas" target="_blank" rel="noopener noreferrer" class="ps-1"> Ernesto Velásquez</a>
-      <div class="app-version">v0.6.5</div>
+      <div class="app-version">v0.7.0</div>
     </footer>
 
   </div>
