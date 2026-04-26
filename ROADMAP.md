@@ -65,7 +65,7 @@ Comandos y conceptos más frecuentes en la guía:
 - menús
 - validación de entrada
 
-Advertencia importante: la guía usa sintaxis PSeInt clásica en varios ejemplos, como `<-`, `Cadena`, `SiNo`, `DIV` y `MOD`. Para la versión 1.0, todos los ejercicios provenientes de `ejercicios/guia.html` deben adaptarse al lenguaje definido por LiteSeInt. La guía entrega la secuencia pedagógica y los enunciados; la sintaxis final debe ser la del pseudolenguaje que construimos en este proyecto.
+Advertencia importante: la guía usa sintaxis PSeInt clásica en varios ejemplos, como `<-`, `Cadena`, `SiNo`, `DIV` y `MOD`. Esa sintaxis no define el lenguaje de LiteSeInt. Para la versión 1.0, todos los ejercicios provenientes de `ejercicios/guia.html` deben adaptarse al lenguaje ya definido por LiteSeInt. La guía entrega la secuencia pedagógica y los enunciados; la sintaxis final debe ser la del pseudolenguaje que construimos en este proyecto.
 
 ## Visión 1.0
 
@@ -147,137 +147,255 @@ El estudiante debe poder iniciar sin saber programar:
   - ejercicios relacionados.
 - El roadmap de aprendizaje debe usar los ejercicios de `guia.html` como secuencia base.
 
-## Roadmap del Estudiante
+## Estructura de Aprendizaje LiteSeInt
 
-La ruta de aprendizaje debe enseñar comandos en una secuencia natural.
+La ruta del estudiante no debe copiar mecánicamente las EA de `guia.html`. La guía es un banco de ejercicios y una referencia de complejidad; LiteSeInt debe proponer una secuencia propia basada en progresión cognitiva: leer programas pequeños, ejecutarlos, investigarlos, modificarlos y recién después crear soluciones desde cero.
 
-### Módulo 1: Primeros Algoritmos
+Cada módulo debe organizarse con el ciclo:
 
-Base tomada de EA 1.1.
+1. **Observar**: leer un ejemplo corto y predecir su salida.
+2. **Ejecutar**: correr el programa y comparar con la predicción.
+3. **Investigar**: identificar variables, comandos, condiciones, ciclos o patrones.
+4. **Modificar**: cambiar valores, mensajes o reglas pequeñas.
+5. **Crear**: resolver un ejercicio nuevo con el mismo concepto.
 
-Objetivo: entender qué es un algoritmo y escribir los primeros programas.
+Esta estructura usa los ejercicios de `guia.html`, pero los reagrupa por concepto y por autonomía esperada del estudiante.
+
+### Nivel 0: Orientación
+
+Objetivo: entender la interfaz y el flujo mínimo de trabajo.
+
+Aprendizajes:
+
+- qué es LiteSeInt;
+- dónde se escribe código;
+- cómo se ejecuta;
+- cómo leer la consola;
+- cómo interpretar errores;
+- cómo cargar ejemplos;
+- cómo marcar avance cuando exista progreso.
+
+Ejercicios sugeridos:
+
+- ejercicios muy breves de salida fija y lectura simple desde EA 1.1.
+
+Resultado esperado: el estudiante puede abrir la app, ejecutar un ejemplo y reconocer editor, consola, documentación y ejercicios.
+
+### Nivel 1: Secuencia y Salida
+
+Objetivo: escribir programas lineales simples.
+
+Comandos:
+
+- `Proceso` / `FinProceso`;
+- `Escribir`;
+- comentarios `//`.
+
+Conceptos:
+
+- instrucción;
+- orden de ejecución;
+- salida en consola;
+- texto entre comillas.
+
+Ejercicios sugeridos:
+
+- ejercicios de saludo, datos personales y salida estructurada de EA 1.1.
+
+Resultado esperado: el estudiante entiende que un programa ejecuta instrucciones en orden.
+
+### Nivel 2: Variables, Tipos y Entrada
+
+Objetivo: guardar datos y leer información del usuario.
+
+Comandos:
+
+- `Definir`;
+- asignación con `=`;
+- `Leer`;
+- `Escribir` con variables.
+
+Tipos:
+
+- `Entero`;
+- `Real`;
+- `Caracter`;
+- `Logico`.
+
+Ejercicios sugeridos:
+
+- ejercicios de edad, nombre, notas, precios, conversiones simples y datos personales de EA 1.1 y EA 1.2.
+
+Resultado esperado: el estudiante puede declarar variables, asignar valores, leer datos y mostrarlos.
+
+### Nivel 3: Expresiones y E/P/S
+
+Objetivo: transformar enunciados en entrada, proceso y salida antes de codificar.
 
 Comandos y conceptos:
 
-- `Proceso` / `FinProceso`
-- `Escribir`
-- texto entre comillas
-- variables
-- `Definir`
-- tipos `Entero`, `Real`, `Caracter`, `Logico`
-- asignación
-- operadores aritméticos
-- `Leer`
-
-Resultado esperado: el estudiante puede escribir programas simples que leen datos, calculan y muestran resultados.
-
-### Módulo 2: Entrada, Proceso y Salida
-
-Base tomada de EA 1.2.
-
-Objetivo: pensar antes de programar.
-
-Comandos y conceptos:
-
-- análisis E/P/S;
+- operadores `+`, `-`, `*`, `/`, `mod`, `^`;
+- paréntesis;
 - fórmulas;
-- conversión de unidades;
-- uso de variables auxiliares;
-- orden de operaciones;
-- depuración básica leyendo la consola.
+- variables auxiliares;
+- funciones nativas numéricas y de texto cuando correspondan.
 
-Resultado esperado: el estudiante puede transformar un enunciado en entradas, proceso y salida antes de codificar.
+Ejercicios sugeridos:
 
-### Módulo 3: Decisiones
+- ejercicios de promedio, descuentos, conversión de unidades, geometría y cálculos de EA 1.2.
 
-Base tomada de EA 1.3 y EA 1.6.
+Resultado esperado: el estudiante puede leer un problema, identificar sus datos de entrada, definir el cálculo y producir una salida clara.
 
-Objetivo: tomar decisiones con condiciones simples y anidadas.
+### Nivel 4: Decisiones Simples
 
-Comandos y conceptos:
+Objetivo: hacer que el programa elija entre caminos.
 
-- `Si`
-- `Entonces`
-- `Sino`
-- `FinSi`
+Comandos:
+
+- `Si`;
+- `Entonces`;
+- `Sino`;
+- `FinSi`.
+
+Conceptos:
+
 - operadores relacionales;
-- operadores lógicos `Y`, `O`, `No`;
-- decisiones anidadas;
-- validación de casos.
+- igualdad con `==`;
+- comparación;
+- decisión binaria;
+- validación simple.
 
-Resultado esperado: el estudiante puede resolver problemas donde el programa cambia de camino según condiciones.
+Ejercicios sugeridos:
 
-### Módulo 4: Menús y Selección Múltiple
+- ejercicios básicos de mayoría de edad, aprobación, descuentos, clasificación y comparación de EA 1.3.
 
-Base tomada de ejercicios con `Segun`.
+Resultado esperado: el estudiante puede resolver problemas con una condición principal.
 
-Objetivo: elegir acciones según una opción.
+### Nivel 5: Decisiones Múltiples y Anidadas
 
-Comandos y conceptos:
+Objetivo: resolver reglas con más de un caso.
 
-- `Segun`
-- casos con `:`
-- varios valores por caso;
-- `De Otro Modo`
-- `FinSegun`
-- menús simples.
+Comandos:
 
-Resultado esperado: el estudiante puede crear programas con opciones y respuestas diferenciadas.
+- `Si` anidado;
+- `Segun`;
+- `De Otro Modo`;
+- `FinSegun`;
+- operadores lógicos `Y`, `O`, `No`.
 
-### Módulo 5: Repetición
+Conceptos:
 
-Base tomada de EA 1.4.
+- clasificación;
+- rangos;
+- reglas compuestas;
+- menú simple no persistente;
+- validación de opciones.
 
-Objetivo: repetir instrucciones de forma controlada.
+Ejercicios sugeridos:
 
-Comandos y conceptos:
+- ejercicios intermedios y avanzados de EA 1.3 y ejercicios de decisión anidada de EA 1.6.
 
-- `Mientras`
-- `Repetir`
-- `HastaQue`
-- `Para`
-- contadores;
-- acumuladores;
-- centinelas;
-- validación con ciclos.
+Resultado esperado: el estudiante puede elegir entre varios caminos y ordenar reglas de decisión sin confundirse.
 
-Resultado esperado: el estudiante puede resolver ejercicios que procesan varios datos sin repetir código manualmente.
+### Nivel 6: Repetición Controlada
 
-### Módulo 6: Patrones de Resolución
+Objetivo: repetir instrucciones sin duplicar código.
 
-Base tomada de EA 1.5, EA 1.6 y EA 1.7.
+Comandos:
 
-Objetivo: reconocer patrones que luego se repiten en Python.
+- `Mientras`;
+- `Repetir`;
+- `HastaQue`;
+- `Para`.
+
+Conceptos:
+
+- contador;
+- condición de término;
+- actualización;
+- centinela;
+- validación repetida.
+
+Ejercicios sugeridos:
+
+- ejercicios de números del 1 al 10, conteo descendente, repetir hasta condición, tablas y recorridos de EA 1.4.
+
+Resultado esperado: el estudiante puede elegir el ciclo adecuado para repetir una acción.
+
+### Nivel 7: Patrones de Procesamiento
+
+Objetivo: reconocer estructuras reutilizables que aparecen en muchos problemas.
 
 Patrones:
 
-- sumar acumulados;
-- contar casos;
-- calcular promedios;
-- encontrar mayor valor;
-- encontrar menor valor;
-- validar mínimos;
-- menú persistente con `Mientras`;
-- análisis final con condicionales.
+- contador;
+- acumulador;
+- promedio;
+- máximo;
+- mínimo;
+- contador condicional;
+- totalización;
+- validación de mínimos.
 
-Resultado esperado: el estudiante puede leer un enunciado largo, identificar el patrón y construir una solución completa.
+Ejercicios sugeridos:
 
-### Módulo 7: Puente Hacia Python
+- ejercicios de ciclos intermedios y avanzados de EA 1.4, desafíos de EA 1.5 y problemas tipo prueba de EA 1.7.
 
-Objetivo: mostrar que el pseudolenguaje prepara para Python.
+Resultado esperado: el estudiante deja de resolver por memoria y empieza a identificar patrones transferibles.
 
-Contenido:
+### Nivel 8: Programas Integradores con Menú
 
-- variable en pseudolenguaje vs variable en Python;
-- `Leer` vs `input`;
-- `Escribir` vs `print`;
-- `Si` vs `if`;
-- `Mientras` vs `while`;
-- `Para` vs `for`;
-- operadores equivalentes;
-- indentación como idea de bloque.
+Objetivo: construir programas completos con estado y flujo persistente.
 
-Resultado esperado: el estudiante entiende que LiteSeInt no es el destino final, sino una base para escribir código real con menos fricción.
+Comandos y conceptos:
+
+- menú de opciones;
+- `Mientras` persistente;
+- `Segun` o `Si` para elegir opción;
+- contadores y acumuladores;
+- análisis final;
+- validación de opción inválida.
+
+Ejercicios sugeridos:
+
+- ejercicios tipo prueba parte 2 de EA 1.7 y desafíos seleccionados de EA 1.5.
+
+Resultado esperado: el estudiante puede resolver problemas largos con varias opciones y acumulación de datos.
+
+### Nivel 9: Puente Hacia Python
+
+Objetivo: conectar lo aprendido en pseudolenguaje con Python.
+
+Equivalencias:
+
+- `Escribir` -> `print`;
+- `Leer` -> `input`;
+- `Si` -> `if`;
+- `Sino` -> `else`;
+- `Mientras` -> `while`;
+- `Para` -> `for`;
+- variables y tipos;
+- operadores;
+- indentación como bloque.
+
+Ejercicios sugeridos:
+
+- ejercicios ya resueltos en LiteSeInt, reanalizados conceptualmente para mostrar cómo se escribirían en Python.
+
+Resultado esperado: el estudiante entiende que LiteSeInt es una etapa de preparación, no un destino final.
+
+## Organización por Autonomía
+
+Cada nivel debe tener ejercicios con cuatro grados de ayuda:
+
+| Grado | Nombre | Qué hace el estudiante |
+|---|---|---|
+| 1 | Guiado | Lee un programa, predice la salida y lo ejecuta. |
+| 2 | Con pista | Completa o modifica una parte pequeña. |
+| 3 | Práctica | Resuelve un ejercicio similar con menos ayuda. |
+| 4 | Desafío | Crea una solución nueva con el mismo patrón. |
+
+Esta organización evita que todos los ejercicios sean simplemente "escribe desde cero". Primero reduce la carga cognitiva, luego transfiere la responsabilidad al estudiante.
 
 ## Hitos del Proyecto Hacia 1.0
 
@@ -288,20 +406,26 @@ Objetivo: tomar el núcleo ya estabilizado y preparar el producto para integrar 
 Tareas:
 
 - Revisar README, CHANGELOG e interfaz para asegurar que la versión visible sea coherente.
-- Confirmar comandos soportados por el runtime.
+- Confirmar comandos soportados por el runtime, validador y autocompletado.
 - Confirmar qué sintaxis de la guía no es compatible todavía.
 - Definir las reglas obligatorias para adaptar todos los ejercicios de la guía al dialecto LiteSeInt.
+- Proponer una estructura de aprendizaje propia para LiteSeInt, basada en conceptos y grados de autonomía, no en copiar literalmente la ruta de `guia.html`.
 - Crear una lista corta de equivalencias:
   - `Cadena` -> `Caracter`;
   - `<-` -> `=`;
   - `SiNo` -> `Sino`;
   - `MOD` -> `mod`;
-  - `DIV` -> pendiente de decisión.
+  - `DIV` -> reescritura con sintaxis soportada o exclusión temporal del ejercicio.
+- Documentar todo lo anterior en [`EJERCICIOS.md`](EJERCICIOS.md), incluyendo plan de pruebas y tabla de seguimiento.
+- No introducir alias en LiteSeInt para `Cadena`, `<-`, `SiNo`, `MOD` o `DIV`.
 
 Criterios de aceptación:
 
 - Existe una decisión documentada sobre cómo adaptar todos los ejercicios de la guía.
 - El alcance de lenguaje usado por los ejercicios 1.0 está claro.
+- Existe un plan de pruebas para ejercicios adaptados.
+- Existe una estructura de aprendizaje LiteSeInt con niveles, criterios de avance y grados de ayuda.
+- La invariante "100% de ejercicios visibles adaptados o excluidos" queda explícita.
 
 ### 0.7.0 - Nuevo Layout de Aprendizaje
 
@@ -462,7 +586,7 @@ Cada ejercicio importado desde `guia.html` debe pasar por una normalización mí
 - convertir asignaciones PSeInt clásicas, por ejemplo `<-` -> `=`;
 - convertir variantes de palabras clave, por ejemplo `SiNo` -> `Sino`;
 - normalizar operadores, por ejemplo `MOD` -> `mod`;
-- resolver usos de `DIV` mediante una decisión explícita del lenguaje o una reescritura compatible;
+- resolver usos de `DIV` mediante reescritura compatible con LiteSeInt o exclusión temporal del ejercicio;
 - eliminar o marcar como fuera de alcance cualquier construcción no soportada.
 
 ### Pruebas de Compatibilidad
@@ -510,17 +634,17 @@ Para considerar lista la integración de ejercicios en 1.0:
 
 ## Decisiones Pendientes
 
-### Sintaxis Compatible con la Guía
+### Sintaxis de la Guía Que Debe Convertirse
 
-La guía usa algunos elementos que hoy pueden no coincidir con LiteSeInt. Antes de integrar ejercicios masivamente se debe decidir cómo se convertirán, porque todos los ejercicios visibles en 1.0 deben quedar adaptados al dialecto LiteSeInt:
+La guía usa elementos que no pertenecen al lenguaje LiteSeInt. Antes de integrar ejercicios masivamente se debe definir cómo se convertirán, porque todos los ejercicios visibles en 1.0 deben quedar adaptados al dialecto LiteSeInt. La sintaxis de `guia.html` no debe agregarse al lenguaje solo por aparecer en la guía.
 
-- aceptar `<-` como alias de asignación o convertirlo a `=`;
-- aceptar `Cadena` como alias de `Caracter` o convertirlo;
-- aceptar `SiNo` como alias de `Sino` o convertirlo;
-- aceptar `MOD` como alias de `mod` o convertirlo;
-- implementar `DIV`, reemplazarlo por división/truncamiento o excluir ejercicios que lo requieran.
+- convertir `<-` a `=`;
+- convertir `Cadena` a `Caracter`;
+- convertir `SiNo` a `Sino`;
+- convertir `MOD` a `mod`;
+- reescribir `DIV` usando sintaxis soportada o excluir temporalmente los ejercicios que lo requieran.
 
-Recomendación para 1.0: adaptar todos los ejercicios al dialecto LiteSeInt y aceptar solo alias de bajo costo si reducen frustración inicial.
+Regla para 1.0: adaptar todos los ejercicios al dialecto LiteSeInt. No se deben agregar alias ni sintaxis nueva solo para calzar con `guia.html`, salvo que el roadmap cambie explícitamente el alcance del lenguaje.
 
 ### Soluciones Visibles
 

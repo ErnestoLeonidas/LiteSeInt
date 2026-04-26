@@ -6,8 +6,10 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v0.6.0`
+- Versión visible en la app: `v0.6.5`
 - Núcleo del lenguaje congelado para 1.0 (ver "Matriz de compatibilidad").
+- Reglas de adaptación de ejercicios documentadas en [`EJERCICIOS.md`](EJERCICIOS.md).
+- Estructura de aprendizaje LiteSeInt 1.0 propuesta en [`EJERCICIOS.md`](EJERCICIOS.md): niveles 0-9, grados de ayuda y progresión desde observar código hasta crear soluciones.
 - Ejecución completamente en el navegador
 - Sin build step ni backend
 - Proyecto basado en HTML, CSS y JavaScript vanilla
@@ -315,10 +317,15 @@ index.html
 
 ## Hoja de ruta
 
-- Soporte para arreglos con `Dimension`
-- Funciones definidas por el usuario
-- Historial de ejecuciones
-- Mejoras al modo paso a paso
+La ruta hacia 1.0 prioriza la experiencia educativa:
+
+- Reorganizar la interfaz para usar editor + consola inferior + panel derecho de ejercicios.
+- Integrar ejercicios adaptados al dialecto LiteSeInt.
+- Agregar documentación de comandos dentro de la app.
+- Mostrar progreso del estudiante por nivel y ejercicio.
+- Conectar los conceptos de pseudolenguaje con Python.
+
+El detalle está en [ROADMAP.md](ROADMAP.md) y [EJERCICIOS.md](EJERCICIOS.md).
 
 ## Licencia
 

@@ -6,6 +6,32 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.6.5] — 2026-04-26
+
+Cierre de la fase "Base educativa". Esta versión es **documental**: no cambia el lenguaje ni el runtime. Deja por escrito cómo se adaptarán los 245 ejercicios de `ejercicios/guia.html` al dialecto LiteSeInt y qué se va a probar antes de declarar un ejercicio integrado.
+
+### Agregado
+- **`EJERCICIOS.md`**: nuevo documento que define la estructura pedagógica de la guía (7 EA × 245 ejercicios), las reglas obligatorias de adaptación (`Cadena` → `Caracter`, `<-` → `=`, `SiNo` → `Sino`, `MOD` → `mod`, `DIV` → `Trunc(a / b)` o exclusión, `;` final → eliminar, `=` como comparador → `==`), el plan de pruebas (6 criterios por ejercicio) y la tabla de seguimiento (adaptados / requieren decisión / excluidos temporales).
+- **Nueva estructura de aprendizaje LiteSeInt**: se propone una ruta propia para 1.0, independiente de la numeración original de la guía: orientación, secuencia/salida, variables/entrada, expresiones/E·P·S, decisiones, decisiones múltiples, repetición, patrones, programas con menú y puente hacia Python.
+- **Grados de ayuda por ejercicio**: se documenta una progresión de actividades guiado → con pista → práctica → desafío, para evitar que el estudiante parta siempre desde una pantalla en blanco.
+- **`ROADMAP.md`**: hito `0.6.5 - Base Educativa` con criterios de aceptación y referencia explícita a `EJERCICIOS.md`. Se deja registrada la invariante "el 100% de los ejercicios visibles deben estar adaptados o explícitamente excluidos".
+- **`README.md`**: enlace a `EJERCICIOS.md` desde el bloque de estado actual.
+
+### Decisión
+- **No se introducen alias** en LiteSeInt para `Cadena`, `<-`, `SiNo`, `MOD` o `DIV`. La sintaxis de `ejercicios/guia.html` no es la fuente de verdad del lenguaje. Cada ejercicio debe convertirse o quedar marcado como excluido temporal.
+
+### Cambiado
+- **Versión visible**: `v0.6.5`.
+
+### Compatibilidad
+- Sin cambios en runtime, validador o autocompletado. Los programas válidos en `v0.6.0` siguen ejecutándose igual.
+
+### Fuera de alcance de v0.6.5
+- No se mueve la consola debajo del editor (eso es 0.7.0).
+- No se rediseña el layout principal.
+- No se implementa el panel derecho de ejercicios.
+- No se convierten los 245 ejercicios — esta fase deja la decisión y el contrato de pruebas por escrito.
+
 ## [0.6.0] — 2026-04-26
 
 Cierre de la fase "Congelar el núcleo del lenguaje". Esta versión declara, documenta y estabiliza el subconjunto mínimo del lenguaje que será la base de la versión 1.0. No agrega nuevas estructuras: ordena lo existente y deja explícito qué queda fuera de alcance.
