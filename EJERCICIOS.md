@@ -164,16 +164,32 @@ Toda integración futura de ejercicios debe alimentar la tabla siguiente. La inv
 
 | EA | Total | Adaptados | Requieren decisión | Excluidos temporales |
 |---|---|---|---|---|
-| 1.1 | 20 | 0 | 0 | 0 |
-| 1.2 | 40 | 0 | 0 | 0 |
-| 1.3 | 40 | 0 | 0 | 0 |
-| 1.4 | 60 | 0 | 0 | 0 |
+| 1.1 | 20 | 6 | 0 | 0 |
+| 1.2 | 40 | 2 | 0 | 0 |
+| 1.3 | 40 | 5 | 0 | 0 |
+| 1.4 | 60 | 7 | 0 | 0 |
 | 1.5 | 15 | 0 | 0 | 0 |
 | 1.6 | 40 | 0 | 0 | 0 |
 | 1.7 | 30 | 0 | 0 | 0 |
-| **Total** | **245** | **0** | **0** | **0** |
+| **Total** | **245** | **20** | **0** | **0** |
 
-A v0.6.5 ningún ejercicio aún está integrado en la app de LiteSeInt. La tabla parte en cero por diseño: la integración real comienza en versiones posteriores.
+A **v0.8.0** se integra un primer lote curado de **20 ejercicios** desde `ejercicios/guia.html`, adaptados al dialecto LiteSeInt y validados con `DocErrores.validarDocumento`. La fuente de datos vive en `js/ejercicios-data.js` y es consumida por el panel derecho. Los 225 ejercicios restantes permanecen como pendientes (no visibles), siguiendo la regla de calidad: todo ejercicio visible debe estar adaptado y probado.
+
+Distribución del primer lote por nivel LiteSeInt:
+
+| Nivel | Tema | Adaptados |
+|---|---|---:|
+| 0 | Orientación | 2 |
+| 1 | Secuencia y salida | 1 |
+| 2 | Variables, tipos y entrada | 3 |
+| 3 | Expresiones y E·P·S | 3 |
+| 4 | Decisiones simples | 3 |
+| 5 | Decisiones múltiples | 2 |
+| 6 | Repetición controlada | 3 |
+| 7 | Patrones de procesamiento | 3 |
+| 8-9 | Programas integradores / Puente Python | 0 |
+
+Criterios usados para el primer lote: cobertura de los niveles iniciales (0-4) más representación mínima de ciclos (6) y patrones (7); todo ejercicio visible debe pasar la validación estática; cada nivel cubierto incluye al menos un ejercicio guiado, uno de práctica y uno de desafío cuando es viable.
 
 ### Cobertura pedagógica por comando
 

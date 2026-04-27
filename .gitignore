@@ -3,6 +3,5 @@
 /.claude/*
 !/.claude/skills/
 !/.claude/skills/**
-/prompt_v0.7.0.txt
 roadmap.md
 !/ROADMAP.md

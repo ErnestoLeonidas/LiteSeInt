@@ -108,22 +108,44 @@
       </div>
 
       <!-- Learning panel (right) -->
-      <aside class="learning-panel" id="learningPanel" aria-label="Ruta de aprendizaje">
+      <aside class="learning-panel" id="learningPanel" aria-label="Ejercicios y ruta de aprendizaje">
         <div class="learning-panel-header">
           <div class="panel-header-dot" style="background: var(--warning);"></div>
-          Aprendizaje
-          <button class="learning-panel-toggle" id="learningPanelToggle" aria-label="Mostrar u ocultar panel de aprendizaje">▾</button>
+          Ejercicios
+          <button class="learning-panel-toggle" id="learningPanelToggle" aria-label="Mostrar u ocultar panel de ejercicios">▾</button>
         </div>
         <div class="learning-panel-body" id="learningPanelBody">
-          <p class="learning-panel-intro">
-            Ruta progresiva de LiteSeInt 1.0. Los ejercicios de
-            <code>ejercicios/guia.html</code> se integrarán adaptados al dialecto
-            LiteSeInt. Detalle en <code>EJERCICIOS.md</code>.
-          </p>
-          <ul class="learning-levels" id="learningLevels"></ul>
-          <div class="learning-detail" id="learningDetail">
-            <p class="learning-detail-empty">
-              Selecciona un nivel para ver su descripción.
+          <div class="ej-filters" id="ejFilters">
+            <label class="ej-filter">
+              <span>Nivel</span>
+              <select id="ejFiltroNivel">
+                <option value="">Todos</option>
+              </select>
+            </label>
+            <label class="ej-filter">
+              <span>Dificultad</span>
+              <select id="ejFiltroDificultad">
+                <option value="">Todas</option>
+                <option value="basico">Básico</option>
+                <option value="intermedio">Intermedio</option>
+                <option value="avanzado">Avanzado</option>
+              </select>
+            </label>
+            <label class="ej-filter">
+              <span>Estado</span>
+              <select id="ejFiltroEstado">
+                <option value="">Todos</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="en-curso">En curso</option>
+                <option value="completado">Completado</option>
+              </select>
+            </label>
+          </div>
+          <div class="ej-progress-summary" id="ejProgresoResumen"></div>
+          <ul class="ej-list" id="ejList"></ul>
+          <div class="ej-detail" id="ejDetail">
+            <p class="ej-detail-empty">
+              Selecciona un ejercicio para ver su enunciado.
             </p>
           </div>
         </div>
@@ -134,7 +156,7 @@
     <footer class="app-footer">
       Desarrollado con<span class="heart">♥</span>por
       <a href="https://github.com/ernestoleonidas" target="_blank" rel="noopener noreferrer" class="ps-1"> Ernesto Velásquez</a>
-      <div class="app-version">v0.7.0</div>
+      <div class="app-version">v0.8.0</div>
     </footer>
 
   </div>
@@ -145,6 +167,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="js/doc_errores.js"></script>
   <script src="js/LiteSeInt.js"></script>
+  <script src="js/ejercicios-data.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

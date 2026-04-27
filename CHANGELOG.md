@@ -6,6 +6,39 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.8.0] — 2026-04-26
+
+Cierre de la fase "Banco de Ejercicios Integrado". Esta versión reemplaza los placeholders del panel derecho por un banco real de ejercicios navegable, derivado de `ejercicios/guia.html` y adaptado al dialecto LiteSeInt. No cambia el lenguaje ni el runtime.
+
+### Agregado
+- **`js/ejercicios-data.js`**: nueva fuente de datos del banco de ejercicios. Expone `EjerciciosLiteSeInt` con `EJERCICIOS`, helpers (`listarAdaptados`, `porId`, `porNivel`) y constantes (`ESTADOS_VALIDOS`, `DIFICULTADES_VALIDAS`, `GRADOS_VALIDOS`).
+- **Primer lote de 20 ejercicios adaptados** desde `ejercicios/guia.html`, cubriendo los niveles 0-7 de la ruta LiteSeInt: orientación (2), secuencia/salida (1), variables/entrada (3), expresiones y E·P·S (3), decisiones simples (3), decisiones múltiples (2), repetición controlada (3) y patrones de procesamiento (3). Cada ejercicio normaliza los campos definidos en `EJERCICIOS.md` (`id`, `origen`, `modulo`, `experiencia`, `nivelLiteSeInt`, `dificultad`, `gradoAyuda`, `titulo`, `conceptos`, `enunciado`, `entradaProcesoSalida`, `salidaEsperada`, `pista`, `codigoReferencia`, `estadoAdaptacion`, `motivoExclusion`).
+- **Panel derecho navegable**: filtros por **nivel**, **dificultad** y **estado**; resumen de progreso (completados/en curso/total); listado con badge de nivel, dificultad y estado; detalle del ejercicio con tags, enunciado, conceptos, entrada/proceso/salida, salida esperada y pista colapsable.
+- **Acciones por ejercicio**: botón "Cargar plantilla" (genera un esqueleto `Proceso ... FinProceso` con el título como nombre) y botón "Ver código de referencia" (carga la solución adaptada). Ambos confirman antes de sobrescribir el editor si tiene contenido distinto del placeholder.
+- **Progreso local persistente**: cada ejercicio puede marcarse como `pendiente`, `en curso` o `completado`. El estado se guarda en `localStorage` bajo la clave `liteseint:exerciseProgress` y persiste al recargar la página.
+- **Pruebas del banco** (`tests/run-tests.js`): seis nuevas pruebas que validan ids únicos, presencia de campos obligatorios, valores permitidos para estado/dificultad/grado de ayuda, ausencia de sintaxis prohibida (`<-`, `Cadena`, `SiNo`, `MOD`, `DIV`, `;` final) en `codigoReferencia`, paso por `DocErrores.validarDocumento` para todos los códigos adaptados, y que todo ejercicio visible esté en estado `adaptado`.
+
+### Cambiado
+- **`index.html`**: el panel derecho deja de mostrar el listado de niveles 0-9 con placeholders "próximamente" y pasa a mostrar el banco con filtros + lista + detalle. La cabecera del panel ahora se titula `Ejercicios`. Se carga `js/ejercicios-data.js` antes de `js/app.js`.
+- **`js/app.js`**: las funciones `NIVELES_APRENDIZAJE`, `renderizarNivelesAprendizaje`, `mostrarDetalleNivel` y `seleccionarNivel` se reemplazan por la familia del banco: `cargarProgreso`/`guardarProgreso`/`estadoEjercicio`/`setEstadoEjercicio`, `aplicarFiltros`, `renderizarListaEjercicios`, `renderizarResumenProgreso`, `mostrarDetalleEjercicio`, `cargarPlantillaEjercicio`, `cargarCodigoReferencia`, `seleccionarEjercicio` e `inicializarBancoEjercicios`.
+- **`css/styles.css`**: nueva sección "EXERCISE BANK" con estilos para `.ej-filters`, `.ej-list`, `.ej-item`, `.ej-detail`, `.ej-tag`, `.ej-eps`, `.ej-salida`, `.ej-pista`, `.ej-actions`, `.ej-btn`, `.ej-btn-estado` y `.ej-progress-summary`. Reusa las variables existentes (`--accent`, `--warning`, `--danger`, `--border-color`, etc.).
+- **`EJERCICIOS.md`**: tabla de seguimiento actualizada con la integración real (20 adaptados de 245), distribución por nivel del primer lote y criterios usados para la selección.
+- **`README.md`**: nueva sección "Banco de ejercicios" describiendo filtros, detalle, plantilla, código de referencia y progreso local.
+- **Versión visible**: `v0.8.0`.
+
+### Compatibilidad
+- Sin cambios en el lenguaje, en `js/doc_errores.js` ni en `js/LiteSeInt.js`. Los programas válidos en `v0.7.0` siguen ejecutándose igual.
+- El flujo `Leer` y `inputResolver` se preserva: el input inline aparece dentro de la consola, debajo del editor.
+- Los 11 ejemplos del selector superior se conservan sin cambios.
+
+### Fuera de alcance de v0.8.0
+- No se integran los 245 ejercicios completos. Permanecen 225 como pendientes (no visibles). La regla de calidad manda: todo ejercicio visible debe estar adaptado y probado.
+- No se implementa documentación interna de comandos en la app (eso pertenece a 0.8.5).
+- No se implementa "Roadmap del estudiante" extendido más allá de los filtros del banco (0.9.0).
+- No se valida automáticamente si la solución del estudiante es correcta. El progreso es manual (pendiente / en curso / completado).
+- No se introduce alias en LiteSeInt para `Cadena`, `<-`, `SiNo`, `MOD` ni `DIV`. La sintaxis del lenguaje no cambia.
+- No se agrega backend, login ni dependencias pesadas.
+
 ## [0.7.0] — 2026-04-26
 
 Cierre de la fase "Nuevo layout de aprendizaje". Esta versión reorganiza la pantalla principal para que LiteSeInt empiece a sentirse como una plataforma de aprendizaje, sin tocar el lenguaje ni el runtime.

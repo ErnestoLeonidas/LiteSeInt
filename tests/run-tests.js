@@ -15,8 +15,10 @@ function loadRuntime() {
   vm.createContext(ctx);
   const docErrores = fs.readFileSync(path.join(root, 'js/doc_errores.js'), 'utf8');
   const liteSeInt = fs.readFileSync(path.join(root, 'js/LiteSeInt.js'), 'utf8');
+  const ejercicios = fs.readFileSync(path.join(root, 'js/ejercicios-data.js'), 'utf8');
   vm.runInContext(`${docErrores}\nglobalThis.DocErrores = DocErrores;`, ctx);
   vm.runInContext(`${liteSeInt}\nglobalThis.LiteSeInt = LiteSeInt;`, ctx);
+  vm.runInContext(`${ejercicios}\nglobalThis.EjerciciosLiteSeInt = globalThis.EjerciciosLiteSeInt;`, ctx);
   return ctx;
 }
 
@@ -113,6 +115,99 @@ test('evalua Y, O y No dentro de asignaciones logicas', async () => {
   const { resultado, salida } = await ejecutar(ctx, codigo);
   assert.strictEqual(resultado.exito, true);
   assert.deepStrictEqual(salida, ['Verdadero', 'Falso']);
+});
+
+// =====================================================
+// Banco de ejercicios v0.8.0
+// =====================================================
+
+const CAMPOS_OBLIGATORIOS = [
+  'id', 'origen', 'modulo', 'experiencia', 'nivelLiteSeInt',
+  'dificultad', 'gradoAyuda', 'titulo', 'conceptos', 'enunciado',
+  'entradaProcesoSalida', 'salidaEsperada', 'pista',
+  'codigoReferencia', 'estadoAdaptacion', 'motivoExclusion',
+];
+
+test('banco de ejercicios: ids unicos', () => {
+  const ctx = loadRuntime();
+  const ej = ctx.EjerciciosLiteSeInt.EJERCICIOS;
+  const vistos = new Set();
+  for (const e of ej) {
+    assert(!vistos.has(e.id), `ID duplicado: ${e.id}`);
+    vistos.add(e.id);
+  }
+});
+
+test('banco de ejercicios: campos obligatorios presentes', () => {
+  const ctx = loadRuntime();
+  const ej = ctx.EjerciciosLiteSeInt.EJERCICIOS;
+  for (const e of ej) {
+    for (const campo of CAMPOS_OBLIGATORIOS) {
+      assert(campo in e, `Falta campo "${campo}" en ${e.id}`);
+    }
+  }
+});
+
+test('banco de ejercicios: solo estados, dificultades y grados permitidos', () => {
+  const ctx = loadRuntime();
+  const { EJERCICIOS, ESTADOS_VALIDOS, DIFICULTADES_VALIDAS, GRADOS_VALIDOS } =
+    ctx.EjerciciosLiteSeInt;
+  for (const e of EJERCICIOS) {
+    assert(ESTADOS_VALIDOS.includes(e.estadoAdaptacion),
+      `Estado inválido en ${e.id}: ${e.estadoAdaptacion}`);
+    assert(DIFICULTADES_VALIDAS.includes(e.dificultad),
+      `Dificultad inválida en ${e.id}: ${e.dificultad}`);
+    assert(GRADOS_VALIDOS.includes(e.gradoAyuda),
+      `Grado inválido en ${e.id}: ${e.gradoAyuda}`);
+    assert(Number.isInteger(e.nivelLiteSeInt) && e.nivelLiteSeInt >= 0 && e.nivelLiteSeInt <= 9,
+      `Nivel fuera de rango en ${e.id}: ${e.nivelLiteSeInt}`);
+  }
+});
+
+test('banco de ejercicios: codigoReferencia adaptado no contiene sintaxis prohibida', () => {
+  const ctx = loadRuntime();
+  const adaptados = ctx.EjerciciosLiteSeInt.listarAdaptados();
+  for (const e of adaptados) {
+    const codigo = e.codigoReferencia;
+    assert(!/<-/.test(codigo), `${e.id}: contiene "<-"`);
+    assert(!/\bCadena\b/.test(codigo), `${e.id}: contiene "Cadena"`);
+    assert(!/\bSiNo\b/.test(codigo), `${e.id}: contiene "SiNo"`);
+    assert(!/\bMOD\b/.test(codigo), `${e.id}: contiene "MOD"`);
+    assert(!/\bDIV\b/.test(codigo), `${e.id}: contiene "DIV"`);
+    const lineasNoComentario = codigo
+      .split('\n')
+      .map((l) => l.replace(/\/\/.*$/, '').trimEnd());
+    for (const linea of lineasNoComentario) {
+      assert(!/;\s*$/.test(linea),
+        `${e.id}: línea termina con ";": "${linea}"`);
+    }
+  }
+});
+
+test('banco de ejercicios: codigoReferencia adaptado pasa validacion estatica', () => {
+  const ctx = loadRuntime();
+  const adaptados = ctx.EjerciciosLiteSeInt.listarAdaptados();
+  for (const e of adaptados) {
+    const errores = validar(ctx, e.codigoReferencia);
+    assert.strictEqual(
+      errores.length,
+      0,
+      `${e.id} tiene errores estáticos: ${JSON.stringify(errores)}`,
+    );
+  }
+});
+
+test('banco de ejercicios: todos los visibles estan adaptados', () => {
+  const ctx = loadRuntime();
+  const visibles = ctx.EjerciciosLiteSeInt.listarAdaptados();
+  for (const e of visibles) {
+    assert.strictEqual(
+      e.estadoAdaptacion,
+      'adaptado',
+      `${e.id} visible pero no adaptado`,
+    );
+  }
+  assert(visibles.length > 0, 'No hay ejercicios visibles');
 });
 
 test('detener durante Leer marca la ejecucion como detenida', async () => {

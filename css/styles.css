@@ -882,6 +882,388 @@ body::before {
 }
 
 /* ========================================
+    EXERCISE BANK (right panel — v0.8.0)
+    ======================================== */
+.ej-filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 8px;
+  margin-bottom: 10px;
+}
+
+.ej-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 9.5px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.ej-filter:first-child {
+  grid-column: 1 / -1;
+}
+
+.ej-filter select {
+  background: rgba(255,255,255,0.04);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-family: var(--font-code);
+  font-size: 11px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.ej-filter select:focus,
+.ej-filter select:hover {
+  border-color: var(--accent-dim);
+}
+
+.ej-progress-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  font-family: var(--font-code);
+  font-size: 10.5px;
+}
+
+.ej-prog-pill {
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  letter-spacing: 0.3px;
+}
+
+.ej-prog-pill.done {
+  color: var(--accent);
+  border-color: var(--accent-dim);
+  background: var(--accent-bg);
+}
+
+.ej-prog-pill.running {
+  color: var(--warning);
+  border-color: rgba(255,165,2,0.35);
+  background: rgba(255,165,2,0.08);
+}
+
+.ej-prog-pill.total {
+  color: var(--text-muted);
+}
+
+.ej-list {
+  list-style: none;
+  margin: 0 0 10px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ej-empty {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 8px 4px;
+}
+
+.ej-item {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 7px 9px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.ej-item:hover {
+  border-color: var(--accent-dim);
+  background: var(--accent-bg);
+}
+
+.ej-item.selected {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  box-shadow: 0 0 12px rgba(0,255,136,0.12);
+}
+
+.ej-item.estado-completado {
+  border-left: 3px solid var(--accent);
+}
+
+.ej-item.estado-en-curso {
+  border-left: 3px solid var(--warning);
+}
+
+.ej-item-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 3px;
+}
+
+.ej-item-nivel,
+.ej-item-dif,
+.ej-item-estado {
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border-color);
+  background: rgba(255,255,255,0.03);
+  color: var(--text-secondary);
+}
+
+.ej-item-nivel {
+  color: var(--accent);
+  border-color: var(--accent-dim);
+}
+
+.ej-item-dif.dif-basico { color: var(--accent); border-color: var(--accent-dim); }
+.ej-item-dif.dif-intermedio { color: var(--warning); border-color: rgba(255,165,2,0.35); }
+.ej-item-dif.dif-avanzado { color: var(--danger); border-color: rgba(255,107,107,0.35); }
+
+.ej-item-estado.est-completado { color: var(--accent); border-color: var(--accent-dim); background: var(--accent-bg); }
+.ej-item-estado.est-en-curso { color: var(--warning); border-color: rgba(255,165,2,0.35); background: rgba(255,165,2,0.08); }
+.ej-item-estado.est-pendiente { color: var(--text-muted); }
+
+.ej-item-titulo {
+  font-size: 12px;
+  color: var(--text-primary);
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.ej-item-conceptos {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin: 2px 0 0 0;
+  line-height: 1.3;
+}
+
+/* ---- Detalle del ejercicio ---- */
+.ej-detail {
+  border-top: 1px dashed var(--border-color);
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.ej-detail-empty {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 0;
+}
+
+.ej-detail h4 {
+  font-size: 12.5px;
+  color: var(--text-primary);
+  margin: 6px 0;
+  line-height: 1.3;
+}
+
+.ej-detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.ej-tag {
+  font-size: 9px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--border-color);
+  background: rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+}
+
+.ej-tag.dif-basico { color: var(--accent); border-color: var(--accent-dim); }
+.ej-tag.dif-intermedio { color: var(--warning); border-color: rgba(255,165,2,0.35); }
+.ej-tag.dif-avanzado { color: var(--danger); border-color: rgba(255,107,107,0.35); }
+.ej-tag.est-completado { color: var(--accent); border-color: var(--accent-dim); background: var(--accent-bg); }
+.ej-tag.est-en-curso { color: var(--warning); border-color: rgba(255,165,2,0.35); background: rgba(255,165,2,0.08); }
+
+.ej-section-label {
+  font-size: 9.5px;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 4px 0;
+}
+
+.ej-enunciado {
+  font-size: 11.5px;
+  color: var(--text-primary);
+  line-height: 1.55;
+  margin: 0 0 8px 0;
+}
+
+.ej-conceptos-list {
+  font-size: 10.5px;
+  color: var(--text-secondary);
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.ej-eps {
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 6px 8px;
+  margin: 0 0 8px 0;
+}
+
+.ej-eps-row {
+  font-size: 10.5px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+.ej-eps-row b {
+  color: var(--accent);
+  margin-right: 4px;
+}
+
+.ej-salida {
+  margin: 0 0 8px 0;
+}
+
+.ej-salida pre {
+  background: var(--bg-console);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 6px 8px;
+  margin: 0;
+  font-family: var(--font-code);
+  font-size: 11px;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.ej-pista {
+  margin: 0 0 8px 0;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 4px 8px;
+}
+
+.ej-pista summary {
+  cursor: pointer;
+  color: var(--warning);
+  font-size: 10.5px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  outline: none;
+}
+
+.ej-pista p {
+  margin: 6px 0 2px 0;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.ej-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 6px 0 10px 0;
+}
+
+.ej-btn {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: var(--font-code);
+  font-size: 10.5px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.ej-btn:hover {
+  background: var(--accent-bg);
+  box-shadow: 0 0 10px rgba(0,255,136,0.18);
+}
+
+.ej-btn.ej-btn-primary {
+  background: linear-gradient(135deg, var(--accent) 0%, #00cc6a 100%);
+  color: var(--bg-deep);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+.ej-btn.ej-btn-primary:hover {
+  box-shadow: 0 0 12px rgba(0,255,136,0.35);
+}
+
+.ej-estado-control {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  border-top: 1px dashed var(--border-color);
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
+.ej-estado-control .ej-section-label {
+  flex: 0 0 100%;
+}
+
+.ej-btn-estado {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-family: var(--font-code);
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.ej-btn-estado:hover {
+  border-color: var(--accent-dim);
+  color: var(--accent);
+}
+
+.ej-btn-estado.selected.est-pendiente {
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+  background: rgba(255,255,255,0.05);
+}
+
+.ej-btn-estado.selected.est-en-curso {
+  color: var(--warning);
+  border-color: rgba(255,165,2,0.5);
+  background: rgba(255,165,2,0.12);
+}
+
+.ej-btn-estado.selected.est-completado {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+/* ========================================
     FOOTER
     ======================================== */
 .app-footer {

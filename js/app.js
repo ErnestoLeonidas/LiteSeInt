@@ -1487,122 +1487,329 @@ function cargarEjemplo(nombre) {
 }
 
 // =========================================
-// 11.b PANEL DE APRENDIZAJE (niveles 0-9)
+// 11.b BANCO DE EJERCICIOS (panel derecho)
 // =========================================
 
-const NIVELES_APRENDIZAJE = [
-  {
-    id: 0,
-    titulo: "Orientación",
-    resumen: "Conocer la app: editor, consola, ejecutar y leer errores.",
-    conceptos: ["interfaz", "editor", "consola", "ejecutar", "errores"],
-  },
-  {
-    id: 1,
-    titulo: "Secuencia y salida",
-    resumen: "Programas lineales con Escribir y comentarios.",
-    conceptos: ["Proceso", "FinProceso", "Escribir", "comentarios //"],
-  },
-  {
-    id: 2,
-    titulo: "Variables, tipos y entrada",
-    resumen: "Guardar datos y leer información del usuario.",
-    conceptos: ["Definir", "Leer", "asignación =", "Entero", "Real", "Caracter", "Logico"],
-  },
-  {
-    id: 3,
-    titulo: "Expresiones y E·P·S",
-    resumen: "Fórmulas, operadores, paréntesis y funciones nativas.",
-    conceptos: ["+ - * / mod ^", "Abs", "Redon", "Trunc", "Longitud", "Mayusculas", "Minusculas"],
-  },
-  {
-    id: 4,
-    titulo: "Decisiones simples",
-    resumen: "Elegir entre dos caminos con una condición.",
-    conceptos: ["Si / Sino / FinSi", "==", "<", ">", "<=", ">="],
-  },
-  {
-    id: 5,
-    titulo: "Decisiones múltiples",
-    resumen: "Resolver reglas con varios casos y operadores lógicos.",
-    conceptos: ["Si anidado", "Segun / De Otro Modo / FinSegun", "Y", "O", "No"],
-  },
-  {
-    id: 6,
-    titulo: "Repetición controlada",
-    resumen: "Repetir instrucciones con ciclos.",
-    conceptos: ["Mientras", "Repetir / HastaQue", "Para"],
-  },
-  {
-    id: 7,
-    titulo: "Patrones de procesamiento",
-    resumen: "Contador, acumulador, promedio, máximo y mínimo.",
-    conceptos: ["contador", "acumulador", "promedio", "máximo", "mínimo"],
-  },
-  {
-    id: 8,
-    titulo: "Programas integradores",
-    resumen: "Programas con menú persistente y análisis final.",
-    conceptos: ["menú", "Mientras persistente", "Segun", "validación de opción"],
-  },
-  {
-    id: 9,
-    titulo: "Puente hacia Python",
-    resumen: "Conectar lo aprendido con la sintaxis de Python.",
-    conceptos: ["Escribir → print", "Leer → input", "Si → if", "Mientras → while", "Para → for"],
-  },
+const NIVELES_LITESEINT = [
+  { id: 0, titulo: "Orientación" },
+  { id: 1, titulo: "Secuencia y salida" },
+  { id: 2, titulo: "Variables, tipos y entrada" },
+  { id: 3, titulo: "Expresiones y E·P·S" },
+  { id: 4, titulo: "Decisiones simples" },
+  { id: 5, titulo: "Decisiones múltiples" },
+  { id: 6, titulo: "Repetición controlada" },
+  { id: 7, titulo: "Patrones de procesamiento" },
+  { id: 8, titulo: "Programas integradores" },
+  { id: 9, titulo: "Puente hacia Python" },
 ];
 
-function renderizarNivelesAprendizaje() {
-  const $lista = $("#learningLevels");
-  if (!$lista.length) return;
+const PROGRESO_KEY = "liteseint:exerciseProgress";
+const ESTADOS_PROGRESO = ["pendiente", "en-curso", "completado"];
+const ESTADO_LABEL = {
+  "pendiente": "Pendiente",
+  "en-curso": "En curso",
+  "completado": "Completado",
+};
 
+let progresoEjercicios = {};
+let ejercicioSeleccionadoId = null;
+
+function cargarProgreso() {
+  try {
+    const raw = localStorage.getItem(PROGRESO_KEY);
+    progresoEjercicios = raw ? JSON.parse(raw) : {};
+    if (typeof progresoEjercicios !== "object" || progresoEjercicios === null) {
+      progresoEjercicios = {};
+    }
+  } catch (_) {
+    progresoEjercicios = {};
+  }
+}
+
+function guardarProgreso() {
+  try {
+    localStorage.setItem(PROGRESO_KEY, JSON.stringify(progresoEjercicios));
+  } catch (_) {
+    /* ignorar */
+  }
+}
+
+function estadoEjercicio(id) {
+  const v = progresoEjercicios[id];
+  return ESTADOS_PROGRESO.includes(v) ? v : "pendiente";
+}
+
+function setEstadoEjercicio(id, estado) {
+  if (!ESTADOS_PROGRESO.includes(estado)) return;
+  if (estado === "pendiente") {
+    delete progresoEjercicios[id];
+  } else {
+    progresoEjercicios[id] = estado;
+  }
+  guardarProgreso();
+}
+
+function ejerciciosVisibles() {
+  if (!window.EjerciciosLiteSeInt) return [];
+  return window.EjerciciosLiteSeInt.listarAdaptados();
+}
+
+function poblarFiltroNivel() {
+  const $sel = $("#ejFiltroNivel");
+  if (!$sel.length) return;
+  const presentes = new Set(ejerciciosVisibles().map((e) => e.nivelLiteSeInt));
+  for (const n of NIVELES_LITESEINT) {
+    if (!presentes.has(n.id)) continue;
+    $sel.append(
+      $("<option>").val(String(n.id)).text(`Nivel ${n.id} — ${n.titulo}`),
+    );
+  }
+}
+
+function aplicarFiltros(lista) {
+  const nivel = $("#ejFiltroNivel").val();
+  const dif = $("#ejFiltroDificultad").val();
+  const estado = $("#ejFiltroEstado").val();
+  return lista.filter((e) => {
+    if (nivel !== "" && String(e.nivelLiteSeInt) !== nivel) return false;
+    if (dif !== "" && e.dificultad !== dif) return false;
+    if (estado !== "" && estadoEjercicio(e.id) !== estado) return false;
+    return true;
+  });
+}
+
+function renderizarResumenProgreso() {
+  const $cont = $("#ejProgresoResumen");
+  if (!$cont.length) return;
+  const total = ejerciciosVisibles().length;
+  let completados = 0;
+  let enCurso = 0;
+  for (const e of ejerciciosVisibles()) {
+    const st = estadoEjercicio(e.id);
+    if (st === "completado") completados++;
+    else if (st === "en-curso") enCurso++;
+  }
+  $cont.html(
+    `<span class="ej-prog-pill done">✓ ${completados}</span>` +
+      `<span class="ej-prog-pill running">▸ ${enCurso}</span>` +
+      `<span class="ej-prog-pill total">de ${total}</span>`,
+  );
+}
+
+function renderizarListaEjercicios() {
+  const $lista = $("#ejList");
+  if (!$lista.length) return;
+  const visibles = aplicarFiltros(ejerciciosVisibles());
   $lista.empty();
-  for (const nivel of NIVELES_APRENDIZAJE) {
+
+  if (visibles.length === 0) {
+    $lista.append(
+      $("<li>")
+        .addClass("ej-empty")
+        .text("No hay ejercicios con esos filtros."),
+    );
+    return;
+  }
+
+  for (const e of visibles) {
+    const estado = estadoEjercicio(e.id);
     const $item = $("<li>")
-      .addClass("learning-level")
-      .attr("data-nivel", nivel.id)
+      .addClass("ej-item")
+      .addClass(`estado-${estado}`)
+      .attr("data-id", e.id)
       .attr("role", "button")
       .attr("tabindex", "0");
-    $item.append($("<div>").addClass("learning-level-num").text(nivel.id));
-    const $info = $("<div>").addClass("learning-level-info");
-    $info.append($("<p>").addClass("learning-level-title").text(nivel.titulo));
-    $info.append($("<div>").addClass("learning-level-status").text("próximamente"));
-    $item.append($info);
+    if (e.id === ejercicioSeleccionadoId) $item.addClass("selected");
+
+    const $head = $("<div>").addClass("ej-item-head");
+    $head.append($("<span>").addClass("ej-item-nivel").text(`N${e.nivelLiteSeInt}`));
+    $head.append($("<span>").addClass("ej-item-dif").addClass(`dif-${e.dificultad}`).text(e.dificultad));
+    $head.append($("<span>").addClass(`ej-item-estado est-${estado}`).text(ESTADO_LABEL[estado]));
+    $item.append($head);
+    $item.append($("<p>").addClass("ej-item-titulo").text(e.titulo));
+    const conceptos = (e.conceptos || []).slice(0, 4).join(" · ");
+    if (conceptos) {
+      $item.append($("<p>").addClass("ej-item-conceptos").text(conceptos));
+    }
     $lista.append($item);
   }
 }
 
-function mostrarDetalleNivel(nivelId) {
-  const nivel = NIVELES_APRENDIZAJE.find((n) => n.id === nivelId);
-  const $detalle = $("#learningDetail");
-  if (!nivel || !$detalle.length) return;
-
-  $detalle.empty();
-  $detalle.append($("<span>").addClass("learning-detail-tag").text("Próximamente"));
-  $detalle.append($("<h4>").text(`Nivel ${nivel.id} — ${nivel.titulo}`));
-  $detalle.append($("<p>").text(nivel.resumen));
-
-  if (nivel.conceptos && nivel.conceptos.length) {
-    const $ul = $("<ul>");
-    for (const c of nivel.conceptos) {
-      $ul.append($("<li>").text(c));
-    }
-    $detalle.append($ul);
+function mostrarDetalleEjercicio(id) {
+  const $det = $("#ejDetail");
+  if (!$det.length) return;
+  const e = window.EjerciciosLiteSeInt
+    ? window.EjerciciosLiteSeInt.porId(id)
+    : null;
+  if (!e) {
+    $det.html('<p class="ej-detail-empty">Selecciona un ejercicio para ver su enunciado.</p>');
+    return;
   }
 
-  $detalle.append(
-    $("<p>").html(
-      'Los ejercicios se integrarán adaptados al dialecto LiteSeInt. ' +
-      'Detalles en <code>EJERCICIOS.md</code>.',
-    ),
+  ejercicioSeleccionadoId = e.id;
+  const estado = estadoEjercicio(e.id);
+
+  $det.empty();
+  const $tags = $("<div>").addClass("ej-detail-tags");
+  $tags.append($("<span>").addClass("ej-tag").text(`Nivel ${e.nivelLiteSeInt}`));
+  $tags.append($("<span>").addClass(`ej-tag ej-tag-dif dif-${e.dificultad}`).text(e.dificultad));
+  $tags.append($("<span>").addClass("ej-tag").text(e.modulo));
+  $tags.append($("<span>").addClass(`ej-tag est-${estado}`).text(ESTADO_LABEL[estado]));
+  $det.append($tags);
+
+  $det.append($("<h4>").text(e.titulo));
+  $det.append($("<p>").addClass("ej-enunciado").text(e.enunciado));
+
+  if (e.conceptos && e.conceptos.length) {
+    const $cs = $("<p>").addClass("ej-conceptos-list");
+    $cs.append($("<span>").addClass("ej-section-label").text("Conceptos: "));
+    $cs.append(document.createTextNode(e.conceptos.join(", ")));
+    $det.append($cs);
+  }
+
+  if (e.entradaProcesoSalida) {
+    const eps = e.entradaProcesoSalida;
+    const $eps = $("<div>").addClass("ej-eps");
+    $eps.append($("<p>").addClass("ej-section-label").text("Entrada · Proceso · Salida"));
+    if (eps.entrada) $eps.append($("<div>").addClass("ej-eps-row").html('<b>E:</b> ').append(document.createTextNode(eps.entrada)));
+    if (eps.proceso) $eps.append($("<div>").addClass("ej-eps-row").html('<b>P:</b> ').append(document.createTextNode(eps.proceso)));
+    if (eps.salida) $eps.append($("<div>").addClass("ej-eps-row").html('<b>S:</b> ').append(document.createTextNode(eps.salida)));
+    $det.append($eps);
+  }
+
+  if (e.salidaEsperada) {
+    const $se = $("<div>").addClass("ej-salida");
+    $se.append($("<p>").addClass("ej-section-label").text("Salida esperada"));
+    $se.append($("<pre>").text(e.salidaEsperada));
+    $det.append($se);
+  }
+
+  if (e.pista) {
+    const $pista = $("<details>").addClass("ej-pista");
+    $pista.append($("<summary>").text("Ver pista"));
+    $pista.append($("<p>").text(e.pista));
+    $det.append($pista);
+  }
+
+  // Acciones
+  const $actions = $("<div>").addClass("ej-actions");
+
+  const $btnPlantilla = $("<button>")
+    .addClass("ej-btn ej-btn-primary")
+    .text("Cargar plantilla")
+    .on("click", () => cargarPlantillaEjercicio(e));
+  $actions.append($btnPlantilla);
+
+  if (e.codigoReferencia) {
+    const $btnRef = $("<button>")
+      .addClass("ej-btn")
+      .text("Ver código de referencia")
+      .on("click", () => cargarCodigoReferencia(e));
+    $actions.append($btnRef);
+  }
+
+  $det.append($actions);
+
+  // Estado del ejercicio
+  const $estado = $("<div>").addClass("ej-estado-control");
+  $estado.append($("<p>").addClass("ej-section-label").text("Marcar como"));
+  for (const st of ESTADOS_PROGRESO) {
+    const $b = $("<button>")
+      .addClass("ej-btn-estado")
+      .addClass(`est-${st}`)
+      .toggleClass("selected", st === estado)
+      .text(ESTADO_LABEL[st])
+      .on("click", () => {
+        setEstadoEjercicio(e.id, st);
+        renderizarListaEjercicios();
+        renderizarResumenProgreso();
+        mostrarDetalleEjercicio(e.id);
+      });
+    $estado.append($b);
+  }
+  $det.append($estado);
+}
+
+function plantillaInicial(ejercicio) {
+  const nombre = (ejercicio.titulo || "ejercicio")
+    .toLowerCase()
+    .replace(/[^a-z0-9áéíóúüñ]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .replace(/^[0-9]/, "p_$&") || "ejercicio";
+  return `Proceso ${nombre}\n  // ${ejercicio.titulo}\n  // Enunciado: revisa el panel derecho.\n\n\nFinProceso`;
+}
+
+function reemplazarEditorConfirmando(nuevoCodigo, mensaje) {
+  const editor = document.getElementById("editor");
+  if (!editor) return;
+  const actual = editor.value;
+  const limpio = actual.trim();
+  const placeholder = ESTRUCTURA_INICIAL.trim();
+
+  const reemplazar = () => {
+    registrarHistorialEditor();
+    editor.value = nuevoCodigo;
+    limpiarConsola();
+    actualizarLineas();
+    editor.focus();
+  };
+
+  if (limpio === "" || limpio === placeholder) {
+    reemplazar();
+    return;
+  }
+
+  if (typeof Swal !== "undefined") {
+    Swal.fire({
+      icon: "warning",
+      title: "¿Reemplazar el código actual?",
+      text: mensaje,
+      showCancelButton: true,
+      confirmButtonText: "Reemplazar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#00cc77",
+      background: "#161b22",
+      color: "#e6edf3",
+    }).then((res) => {
+      if (res && res.isConfirmed) reemplazar();
+    });
+  } else if (window.confirm(mensaje + "\n\n¿Reemplazar el código actual?")) {
+    reemplazar();
+  }
+}
+
+function cargarPlantillaEjercicio(ejercicio) {
+  reemplazarEditorConfirmando(
+    plantillaInicial(ejercicio),
+    "Esto reemplazará el contenido del editor por una plantilla en blanco para este ejercicio.",
   );
 }
 
-function seleccionarNivel(nivelId) {
-  $(".learning-level").removeClass("selected");
-  $(`.learning-level[data-nivel="${nivelId}"]`).addClass("selected");
-  mostrarDetalleNivel(nivelId);
+function cargarCodigoReferencia(ejercicio) {
+  if (!ejercicio.codigoReferencia) return;
+  reemplazarEditorConfirmando(
+    ejercicio.codigoReferencia,
+    "Esto reemplazará el contenido del editor por el código de referencia. Se recomienda intentar resolver el ejercicio antes de mirar la solución.",
+  );
+}
+
+function seleccionarEjercicio(id) {
+  ejercicioSeleccionadoId = id;
+  $(".ej-item").removeClass("selected");
+  $(`.ej-item[data-id="${id}"]`).addClass("selected");
+  mostrarDetalleEjercicio(id);
+}
+
+function inicializarBancoEjercicios() {
+  if (!window.EjerciciosLiteSeInt) return;
+  cargarProgreso();
+  poblarFiltroNivel();
+  renderizarListaEjercicios();
+  renderizarResumenProgreso();
+
+  $("#ejFiltroNivel, #ejFiltroDificultad, #ejFiltroEstado").on("change", () => {
+    renderizarListaEjercicios();
+  });
 }
 
 // =========================================
@@ -1801,17 +2008,17 @@ $(document).ready(function () {
     $(this).val("");
   });
 
-  // Panel de aprendizaje: render + selección + colapsar en móvil
-  renderizarNivelesAprendizaje();
-  $(document).on("click", ".learning-level", function () {
-    const id = parseInt($(this).attr("data-nivel"), 10);
-    if (Number.isFinite(id)) seleccionarNivel(id);
+  // Banco de ejercicios: filtros, listado, detalle y progreso local
+  inicializarBancoEjercicios();
+  $(document).on("click", ".ej-item", function () {
+    const id = $(this).attr("data-id");
+    if (id) seleccionarEjercicio(id);
   });
-  $(document).on("keydown", ".learning-level", function (e) {
+  $(document).on("keydown", ".ej-item", function (e) {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      const id = parseInt($(this).attr("data-nivel"), 10);
-      if (Number.isFinite(id)) seleccionarNivel(id);
+      const id = $(this).attr("data-id");
+      if (id) seleccionarEjercicio(id);
     }
   });
   $("#learningPanelToggle").on("click", function (e) {

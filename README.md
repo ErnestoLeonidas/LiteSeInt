@@ -6,8 +6,9 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v0.7.0`
-- Nuevo layout educativo: editor arriba, **consola debajo del editor** (redimensionable verticalmente) y **panel derecho** con la ruta de aprendizaje (niveles 0-9).
+- Versión visible en la app: `v0.8.0`
+- Layout educativo: editor arriba, **consola debajo del editor** (redimensionable verticalmente) y **panel derecho con el banco de ejercicios integrado** (filtros, detalle y progreso local).
+- **20 ejercicios adaptados** desde `ejercicios/guia.html` al dialecto LiteSeInt (niveles 0-7), con validación estática automática.
 - Ejemplos accesibles desde un menú desplegable en la cabecera del editor, agrupados por concepto.
 - Núcleo del lenguaje congelado para 1.0 (ver "Matriz de compatibilidad").
 - Reglas de adaptación de ejercicios documentadas en [`EJERCICIOS.md`](EJERCICIOS.md).
@@ -20,7 +21,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 - Editor de pseudocódigo con numeración de líneas.
 - Consola **debajo del editor**, redimensionable verticalmente (la altura se persiste en `localStorage`).
-- **Panel derecho** con los niveles 0-9 de la ruta de aprendizaje LiteSeInt.
+- **Banco de ejercicios** en el panel derecho con filtros por nivel/dificultad/estado, detalle con enunciado, E·P·S, salida esperada y pista, acciones para cargar plantilla o código de referencia, y **progreso local** persistente (`pendiente` / `en curso` / `completado`).
 - Selector de **ejemplos en menú desplegable**, agrupados por concepto (primeros programas, variables, expresiones, condicionales, ciclos, `Segun`).
 - Resaltado de sintaxis y guías visuales de indentación.
 - Validación estática con errores por línea, badge visual y tooltip descriptivo.
@@ -255,13 +256,18 @@ La lógica del intérprete no depende de frameworks de frontend.
 ├── index.html
 ├── README.md
 ├── CHANGELOG.md
+├── EJERCICIOS.md
+├── ROADMAP.md
 ├── package.json
 ├── css/
 │   └── styles.css
 ├── js/
 │   ├── app.js
 │   ├── doc_errores.js
+│   ├── ejercicios-data.js
 │   └── LiteSeInt.js
+├── ejercicios/
+│   └── guia.html
 └── tests/
     └── run-tests.js
 ```
@@ -277,10 +283,11 @@ tests/
 
 - [index.html](index.html): estructura de la interfaz y carga de dependencias.
 - [css/styles.css](css/styles.css): estilos de la aplicación.
-- [js/app.js](js/app.js): controlador de interfaz, consola, editor, autocompletado y ejemplos.
+- [js/app.js](js/app.js): controlador de interfaz, consola, editor, autocompletado, ejemplos y banco de ejercicios.
 - [js/doc_errores.js](js/doc_errores.js): tokenización, validación estática, decoraciones y tabla de símbolos.
 - [js/LiteSeInt.js](js/LiteSeInt.js): parser, AST, ejecución y evaluación de expresiones/condiciones.
-- [tests/run-tests.js](tests/run-tests.js): pruebas de regresión para validar cambios en el lenguaje.
+- [js/ejercicios-data.js](js/ejercicios-data.js): banco de ejercicios adaptados al dialecto LiteSeInt (fuente de datos del panel derecho).
+- [tests/run-tests.js](tests/run-tests.js): pruebas de regresión del lenguaje y del banco de ejercicios.
 
 ## Uso rápido
 
@@ -289,6 +296,17 @@ tests/
 3. Escribe pseudocódigo o carga uno de los ejemplos.
 4. Presiona `Ejecutar`.
 5. Si el programa usa `Leer`, responde desde la consola integrada.
+
+## Banco de ejercicios
+
+El panel derecho muestra el banco de ejercicios adaptados desde `ejercicios/guia.html`. Permite:
+
+- **Filtrar** por nivel LiteSeInt (0-9), dificultad (`básico`/`intermedio`/`avanzado`) y estado de progreso (`pendiente`/`en curso`/`completado`).
+- **Ver el detalle** de un ejercicio: enunciado, conceptos, entrada/proceso/salida, salida esperada y pista colapsable.
+- **Cargar una plantilla** vacía (`Proceso ... FinProceso`) o el **código de referencia** adaptado, con confirmación previa para no sobrescribir el editor.
+- **Marcar progreso** manualmente como `pendiente`, `en curso` o `completado`. El estado se guarda en `localStorage` (`liteseint:exerciseProgress`) y persiste al recargar la página.
+
+A la fecha v0.8.0, el banco contiene 20 ejercicios curados que cubren los niveles 0-7. Los 225 ejercicios restantes de la guía permanecen como pendientes (no visibles) hasta ser adaptados; la regla de calidad es: **todo ejercicio visible debe estar adaptado** al dialecto LiteSeInt y pasar la validación estática. Detalles en [`EJERCICIOS.md`](EJERCICIOS.md).
 
 ## Pruebas
 
@@ -305,7 +323,8 @@ index.html
   ├── css/styles.css
   └── js/app.js
        ├── usa js/doc_errores.js para validación y ayudas del editor
-       └── usa js/LiteSeInt.js para interpretar y ejecutar
+       ├── usa js/LiteSeInt.js para interpretar y ejecutar
+       └── usa js/ejercicios-data.js como fuente del banco de ejercicios
 ```
 
 ### Responsabilidades
