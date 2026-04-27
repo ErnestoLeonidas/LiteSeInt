@@ -42,7 +42,7 @@
   --example-bar-h: 40px;
   --header-panel-h: 32px;
   --footer-h: 32px;
-  --learning-panel-w: 280px;
+  --learning-panel-w: 50%;
   --console-min-h: 96px;
   --console-default-h: 220px;
   --resize-handle-h: 6px;
@@ -199,7 +199,7 @@ body::before {
 }
 
 .workspace-column {
-  flex: 1;
+  flex: 1 1 50%;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -734,7 +734,7 @@ body::before {
 
 .learning-panel-body {
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
   padding: 12px 14px 16px;
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) transparent;
@@ -761,6 +761,39 @@ body::before {
   border-radius: 3px;
   font-size: 10.5px;
   color: var(--accent-dim);
+}
+
+.ej-workspace {
+  display: grid;
+  grid-template-columns: minmax(200px, 42%) minmax(0, 1fr);
+  gap: 12px;
+  height: 100%;
+  min-height: 0;
+}
+
+.ej-list-column,
+.ej-detail-column {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+.ej-list-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.ej-detail-column {
+  border-left: 1px dashed var(--border-color);
+  padding-left: 12px;
+}
+
+.ej-detail-column .ej-detail {
+  border-top: 0;
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .learning-levels {
@@ -1304,8 +1337,8 @@ body::before {
     RESPONSIVE
     ======================================== */
 @media (max-width: 1024px) {
-  .learning-panel {
-    width: 240px;
+  .ej-workspace {
+    grid-template-columns: minmax(170px, 44%) minmax(0, 1fr);
   }
 }
 
@@ -1345,6 +1378,29 @@ body::before {
     max-height: 38vh;
     border-left: none;
     border-top: 1px solid var(--border-color);
+  }
+
+  .learning-panel-body {
+    overflow-y: auto;
+  }
+
+  .ej-workspace {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+  }
+
+  .ej-list-column,
+  .ej-detail-column {
+    overflow-y: visible;
+  }
+
+  .ej-detail-column {
+    border-left: 0;
+    border-top: 1px dashed var(--border-color);
+    padding-left: 0;
+    padding-top: 12px;
   }
 
   .learning-panel-toggle {

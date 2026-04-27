@@ -115,7 +115,9 @@
           <button class="learning-panel-toggle" id="learningPanelToggle" aria-label="Mostrar u ocultar panel de ejercicios">▾</button>
         </div>
         <div class="learning-panel-body" id="learningPanelBody">
-          <div class="ej-filters" id="ejFilters">
+          <div class="ej-workspace">
+            <div class="ej-list-column">
+              <div class="ej-filters" id="ejFilters">
             <label class="ej-filter">
               <span>Nivel</span>
               <select id="ejFiltroNivel">
@@ -141,12 +143,16 @@
               </select>
             </label>
           </div>
-          <div class="ej-progress-summary" id="ejProgresoResumen"></div>
-          <ul class="ej-list" id="ejList"></ul>
-          <div class="ej-detail" id="ejDetail">
+              <div class="ej-progress-summary" id="ejProgresoResumen"></div>
+              <ul class="ej-list" id="ejList"></ul>
+            </div>
+            <div class="ej-detail-column">
+              <div class="ej-detail" id="ejDetail">
             <p class="ej-detail-empty">
               Selecciona un ejercicio para ver su enunciado.
             </p>
+          </div>
+            </div>
           </div>
         </div>
       </aside>
