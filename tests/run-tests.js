@@ -19,6 +19,11 @@ function loadRuntime() {
   vm.runInContext(`${docErrores}\nglobalThis.DocErrores = DocErrores;`, ctx);
   vm.runInContext(`${liteSeInt}\nglobalThis.LiteSeInt = LiteSeInt;`, ctx);
   vm.runInContext(`${ejercicios}\nglobalThis.EjerciciosLiteSeInt = globalThis.EjerciciosLiteSeInt;`, ctx);
+  const ejerciciosJson = ctx.EjerciciosLiteSeInt.EJERCICIOS_JSON_PATHS.flatMap((jsonPath) => {
+    const data = JSON.parse(fs.readFileSync(path.join(root, jsonPath), 'utf8'));
+    return ctx.EjerciciosLiteSeInt.ejerciciosDesdeData(data, jsonPath);
+  });
+  ctx.EjerciciosLiteSeInt.instalarBanco(ejerciciosJson);
   return ctx;
 }
 
@@ -118,7 +123,7 @@ test('evalua Y, O y No dentro de asignaciones logicas', async () => {
 });
 
 // =====================================================
-// Banco de ejercicios v0.8.0
+// Banco de ejercicios vv.0.8.2
 // =====================================================
 
 const CAMPOS_OBLIGATORIOS = [

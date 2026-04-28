@@ -6,6 +6,24 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [v.0.8.2] — 2026-04-28
+
+Consolidación del banco de ejercicios. Esta versión mueve la fuente real de ejercicios a JSON normalizados por EA y deja `js/ejercicios-data.js` como cargador único del banco.
+
+### Agregado
+- **245 ejercicios adaptados y visibles**: los archivos `json/EA 1.1.json` a `json/EA 1.7.json` quedan en el formato normalizado del banco (`id`, `origen`, `modulo`, `experiencia`, `nivelLiteSeInt`, `dificultad`, `gradoAyuda`, `titulo`, `conceptos`, `enunciado`, `entradaProcesoSalida`, `salidaEsperada`, `pista`, `codigoReferencia`, `estadoAdaptacion`, `motivoExclusion`).
+- **Carga centralizada desde JSON**: `js/ejercicios-data.js` ahora define las rutas de las EAs, carga los JSON con `fetch`, instala el banco y expone `EjerciciosLiteSeInt`.
+
+### Cambiado
+- **`index.html`**: carga `js/ejercicios-data.js` antes de `js/app.js`.
+- **`js/app.js`**: deja de conocer las rutas JSON y delega la carga en `EjerciciosLiteSeInt.cargarDesdeJson()`.
+- **`tests/run-tests.js`**: las pruebas instalan el banco desde los JSON, alineadas con el flujo de la app.
+- **Documentación**: `README.md` y `EJERCICIOS.md` reflejan que el banco visible contiene 245 ejercicios adaptados.
+- **Versión visible**: `vv.0.8.2`.
+
+### Pendiente
+- Optimizar los JSON de **EA 1.6** y **EA 1.7**: aunque están normalizados y pasan validación estática, todavía requieren revisión pedagógica para reducir repetición, mejorar enunciados/pistas y ajustar progresión.
+
 ## [0.8.0] — 2026-04-26
 
 Cierre de la fase "Banco de Ejercicios Integrado". Esta versión reemplaza los placeholders del panel derecho por un banco real de ejercicios navegable, derivado de `ejercicios/guia.html` y adaptado al dialecto LiteSeInt. No cambia el lenguaje ni el runtime.

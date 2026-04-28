@@ -170,7 +170,7 @@ When adding or changing language behavior:
 3. Update autocomplete, examples, or UI helpers in `js/app.js` if the feature is user-visible.
 4. Update `README.md` if supported syntax or behavior changed.
 5. Update `CHANGELOG.md` for notable visible changes.
-6. Update the visible version in `index.html` only if the phase is actually complete. The version trail across `index.html`, `CHANGELOG.md`, and the git tags (e.g. `v0.8.1`) should move together — do not bump one without the others.
+6. Update the visible version in `index.html` only if the phase is actually complete. The version trail across `index.html`, `CHANGELOG.md`, and the git tags (e.g. `vv.0.8.2`) should move together — do not bump one without the others.
 
 Use `prompt_v*.txt` files at repo root as scope guards when they exist and the request maps to a planned phase. If no matching prompt exists, use this file, `README.md`, `CHANGELOG.md`, and the current implementation as the source of truth.
 

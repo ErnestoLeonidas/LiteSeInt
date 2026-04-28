@@ -165,36 +165,39 @@ Toda integración futura de ejercicios debe alimentar la tabla siguiente. La inv
 | EA | Total | Adaptados | Requieren decisión | Excluidos temporales |
 |---|---|---|---|---|
 | 1.1 | 20 | 20 | 0 | 0 |
-| 1.2 | 40 | 2 | 0 | 0 |
-| 1.3 | 40 | 5 | 0 | 0 |
-| 1.4 | 60 | 7 | 0 | 0 |
-| 1.5 | 15 | 0 | 0 | 0 |
-| 1.6 | 40 | 0 | 0 | 0 |
-| 1.7 | 30 | 0 | 0 | 0 |
-| **Total** | **245** | **34** | **0** | **0** |
+| 1.2 | 40 | 40 | 0 | 0 |
+| 1.3 | 40 | 40 | 0 | 0 |
+| 1.4 | 60 | 60 | 0 | 0 |
+| 1.5 | 15 | 15 | 0 | 0 |
+| 1.6 | 40 | 40 | 0 | 0 |
+| 1.7 | 30 | 30 | 0 | 0 |
+| **Total** | **245** | **245** | **0** | **0** |
 
 Notas de adaptación:
 - EA 1.1 #9 (Celsius a Fahrenheit): también existe como `ea1-2-009` (atribuido erróneamente a EA 1.2). El `ea1-1-009` usa el origen correcto.
 - EA 1.1 #18 (Segundos a h:m:s): también existe como `ea1-2-015`. El `ea1-1-018` usa el origen correcto (EA 1.1). DIV/MOD adaptados a `Trunc`/`mod`.
 - EA 1.1 #20: la variable `paso` es reservada en LiteSeInt (por `Con Paso` de `Para`); se renombra a `numPaso` en el código de referencia.
 
-A **v0.8.0** se integra un primer lote curado de **20 ejercicios** desde `ejercicios/guia.html`, adaptados al dialecto LiteSeInt y validados con `DocErrores.validarDocumento`. La fuente de datos vive en `js/ejercicios-data.js` y es consumida por el panel derecho. Los 225 ejercicios restantes permanecen como pendientes (no visibles), siguiendo la regla de calidad: todo ejercicio visible debe estar adaptado y probado.
+A **vv.0.8.2** se completa la migración del banco a **245 ejercicios adaptados** desde `ejercicios/guia.html`, distribuidos en `json/EA 1.1.json` a `json/EA 1.7.json`. `js/ejercicios-data.js` es ahora el punto único de carga del banco y consume esos JSON normalizados para exponer `EjerciciosLiteSeInt` al panel derecho.
 
-Distribución del primer lote por nivel LiteSeInt:
+Pendiente: optimizar los JSON de **EA 1.6** y **EA 1.7**. Aunque sus ejercicios ya están normalizados y pasan validación estática, requieren una revisión de calidad pedagógica para reducir repetición, mejorar enunciados/pistas y ajustar progresión.
+
+Distribución actual por nivel LiteSeInt:
 
 | Nivel | Tema | Adaptados |
 |---|---|---:|
 | 0 | Orientación | 2 |
 | 1 | Secuencia y salida | 1 |
-| 2 | Variables, tipos y entrada | 3 |
-| 3 | Expresiones y E·P·S | 3 |
-| 4 | Decisiones simples | 3 |
-| 5 | Decisiones múltiples | 2 |
-| 6 | Repetición controlada | 3 |
-| 7 | Patrones de procesamiento | 3 |
-| 8-9 | Programas integradores / Puente Python | 0 |
+| 2 | Variables, tipos y entrada | 7 |
+| 3 | Expresiones y E·P·S | 50 |
+| 4 | Decisiones simples | 33 |
+| 5 | Decisiones múltiples | 7 |
+| 6 | Repetición controlada | 21 |
+| 7 | Patrones de procesamiento | 39 |
+| 8 | Programas integradores | 85 |
+| 9 | Puente Python | 0 |
 
-Criterios usados para el primer lote: cobertura de los niveles iniciales (0-4) más representación mínima de ciclos (6) y patrones (7); todo ejercicio visible debe pasar la validación estática; cada nivel cubierto incluye al menos un ejercicio guiado, uno de práctica y uno de desafío cuando es viable.
+Criterio de publicación: todo ejercicio visible debe pasar la validación estática; cada ejercicio conserva enunciado, E·P·S, salida esperada, pista y código de referencia adaptado al dialecto LiteSeInt.
 
 ### Cobertura pedagógica por comando
 
