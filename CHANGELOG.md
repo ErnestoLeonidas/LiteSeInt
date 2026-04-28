@@ -19,7 +19,7 @@ Consolidación del banco de ejercicios. Esta versión mueve la fuente real de ej
 - **`js/app.js`**: deja de conocer las rutas JSON y delega la carga en `EjerciciosLiteSeInt.cargarDesdeJson()`.
 - **`tests/run-tests.js`**: las pruebas instalan el banco desde los JSON, alineadas con el flujo de la app.
 - **Documentación**: `README.md` y `EJERCICIOS.md` reflejan que el banco visible contiene 245 ejercicios adaptados.
-- **Versión visible**: `vv.0.8.2`.
+- **Versión visible**: `v.0.8.2`.
 
 ### Pendiente
 - Optimizar los JSON de **EA 1.6** y **EA 1.7**: aunque están normalizados y pasan validación estática, todavía requieren revisión pedagógica para reducir repetición, mejorar enunciados/pistas y ajustar progresión.

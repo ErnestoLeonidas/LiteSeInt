@@ -6,7 +6,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `vv.0.8.2`
+- Versión visible en la app: `v.0.8.2`
 - Layout educativo: editor arriba, **consola debajo del editor** (redimensionable verticalmente) y **panel derecho con el banco de ejercicios integrado** (filtros, detalle y progreso local).
 - **245 ejercicios adaptados** desde `ejercicios/guia.html` al dialecto LiteSeInt, cargados desde archivos JSON normalizados, con validación estática automática.
 - Ejemplos accesibles desde un menú desplegable en la cabecera del editor, agrupados por concepto.
@@ -306,7 +306,7 @@ El panel derecho muestra el banco de ejercicios adaptados desde `ejercicios/guia
 - **Cargar una plantilla** vacía (`Proceso ... FinProceso`) o el **código de referencia** adaptado, con confirmación previa para no sobrescribir el editor.
 - **Marcar progreso** manualmente como `pendiente`, `en curso` o `completado`. El estado se guarda en `localStorage` (`liteseint:exerciseProgress`) y persiste al recargar la página.
 
-A la fecha vv.0.8.2, el banco contiene 245 ejercicios adaptados y visibles, cargados desde `json/EA 1.1.json` a `json/EA 1.7.json` mediante `js/ejercicios-data.js`. La regla de calidad se mantiene: **todo ejercicio visible debe estar adaptado** al dialecto LiteSeInt y pasar la validación estática. Queda pendiente optimizar el contenido pedagógico de los JSON de EA 1.6 y EA 1.7. Detalles en [`EJERCICIOS.md`](EJERCICIOS.md).
+A la fecha v.0.8.2, el banco contiene 245 ejercicios adaptados y visibles, cargados desde `json/EA 1.1.json` a `json/EA 1.7.json` mediante `js/ejercicios-data.js`. La regla de calidad se mantiene: **todo ejercicio visible debe estar adaptado** al dialecto LiteSeInt y pasar la validación estática. Queda pendiente optimizar el contenido pedagógico de los JSON de EA 1.6 y EA 1.7. Detalles en [`EJERCICIOS.md`](EJERCICIOS.md).
 
 ## Pruebas
 

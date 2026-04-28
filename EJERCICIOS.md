@@ -178,7 +178,7 @@ Notas de adaptación:
 - EA 1.1 #18 (Segundos a h:m:s): también existe como `ea1-2-015`. El `ea1-1-018` usa el origen correcto (EA 1.1). DIV/MOD adaptados a `Trunc`/`mod`.
 - EA 1.1 #20: la variable `paso` es reservada en LiteSeInt (por `Con Paso` de `Para`); se renombra a `numPaso` en el código de referencia.
 
-A **vv.0.8.2** se completa la migración del banco a **245 ejercicios adaptados** desde `ejercicios/guia.html`, distribuidos en `json/EA 1.1.json` a `json/EA 1.7.json`. `js/ejercicios-data.js` es ahora el punto único de carga del banco y consume esos JSON normalizados para exponer `EjerciciosLiteSeInt` al panel derecho.
+A **v.0.8.2** se completa la migración del banco a **245 ejercicios adaptados** desde `ejercicios/guia.html`, distribuidos en `json/EA 1.1.json` a `json/EA 1.7.json`. `js/ejercicios-data.js` es ahora el punto único de carga del banco y consume esos JSON normalizados para exponer `EjerciciosLiteSeInt` al panel derecho.
 
 Pendiente: optimizar los JSON de **EA 1.6** y **EA 1.7**. Aunque sus ejercicios ya están normalizados y pasan validación estática, requieren una revisión de calidad pedagógica para reducir repetición, mejorar enunciados/pistas y ajustar progresión.
 
