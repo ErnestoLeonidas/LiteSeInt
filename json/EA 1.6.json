@@ -1,0 +1,1972 @@
+{
+  "experience": {
+    "id": "1.6",
+    "label": "EA 1.6",
+    "titulo": "Ejercicio Tipo Prueba Parte 1",
+    "desc": "40 ejercicios de decisión anidada al estilo del Ejercicio 1 del parcial. Practica pseudocódigo en PSeInt con estructuras Si-Entonces anidadas.",
+    "color": "var(--green)",
+    "icon": "📝"
+  },
+  "exercises": [
+    {
+      "n": 176,
+      "ea": "1.6",
+      "level": "basico",
+      "titulo": "Inscripción a taller gratuito",
+      "panelTitulo": "Tipo Prueba P1 — Inscripción a taller gratuito",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Una persona desea saber si puede inscribirse en un taller gratuito. El sistema debe realizar un control simple.<br><br>El algoritmo debe solicitar:<br>• <strong>Edad de la persona</strong> (número entero).<br>• <strong>Si la persona está inscrita previamente</strong> (responder SI o NO).<br><br><strong>Reglas:</strong><br>• Si la edad es mayor o igual a 18:<br>&nbsp;&nbsp;○ Si la respuesta es SI → Mostrar: <em>\"Inscripción aceptada\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Inscripción rechazada\"</em><br>• En caso contrario → Mostrar: <em>\"Debe ser mayor de edad para poder inscribirse\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "edad (Entero)\ninscrita (Cadena: SI/NO)",
+          "p": "Si edad >= 18 Entonces\n   Si inscrita = \"SI\" → Inscripción aceptada\n   SiNo → Inscripción rechazada\nSiNo → Debe ser mayor de edad",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Ingrese su edad:"
+        },
+        {
+          "t": "i",
+          "v": "20"
+        },
+        {
+          "t": "o",
+          "v": "¿Está inscrita previamente? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Inscripción aceptada"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> InscripcionTaller\n    <span class=\"kw\">Definir</span> <span class=\"var\">edad</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">inscrita</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingrese su edad:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">edad</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Está inscrita previamente? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">inscrita</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">edad</span> <span class=\"op\">&gt;=</span> <span class=\"num\">18</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">inscrita</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Inscripción aceptada\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Inscripción rechazada\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Debe ser mayor de edad para poder inscribirse\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "La estructura clave es un <strong>Si anidado</strong>: primero valida la edad (condición numérica), luego dentro valida la inscripción previa (condición de cadena). El mensaje <em>\"Fin del proceso\"</em> va <strong>fuera</strong> de ambos Si, por eso se muestra siempre."
+    },
+    {
+      "n": 177,
+      "ea": "1.6",
+      "level": "basico",
+      "titulo": "Retiro de pedido en punto de entrega",
+      "panelTitulo": "Tipo Prueba P1 — Retiro de pedido",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Una persona desea saber si puede retirar un pedido en un punto de entrega. El sistema debe validar el retiro.<br><br>El algoritmo debe solicitar:<br>• <strong>Código de retiro</strong> (número entero).<br>• <strong>Confirmación de correo recibido</strong> (SI o NO).<br><br><strong>Reglas:</strong><br>• Si el código es mayor a 0:<br>&nbsp;&nbsp;○ Si el correo recibido es SI → Mostrar: <em>\"Retiro autorizado\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Faltan requisitos para retirar\"</em><br>• En caso contrario → Mostrar: <em>\"Código inválido\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "codigo (Entero)\ncorreo (Cadena: SI/NO)",
+          "p": "Si codigo > 0 Entonces\n   Si correo = \"SI\" → Retiro autorizado\n   SiNo → Faltan requisitos para retirar\nSiNo → Código inválido",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Ingrese el código de retiro:"
+        },
+        {
+          "t": "i",
+          "v": "1045"
+        },
+        {
+          "t": "o",
+          "v": "¿Recibió correo de confirmación? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Retiro autorizado"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> RetiroPedido\n    <span class=\"kw\">Definir</span> <span class=\"var\">codigo</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">correo</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingrese el código de retiro:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">codigo</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Recibió correo de confirmación? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">correo</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">codigo</span> <span class=\"op\">&gt;</span> <span class=\"num\">0</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">correo</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Retiro autorizado\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Faltan requisitos para retirar\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Código inválido\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "El código 0 o negativo es inválido desde el Si externo. Solo si el código es válido (>0) se evalúa si llegó el correo. Recuerda comparar cadenas con comillas."
+    },
+    {
+      "n": 178,
+      "ea": "1.6",
+      "level": "basico",
+      "titulo": "Despacho de pedido por stock",
+      "panelTitulo": "Tipo Prueba P1 — Despacho exacto o parcial",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Entero",
+        "Comparación"
+      ],
+      "enunciado": "Un sistema debe indicar si un pedido puede ser despachado. El sistema debe validar los datos.<br><br>El algoritmo debe solicitar:<br>• <strong>Cantidad solicitada</strong> (número entero).<br>• <strong>Cantidad disponible</strong> (número entero).<br><br><strong>Reglas:</strong><br>• Si la cantidad solicitada es menor o igual a la disponible:<br>&nbsp;&nbsp;○ Si la cantidad solicitada es igual a la disponible → Mostrar: <em>\"Despacho exacto\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Despacho parcial con stock restante\"</em><br>• En caso contrario → Mostrar: <em>\"Stock insuficiente\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "solicitada (Entero)\ndisponible (Entero)",
+          "p": "Si solicitada <= disponible Entonces\n   Si solicitada = disponible → Despacho exacto\n   SiNo → Despacho parcial con stock restante\nSiNo → Stock insuficiente",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Cantidad solicitada:"
+        },
+        {
+          "t": "i",
+          "v": "10"
+        },
+        {
+          "t": "o",
+          "v": "Cantidad disponible:"
+        },
+        {
+          "t": "i",
+          "v": "15"
+        },
+        {
+          "t": "o",
+          "v": "Despacho parcial con stock restante"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> DespachoPedido\n    <span class=\"kw\">Definir</span> <span class=\"var\">solicitada</span>, <span class=\"var\">disponible</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Cantidad solicitada:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">solicitada</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Cantidad disponible:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">disponible</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">solicitada</span> <span class=\"op\">&lt;=</span> <span class=\"var\">disponible</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">solicitada</span> <span class=\"op\">=</span> <span class=\"var\">disponible</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Despacho exacto\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Despacho parcial con stock restante\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Stock insuficiente\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Aquí ambas variables son enteros. El Si externo determina si hay stock suficiente; el Si interno distingue si el despacho es exacto (quedan 0 unidades) o parcial."
+    },
+    {
+      "n": 179,
+      "ea": "1.6",
+      "level": "basico",
+      "titulo": "Compra con saldo disponible",
+      "panelTitulo": "Tipo Prueba P1 — Compra aprobada o rechazada",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Entero",
+        "Comparación"
+      ],
+      "enunciado": "Un sistema debe indicar si una compra puede ser procesada con el saldo disponible.<br><br>El algoritmo debe solicitar:<br>• <strong>Saldo disponible</strong> (número entero).<br>• <strong>Monto de compra</strong> (número entero).<br><br><strong>Reglas:</strong><br>• Si el saldo es mayor o igual al monto:<br>&nbsp;&nbsp;○ Si el saldo es igual al monto → Mostrar: <em>\"Compra aprobada: saldo queda en cero\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Compra aprobada: queda saldo disponible\"</em><br>• En caso contrario → Mostrar: <em>\"Compra rechazada: saldo insuficiente\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "saldo (Entero)\nmonto (Entero)",
+          "p": "Si saldo >= monto Entonces\n   Si saldo = monto → saldo queda en cero\n   SiNo → queda saldo disponible\nSiNo → saldo insuficiente",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Saldo disponible:"
+        },
+        {
+          "t": "i",
+          "v": "50000"
+        },
+        {
+          "t": "o",
+          "v": "Monto de compra:"
+        },
+        {
+          "t": "i",
+          "v": "50000"
+        },
+        {
+          "t": "o",
+          "v": "Compra aprobada: saldo queda en cero"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> CompraConSaldo\n    <span class=\"kw\">Definir</span> <span class=\"var\">saldo</span>, <span class=\"var\">monto</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Saldo disponible:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">saldo</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Monto de compra:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">monto</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">saldo</span> <span class=\"op\">&gt;=</span> <span class=\"var\">monto</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">saldo</span> <span class=\"op\">=</span> <span class=\"var\">monto</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Compra aprobada: saldo queda en cero\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Compra aprobada: queda saldo disponible\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Compra rechazada: saldo insuficiente\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Este ejercicio usa solo enteros. La igualdad exacta (saldo = monto) es el caso especial dentro del caso aprobado. Practica distinguir cuándo usar >= en el Si externo y = en el Si interno."
+    },
+    {
+      "n": 180,
+      "ea": "1.6",
+      "level": "basico",
+      "titulo": "Ingreso a sala con reserva",
+      "panelTitulo": "Tipo Prueba P1 — Ingreso a sala",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Una persona desea ingresar a una sala. El sistema debe validar el acceso.<br><br>El algoritmo debe solicitar:<br>• <strong>Cupos disponibles</strong> (número entero).<br>• <strong>Confirmación de reserva</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si los cupos son mayores a 0:<br>&nbsp;&nbsp;○ Si la reserva es \"SI\" → Mostrar: <em>\"Ingreso permitido\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Ingreso rechazado: sin reserva\"</em><br>• En caso contrario → Mostrar: <em>\"Ingreso rechazado: sin cupos\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "cupos (Entero)\nreserva (Cadena: SI/NO)",
+          "p": "Si cupos > 0 Entonces\n   Si reserva = \"SI\" → Ingreso permitido\n   SiNo → Ingreso rechazado: sin reserva\nSiNo → Ingreso rechazado: sin cupos",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Cupos disponibles:"
+        },
+        {
+          "t": "i",
+          "v": "5"
+        },
+        {
+          "t": "o",
+          "v": "¿Tiene reserva? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "NO"
+        },
+        {
+          "t": "o",
+          "v": "Ingreso rechazado: sin reserva"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> IngresoSala\n    <span class=\"kw\">Definir</span> <span class=\"var\">cupos</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">reserva</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Cupos disponibles:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">cupos</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Tiene reserva? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">reserva</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">cupos</span> <span class=\"op\">&gt;</span> <span class=\"num\">0</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">reserva</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingreso permitido\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingreso rechazado: sin reserva\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingreso rechazado: sin cupos\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Hay dos razones diferentes para rechazar: sin cupos (Si externo falla) o con cupos pero sin reserva (Si interno falla). Los mensajes de error son distintos en cada caso."
+    },
+    {
+      "n": 181,
+      "ea": "1.6",
+      "level": "basico",
+      "titulo": "Validación de formulario web",
+      "panelTitulo": "Tipo Prueba P1 — Formulario enviado o bloqueado",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema debe validar si un formulario puede enviarse.<br><br>El algoritmo debe solicitar:<br>• <strong>Cantidad de campos completados</strong> (número entero).<br>• <strong>Aceptación de términos</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si los campos completados son mayor o igual a 5:<br>&nbsp;&nbsp;○ Si aceptó términos es \"SI\" → Mostrar: <em>\"Formulario enviado\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"No se puede enviar: debe aceptar términos\"</em><br>• En caso contrario → Mostrar: <em>\"No se puede enviar: faltan campos\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "campos (Entero)\nterminos (Cadena: SI/NO)",
+          "p": "Si campos >= 5 Entonces\n   Si terminos = \"SI\" → Formulario enviado\n   SiNo → No se puede enviar: debe aceptar términos\nSiNo → No se puede enviar: faltan campos",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Campos completados:"
+        },
+        {
+          "t": "i",
+          "v": "5"
+        },
+        {
+          "t": "o",
+          "v": "¿Acepta los términos? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Formulario enviado"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ValidarFormulario\n    <span class=\"kw\">Definir</span> <span class=\"var\">campos</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">terminos</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Campos completados:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">campos</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Acepta los términos? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">terminos</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">campos</span> <span class=\"op\">&gt;=</span> <span class=\"num\">5</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">terminos</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Formulario enviado\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"No se puede enviar: debe aceptar términos\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"No se puede enviar: faltan campos\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "El mínimo es 5 campos (>= 5). Si hay 4 o menos, ya falla en el Si externo sin llegar a preguntar por los términos."
+    },
+    {
+      "n": 182,
+      "ea": "1.6",
+      "level": "basico",
+      "titulo": "Atención en caja abierta",
+      "panelTitulo": "Tipo Prueba P1 — Caja abierta o cerrada",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema debe indicar si una atención puede realizarse en una caja.<br><br>El algoritmo debe solicitar:<br>• <strong>Número de personas en fila</strong> (número entero).<br>• <strong>Estado de la caja</strong> (ABIERTA / CERRADA).<br><br><strong>Reglas:</strong><br>• Si la caja está \"ABIERTA\":<br>&nbsp;&nbsp;○ Si la fila tiene más de 10 personas → Mostrar: <em>\"Atención lenta: fila larga\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Atención normal\"</em><br>• En caso contrario → Mostrar: <em>\"No se puede atender: caja cerrada\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "fila (Entero)\nestado (Cadena: ABIERTA/CERRADA)",
+          "p": "Si estado = \"ABIERTA\" Entonces\n   Si fila > 10 → Atención lenta: fila larga\n   SiNo → Atención normal\nSiNo → No se puede atender: caja cerrada",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Personas en fila:"
+        },
+        {
+          "t": "i",
+          "v": "12"
+        },
+        {
+          "t": "o",
+          "v": "Estado de la caja (ABIERTA/CERRADA):"
+        },
+        {
+          "t": "i",
+          "v": "ABIERTA"
+        },
+        {
+          "t": "o",
+          "v": "Atención lenta: fila larga"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> AtencionCaja\n    <span class=\"kw\">Definir</span> <span class=\"var\">fila</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">estado</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Personas en fila:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">fila</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Estado de la caja (ABIERTA/CERRADA):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">estado</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">estado</span> <span class=\"op\">=</span> <span class=\"str\">\"ABIERTA\"</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">fila</span> <span class=\"op\">&gt;</span> <span class=\"num\">10</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Atención lenta: fila larga\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Atención normal\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"No se puede atender: caja cerrada\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Aquí el Si externo compara una cadena (estado de caja) y el Si interno compara un entero (cantidad en fila). El orden importa: si la caja está cerrada, no tiene sentido evaluar la fila."
+    },
+    {
+      "n": 183,
+      "ea": "1.6",
+      "level": "basico",
+      "titulo": "Descuento según tipo de cliente",
+      "panelTitulo": "Tipo Prueba P1 — Descuento en compra",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema debe indicar si se aplica descuento en una compra.<br><br>El algoritmo debe solicitar:<br>• <strong>Total de la compra</strong> (número entero).<br>• <strong>Tipo de cliente</strong> (NORMAL / PREMIUM).<br><br><strong>Reglas:</strong><br>• Si el total es mayor o igual a 30000:<br>&nbsp;&nbsp;○ Si el tipo es \"PREMIUM\" → Mostrar: <em>\"Descuento a aplicar: 15%\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Descuento a aplicar: 0%\"</em><br>• En caso contrario → Mostrar: <em>\"No hay descuento: compra baja\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "total (Entero)\ntipoCliente (Cadena: NORMAL/PREMIUM)",
+          "p": "Si total >= 30000 Entonces\n   Si tipoCliente = \"PREMIUM\" → Descuento 15%\n   SiNo → Descuento 0%\nSiNo → No hay descuento: compra baja",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Total de la compra:"
+        },
+        {
+          "t": "i",
+          "v": "45000"
+        },
+        {
+          "t": "o",
+          "v": "Tipo de cliente (NORMAL/PREMIUM):"
+        },
+        {
+          "t": "i",
+          "v": "NORMAL"
+        },
+        {
+          "t": "o",
+          "v": "Descuento a aplicar: 0%"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> DescuentoCompra\n    <span class=\"kw\">Definir</span> <span class=\"var\">total</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">tipoCliente</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Total de la compra:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">total</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Tipo de cliente (NORMAL/PREMIUM):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">tipoCliente</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">total</span> <span class=\"op\">&gt;=</span> <span class=\"num\">30000</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">tipoCliente</span> <span class=\"op\">=</span> <span class=\"str\">\"PREMIUM\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Descuento a aplicar: 15%\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Descuento a aplicar: 0%\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"No hay descuento: compra baja\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Un cliente NORMAL que supera $30.000 obtiene 0% de descuento (no es un error: es la regla). Solo PREMIUM califica para el 15%. Monto bajo → sin descuento directamente."
+    },
+    {
+      "n": 184,
+      "ea": "1.6",
+      "level": "basico",
+      "titulo": "Acceso a estacionamiento",
+      "panelTitulo": "Tipo Prueba P1 — Control de acceso vehicular",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema debe controlar el acceso a un estacionamiento.<br><br>El algoritmo debe solicitar:<br>• <strong>Espacios disponibles</strong> (número entero).<br>• <strong>Tiene permiso de ingreso</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si los espacios son mayores a 0:<br>&nbsp;&nbsp;○ Si tiene permiso es \"SI\" → Mostrar: <em>\"Acceso al estacionamiento permitido\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Acceso denegado: no tiene permiso\"</em><br>• En caso contrario → Mostrar: <em>\"Acceso denegado: estacionamiento lleno\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "espacios (Entero)\npermiso (Cadena: SI/NO)",
+          "p": "Si espacios > 0 Entonces\n   Si permiso = \"SI\" → Acceso permitido\n   SiNo → Denegado: sin permiso\nSiNo → Denegado: lleno",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Espacios disponibles:"
+        },
+        {
+          "t": "i",
+          "v": "0"
+        },
+        {
+          "t": "o",
+          "v": "¿Tiene permiso de ingreso? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Acceso denegado: estacionamiento lleno"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> AccesoEstacionamiento\n    <span class=\"kw\">Definir</span> <span class=\"var\">espacios</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">permiso</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Espacios disponibles:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">espacios</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Tiene permiso de ingreso? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">permiso</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">espacios</span> <span class=\"op\">&gt;</span> <span class=\"num\">0</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">permiso</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Acceso al estacionamiento permitido\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Acceso denegado: no tiene permiso\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Acceso denegado: estacionamiento lleno\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Cuando espacios = 0, el acceso se deniega inmediatamente (Si externo = falso) sin evaluar el permiso. El Si interno solo se ejecuta si hay espacio."
+    },
+    {
+      "n": 185,
+      "ea": "1.6",
+      "level": "basico",
+      "titulo": "Entrega de medicamento en farmacia",
+      "panelTitulo": "Tipo Prueba P1 — Entrega con receta",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Una farmacia debe determinar si puede entregar un medicamento.<br><br>El algoritmo debe solicitar:<br>• <strong>Unidades disponibles en stock</strong> (número entero).<br>• <strong>El cliente presenta receta médica</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si las unidades son mayores a 0:<br>&nbsp;&nbsp;○ Si presenta receta es \"SI\" → Mostrar: <em>\"Medicamento entregado\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"No se puede entregar: requiere receta\"</em><br>• En caso contrario → Mostrar: <em>\"No se puede entregar: sin stock\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "stock (Entero)\nreceta (Cadena: SI/NO)",
+          "p": "Si stock > 0 Entonces\n   Si receta = \"SI\" → Medicamento entregado\n   SiNo → No se puede entregar: requiere receta\nSiNo → No se puede entregar: sin stock",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Unidades en stock:"
+        },
+        {
+          "t": "i",
+          "v": "3"
+        },
+        {
+          "t": "o",
+          "v": "¿Presenta receta médica? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "NO"
+        },
+        {
+          "t": "o",
+          "v": "No se puede entregar: requiere receta"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> EntregaMedicamento\n    <span class=\"kw\">Definir</span> <span class=\"var\">stock</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">receta</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Unidades en stock:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">stock</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Presenta receta médica? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">receta</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">stock</span> <span class=\"op\">&gt;</span> <span class=\"num\">0</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">receta</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Medicamento entregado\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"No se puede entregar: requiere receta\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"No se puede entregar: sin stock\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Dos requisitos independientes deben cumplirse para entregar: que haya stock Y que haya receta. Si falla el primero, no se evalúa el segundo."
+    },
+    {
+      "n": 186,
+      "ea": "1.6",
+      "level": "basico",
+      "titulo": "Aprobación de préstamo bancario",
+      "panelTitulo": "Tipo Prueba P1 — Préstamo sin deudas",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un banco debe determinar si puede aprobar un préstamo.<br><br>El algoritmo debe solicitar:<br>• <strong>Ingreso mensual del solicitante</strong> (número entero).<br>• <strong>Tiene deudas vigentes</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si el ingreso es mayor o igual a 500000:<br>&nbsp;&nbsp;○ Si tiene deudas es \"NO\" → Mostrar: <em>\"Préstamo aprobado\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Préstamo rechazado: cliente con deudas\"</em><br>• En caso contrario → Mostrar: <em>\"Préstamo rechazado: ingreso insuficiente\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "ingreso (Entero)\ndeudas (Cadena: SI/NO)",
+          "p": "Si ingreso >= 500000 Entonces\n   Si deudas = \"NO\" → Préstamo aprobado\n   SiNo → Rechazado: con deudas\nSiNo → Rechazado: ingreso insuficiente",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Ingreso mensual:"
+        },
+        {
+          "t": "i",
+          "v": "600000"
+        },
+        {
+          "t": "o",
+          "v": "¿Tiene deudas vigentes? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Préstamo rechazado: cliente con deudas"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> AprobacionPrestamo\n    <span class=\"kw\">Definir</span> <span class=\"var\">ingreso</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">deudas</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingreso mensual:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">ingreso</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Tiene deudas vigentes? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">deudas</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">ingreso</span> <span class=\"op\">&gt;=</span> <span class=\"num\">500000</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">deudas</span> <span class=\"op\">=</span> <span class=\"str\">\"NO\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Préstamo aprobado\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Préstamo rechazado: cliente con deudas\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Préstamo rechazado: ingreso insuficiente\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Nota que aquí el Si interno aprueba cuando la respuesta es \"NO\" (no tiene deudas). Es habitual que la condición de aprobación sea la negación de un problema."
+    },
+    {
+      "n": 187,
+      "ea": "1.6",
+      "level": "basico",
+      "titulo": "Control de temperatura de servidor",
+      "panelTitulo": "Tipo Prueba P1 — Alerta de temperatura crítica",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de monitoreo debe evaluar la temperatura de una sala de servidores.<br><br>El algoritmo debe solicitar:<br>• <strong>Temperatura actual en grados Celsius</strong> (número entero).<br>• <strong>El sistema de enfriamiento está activo</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si la temperatura es mayor a 30:<br>&nbsp;&nbsp;○ Si el enfriamiento está activo es \"NO\" → Mostrar: <em>\"Alerta crítica: apague los equipos\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Temperatura elevada: enfriamiento en curso\"</em><br>• En caso contrario → Mostrar: <em>\"Temperatura dentro del rango normal\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "temperatura (Entero)\nenfriamiento (Cadena: SI/NO)",
+          "p": "Si temperatura > 30 Entonces\n   Si enfriamiento = \"NO\" → Alerta crítica\n   SiNo → Temperatura elevada: enfriamiento en curso\nSiNo → Temperatura normal",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Temperatura actual (°C):"
+        },
+        {
+          "t": "i",
+          "v": "35"
+        },
+        {
+          "t": "o",
+          "v": "¿Sistema de enfriamiento activo? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Temperatura elevada: enfriamiento en curso"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ControlTemperatura\n    <span class=\"kw\">Definir</span> <span class=\"var\">temperatura</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">enfriamiento</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Temperatura actual (°C):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">temperatura</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Sistema de enfriamiento activo? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">enfriamiento</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">temperatura</span> <span class=\"op\">&gt;</span> <span class=\"num\">30</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">enfriamiento</span> <span class=\"op\">=</span> <span class=\"str\">\"NO\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Alerta crítica: apague los equipos\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Temperatura elevada: enfriamiento en curso\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Temperatura dentro del rango normal\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "La temperatura normal (<=30) no necesita revisar el enfriamiento. La alarma máxima solo se activa si hace calor Y el enfriamiento no está activo."
+    },
+    {
+      "n": 188,
+      "ea": "1.6",
+      "level": "basico",
+      "titulo": "Descarga de archivo según tamaño",
+      "panelTitulo": "Tipo Prueba P1 — Descarga permitida o denegada",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de archivos debe evaluar si se puede realizar una descarga.<br><br>El algoritmo debe solicitar:<br>• <strong>Tamaño del archivo en MB</strong> (número entero).<br>• <strong>El usuario tiene cuenta premium</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si el tamaño es menor o igual a 100:<br>&nbsp;&nbsp;○ Si el tamaño es igual a 100 → Mostrar: <em>\"Descarga al límite permitido\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Descarga permitida\"</em><br>• En caso contrario:<br>&nbsp;&nbsp;○ Si es cuenta premium es \"SI\" → Mostrar: <em>\"Descarga permitida por cuenta premium\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Descarga denegada: archivo muy grande\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "tamaño (Entero)\npremium (Cadena: SI/NO)",
+          "p": "Si tamaño <= 100 Entonces\n   Si tamaño = 100 → Descarga al límite\n   SiNo → Descarga permitida\nSiNo\n   Si premium = \"SI\" → Descarga por cuenta premium\n   SiNo → Descarga denegada",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Tamaño del archivo (MB):"
+        },
+        {
+          "t": "i",
+          "v": "150"
+        },
+        {
+          "t": "o",
+          "v": "¿Tiene cuenta premium? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "NO"
+        },
+        {
+          "t": "o",
+          "v": "Descarga denegada: archivo muy grande"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> DescargaArchivo\n    <span class=\"kw\">Definir</span> <span class=\"var\">tamanio</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">premium</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Tamaño del archivo (MB):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">tamanio</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Tiene cuenta premium? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">premium</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">tamanio</span> <span class=\"op\">&lt;=</span> <span class=\"num\">100</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">tamanio</span> <span class=\"op\">=</span> <span class=\"num\">100</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Descarga al límite permitido\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Descarga permitida\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">premium</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Descarga permitida por cuenta premium\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Descarga denegada: archivo muy grande\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Este ejercicio tiene Si anidado en <em>ambas</em> ramas (Entonces y SiNo). Es una variante más completa del patrón de la prueba."
+    },
+    {
+      "n": 189,
+      "ea": "1.6",
+      "level": "basico",
+      "titulo": "Reserva de mesa en restaurante",
+      "panelTitulo": "Tipo Prueba P1 — Mesa asignada o sujeto a disponibilidad",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un restaurante debe controlar la reserva de mesas.<br><br>El algoritmo debe solicitar:<br>• <strong>Número de personas del grupo</strong> (número entero).<br>• <strong>El cliente tiene reserva previa</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si el número de personas es menor o igual a 8:<br>&nbsp;&nbsp;○ Si tiene reserva es \"SI\" → Mostrar: <em>\"Mesa asignada\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Sin reserva: sujeto a disponibilidad\"</em><br>• En caso contrario → Mostrar: <em>\"Grupo demasiado grande: no hay mesas disponibles\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "personas (Entero)\nreserva (Cadena: SI/NO)",
+          "p": "Si personas <= 8 Entonces\n   Si reserva = \"SI\" → Mesa asignada\n   SiNo → Sujeto a disponibilidad\nSiNo → Grupo demasiado grande",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Número de personas del grupo:"
+        },
+        {
+          "t": "i",
+          "v": "6"
+        },
+        {
+          "t": "o",
+          "v": "¿Tiene reserva previa? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "NO"
+        },
+        {
+          "t": "o",
+          "v": "Sin reserva: sujeto a disponibilidad"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ReservaMesa\n    <span class=\"kw\">Definir</span> <span class=\"var\">personas</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">reserva</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Número de personas del grupo:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">personas</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Tiene reserva previa? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">reserva</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">personas</span> <span class=\"op\">&lt;=</span> <span class=\"num\">8</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">reserva</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Mesa asignada\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Sin reserva: sujeto a disponibilidad\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Grupo demasiado grande: no hay mesas disponibles\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Sin reserva no significa rechazo total: el cliente puede igual esperar. Es diferente a tener el grupo muy grande, que sí bloquea directamente."
+    },
+    {
+      "n": 190,
+      "ea": "1.6",
+      "level": "basico",
+      "titulo": "Acceso al sistema con intentos fallidos",
+      "panelTitulo": "Tipo Prueba P1 — Cuenta bloqueada o acceso concedido",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de seguridad debe controlar el acceso de usuarios.<br><br>El algoritmo debe solicitar:<br>• <strong>Número de intentos fallidos acumulados</strong> (número entero).<br>• <strong>La contraseña ingresada es correcta</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si los intentos fallidos son menores a 3:<br>&nbsp;&nbsp;○ Si la contraseña es correcta es \"SI\" → Mostrar: <em>\"Acceso concedido\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Contraseña incorrecta: intento registrado\"</em><br>• En caso contrario → Mostrar: <em>\"Cuenta bloqueada por exceso de intentos\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "intentos (Entero)\nclave (Cadena: SI/NO)",
+          "p": "Si intentos < 3 Entonces\n   Si clave = \"SI\" → Acceso concedido\n   SiNo → Contraseña incorrecta: intento registrado\nSiNo → Cuenta bloqueada",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Intentos fallidos acumulados:"
+        },
+        {
+          "t": "i",
+          "v": "3"
+        },
+        {
+          "t": "o",
+          "v": "¿Contraseña correcta? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Cuenta bloqueada por exceso de intentos"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> AccesoSistema\n    <span class=\"kw\">Definir</span> <span class=\"var\">intentos</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">clave</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Intentos fallidos acumulados:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">intentos</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Contraseña correcta? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">clave</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">intentos</span> <span class=\"op\">&lt;</span> <span class=\"num\">3</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">clave</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Acceso concedido\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Contraseña incorrecta: intento registrado\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Cuenta bloqueada por exceso de intentos\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Con 3 o más intentos (no menor a 3), la cuenta ya está bloqueada aunque la contraseña sea correcta. La condición es estricta: < 3, no <= 3."
+    },
+    {
+      "n": 191,
+      "ea": "1.6",
+      "level": "intermedio",
+      "titulo": "Matrícula universitaria",
+      "panelTitulo": "Tipo Prueba P1 — Matrícula aprobada o bloqueada",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema universitario debe validar si un estudiante puede matricularse.<br><br>El algoritmo debe solicitar:<br>• <strong>Promedio de notas del semestre anterior</strong> (número entero, escala 1-7).<br>• <strong>El pago de arancel está al día</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si el promedio es mayor o igual a 4:<br>&nbsp;&nbsp;○ Si el pago está al día es \"SI\" → Mostrar: <em>\"Matrícula aprobada\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Matrícula bloqueada: deuda pendiente\"</em><br>• En caso contrario → Mostrar: <em>\"Matrícula bloqueada: promedio insuficiente\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "promedio (Entero)\npago (Cadena: SI/NO)",
+          "p": "Si promedio >= 4 Entonces\n   Si pago = \"SI\" → Matrícula aprobada\n   SiNo → Bloqueada: deuda pendiente\nSiNo → Bloqueada: promedio insuficiente",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Promedio de notas (1-7):"
+        },
+        {
+          "t": "i",
+          "v": "5"
+        },
+        {
+          "t": "o",
+          "v": "¿Pago de arancel al día? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Matrícula aprobada"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> MatriculaUniversitaria\n    <span class=\"kw\">Definir</span> <span class=\"var\">promedio</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">pago</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Promedio de notas (1-7):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">promedio</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Pago de arancel al día? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">pago</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">promedio</span> <span class=\"op\">&gt;=</span> <span class=\"num\">4</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">pago</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Matrícula aprobada\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Matrícula bloqueada: deuda pendiente\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Matrícula bloqueada: promedio insuficiente\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Nota de aprobación mínima en Chile es 4.0. El contexto es familiar para el estudiante."
+    },
+    {
+      "n": 192,
+      "ea": "1.6",
+      "level": "intermedio",
+      "titulo": "Conexión a red WiFi institucional",
+      "panelTitulo": "Tipo Prueba P1 — Dispositivo registrado y señal suficiente",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de red debe validar si un dispositivo puede conectarse al WiFi institucional.<br><br>El algoritmo debe solicitar:<br>• <strong>Intensidad de señal</strong> del 1 al 10 (número entero).<br>• <strong>El dispositivo está registrado en la red</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si la intensidad es mayor o igual a 5:<br>&nbsp;&nbsp;○ Si está registrado es \"SI\" → Mostrar: <em>\"Conexión establecida\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Conexión denegada: dispositivo no registrado\"</em><br>• En caso contrario → Mostrar: <em>\"Conexión denegada: señal insuficiente\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "señal (Entero)\nregistrado (Cadena: SI/NO)",
+          "p": "Si señal >= 5 Entonces\n   Si registrado = \"SI\" → Conexión establecida\n   SiNo → Denegada: no registrado\nSiNo → Denegada: señal insuficiente",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Intensidad de señal (1-10):"
+        },
+        {
+          "t": "i",
+          "v": "7"
+        },
+        {
+          "t": "o",
+          "v": "¿Dispositivo registrado en la red? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "NO"
+        },
+        {
+          "t": "o",
+          "v": "Conexión denegada: dispositivo no registrado"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ConexionWiFi\n    <span class=\"kw\">Definir</span> <span class=\"var\">senal</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">registrado</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Intensidad de señal (1-10):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">senal</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Dispositivo registrado en la red? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">registrado</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">senal</span> <span class=\"op\">&gt;=</span> <span class=\"num\">5</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">registrado</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Conexión establecida\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Conexión denegada: dispositivo no registrado\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Conexión denegada: señal insuficiente\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "La señal es condición física (si está bajo el umbral, nada más que hacer). El registro es condición administrativa. Ambas deben cumplirse para conectarse."
+    },
+    {
+      "n": 193,
+      "ea": "1.6",
+      "level": "intermedio",
+      "titulo": "Procesamiento de reclamo de cliente",
+      "panelTitulo": "Tipo Prueba P1 — Reclamo dentro de plazo",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de atención al cliente debe determinar si puede procesar un reclamo.<br><br>El algoritmo debe solicitar:<br>• <strong>Días transcurridos desde la compra</strong> (número entero).<br>• <strong>El producto fue comprado con garantía</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si los días son menores o iguales a 30:<br>&nbsp;&nbsp;○ Si fue con garantía es \"SI\" → Mostrar: <em>\"Reclamo aceptado\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Reclamo aceptado sin garantía\"</em><br>• En caso contrario → Mostrar: <em>\"Reclamo rechazado: plazo vencido\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "dias (Entero)\ngarantia (Cadena: SI/NO)",
+          "p": "Si dias <= 30 Entonces\n   Si garantia = \"SI\" → Reclamo aceptado\n   SiNo → Reclamo aceptado sin garantía\nSiNo → Reclamo rechazado: plazo vencido",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Días desde la compra:"
+        },
+        {
+          "t": "i",
+          "v": "15"
+        },
+        {
+          "t": "o",
+          "v": "¿Fue comprado con garantía? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "NO"
+        },
+        {
+          "t": "o",
+          "v": "Reclamo aceptado sin garantía"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ProcesamientoReclamo\n    <span class=\"kw\">Definir</span> <span class=\"var\">dias</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">garantia</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Días desde la compra:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">dias</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Fue comprado con garantía? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">garantia</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">dias</span> <span class=\"op\">&lt;=</span> <span class=\"num\">30</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">garantia</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Reclamo aceptado\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Reclamo aceptado sin garantía\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Reclamo rechazado: plazo vencido\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Ambas ramas del Si interno resultan en aceptación (con o sin garantía). Solo el SiNo externo rechaza. Esto es válido: el Si interno no siempre tiene una rama negativa de rechazo."
+    },
+    {
+      "n": 194,
+      "ea": "1.6",
+      "level": "intermedio",
+      "titulo": "Exportación de producto por aduanas",
+      "panelTitulo": "Tipo Prueba P1 — Exportación autorizada",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema aduanero debe indicar si un producto puede ser exportado.<br><br>El algoritmo debe solicitar:<br>• <strong>Peso total del envío en kilos</strong> (número entero).<br>• <strong>Los documentos de exportación están completos</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si el peso es menor o igual a 1000:<br>&nbsp;&nbsp;○ Si los documentos están completos es \"SI\" → Mostrar: <em>\"Exportación autorizada\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Exportación en espera: faltan documentos\"</em><br>• En caso contrario → Mostrar: <em>\"Exportación rechazada: excede el peso permitido\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "peso (Entero)\ndocumentos (Cadena: SI/NO)",
+          "p": "Si peso <= 1000 Entonces\n   Si documentos = \"SI\" → Exportación autorizada\n   SiNo → En espera: faltan documentos\nSiNo → Rechazada: excede peso",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Peso total del envío (kg):"
+        },
+        {
+          "t": "i",
+          "v": "800"
+        },
+        {
+          "t": "o",
+          "v": "¿Documentos completos? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "NO"
+        },
+        {
+          "t": "o",
+          "v": "Exportación en espera: faltan documentos"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ExportacionProducto\n    <span class=\"kw\">Definir</span> <span class=\"var\">peso</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">documentos</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Peso total del envío (kg):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">peso</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Documentos completos? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">documentos</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">peso</span> <span class=\"op\">&lt;=</span> <span class=\"num\">1000</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">documentos</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Exportación autorizada\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Exportación en espera: faltan documentos\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Exportación rechazada: excede el peso permitido\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "El peso es el requisito físico (Si externo). Los documentos son el requisito administrativo (Si interno). Falta un documento → en espera, no rechazado definitivamente."
+    },
+    {
+      "n": 195,
+      "ea": "1.6",
+      "level": "intermedio",
+      "titulo": "Renovación de contrato laboral",
+      "panelTitulo": "Tipo Prueba P1 — Contrato renovado o condicionado",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Una empresa debe evaluar si puede renovar el contrato de un trabajador.<br><br>El algoritmo debe solicitar:<br>• <strong>Años de antigüedad en la empresa</strong> (número entero).<br>• <strong>El trabajador tiene evaluación de desempeño aprobada</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si los años de antigüedad son mayores o iguales a 2:<br>&nbsp;&nbsp;○ Si la evaluación está aprobada es \"SI\" → Mostrar: <em>\"Contrato renovado\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Renovación condicionada: evaluación reprobada\"</em><br>• En caso contrario → Mostrar: <em>\"Contrato no renovado: antigüedad insuficiente\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "antiguedad (Entero)\nevaluacion (Cadena: SI/NO)",
+          "p": "Si antiguedad >= 2 Entonces\n   Si evaluacion = \"SI\" → Contrato renovado\n   SiNo → Renovación condicionada\nSiNo → No renovado: antigüedad insuficiente",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Años de antigüedad:"
+        },
+        {
+          "t": "i",
+          "v": "3"
+        },
+        {
+          "t": "o",
+          "v": "¿Evaluación de desempeño aprobada? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "NO"
+        },
+        {
+          "t": "o",
+          "v": "Renovación condicionada: evaluación reprobada"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> RenovacionContrato\n    <span class=\"kw\">Definir</span> <span class=\"var\">antiguedad</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">evaluacion</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Años de antigüedad:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">antiguedad</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Evaluación de desempeño aprobada? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">evaluacion</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">antiguedad</span> <span class=\"op\">&gt;=</span> <span class=\"num\">2</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">evaluacion</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Contrato renovado\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Renovación condicionada: evaluación reprobada\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Contrato no renovado: antigüedad insuficiente\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "\"Renovación condicionada\" implica que el trabajador tiene antigüedad suficiente pero la evaluación fue mala: se puede corregir. El rechazo definitivo viene de no tener antigüedad."
+    },
+    {
+      "n": 196,
+      "ea": "1.6",
+      "level": "intermedio",
+      "titulo": "Habilitación de cuenta bancaria",
+      "panelTitulo": "Tipo Prueba P1 — Apertura de cuenta corriente",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema bancario debe habilitar una nueva cuenta corriente a un solicitante.<br><br>El algoritmo debe solicitar:<br>• <strong>Edad del solicitante</strong> (número entero).<br>• <strong>El solicitante tiene domicilio verificado</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si la edad es mayor o igual a 18:<br>&nbsp;&nbsp;○ Si el domicilio está verificado es \"SI\" → Mostrar: <em>\"Cuenta habilitada\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Cuenta no habilitada: falta verificar domicilio\"</em><br>• En caso contrario → Mostrar: <em>\"Cuenta no habilitada: menor de edad\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "edad (Entero)\ndomicilio (Cadena: SI/NO)",
+          "p": "Si edad >= 18 Entonces\n   Si domicilio = \"SI\" → Cuenta habilitada\n   SiNo → No habilitada: sin domicilio\nSiNo → No habilitada: menor de edad",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Edad del solicitante:"
+        },
+        {
+          "t": "i",
+          "v": "22"
+        },
+        {
+          "t": "o",
+          "v": "¿Domicilio verificado? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Cuenta habilitada"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> HabilitacionCuenta\n    <span class=\"kw\">Definir</span> <span class=\"var\">edad</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">domicilio</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Edad del solicitante:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">edad</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Domicilio verificado? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">domicilio</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">edad</span> <span class=\"op\">&gt;=</span> <span class=\"num\">18</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">domicilio</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Cuenta habilitada\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Cuenta no habilitada: falta verificar domicilio\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Cuenta no habilitada: menor de edad\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "La mayoría de edad es el filtro legal. El domicilio es el requisito administrativo. Edad 18 exacta cumple (>=18). Domicilio sin verificar: el banco puede aún habilitarla después."
+    },
+    {
+      "n": 197,
+      "ea": "1.6",
+      "level": "intermedio",
+      "titulo": "Admisión a programa deportivo",
+      "panelTitulo": "Tipo Prueba P1 — Alto rendimiento con ficha médica",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un centro deportivo debe controlar la admisión a un programa de alto rendimiento.<br><br>El algoritmo debe solicitar:<br>• <strong>Puntaje en prueba física</strong> del 0 al 100 (número entero).<br>• <strong>El postulante tiene ficha médica vigente</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si el puntaje es mayor o igual a 70:<br>&nbsp;&nbsp;○ Si la ficha médica está vigente es \"SI\" → Mostrar: <em>\"Admitido al programa de alto rendimiento\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"No admitido: debe presentar ficha médica vigente\"</em><br>• En caso contrario → Mostrar: <em>\"No admitido: puntaje insuficiente en prueba física\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "puntaje (Entero)\nfichaMedica (Cadena: SI/NO)",
+          "p": "Si puntaje >= 70 Entonces\n   Si fichaMedica = \"SI\" → Admitido\n   SiNo → No admitido: ficha médica\nSiNo → No admitido: puntaje insuficiente",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Puntaje en prueba física (0-100):"
+        },
+        {
+          "t": "i",
+          "v": "85"
+        },
+        {
+          "t": "o",
+          "v": "¿Tiene ficha médica vigente? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Admitido al programa de alto rendimiento"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> AdmisionDeportiva\n    <span class=\"kw\">Definir</span> <span class=\"var\">puntaje</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">fichaMedica</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Puntaje en prueba física (0-100):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">puntaje</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Tiene ficha médica vigente? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">fichaMedica</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">puntaje</span> <span class=\"op\">&gt;=</span> <span class=\"num\">70</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">fichaMedica</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Admitido al programa de alto rendimiento\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"No admitido: debe presentar ficha médica vigente\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"No admitido: puntaje insuficiente en prueba física\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Prueba física (capacidad) y ficha médica (habilitación) son requisitos ortogonales: ambos deben cumplirse. El puntaje se valida primero porque sin él la ficha no importa."
+    },
+    {
+      "n": 198,
+      "ea": "1.6",
+      "level": "intermedio",
+      "titulo": "Publicación de aviso en clasificados",
+      "panelTitulo": "Tipo Prueba P1 — Aviso con o sin imágenes",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de clasificados en línea debe evaluar si puede publicar un aviso.<br><br>El algoritmo debe solicitar:<br>• <strong>Número de caracteres del texto del aviso</strong> (número entero).<br>• <strong>El aviso incluye imágenes</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si el número de caracteres es menor o igual a 500:<br>&nbsp;&nbsp;○ Si incluye imágenes es \"SI\" → Mostrar: <em>\"Aviso publicado con imágenes\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Aviso publicado sin imágenes\"</em><br>• En caso contrario → Mostrar: <em>\"No se puede publicar: texto excede el límite\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "caracteres (Entero)\nimagen (Cadena: SI/NO)",
+          "p": "Si caracteres <= 500 Entonces\n   Si imagen = \"SI\" → Publicado con imágenes\n   SiNo → Publicado sin imágenes\nSiNo → No se puede publicar: excede límite",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Caracteres del texto:"
+        },
+        {
+          "t": "i",
+          "v": "300"
+        },
+        {
+          "t": "o",
+          "v": "¿Incluye imágenes? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Aviso publicado con imágenes"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> PublicacionAviso\n    <span class=\"kw\">Definir</span> <span class=\"var\">caracteres</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">imagen</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Caracteres del texto:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">caracteres</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Incluye imágenes? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">imagen</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">caracteres</span> <span class=\"op\">&lt;=</span> <span class=\"num\">500</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">imagen</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Aviso publicado con imágenes\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Aviso publicado sin imágenes\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"No se puede publicar: texto excede el límite\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Ambas ramas del Si interno son resultados positivos (publicado). La diferencia es solo el detalle del mensaje. Este patrón entrena a no confundir SiNo como sinónimo de error."
+    },
+    {
+      "n": 199,
+      "ea": "1.6",
+      "level": "intermedio",
+      "titulo": "Trámite en línea con clave única",
+      "panelTitulo": "Tipo Prueba P1 — Trámite iniciado o bloqueado",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un portal de gobierno debe validar si un ciudadano puede iniciar un trámite en línea.<br><br>El algoritmo debe solicitar:<br>• <strong>Número de documentos adjuntados</strong> (número entero).<br>• <strong>El ciudadano tiene clave única activa</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si el número de documentos es mayor o igual a 3:<br>&nbsp;&nbsp;○ Si la clave única está activa es \"SI\" → Mostrar: <em>\"Trámite iniciado en línea\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Trámite no iniciado: clave única inactiva\"</em><br>• En caso contrario → Mostrar: <em>\"Trámite no iniciado: faltan documentos\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "documentos (Entero)\nclaveUnica (Cadena: SI/NO)",
+          "p": "Si documentos >= 3 Entonces\n   Si claveUnica = \"SI\" → Trámite iniciado\n   SiNo → No iniciado: clave inactiva\nSiNo → No iniciado: faltan documentos",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Documentos adjuntados:"
+        },
+        {
+          "t": "i",
+          "v": "4"
+        },
+        {
+          "t": "o",
+          "v": "¿Tiene clave única activa? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "NO"
+        },
+        {
+          "t": "o",
+          "v": "Trámite no iniciado: clave única inactiva"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> TramiteEnLinea\n    <span class=\"kw\">Definir</span> <span class=\"var\">documentos</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">claveUnica</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Documentos adjuntados:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">documentos</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Tiene clave única activa? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">claveUnica</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">documentos</span> <span class=\"op\">&gt;=</span> <span class=\"num\">3</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">claveUnica</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Trámite iniciado en línea\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Trámite no iniciado: clave única inactiva\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Trámite no iniciado: faltan documentos\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Contexto familiar para estudiantes chilenos: ClaveÚnica es la identidad digital del Estado. Primero la cantidad de documentos, luego la autenticación."
+    },
+    {
+      "n": 200,
+      "ea": "1.6",
+      "level": "intermedio",
+      "titulo": "Tarifa escolar en transporte",
+      "panelTitulo": "Tipo Prueba P1 — Tarifa reducida o normal",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de transporte debe evaluar si un pasajero tiene derecho a tarifa escolar.<br><br>El algoritmo debe solicitar:<br>• <strong>Edad del pasajero</strong> (número entero).<br>• <strong>El pasajero presenta credencial estudiantil vigente</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si la edad es menor o igual a 24:<br>&nbsp;&nbsp;○ Si presenta credencial vigente es \"SI\" → Mostrar: <em>\"Tarifa escolar aplicada\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Tarifa normal aplicada: sin credencial\"</em><br>• En caso contrario → Mostrar: <em>\"Tarifa normal aplicada: edad fuera del rango\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "edad (Entero)\ncredencial (Cadena: SI/NO)",
+          "p": "Si edad <= 24 Entonces\n   Si credencial = \"SI\" → Tarifa escolar\n   SiNo → Tarifa normal: sin credencial\nSiNo → Tarifa normal: edad fuera de rango",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Edad del pasajero:"
+        },
+        {
+          "t": "i",
+          "v": "20"
+        },
+        {
+          "t": "o",
+          "v": "¿Presenta credencial estudiantil vigente? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Tarifa escolar aplicada"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> TarifaEscolar\n    <span class=\"kw\">Definir</span> <span class=\"var\">edad</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">credencial</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Edad del pasajero:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">edad</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Presenta credencial estudiantil vigente? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">credencial</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">edad</span> <span class=\"op\">&lt;=</span> <span class=\"num\">24</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">credencial</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Tarifa escolar aplicada\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Tarifa normal aplicada: sin credencial\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Tarifa normal aplicada: edad fuera del rango\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Nota que el SiNo del Si externo y el SiNo del Si interno pueden dar el mismo resultado (tarifa normal), pero con mensajes distintos. El Si anidado sirve para especificar la razón."
+    },
+    {
+      "n": 201,
+      "ea": "1.6",
+      "level": "intermedio",
+      "titulo": "Despacho de producto refrigerado",
+      "panelTitulo": "Tipo Prueba P1 — Cadena de frío",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de logística debe controlar el despacho de productos refrigerados.<br><br>El algoritmo debe solicitar:<br>• <strong>Temperatura del producto al despacho en °C</strong> (número entero).<br>• <strong>El vehículo tiene sistema de frío activo</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si la temperatura es menor o igual a 5:<br>&nbsp;&nbsp;○ Si el sistema de frío está activo es \"SI\" → Mostrar: <em>\"Despacho autorizado\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Despacho denegado: vehículo sin sistema de frío\"</em><br>• En caso contrario → Mostrar: <em>\"Despacho denegado: temperatura fuera de rango\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "temperatura (Entero)\nfrio (Cadena: SI/NO)",
+          "p": "Si temperatura <= 5 Entonces\n   Si frio = \"SI\" → Despacho autorizado\n   SiNo → Denegado: sin sistema de frío\nSiNo → Denegado: temperatura fuera de rango",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Temperatura del producto (°C):"
+        },
+        {
+          "t": "i",
+          "v": "3"
+        },
+        {
+          "t": "o",
+          "v": "¿Vehículo con sistema de frío activo? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Despacho autorizado"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> DespachoProdRefrig\n    <span class=\"kw\">Definir</span> <span class=\"var\">temperatura</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">frio</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Temperatura del producto (°C):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">temperatura</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Vehículo con sistema de frío activo? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">frio</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">temperatura</span> <span class=\"op\">&lt;=</span> <span class=\"num\">5</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">frio</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Despacho autorizado\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Despacho denegado: vehículo sin sistema de frío\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Despacho denegado: temperatura fuera de rango\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Aquí la temperatura BAJA es la correcta (<=5). No confundir con otros ejercicios donde se evalúa temperatura alta. Leer bien el enunciado antes de programar."
+    },
+    {
+      "n": 202,
+      "ea": "1.6",
+      "level": "intermedio",
+      "titulo": "Aplicación de voucher de descuento",
+      "panelTitulo": "Tipo Prueba P1 — Voucher vigente y monto mínimo",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de comercio electrónico debe validar si un voucher puede aplicarse.<br><br>El algoritmo debe solicitar:<br>• <strong>Monto total de la compra</strong> (número entero).<br>• <strong>El voucher está dentro de su fecha de vigencia</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si el monto es mayor o igual a 20000:<br>&nbsp;&nbsp;○ Si el voucher está vigente es \"SI\" → Mostrar: <em>\"Voucher aplicado: descuento del 10%\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Voucher no aplicado: cupón vencido\"</em><br>• En caso contrario → Mostrar: <em>\"Voucher no aplicado: monto mínimo no alcanzado\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "monto (Entero)\nvigente (Cadena: SI/NO)",
+          "p": "Si monto >= 20000 Entonces\n   Si vigente = \"SI\" → Voucher aplicado\n   SiNo → No aplicado: cupón vencido\nSiNo → No aplicado: monto insuficiente",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Monto total de la compra:"
+        },
+        {
+          "t": "i",
+          "v": "25000"
+        },
+        {
+          "t": "o",
+          "v": "¿Voucher dentro de vigencia? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "NO"
+        },
+        {
+          "t": "o",
+          "v": "Voucher no aplicado: cupón vencido"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> AplicacionVoucher\n    <span class=\"kw\">Definir</span> <span class=\"var\">monto</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">vigente</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Monto total de la compra:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">monto</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Voucher dentro de vigencia? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">vigente</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">monto</span> <span class=\"op\">&gt;=</span> <span class=\"num\">20000</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">vigente</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Voucher aplicado: descuento del 10%\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Voucher no aplicado: cupón vencido\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Voucher no aplicado: monto mínimo no alcanzado\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "El monto mínimo es condición del negocio (Si externo). La vigencia del cupón es condición del cupón mismo (Si interno). Separar las responsabilidades ayuda a estructurar el Si anidado."
+    },
+    {
+      "n": 203,
+      "ea": "1.6",
+      "level": "intermedio",
+      "titulo": "Ingreso a conferencia con credencial",
+      "panelTitulo": "Tipo Prueba P1 — Control de aforo en evento",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de gestión de eventos debe controlar el ingreso a una conferencia.<br><br>El algoritmo debe solicitar:<br>• <strong>Número de entradas disponibles</strong> (número entero).<br>• <strong>El asistente presenta credencial de registro</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si el número de entradas es mayor a 0:<br>&nbsp;&nbsp;○ Si presenta credencial es \"SI\" → Mostrar: <em>\"Ingreso al evento autorizado\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Ingreso denegado: sin credencial\"</em><br>• En caso contrario → Mostrar: <em>\"Ingreso denegado: evento sin cupos\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "entradas (Entero)\ncredencial (Cadena: SI/NO)",
+          "p": "Si entradas > 0 Entonces\n   Si credencial = \"SI\" → Ingreso autorizado\n   SiNo → Denegado: sin credencial\nSiNo → Denegado: sin cupos",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Entradas disponibles:"
+        },
+        {
+          "t": "i",
+          "v": "50"
+        },
+        {
+          "t": "o",
+          "v": "¿Presenta credencial de registro? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Ingreso al evento autorizado"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> IngresoConferencia\n    <span class=\"kw\">Definir</span> <span class=\"var\">entradas</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">credencial</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Entradas disponibles:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">entradas</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Presenta credencial de registro? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">credencial</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">entradas</span> <span class=\"op\">&gt;</span> <span class=\"num\">0</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">credencial</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingreso al evento autorizado\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingreso denegado: sin credencial\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingreso denegado: evento sin cupos\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Ejercicio muy similar al de la sala (175) pero con \"entradas\" en lugar de \"cupos\" y el énfasis en la credencial en lugar de la reserva. Útil para ver variaciones del mismo patrón."
+    },
+    {
+      "n": 204,
+      "ea": "1.6",
+      "level": "intermedio",
+      "titulo": "Activación de alarma domiciliaria",
+      "panelTitulo": "Tipo Prueba P1 — Sensores y código de seguridad",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de seguridad domiciliaria debe controlar la habilitación de una alarma.<br><br>El algoritmo debe solicitar:<br>• <strong>Número de sensores activos en el hogar</strong> (número entero).<br>• <strong>El código de seguridad ingresado es correcto</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si los sensores activos son mayores o iguales a 2:<br>&nbsp;&nbsp;○ Si el código es correcto es \"SI\" → Mostrar: <em>\"Alarma activada\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Alarma no activada: código incorrecto\"</em><br>• En caso contrario → Mostrar: <em>\"Alarma no activada: sensores insuficientes\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "sensores (Entero)\ncodigo (Cadena: SI/NO)",
+          "p": "Si sensores >= 2 Entonces\n   Si codigo = \"SI\" → Alarma activada\n   SiNo → No activada: código incorrecto\nSiNo → No activada: sensores insuficientes",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Sensores activos:"
+        },
+        {
+          "t": "i",
+          "v": "1"
+        },
+        {
+          "t": "o",
+          "v": "¿Código de seguridad correcto? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Alarma no activada: sensores insuficientes"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ActivacionAlarma\n    <span class=\"kw\">Definir</span> <span class=\"var\">sensores</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">codigo</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Sensores activos:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">sensores</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Código de seguridad correcto? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">codigo</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">sensores</span> <span class=\"op\">&gt;=</span> <span class=\"num\">2</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">codigo</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Alarma activada\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Alarma no activada: código incorrecto\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Alarma no activada: sensores insuficientes\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Con 1 sensor (que sería < 2), el código se considera pero el sistema no tiene cobertura mínima para activarse. El Si externo con >= 2 verifica la infraestructura antes de la autenticación."
+    },
+    {
+      "n": 205,
+      "ea": "1.6",
+      "level": "intermedio",
+      "titulo": "Crédito educativo con aval",
+      "panelTitulo": "Tipo Prueba P1 — Crédito según nota y aval",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Una institución financiera debe determinar si puede otorgar un crédito educativo.<br><br>El algoritmo debe solicitar:<br>• <strong>Promedio de notas del estudiante</strong> (número entero, escala 1-7).<br>• <strong>El aval tiene antecedentes comerciales limpios</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si el promedio es mayor o igual a 5:<br>&nbsp;&nbsp;○ Si el aval tiene antecedentes limpios es \"SI\" → Mostrar: <em>\"Crédito educativo otorgado\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Crédito no otorgado: aval con antecedentes\"</em><br>• En caso contrario → Mostrar: <em>\"Crédito no otorgado: promedio insuficiente\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "promedio (Entero)\naval (Cadena: SI/NO)",
+          "p": "Si promedio >= 5 Entonces\n   Si aval = \"SI\" → Crédito otorgado\n   SiNo → No otorgado: aval con antecedentes\nSiNo → No otorgado: promedio insuficiente",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Promedio de notas (1-7):"
+        },
+        {
+          "t": "i",
+          "v": "6"
+        },
+        {
+          "t": "o",
+          "v": "¿El aval tiene antecedentes limpios? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Crédito educativo otorgado"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> CreditoEducativo\n    <span class=\"kw\">Definir</span> <span class=\"var\">promedio</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">aval</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Promedio de notas (1-7):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">promedio</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿El aval tiene antecedentes limpios? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">aval</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">promedio</span> <span class=\"op\">&gt;=</span> <span class=\"num\">5</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">aval</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Crédito educativo otorgado\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Crédito no otorgado: aval con antecedentes\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Crédito no otorgado: promedio insuficiente\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "El promedio mínimo aquí es 5 (no 4 como para matrícula). Nota el cambio de umbral respecto al ejercicio 186. El aval es una tercera persona: el Si interno valida a alguien diferente al estudiante."
+    },
+    {
+      "n": 206,
+      "ea": "1.6",
+      "level": "avanzado",
+      "titulo": "Control de aforo en recinto",
+      "panelTitulo": "Tipo Prueba P1 — Aforo y entrada válida",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de control de aforo debe indicar si puede ingresar más personas a un recinto.<br><br>El algoritmo debe solicitar:<br>• <strong>Personas actualmente dentro del recinto</strong> (número entero).<br>• <strong>La persona tiene entrada válida</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si la cantidad de personas es menor a 200:<br>&nbsp;&nbsp;○ Si la entrada es válida es \"SI\" → Mostrar: <em>\"Ingreso permitido\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Ingreso denegado: entrada no válida\"</em><br>• En caso contrario → Mostrar: <em>\"Ingreso denegado: aforo completo\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "personas (Entero)\nentrada (Cadena: SI/NO)",
+          "p": "Si personas < 200 Entonces\n   Si entrada = \"SI\" → Ingreso permitido\n   SiNo → Denegado: entrada no válida\nSiNo → Denegado: aforo completo",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Personas actualmente dentro:"
+        },
+        {
+          "t": "i",
+          "v": "200"
+        },
+        {
+          "t": "o",
+          "v": "¿Tiene entrada válida? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Ingreso denegado: aforo completo"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ControlAforo\n    <span class=\"kw\">Definir</span> <span class=\"var\">personas</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">entrada</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Personas actualmente dentro:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">personas</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Tiene entrada válida? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">entrada</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">personas</span> <span class=\"op\">&lt;</span> <span class=\"num\">200</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">entrada</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingreso permitido\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingreso denegado: entrada no válida\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingreso denegado: aforo completo\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "El límite es estricto: < 200 (no <=200). Con exactamente 200 ya es aforo completo. Cuidado con el signo del operador de comparación."
+    },
+    {
+      "n": 207,
+      "ea": "1.6",
+      "level": "avanzado",
+      "titulo": "Bono de productividad laboral",
+      "panelTitulo": "Tipo Prueba P1 — Horas extras y asistencia perfecta",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de recursos humanos debe verificar si un trabajador tiene derecho a bono de productividad.<br><br>El algoritmo debe solicitar:<br>• <strong>Horas extras trabajadas en el mes</strong> (número entero).<br>• <strong>El trabajador tuvo asistencia perfecta en el mes</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si las horas extras son mayores o iguales a 10:<br>&nbsp;&nbsp;○ Si tuvo asistencia perfecta es \"SI\" → Mostrar: <em>\"Bono de productividad asignado\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Bono no asignado: sin asistencia perfecta\"</em><br>• En caso contrario → Mostrar: <em>\"Bono no asignado: horas extras insuficientes\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "horasExtras (Entero)\nasistencia (Cadena: SI/NO)",
+          "p": "Si horasExtras >= 10 Entonces\n   Si asistencia = \"SI\" → Bono asignado\n   SiNo → No asignado: sin asistencia perfecta\nSiNo → No asignado: horas insuficientes",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Horas extras en el mes:"
+        },
+        {
+          "t": "i",
+          "v": "12"
+        },
+        {
+          "t": "o",
+          "v": "¿Asistencia perfecta? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "NO"
+        },
+        {
+          "t": "o",
+          "v": "Bono no asignado: sin asistencia perfecta"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> BonoProductividad\n    <span class=\"kw\">Definir</span> <span class=\"var\">horasExtras</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">asistencia</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Horas extras en el mes:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">horasExtras</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Asistencia perfecta? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">asistencia</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">horasExtras</span> <span class=\"op\">&gt;=</span> <span class=\"num\">10</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">asistencia</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Bono de productividad asignado\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Bono no asignado: sin asistencia perfecta\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Bono no asignado: horas extras insuficientes\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Cumplir con las horas extras (Si externo) es condición cuantitativa. La asistencia perfecta (Si interno) es condición cualitativa de comportamiento. Ambas deben cumplirse."
+    },
+    {
+      "n": 208,
+      "ea": "1.6",
+      "level": "avanzado",
+      "titulo": "Registro de vehículo",
+      "panelTitulo": "Tipo Prueba P1 — Año de fabricación y revisión técnica",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de registro vehicular debe controlar la inscripción de vehículos.<br><br>El algoritmo debe solicitar:<br>• <strong>Año de fabricación del vehículo</strong> (número entero).<br>• <strong>El vehículo tiene revisión técnica vigente</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si el año de fabricación es mayor o igual a 2010:<br>&nbsp;&nbsp;○ Si tiene revisión técnica vigente es \"SI\" → Mostrar: <em>\"Vehículo registrado exitosamente\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Registro pendiente: debe obtener revisión técnica\"</em><br>• En caso contrario → Mostrar: <em>\"Vehículo no puede ser registrado: modelo muy antiguo\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "anio (Entero)\nrevision (Cadena: SI/NO)",
+          "p": "Si anio >= 2010 Entonces\n   Si revision = \"SI\" → Vehículo registrado\n   SiNo → Pendiente: sin revisión\nSiNo → No puede ser registrado: muy antiguo",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Año de fabricación:"
+        },
+        {
+          "t": "i",
+          "v": "2015"
+        },
+        {
+          "t": "o",
+          "v": "¿Tiene revisión técnica vigente? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "NO"
+        },
+        {
+          "t": "o",
+          "v": "Registro pendiente: debe obtener revisión técnica"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> RegistroVehiculo\n    <span class=\"kw\">Definir</span> <span class=\"var\">anio</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">revision</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Año de fabricación:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">anio</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Tiene revisión técnica vigente? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">revision</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">anio</span> <span class=\"op\">&gt;=</span> <span class=\"num\">2010</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">revision</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Vehículo registrado exitosamente\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Registro pendiente: debe obtener revisión técnica\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Vehículo no puede ser registrado: modelo muy antiguo\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Año 2010 inclusive califica (>= 2010). Un vehículo 2009 es muy antiguo. La revisión técnica es el trámite pendiente para modelos modernos sin documentación."
+    },
+    {
+      "n": 209,
+      "ea": "1.6",
+      "level": "avanzado",
+      "titulo": "Solicitud de vacaciones",
+      "panelTitulo": "Tipo Prueba P1 — Días acumulados y aprobación del jefe",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de gestión de personal debe procesar solicitudes de vacaciones.<br><br>El algoritmo debe solicitar:<br>• <strong>Días de vacaciones acumulados</strong> (número entero).<br>• <strong>El jefe directo aprobó la solicitud</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si los días acumulados son mayores o iguales a 5:<br>&nbsp;&nbsp;○ Si el jefe aprobó es \"SI\" → Mostrar: <em>\"Vacaciones aprobadas\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Vacaciones pendientes: requiere aprobación del jefe\"</em><br>• En caso contrario → Mostrar: <em>\"Vacaciones no aprobadas: días insuficientes acumulados\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "dias (Entero)\naprobacion (Cadena: SI/NO)",
+          "p": "Si dias >= 5 Entonces\n   Si aprobacion = \"SI\" → Vacaciones aprobadas\n   SiNo → Pendientes: requiere aprobación\nSiNo → No aprobadas: días insuficientes",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Días de vacaciones acumulados:"
+        },
+        {
+          "t": "i",
+          "v": "10"
+        },
+        {
+          "t": "o",
+          "v": "¿Jefe aprobó la solicitud? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Vacaciones aprobadas"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> SolicitudVacaciones\n    <span class=\"kw\">Definir</span> <span class=\"var\">dias</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">aprobacion</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Días de vacaciones acumulados:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">dias</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Jefe aprobó la solicitud? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">aprobacion</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">dias</span> <span class=\"op\">&gt;=</span> <span class=\"num\">5</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">aprobacion</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Vacaciones aprobadas\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Vacaciones pendientes: requiere aprobación del jefe\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Vacaciones no aprobadas: días insuficientes acumulados\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Sin los días suficientes (< 5), el jefe no puede ni aprobar. Los días son el requisito objetivo; la aprobación del jefe es el requisito subjetivo."
+    },
+    {
+      "n": 210,
+      "ea": "1.6",
+      "level": "avanzado",
+      "titulo": "Habilitación de cuenta de usuario web",
+      "panelTitulo": "Tipo Prueba P1 — Contraseña segura y correo verificado",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema web debe habilitar la cuenta de un nuevo usuario.<br><br>El algoritmo debe solicitar:<br>• <strong>Longitud de la contraseña elegida</strong> (número entero).<br>• <strong>El correo electrónico fue verificado</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si la longitud de la contraseña es mayor o igual a 8:<br>&nbsp;&nbsp;○ Si el correo fue verificado es \"SI\" → Mostrar: <em>\"Cuenta habilitada exitosamente\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Cuenta no habilitada: debe verificar el correo\"</em><br>• En caso contrario → Mostrar: <em>\"Cuenta no habilitada: contraseña demasiado corta\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "longitud (Entero)\ncorreo (Cadena: SI/NO)",
+          "p": "Si longitud >= 8 Entonces\n   Si correo = \"SI\" → Cuenta habilitada\n   SiNo → No habilitada: verificar correo\nSiNo → No habilitada: contraseña corta",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Longitud de la contraseña:"
+        },
+        {
+          "t": "i",
+          "v": "8"
+        },
+        {
+          "t": "o",
+          "v": "¿Correo verificado? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Cuenta habilitada exitosamente"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> HabilitacionUsuarioWeb\n    <span class=\"kw\">Definir</span> <span class=\"var\">longitud</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">correo</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Longitud de la contraseña:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">longitud</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Correo verificado? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">correo</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">longitud</span> <span class=\"op\">&gt;=</span> <span class=\"num\">8</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">correo</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Cuenta habilitada exitosamente\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Cuenta no habilitada: debe verificar el correo\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Cuenta no habilitada: contraseña demasiado corta\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Longitud mínima 8 caracteres es el estándar de seguridad. Una contraseña de exactamente 8 sí cumple (>=8). La verificación del correo es paso independiente."
+    },
+    {
+      "n": 211,
+      "ea": "1.6",
+      "level": "avanzado",
+      "titulo": "Control de calidad de producto",
+      "panelTitulo": "Tipo Prueba P1 — Producto habilitado para venta",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de control de calidad debe indicar si un producto puede ponerse a la venta.<br><br>El algoritmo debe solicitar:<br>• <strong>Días restantes para la fecha de vencimiento</strong> (número entero).<br>• <strong>El producto pasó la inspección de calidad</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si los días restantes son mayores a 10:<br>&nbsp;&nbsp;○ Si pasó la inspección es \"SI\" → Mostrar: <em>\"Producto habilitado para la venta\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Producto no habilitado: no pasó inspección\"</em><br>• En caso contrario → Mostrar: <em>\"Producto no habilitado: próximo a vencer\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "diasRestantes (Entero)\ninspeccion (Cadena: SI/NO)",
+          "p": "Si diasRestantes > 10 Entonces\n   Si inspeccion = \"SI\" → Habilitado para venta\n   SiNo → No habilitado: inspección fallida\nSiNo → No habilitado: próximo a vencer",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Días restantes para vencimiento:"
+        },
+        {
+          "t": "i",
+          "v": "20"
+        },
+        {
+          "t": "o",
+          "v": "¿Pasó inspección de calidad? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "NO"
+        },
+        {
+          "t": "o",
+          "v": "Producto no habilitado: no pasó inspección"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ControlCalidadProducto\n    <span class=\"kw\">Definir</span> <span class=\"var\">diasRestantes</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">inspeccion</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Días restantes para vencimiento:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">diasRestantes</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Pasó inspección de calidad? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">inspeccion</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">diasRestantes</span> <span class=\"op\">&gt;</span> <span class=\"num\">10</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">inspeccion</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Producto habilitado para la venta\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Producto no habilitado: no pasó inspección\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Producto no habilitado: próximo a vencer\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "10 días o menos es considerado 'próximo a vencer' (no > 10). 11 días o más puede venderse si pasa la inspección. Vencimiento y calidad son independientes."
+    },
+    {
+      "n": 212,
+      "ea": "1.6",
+      "level": "avanzado",
+      "titulo": "Confirmación de turno médico",
+      "panelTitulo": "Tipo Prueba P1 — Anticipación y previsión de salud",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de salud debe controlar si puede confirmarse un turno médico.<br><br>El algoritmo debe solicitar:<br>• <strong>Días de anticipación con que se solicita el turno</strong> (número entero).<br>• <strong>El paciente tiene previsión de salud vigente</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si los días de anticipación son mayores o iguales a 2:<br>&nbsp;&nbsp;○ Si tiene previsión vigente es \"SI\" → Mostrar: <em>\"Turno médico confirmado\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Turno pendiente: debe regularizar previsión\"</em><br>• En caso contrario → Mostrar: <em>\"Turno no disponible: solicitud con muy poca anticipación\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "anticipacion (Entero)\nprevision (Cadena: SI/NO)",
+          "p": "Si anticipacion >= 2 Entonces\n   Si prevision = \"SI\" → Turno confirmado\n   SiNo → Pendiente: regularizar previsión\nSiNo → No disponible: poca anticipación",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Días de anticipación:"
+        },
+        {
+          "t": "i",
+          "v": "3"
+        },
+        {
+          "t": "o",
+          "v": "¿Tiene previsión de salud vigente? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Turno médico confirmado"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ConfirmacionTurno\n    <span class=\"kw\">Definir</span> <span class=\"var\">anticipacion</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">prevision</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Días de anticipación:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">anticipacion</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Tiene previsión de salud vigente? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">prevision</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">anticipacion</span> <span class=\"op\">&gt;=</span> <span class=\"num\">2</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">prevision</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Turno médico confirmado\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Turno pendiente: debe regularizar previsión\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Turno no disponible: solicitud con muy poca anticipación\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "El mínimo de 2 días es por operativa del sistema de salud. Pedir el turno para el mismo día o el siguiente (0 o 1 días) no alcanza. La previsión se revisa solo si hay tiempo suficiente."
+    },
+    {
+      "n": 213,
+      "ea": "1.6",
+      "level": "avanzado",
+      "titulo": "Retiro de efectivo en cajero automático",
+      "panelTitulo": "Tipo Prueba P1 — PIN correcto y saldo positivo",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un cajero automático debe determinar si puede procesar un retiro de efectivo.<br><br>El algoritmo debe solicitar:<br>• <strong>Saldo disponible en la cuenta</strong> (número entero).<br>• <strong>El PIN ingresado es correcto</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si el saldo es mayor a 0:<br>&nbsp;&nbsp;○ Si el PIN es correcto es \"SI\" → Mostrar: <em>\"Retiro procesado\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Retiro denegado: PIN incorrecto\"</em><br>• En caso contrario → Mostrar: <em>\"Retiro denegado: saldo insuficiente\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "saldo (Entero)\npin (Cadena: SI/NO)",
+          "p": "Si saldo > 0 Entonces\n   Si pin = \"SI\" → Retiro procesado\n   SiNo → Denegado: PIN incorrecto\nSiNo → Denegado: saldo insuficiente",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Saldo disponible:"
+        },
+        {
+          "t": "i",
+          "v": "5000"
+        },
+        {
+          "t": "o",
+          "v": "¿PIN correcto? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Retiro procesado"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> RetiroEfectivo\n    <span class=\"kw\">Definir</span> <span class=\"var\">saldo</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">pin</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Saldo disponible:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">saldo</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿PIN correcto? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">pin</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">saldo</span> <span class=\"op\">&gt;</span> <span class=\"num\">0</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">pin</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Retiro procesado\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Retiro denegado: PIN incorrecto\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Retiro denegado: saldo insuficiente\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Saldo 0 es insuficiente (no > 0). El PIN es la autenticación, el saldo es el requisito financiero. Primero se verifica el saldo (lo tangible), luego la identidad (lo lógico)."
+    },
+    {
+      "n": 214,
+      "ea": "1.6",
+      "level": "avanzado",
+      "titulo": "Acreditación profesional de técnico",
+      "panelTitulo": "Tipo Prueba P1 — Experiencia y examen de certificación",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de certificación debe validar si un técnico puede obtener su acreditación profesional.<br><br>El algoritmo debe solicitar:<br>• <strong>Horas de experiencia laboral en el área</strong> (número entero).<br>• <strong>El postulante aprobó el examen de certificación</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si las horas de experiencia son mayores o iguales a 500:<br>&nbsp;&nbsp;○ Si aprobó el examen es \"SI\" → Mostrar: <em>\"Acreditación profesional otorgada\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Acreditación no otorgada: debe aprobar el examen\"</em><br>• En caso contrario → Mostrar: <em>\"Acreditación no otorgada: experiencia insuficiente\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "horas (Entero)\nexamen (Cadena: SI/NO)",
+          "p": "Si horas >= 500 Entonces\n   Si examen = \"SI\" → Acreditación otorgada\n   SiNo → No otorgada: debe aprobar examen\nSiNo → No otorgada: experiencia insuficiente",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Horas de experiencia laboral:"
+        },
+        {
+          "t": "i",
+          "v": "600"
+        },
+        {
+          "t": "o",
+          "v": "¿Aprobó el examen de certificación? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "NO"
+        },
+        {
+          "t": "o",
+          "v": "Acreditación no otorgada: debe aprobar el examen"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> AcreditacionTecnico\n    <span class=\"kw\">Definir</span> <span class=\"var\">horas</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">examen</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Horas de experiencia laboral:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">horas</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Aprobó el examen de certificación? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">examen</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">horas</span> <span class=\"op\">&gt;=</span> <span class=\"num\">500</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">examen</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Acreditación profesional otorgada\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Acreditación no otorgada: debe aprobar el examen\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Acreditación no otorgada: experiencia insuficiente\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "La experiencia se valida primero porque es el prerrequisito de admisión. El examen es la evaluación final. Sin experiencia suficiente no tiene sentido rendir el examen."
+    },
+    {
+      "n": 215,
+      "ea": "1.6",
+      "level": "avanzado",
+      "titulo": "Clasificación de residuo ambiental",
+      "panelTitulo": "Tipo Prueba P1 — Residuo peligroso o estándar",
+      "tags": [
+        "Si-Entonces anidado",
+        "Decisión",
+        "Cadena",
+        "Entero"
+      ],
+      "enunciado": "Un sistema de gestión ambiental debe clasificar un residuo para su tratamiento.<br><br>El algoritmo debe solicitar:<br>• <strong>Nivel de toxicidad del residuo</strong> del 1 al 10 (número entero).<br>• <strong>El residuo es de origen biológico</strong> (SI / NO).<br><br><strong>Reglas:</strong><br>• Si el nivel de toxicidad es mayor a 5:<br>&nbsp;&nbsp;○ Si es biológico es \"SI\" → Mostrar: <em>\"Residuo peligroso biológico: tratamiento especial\"</em><br>&nbsp;&nbsp;○ En caso contrario → Mostrar: <em>\"Residuo peligroso químico: tratamiento especial\"</em><br>• En caso contrario → Mostrar: <em>\"Residuo no peligroso: disposición estándar\"</em><br><br>Al final, siempre mostrar: <em>\"Fin del proceso\"</em> y terminar.",
+      "eps": [
+        {
+          "e": "toxicidad (Entero)\nbiologico (Cadena: SI/NO)",
+          "p": "Si toxicidad > 5 Entonces\n   Si biologico = \"SI\" → Peligroso biológico\n   SiNo → Peligroso químico\nSiNo → No peligroso: disposición estándar",
+          "s": "Mensaje de resultado + \"Fin del proceso\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Nivel de toxicidad (1-10):"
+        },
+        {
+          "t": "i",
+          "v": "8"
+        },
+        {
+          "t": "o",
+          "v": "¿Es de origen biológico? (SI/NO):"
+        },
+        {
+          "t": "i",
+          "v": "SI"
+        },
+        {
+          "t": "o",
+          "v": "Residuo peligroso biológico: tratamiento especial"
+        },
+        {
+          "t": "o",
+          "v": "Fin del proceso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ClasificacionResiduo\n    <span class=\"kw\">Definir</span> <span class=\"var\">toxicidad</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">biologico</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Nivel de toxicidad (1-10):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">toxicidad</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Es de origen biológico? (SI/NO):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">biologico</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">toxicidad</span> <span class=\"op\">&gt;</span> <span class=\"num\">5</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">biologico</span> <span class=\"op\">=</span> <span class=\"str\">\"SI\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Residuo peligroso biológico: tratamiento especial\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Residuo peligroso químico: tratamiento especial\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Residuo no peligroso: disposición estándar\"</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fin del proceso\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Ambas ramas del Si interno son 'tratamiento especial' pero el tipo de tratamiento difiere según si es biológico o químico. El Si anidado aquí sirve para <em>especializar</em>, no para aprobar/rechazar."
+    }
+  ]
+}

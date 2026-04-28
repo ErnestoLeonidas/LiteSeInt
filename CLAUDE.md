@@ -1,6 +1,14 @@
 # CLAUDE.md
 
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 Contexto permanente para Claude Code al trabajar en este repositorio.
+
+## Commands
+
+- `npm test` — runs `node tests/run-tests.js`, the full validator + runtime regression suite. This is the only npm script.
+- Single test: there is no `--filter` flag. Either `grep` for the relevant case in `tests/run-tests.js` and read it, or temporarily comment out unrelated cases while iterating.
+- Local app: this is a static site. Open `index.html` directly in a browser, or serve the folder (e.g. `python3 -m http.server`) — there is no build step.
 
 ## Working Style
 
@@ -23,10 +31,13 @@ Current file ownership:
 - `js/app.js`: UI controller, editor behavior, console, autocomplete, examples, visual state
 - `js/doc_errores.js`: tokenizer, static validator, symbol table, exact error ranges, autocomplete helpers
 - `js/LiteSeInt.js`: parser, AST, runtime execution, expression evaluation, runtime checks
-- `tests/run-tests.js`: Node-based regression tests for validator and runtime behavior
+- `js/ejercicios-data.js`: exercise definitions consumed by the UI and loaded into the test sandbox
+- `tests/run-tests.js`: Node-based regression tests for validator and runtime behavior. Loads `doc_errores.js`, `LiteSeInt.js`, and `ejercicios-data.js` into a `vm` context and exercises them via `DocErrores.validarDocumento` and `new LiteSeInt({...})` callbacks. New tests should follow the existing `validar(...)` / `ejecutar(...)` helper patterns at the top of the file.
 - `package.json`: test script entrypoint
 - `README.md`: user-facing documentation
 - `CHANGELOG.md`: notable visible changes
+- `EJERCICIOS.md`, `ejercicios/`: exercise documentation and assets
+- `ROADMAP.md`, `prompt_v*.txt`: planned phases and per-phase scope guards (treat as source of truth when a request maps to one)
 
 ## Core Architecture Rules
 
@@ -159,7 +170,7 @@ When adding or changing language behavior:
 3. Update autocomplete, examples, or UI helpers in `js/app.js` if the feature is user-visible.
 4. Update `README.md` if supported syntax or behavior changed.
 5. Update `CHANGELOG.md` for notable visible changes.
-6. Update the visible version in `index.html` only if the phase is actually complete.
+6. Update the visible version in `index.html` only if the phase is actually complete. The version trail across `index.html`, `CHANGELOG.md`, and the git tags (e.g. `v0.8.1`) should move together — do not bump one without the others.
 
 Use `prompt_v*.txt` files at repo root as scope guards when they exist and the request maps to a planned phase. If no matching prompt exists, use this file, `README.md`, `CHANGELOG.md`, and the current implementation as the source of truth.
 

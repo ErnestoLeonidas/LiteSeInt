@@ -1504,6 +1504,12 @@ const NIVELES_LITESEINT = [
 ];
 
 const PROGRESO_KEY = "liteseint:exerciseProgress";
+const EJERCICIOS_JSON_PATHS = [
+  "json/EA 1.1.json",
+  "json/EA 1.2.json",
+  "json/EA 1.3.json",
+  "json/EA 1.4.json",
+];
 const ESTADOS_PROGRESO = ["pendiente", "en-curso", "completado"];
 const ESTADO_LABEL = {
   "pendiente": "Pendiente",
@@ -1513,6 +1519,329 @@ const ESTADO_LABEL = {
 
 let progresoEjercicios = {};
 let ejercicioSeleccionadoId = null;
+
+function textoDesdeHtml(html) {
+  if (html == null) return "";
+  const tmp = document.createElement("div");
+  tmp.innerHTML = String(html);
+  return tmp.textContent || tmp.innerText || "";
+}
+
+function codigoTextoDesdeHtml(codeHtml) {
+  const sinSpans = String(codeHtml || "")
+    .replace(/<span\b[^>]*>/gi, "")
+    .replace(/<\/span>/gi, "");
+  return textoDesdeHtml(sinSpans);
+}
+
+function dividirSentenciasPSeInt(linea) {
+  const partes = [];
+  let actual = "";
+  let enCadena = false;
+
+  for (let i = 0; i < linea.length; i++) {
+    const ch = linea[i];
+    if (ch === '"') enCadena = !enCadena;
+    if (ch === ";" && !enCadena) {
+      partes.push(actual);
+      actual = "";
+      continue;
+    }
+    actual += ch;
+  }
+  partes.push(actual);
+  return partes;
+}
+
+function reemplazarFuncionUnArgumento(linea, nombre, transformar) {
+  const patron = new RegExp(`\\b${nombre}\\s*\\(`, "i");
+  let resultado = linea;
+  let match = resultado.match(patron);
+
+  while (match) {
+    const inicioFuncion = match.index;
+    const inicioArgs = inicioFuncion + match[0].length;
+    let profundidad = 1;
+    let finArgs = -1;
+
+    for (let i = inicioArgs; i < resultado.length; i++) {
+      if (resultado[i] === "(") profundidad++;
+      else if (resultado[i] === ")") profundidad--;
+      if (profundidad === 0) {
+        finArgs = i;
+        break;
+      }
+    }
+
+    if (finArgs === -1) return resultado;
+    const argumento = resultado.slice(inicioArgs, finArgs);
+    resultado =
+      resultado.slice(0, inicioFuncion) +
+      transformar(argumento.trim()) +
+      resultado.slice(finArgs + 1);
+    match = resultado.match(patron);
+  }
+
+  return resultado;
+}
+
+function reemplazarIgualdadPSeInt(condicion) {
+  let resultado = "";
+
+  for (let i = 0; i < condicion.length; i++) {
+    const ch = condicion[i];
+    const prev = condicion[i - 1] || "";
+    const next = condicion[i + 1] || "";
+
+    if (ch === "=" && !["<", ">", "!", "="].includes(prev) && next !== "=") {
+      resultado += "==";
+      continue;
+    }
+
+    resultado += ch;
+  }
+
+  return resultado;
+}
+
+function adaptarCondicionSi(linea) {
+  const match = linea.match(/^(\s*Si\s+)(.+?)(\s+Entonces\s*)$/i);
+  if (!match) return linea;
+  const condicion = match[2].replace(/\bMOD\b/g, "mod");
+  return `${match[1]}${reemplazarIgualdadPSeInt(condicion)}${match[3]}`;
+}
+
+function adaptarCondicionHastaQue(linea) {
+  const match = linea.match(/^(\s*Hasta\s+Que\s+|\s*HastaQue\s+)(.+)$/i);
+  if (!match) return linea;
+  const condicion = match[2].replace(/\bMOD\b/g, "mod");
+  return `${match[1]}${reemplazarIgualdadPSeInt(condicion)}`;
+}
+
+function adaptarOperadoresEnteros(linea) {
+  const asignacionDiv = linea.match(/^(\s*\w+\s*=\s*)(.+?)\s+DIV\s+(.+?)\s*$/i);
+  if (asignacionDiv) {
+    return `${asignacionDiv[1]}Trunc(${asignacionDiv[2].trim()} / ${asignacionDiv[3].trim()})`;
+  }
+
+  const asignacionMod = linea.match(/^(\s*\w+\s*=\s*)(.+?)\s+MOD\s+(.+?)\s*$/i);
+  if (asignacionMod) {
+    return `${asignacionMod[1]}${asignacionMod[2].trim()} mod ${asignacionMod[3].trim()}`;
+  }
+
+  return linea;
+}
+
+function expandirDeOtroModo(linea) {
+  const match = linea.match(/^(\s*De\s+Otro\s+Modo\s*:)\s*(.+)$/i);
+  if (!match) return [linea];
+  return [match[1], `${match[1].match(/^\s*/)[0]}  ${match[2]}`];
+}
+
+function extraerCasoSegunVerdadero(linea) {
+  const trimmed = linea.trim();
+  if (/^De\s+Otro\s+Modo\s*:?\s*$/i.test(trimmed)) {
+    return { tipo: "default", condicion: "", inline: "" };
+  }
+
+  const colonIdx = trimmed.indexOf(":");
+  if (colonIdx === -1) return null;
+
+  const condicion = trimmed.slice(0, colonIdx).trim();
+  const inline = trimmed.slice(colonIdx + 1).trim();
+  if (!/[<>=!]/.test(condicion)) return null;
+
+  return {
+    tipo: "condicion",
+    condicion: reemplazarIgualdadPSeInt(condicion.replace(/\bMOD\b/g, "mod")),
+    inline,
+  };
+}
+
+function transformarSegunVerdadero(lineas) {
+  const salida = [];
+
+  for (let i = 0; i < lineas.length; i++) {
+    const linea = lineas[i];
+    const matchSegun = linea.match(/^(\s*)Segun\s+Verdadero\s+Hacer\s*$/i);
+    if (!matchSegun) {
+      salida.push(linea);
+      continue;
+    }
+
+    const indent = matchSegun[1] || "";
+    const casos = [];
+    let casoActual = null;
+    i++;
+
+    for (; i < lineas.length; i++) {
+      const actual = lineas[i];
+      if (/^\s*FinSegun\s*$/i.test(actual)) break;
+
+      const caso = extraerCasoSegunVerdadero(actual);
+      if (caso) {
+        casoActual = { ...caso, instrucciones: [] };
+        if (caso.inline) casoActual.instrucciones.push(`${indent}    ${caso.inline}`);
+        casos.push(casoActual);
+      } else if (casoActual) {
+        casoActual.instrucciones.push(actual);
+      }
+    }
+
+    let profundidad = 0;
+    casos.forEach((caso, idx) => {
+      const prefijo = `${indent}${"    ".repeat(profundidad)}`;
+      if (caso.tipo === "condicion") {
+        salida.push(`${prefijo}Si ${caso.condicion} Entonces`);
+        salida.push(...caso.instrucciones);
+        const quedaOtroCaso = casos.slice(idx + 1).length > 0;
+        if (quedaOtroCaso) {
+          salida.push(`${prefijo}Sino`);
+          profundidad++;
+        }
+      } else {
+        salida.push(...caso.instrucciones);
+      }
+    });
+
+    for (let cierre = profundidad; cierre >= 0; cierre--) {
+      const hayCondicionEnNivel = casos[cierre] && casos[cierre].tipo === "condicion";
+      if (hayCondicionEnNivel) {
+        salida.push(`${indent}${"    ".repeat(cierre)}FinSi`);
+      }
+    }
+  }
+
+  return salida;
+}
+
+function codigoReferenciaLiteSeInt(codeHtml) {
+  const lineas = codigoTextoDesdeHtml(codeHtml)
+    .replace(/\r\n?/g, "\n")
+    .split("\n")
+    .flatMap(dividirSentenciasPSeInt)
+    .map((linea) =>
+      reemplazarFuncionUnArgumento(
+        linea.replace(/<-/g, "=").replace(/\bpaso\b/g, "numPaso").trimEnd(),
+        "RC",
+        (arg) => `(${arg}) ^ (1 / 2)`,
+      ),
+    )
+    .map((linea) =>
+      reemplazarFuncionUnArgumento(
+        linea,
+        "Aleatorio",
+        (arg) => {
+          const partes = arg.split(",");
+          return (partes[1] || partes[0] || "0").trim();
+        },
+      ),
+    )
+    .map((linea) =>
+      linea
+        .replace(/\bCadena\b/g, "Caracter")
+        .replace(/\bSiNo\b/g, "Sino")
+        .replace(/\bMOD\b/g, "mod"),
+    )
+    .map(adaptarCondicionSi)
+    .map(adaptarCondicionHastaQue)
+    .map(adaptarOperadoresEnteros)
+    .flatMap(expandirDeOtroModo)
+    .filter((linea) => linea.trim() !== "");
+
+  return transformarSegunVerdadero(lineas)
+    .join("\n")
+    .trim();
+}
+
+function nivelLiteSeIntDesdeNumero(numero) {
+  if (numero <= 2) return 0;
+  if (numero <= 3) return 1;
+  if (numero <= 7 || numero === 14 || numero === 16) return 2;
+  return 3;
+}
+
+function salidaDesdeConsola(consola) {
+  if (!Array.isArray(consola)) return "";
+  return consola
+    .map((linea) => {
+      const valor = linea && linea.v != null ? String(linea.v) : "";
+      return linea && linea.t === "i" ? `> ${valor}` : valor;
+    })
+    .filter(Boolean)
+    .join("\n");
+}
+
+function normalizarEjercicioJson(ejercicio, experience, path) {
+  const numero = Number(ejercicio.n) || 0;
+  const ea = ejercicio.ea || (experience.id || "");
+  const eps = Array.isArray(ejercicio.eps) ? ejercicio.eps[0] : null;
+  return {
+    id: `ea${String(ea).replace(/\./g, "-")}-${String(numero).padStart(3, "0")}`,
+    origen: `${path} #${numero}`,
+    modulo: experience.label || `EA ${ea}`,
+    experiencia: experience.titulo || "",
+    nivelLiteSeInt: nivelLiteSeIntDesdeNumero(numero),
+    dificultad: ejercicio.level || "basico",
+    gradoAyuda: numero <= 2 ? "guiado" : numero <= 7 ? "con-pista" : "practica",
+    titulo: ejercicio.titulo || `Ejercicio ${numero}`,
+    panelTitulo: ejercicio.panelTitulo || ejercicio.titulo || `Ejercicio ${numero}`,
+    conceptos: Array.isArray(ejercicio.tags) ? ejercicio.tags : [],
+    enunciado: textoDesdeHtml(ejercicio.enunciado),
+    enunciadoHtml: ejercicio.enunciado || "",
+    entradaProcesoSalida: eps
+      ? {
+          entrada: eps.e || "",
+          proceso: eps.p || "",
+          salida: eps.s || "",
+        }
+      : null,
+    salidaEsperada: salidaDesdeConsola(ejercicio.consola),
+    pista: textoDesdeHtml(ejercicio.tip),
+    pistaHtml: ejercicio.tip || "",
+    codigoReferencia: codigoReferenciaLiteSeInt(ejercicio.code),
+    estadoAdaptacion: "adaptado",
+    motivoExclusion: "",
+  };
+}
+
+function instalarBancoEjercicios(ejercicios) {
+  function listarAdaptados() {
+    return ejercicios.filter((e) => e.estadoAdaptacion === "adaptado");
+  }
+
+  function porId(id) {
+    return ejercicios.find((e) => e.id === id) || null;
+  }
+
+  function porNivel(nivel) {
+    return ejercicios.filter(
+      (e) => e.estadoAdaptacion === "adaptado" && e.nivelLiteSeInt === nivel,
+    );
+  }
+
+  window.EjerciciosLiteSeInt = {
+    EJERCICIOS: ejercicios,
+    listarAdaptados,
+    porId,
+    porNivel,
+  };
+}
+
+async function cargarBancoEjerciciosDesdeJson() {
+  const ejercicios = [];
+  for (const path of EJERCICIOS_JSON_PATHS) {
+    const resp = await fetch(path, { cache: "no-store" });
+    if (!resp.ok) {
+      throw new Error(`No se pudo cargar ${path} (${resp.status})`);
+    }
+    const data = await resp.json();
+    const experience = data.experience || {};
+    const items = Array.isArray(data.exercises) ? data.exercises : [];
+    ejercicios.push(...items.map((item) => normalizarEjercicioJson(item, experience, path)));
+  }
+  instalarBancoEjercicios(ejercicios);
+}
 
 function cargarProgreso() {
   try {
@@ -1557,6 +1886,7 @@ function ejerciciosVisibles() {
 function poblarFiltroNivel() {
   const $sel = $("#ejFiltroNivel");
   if (!$sel.length) return;
+  $sel.find("option:not(:first)").remove();
   const presentes = new Set(ejerciciosVisibles().map((e) => e.nivelLiteSeInt));
   for (const n of NIVELES_LITESEINT) {
     if (!presentes.has(n.id)) continue;
@@ -1635,6 +1965,11 @@ function renderizarListaEjercicios() {
   }
 }
 
+function renderizarEstadoCargaEjercicios(mensaje) {
+  $("#ejList").empty().append($("<li>").addClass("ej-empty").text(mensaje));
+  $("#ejProgresoResumen").empty();
+}
+
 function mostrarDetalleEjercicio(id) {
   const $det = $("#ejDetail");
   if (!$det.length) return;
@@ -1657,8 +1992,11 @@ function mostrarDetalleEjercicio(id) {
   $tags.append($("<span>").addClass(`ej-tag est-${estado}`).text(ESTADO_LABEL[estado]));
   $det.append($tags);
 
-  $det.append($("<h4>").text(e.titulo));
-  $det.append($("<p>").addClass("ej-enunciado").text(e.enunciado));
+  $det.append($("<h4>").text(e.panelTitulo || e.titulo));
+  const $enunciado = $("<p>").addClass("ej-enunciado");
+  if (e.enunciadoHtml) $enunciado.html(e.enunciadoHtml);
+  else $enunciado.text(e.enunciado);
+  $det.append($enunciado);
 
   if (e.conceptos && e.conceptos.length) {
     const $cs = $("<p>").addClass("ej-conceptos-list");
@@ -1687,7 +2025,10 @@ function mostrarDetalleEjercicio(id) {
   if (e.pista) {
     const $pista = $("<details>").addClass("ej-pista");
     $pista.append($("<summary>").text("Ver pista"));
-    $pista.append($("<p>").text(e.pista));
+    const $pistaTexto = $("<p>");
+    if (e.pistaHtml) $pistaTexto.html(e.pistaHtml);
+    else $pistaTexto.text(e.pista);
+    $pista.append($pistaTexto);
     $det.append($pista);
   }
 
@@ -1800,9 +2141,19 @@ function seleccionarEjercicio(id) {
   mostrarDetalleEjercicio(id);
 }
 
-function inicializarBancoEjercicios() {
-  if (!window.EjerciciosLiteSeInt) return;
+async function inicializarBancoEjercicios() {
   cargarProgreso();
+  renderizarEstadoCargaEjercicios("Cargando ejercicios desde JSON...");
+  try {
+    await cargarBancoEjerciciosDesdeJson();
+  } catch (err) {
+    console.error(err);
+    renderizarEstadoCargaEjercicios("No se pudieron cargar los ejercicios desde los JSON de las EAs.");
+    $("#ejDetail").html(
+      '<p class="ej-detail-empty">Revisa que la página se esté sirviendo desde un servidor local y que el archivo JSON exista.</p>',
+    );
+    return;
+  }
   poblarFiltroNivel();
   renderizarListaEjercicios();
   renderizarResumenProgreso();

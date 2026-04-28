@@ -1,0 +1,881 @@
+{
+  "experience": {
+    "id": "1.1",
+    "label": "EA 1.1",
+    "titulo": "Introducción a los Algoritmos",
+    "desc": "Identifica componentes de un algoritmo: variables, estructuras y expresiones.",
+    "color": "var(--accent)",
+    "icon": "⚙"
+  },
+  "exercises": [
+    {
+      "n": 1,
+      "ea": "1.1",
+      "level": "basico",
+      "titulo": "Mostrar un saludo fijo",
+      "panelTitulo": "Hola, mundo — tu primer algoritmo",
+      "tags": [
+        "Escribir",
+        "Salida"
+      ],
+      "enunciado": "Crea un programa que muestre el mensaje <strong>\"Hola, mundo!\"</strong> en la pantalla. No necesita leer ningún dato del usuario. Es el ejercicio más simple posible: una sola instrucción de salida.",
+      "eps": [
+        {
+          "e": "(ninguna — no se lee ningún dato)",
+          "p": "No hay cálculo. Solo mostrar texto fijo.",
+          "s": "\"Hola, mundo!\" impreso en pantalla"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Hola, mundo!"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> Saludo\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Hola, mundo!\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "<strong>Escribir</strong> muestra texto en consola. Las cadenas de texto van entre comillas dobles en PSeInt."
+    },
+    {
+      "n": 2,
+      "ea": "1.1",
+      "level": "basico",
+      "titulo": "Mostrar tres líneas de texto",
+      "panelTitulo": "Múltiples salidas — Escribir varias líneas",
+      "tags": [
+        "Escribir",
+        "Salida"
+      ],
+      "enunciado": "Crea un programa que muestre <strong>tres líneas</strong> de texto fijo: tu nombre, tu carrera y el nombre de la asignatura. Cada dato debe aparecer en una línea separada.",
+      "eps": [
+        {
+          "e": "(ninguna)",
+          "p": "Tres instrucciones Escribir independientes.",
+          "s": "Tres líneas de texto en consola"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Nombre: Ana González"
+        },
+        {
+          "t": "o",
+          "v": "Carrera: Analista Programador"
+        },
+        {
+          "t": "o",
+          "v": "Asignatura: Fundamentos de Programación"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> MisDatos\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Nombre: Ana González\"</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Carrera: Analista Programador\"</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Asignatura: Fundamentos de Programación\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Cada <strong>Escribir</strong> produce una nueva línea. Puedes concatenar texto y variables separando con comas: <strong>Escribir \"Hola\", nombre;</strong>"
+    },
+    {
+      "n": 3,
+      "ea": "1.1",
+      "level": "basico",
+      "titulo": "Declarar y mostrar una variable entera",
+      "panelTitulo": "Variables enteras — Definir, asignar y mostrar",
+      "tags": [
+        "Definir",
+        "Entero",
+        "Variables"
+      ],
+      "enunciado": "Declara una variable <strong>entera</strong> llamada <em>edad</em>, asígnale el valor <strong>20</strong> directamente en el código (sin leer del usuario) y muéstrala en pantalla.",
+      "eps": [
+        {
+          "e": "(ninguna — valor asignado en el código)",
+          "p": "edad ← 20",
+          "s": "\"Mi edad es: 20\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Mi edad es: 20"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> MostrarEdad\n    <span class=\"kw\">Definir</span> <span class=\"var\">edad</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"var\">edad</span> <span class=\"op\"><-</span> <span class=\"num\">20</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Mi edad es: \"</span>, <span class=\"var\">edad</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "En PSeInt siempre debes declarar las variables con <strong>Definir</strong> antes de usarlas. El operador de asignación es <strong>&lt;-</strong> (flecha)."
+    },
+    {
+      "n": 4,
+      "ea": "1.1",
+      "level": "basico",
+      "titulo": "Variables de distintos tipos",
+      "panelTitulo": "Tipos de datos — Entero, Real y Caracter",
+      "tags": [
+        "Definir",
+        "Entero",
+        "Real",
+        "Caracter"
+      ],
+      "enunciado": "Declara <strong>tres variables</strong>: <em>nombre</em> (Caracter), <em>edad</em> (Entero) y <em>altura</em> (Real). Asígnales valores fijos y muéstralos con etiquetas descriptivas.",
+      "eps": [
+        {
+          "e": "(ninguna — valores asignados en código)",
+          "p": "nombre ← \"Pedro\"\nedad ← 21\naltura ← 1.75",
+          "s": "Tres líneas mostrando cada variable con su etiqueta"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Nombre: Pedro"
+        },
+        {
+          "t": "o",
+          "v": "Edad: 21"
+        },
+        {
+          "t": "o",
+          "v": "Altura: 1.75 m"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> TiposDatos\n    <span class=\"kw\">Definir</span> <span class=\"var\">nombre</span> <span class=\"kw\">Como</span> Caracter;\n    <span class=\"kw\">Definir</span> <span class=\"var\">edad</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">altura</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"var\">nombre</span> <span class=\"op\"><-</span> <span class=\"str\">\"Pedro\"</span>;\n    <span class=\"var\">edad</span>   <span class=\"op\"><-</span> <span class=\"num\">21</span>;\n    <span class=\"var\">altura</span> <span class=\"op\"><-</span> <span class=\"num\">1.75</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Nombre: \"</span>, <span class=\"var\">nombre</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Edad: \"</span>, <span class=\"var\">edad</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Altura: \"</span>, <span class=\"var\">altura</span>, <span class=\"str\">\" m\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Los tres tipos básicos en PSeInt son <strong>Entero</strong> (sin decimales), <strong>Real</strong> (con decimales) y <strong>Caracter</strong> (texto). Puedes agrupar: <strong>Definir a, b Como Entero;</strong>"
+    },
+    {
+      "n": 5,
+      "ea": "1.1",
+      "level": "basico",
+      "titulo": "Leer el nombre del usuario",
+      "panelTitulo": "Entrada de datos — Leer una variable Caracter",
+      "tags": [
+        "Leer",
+        "Caracter",
+        "Variables"
+      ],
+      "enunciado": "El programa pide el <strong>nombre</strong> del usuario con un mensaje, lo lee con <em>Leer</em> y muestra un saludo personalizado.",
+      "eps": [
+        {
+          "e": "Nombre del usuario (tipo Caracter)",
+          "p": "Almacenar el nombre en la variable nombre",
+          "s": "\"Bienvenido/a, [nombre]!\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "¿Cuál es tu nombre?"
+        },
+        {
+          "t": "i",
+          "v": "María"
+        },
+        {
+          "t": "o",
+          "v": "Bienvenido/a, María!"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> Bienvenida\n    <span class=\"kw\">Definir</span> <span class=\"var\">nombre</span> <span class=\"kw\">Como</span> Caracter;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Cuál es tu nombre?\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">nombre</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Bienvenido/a, \"</span>, <span class=\"var\">nombre</span>, <span class=\"str\">\"!\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "<strong>Leer</strong> pausa el programa y espera que el usuario escriba algo. Siempre escribe un <strong>Escribir</strong> de aviso antes del <strong>Leer</strong>."
+    },
+    {
+      "n": 6,
+      "ea": "1.1",
+      "level": "basico",
+      "titulo": "Sumar dos números enteros",
+      "panelTitulo": "Operación aritmética — Suma de dos enteros",
+      "tags": [
+        "Leer",
+        "Entero",
+        "Aritmética"
+      ],
+      "enunciado": "El programa solicita <strong>dos números enteros</strong>, calcula su <strong>suma</strong> y muestra el resultado. Identifica la entrada, el proceso y la salida.",
+      "eps": [
+        {
+          "e": "Primer número entero (num1)\nSegundo número entero (num2)",
+          "p": "resultado ← num1 + num2",
+          "s": "\"La suma es: \" + resultado"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Ingresa el primer número:"
+        },
+        {
+          "t": "i",
+          "v": "8"
+        },
+        {
+          "t": "o",
+          "v": "Ingresa el segundo número:"
+        },
+        {
+          "t": "i",
+          "v": "5"
+        },
+        {
+          "t": "o",
+          "v": "La suma es: 13"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> Suma\n    <span class=\"kw\">Definir</span> <span class=\"var\">num1</span>, <span class=\"var\">num2</span>, <span class=\"var\">resultado</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingresa el primer número:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">num1</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingresa el segundo número:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">num2</span>;\n    <span class=\"var\">resultado</span> <span class=\"op\"><-</span> <span class=\"var\">num1</span> <span class=\"op\">+</span> <span class=\"var\">num2</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"La suma es: \"</span>, <span class=\"var\">resultado</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Los operadores aritméticos son: <strong>+</strong> suma, <strong>-</strong> resta, <strong>*</strong> multiplicación, <strong>/</strong> división."
+    },
+    {
+      "n": 7,
+      "ea": "1.1",
+      "level": "basico",
+      "titulo": "Calcular el doble de un número",
+      "panelTitulo": "Expresión aritmética — Multiplicar por una constante",
+      "tags": [
+        "Leer",
+        "Real",
+        "Aritmética"
+      ],
+      "enunciado": "El usuario ingresa un <strong>número real</strong>. El programa calcula su <strong>doble</strong> (número × 2) y muestra el resultado.",
+      "eps": [
+        {
+          "e": "Un número real ingresado por el usuario",
+          "p": "doble ← num × 2",
+          "s": "\"El doble es: \" + doble"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Ingresa un número:"
+        },
+        {
+          "t": "i",
+          "v": "7"
+        },
+        {
+          "t": "o",
+          "v": "El doble es: 14"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> Doble\n    <span class=\"kw\">Definir</span> <span class=\"var\">num</span>, <span class=\"var\">doble</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingresa un número:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">num</span>;\n    <span class=\"var\">doble</span> <span class=\"op\"><-</span> <span class=\"var\">num</span> <span class=\"op\">*</span> <span class=\"num\">2</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"El doble es: \"</span>, <span class=\"var\">doble</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Usa <strong>Real</strong> cuando el número puede tener decimales. El operador de asignación en PSeInt es <strong>&lt;-</strong>."
+    },
+    {
+      "n": 8,
+      "ea": "1.1",
+      "level": "basico",
+      "titulo": "Promedio de tres notas",
+      "panelTitulo": "Fórmula — Calcular promedio con paréntesis",
+      "tags": [
+        "Leer",
+        "Real",
+        "Aritmética",
+        "Fórmula"
+      ],
+      "enunciado": "Lee <strong>tres notas</strong> de un alumno (reales entre 1.0 y 7.0) y calcula su <strong>promedio</strong>. Recuerda usar paréntesis para agrupar la suma antes de dividir.",
+      "eps": [
+        {
+          "e": "Nota 1, Nota 2, Nota 3 (Real, 1.0–7.0)",
+          "p": "promedio ← (n1 + n2 + n3) / 3",
+          "s": "\"Promedio: \" + promedio"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Nota 1:"
+        },
+        {
+          "t": "i",
+          "v": "5.5"
+        },
+        {
+          "t": "o",
+          "v": "Nota 2:"
+        },
+        {
+          "t": "i",
+          "v": "6.0"
+        },
+        {
+          "t": "o",
+          "v": "Nota 3:"
+        },
+        {
+          "t": "i",
+          "v": "4.5"
+        },
+        {
+          "t": "o",
+          "v": "Promedio: 5.33333"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> PromedioNotas\n    <span class=\"kw\">Definir</span> <span class=\"var\">n1</span>, <span class=\"var\">n2</span>, <span class=\"var\">n3</span>, <span class=\"var\">promedio</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Nota 1:\"</span>; <span class=\"fn\">Leer</span> <span class=\"var\">n1</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Nota 2:\"</span>; <span class=\"fn\">Leer</span> <span class=\"var\">n2</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Nota 3:\"</span>; <span class=\"fn\">Leer</span> <span class=\"var\">n3</span>;\n    <span class=\"var\">promedio</span> <span class=\"op\"><-</span> (<span class=\"var\">n1</span> <span class=\"op\">+</span> <span class=\"var\">n2</span> <span class=\"op\">+</span> <span class=\"var\">n3</span>) <span class=\"op\">/</span> <span class=\"num\">3</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Promedio: \"</span>, <span class=\"var\">promedio</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Los paréntesis en <strong>(n1 + n2 + n3) / 3</strong> son obligatorios. Sin ellos, solo se dividiría n3 entre 3."
+    },
+    {
+      "n": 9,
+      "ea": "1.1",
+      "level": "basico",
+      "titulo": "Celsius a Fahrenheit",
+      "panelTitulo": "Conversión de temperatura — F = C × 9/5 + 32",
+      "tags": [
+        "Leer",
+        "Real",
+        "Fórmula"
+      ],
+      "enunciado": "El usuario ingresa una temperatura en <strong>Celsius</strong>. Conviértela a <strong>Fahrenheit</strong> usando: <em>F = C × 9 / 5 + 32</em>. Muestra ambos valores.",
+      "eps": [
+        {
+          "e": "Temperatura en Celsius (Real)",
+          "p": "fahrenheit ← celsius × 9 / 5 + 32",
+          "s": "celsius + \"°C = \" + fahrenheit + \"°F\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Temperatura en Celsius:"
+        },
+        {
+          "t": "i",
+          "v": "100"
+        },
+        {
+          "t": "o",
+          "v": "100°C equivale a 212°F"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> CelsiusAFahrenheit\n    <span class=\"kw\">Definir</span> <span class=\"var\">celsius</span>, <span class=\"var\">fahrenheit</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Temperatura en Celsius:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">celsius</span>;\n    <span class=\"var\">fahrenheit</span> <span class=\"op\"><-</span> <span class=\"var\">celsius</span> <span class=\"op\">*</span> <span class=\"num\">9</span> <span class=\"op\">/</span> <span class=\"num\">5</span> <span class=\"op\">+</span> <span class=\"num\">32</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"var\">celsius</span>, <span class=\"str\">\"°C equivale a \"</span>, <span class=\"var\">fahrenheit</span>, <span class=\"str\">\"°F\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "PSeInt respeta el orden de operaciones estándar: multiplicación y división antes que suma."
+    },
+    {
+      "n": 10,
+      "ea": "1.1",
+      "level": "basico",
+      "titulo": "Precio con descuento",
+      "panelTitulo": "Operación comercial — Precio final con descuento %",
+      "tags": [
+        "Leer",
+        "Real",
+        "Aritmética",
+        "Fórmula"
+      ],
+      "enunciado": "Lee el <strong>precio original</strong> y el <strong>porcentaje de descuento</strong>. Calcula el monto del descuento y el <strong>precio final</strong>. Muestra ambos resultados.",
+      "eps": [
+        {
+          "e": "Precio original (Real)\nPorcentaje de descuento en % (Real)",
+          "p": "descuento ← precio × pct / 100\nfinal ← precio − descuento",
+          "s": "\"Descuento: $\" + descuento\n\"Precio final: $\" + final"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Precio original ($):"
+        },
+        {
+          "t": "i",
+          "v": "20000"
+        },
+        {
+          "t": "o",
+          "v": "Descuento (%):"
+        },
+        {
+          "t": "i",
+          "v": "15"
+        },
+        {
+          "t": "o",
+          "v": "Descuento: $3000"
+        },
+        {
+          "t": "o",
+          "v": "Precio final: $17000"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> PrecioDescuento\n    <span class=\"kw\">Definir</span> <span class=\"var\">precio</span>, <span class=\"var\">pct</span>, <span class=\"var\">descuento</span>, <span class=\"var\">final</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Precio original ($):\"</span>; <span class=\"fn\">Leer</span> <span class=\"var\">precio</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Descuento (%):\"</span>;       <span class=\"fn\">Leer</span> <span class=\"var\">pct</span>;\n    <span class=\"var\">descuento</span> <span class=\"op\"><-</span> <span class=\"var\">precio</span> <span class=\"op\">*</span> <span class=\"var\">pct</span> <span class=\"op\">/</span> <span class=\"num\">100</span>;\n    <span class=\"var\">final</span>     <span class=\"op\"><-</span> <span class=\"var\">precio</span> <span class=\"op\">-</span> <span class=\"var\">descuento</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Descuento: $\"</span>, <span class=\"var\">descuento</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Precio final: $\"</span>, <span class=\"var\">final</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Guarda resultados intermedios en variables separadas. Esto hace el código más legible y permite mostrar el desglose completo."
+    },
+    {
+      "n": 11,
+      "ea": "1.1",
+      "level": "intermedio",
+      "titulo": "Área y perímetro del rectángulo",
+      "panelTitulo": "Geometría — A = base × altura, P = 2(a + b)",
+      "tags": [
+        "Leer",
+        "Real",
+        "Geometría",
+        "Fórmula"
+      ],
+      "enunciado": "Solicita el <strong>ancho</strong> y el <strong>alto</strong> de un rectángulo. Calcula su <strong>área</strong> (<em>A = ancho × alto</em>) y su <strong>perímetro</strong> (<em>P = 2 × (ancho + alto)</em>).",
+      "eps": [
+        {
+          "e": "Ancho del rectángulo (Real)\nAlto del rectángulo (Real)",
+          "p": "area ← ancho × alto\nperimetro ← 2 × (ancho + alto)",
+          "s": "\"Área: \" + area + \" m²\"\n\"Perímetro: \" + perimetro + \" m\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Ancho (m):"
+        },
+        {
+          "t": "i",
+          "v": "6"
+        },
+        {
+          "t": "o",
+          "v": "Alto (m):"
+        },
+        {
+          "t": "i",
+          "v": "4"
+        },
+        {
+          "t": "o",
+          "v": "Área: 24 m²"
+        },
+        {
+          "t": "o",
+          "v": "Perímetro: 20 m"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> Rectangulo\n    <span class=\"kw\">Definir</span> <span class=\"var\">ancho</span>, <span class=\"var\">alto</span>, <span class=\"var\">area</span>, <span class=\"var\">perimetro</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ancho (m):\"</span>; <span class=\"fn\">Leer</span> <span class=\"var\">ancho</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Alto (m):\"</span>;  <span class=\"fn\">Leer</span> <span class=\"var\">alto</span>;\n    <span class=\"var\">area</span>      <span class=\"op\"><-</span> <span class=\"var\">ancho</span> <span class=\"op\">*</span> <span class=\"var\">alto</span>;\n    <span class=\"var\">perimetro</span> <span class=\"op\"><-</span> <span class=\"num\">2</span> <span class=\"op\">*</span> (<span class=\"var\">ancho</span> <span class=\"op\">+</span> <span class=\"var\">alto</span>);\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Área: \"</span>, <span class=\"var\">area</span>, <span class=\"str\">\" m²\"</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Perímetro: \"</span>, <span class=\"var\">perimetro</span>, <span class=\"str\">\" m\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Puedes declarar múltiples variables del mismo tipo en una sola línea: <strong>Definir ancho, alto, area, perimetro Como Real;</strong>"
+    },
+    {
+      "n": 12,
+      "ea": "1.1",
+      "level": "intermedio",
+      "titulo": "Área y perímetro del círculo",
+      "panelTitulo": "Geometría — Círculo con PI = 3.14159",
+      "tags": [
+        "Leer",
+        "Real",
+        "Potencia",
+        "Geometría"
+      ],
+      "enunciado": "Lee el <strong>radio</strong> de un círculo. Calcula su <strong>área</strong> (<em>π × r²</em>) y su <strong>perímetro</strong> (<em>2 × π × r</em>). Define PI = 3.14159 como variable en el código.",
+      "eps": [
+        {
+          "e": "Radio del círculo (Real)\nPI = 3.14159 (definido en código)",
+          "p": "area ← PI × radio ^ 2\nperimetro ← 2 × PI × radio",
+          "s": "\"Área: \" + area\n\"Perímetro: \" + perimetro"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Radio del círculo:"
+        },
+        {
+          "t": "i",
+          "v": "5"
+        },
+        {
+          "t": "o",
+          "v": "Área: 78.53975"
+        },
+        {
+          "t": "o",
+          "v": "Perímetro: 31.4159"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> Circulo\n    <span class=\"kw\">Definir</span> <span class=\"var\">radio</span>, <span class=\"var\">area</span>, <span class=\"var\">perimetro</span>, <span class=\"var\">PI</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"var\">PI</span> <span class=\"op\"><-</span> <span class=\"num\">3.14159</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Radio del círculo:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">radio</span>;\n    <span class=\"var\">area</span>      <span class=\"op\"><-</span> <span class=\"var\">PI</span> <span class=\"op\">*</span> <span class=\"var\">radio</span> <span class=\"op\">^</span> <span class=\"num\">2</span>;\n    <span class=\"var\">perimetro</span> <span class=\"op\"><-</span> <span class=\"num\">2</span> <span class=\"op\">*</span> <span class=\"var\">PI</span> <span class=\"op\">*</span> <span class=\"var\">radio</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Área: \"</span>, <span class=\"var\">area</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Perímetro: \"</span>, <span class=\"var\">perimetro</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "El operador <strong>^</strong> en PSeInt representa la potencia. <strong>radio ^ 2</strong> equivale a radio²."
+    },
+    {
+      "n": 13,
+      "ea": "1.1",
+      "level": "intermedio",
+      "titulo": "Calcular el IMC",
+      "panelTitulo": "Fórmula de salud — IMC = peso / estatura²",
+      "tags": [
+        "Leer",
+        "Real",
+        "Potencia",
+        "Fórmula"
+      ],
+      "enunciado": "Lee el <strong>peso</strong> en kg y la <strong>estatura</strong> en metros. Calcula el <strong>IMC</strong>: <em>IMC = peso / estatura²</em> y muéstralo en pantalla.",
+      "eps": [
+        {
+          "e": "Peso en kg (Real)\nEstatura en metros (Real)",
+          "p": "imc ← peso / (estatura ^ 2)",
+          "s": "\"Tu IMC es: \" + imc"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Peso (kg):"
+        },
+        {
+          "t": "i",
+          "v": "70"
+        },
+        {
+          "t": "o",
+          "v": "Estatura (m):"
+        },
+        {
+          "t": "i",
+          "v": "1.75"
+        },
+        {
+          "t": "o",
+          "v": "Tu IMC es: 22.8571"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> CalcularIMC\n    <span class=\"kw\">Definir</span> <span class=\"var\">peso</span>, <span class=\"var\">estatura</span>, <span class=\"var\">imc</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Peso (kg):\"</span>;      <span class=\"fn\">Leer</span> <span class=\"var\">peso</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Estatura (m):\"</span>;  <span class=\"fn\">Leer</span> <span class=\"var\">estatura</span>;\n    <span class=\"var\">imc</span> <span class=\"op\"><-</span> <span class=\"var\">peso</span> <span class=\"op\">/</span> (<span class=\"var\">estatura</span> <span class=\"op\">^</span> <span class=\"num\">2</span>);\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Tu IMC es: \"</span>, <span class=\"var\">imc</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Usa paréntesis en <strong>(estatura ^ 2)</strong> para asegurarte de que la potencia se calcula antes de la división."
+    },
+    {
+      "n": 14,
+      "ea": "1.1",
+      "level": "intermedio",
+      "titulo": "Calcular el vuelto",
+      "panelTitulo": "Operación de caja — precio, pago y vuelto",
+      "tags": [
+        "Leer",
+        "Entero",
+        "Aritmética"
+      ],
+      "enunciado": "Lee el <strong>precio</strong> del producto y el <strong>monto pagado</strong>. Calcula el <strong>vuelto</strong> (asume que el pago siempre es suficiente). Muestra el resultado.",
+      "eps": [
+        {
+          "e": "Precio del producto (Entero)\nMonto pagado (Entero)",
+          "p": "vuelto ← pagado − precio",
+          "s": "\"Su vuelto es: $\" + vuelto"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Precio del producto ($):"
+        },
+        {
+          "t": "i",
+          "v": "3500"
+        },
+        {
+          "t": "o",
+          "v": "Monto pagado ($):"
+        },
+        {
+          "t": "i",
+          "v": "5000"
+        },
+        {
+          "t": "o",
+          "v": "Su vuelto es: $1500"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> Vuelto\n    <span class=\"kw\">Definir</span> <span class=\"var\">precio</span>, <span class=\"var\">pagado</span>, <span class=\"var\">vuelto</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Precio del producto ($):\"</span>; <span class=\"fn\">Leer</span> <span class=\"var\">precio</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Monto pagado ($):\"</span>;        <span class=\"fn\">Leer</span> <span class=\"var\">pagado</span>;\n    <span class=\"var\">vuelto</span> <span class=\"op\"><-</span> <span class=\"var\">pagado</span> <span class=\"op\">-</span> <span class=\"var\">precio</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Su vuelto es: $\"</span>, <span class=\"var\">vuelto</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Este algoritmo modela una operación cotidiana real de caja. En una versión completa, se verificaría si el pago es suficiente usando Si-Entonces."
+    },
+    {
+      "n": 15,
+      "ea": "1.1",
+      "level": "intermedio",
+      "titulo": "Velocidad promedio de un viaje",
+      "panelTitulo": "Fórmula física — v = distancia / tiempo",
+      "tags": [
+        "Leer",
+        "Real",
+        "Fórmula",
+        "Aritmética"
+      ],
+      "enunciado": "El usuario ingresa la <strong>distancia</strong> recorrida (en km) y el <strong>tiempo</strong> del viaje (en horas). Calcula la <strong>velocidad promedio</strong>: <em>v = distancia / tiempo</em>.",
+      "eps": [
+        {
+          "e": "Distancia en km (Real)\nTiempo en horas (Real)",
+          "p": "velocidad ← distancia / tiempo",
+          "s": "\"Velocidad promedio: \" + velocidad + \" km/h\""
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Distancia recorrida (km):"
+        },
+        {
+          "t": "i",
+          "v": "240"
+        },
+        {
+          "t": "o",
+          "v": "Tiempo del viaje (horas):"
+        },
+        {
+          "t": "i",
+          "v": "3"
+        },
+        {
+          "t": "o",
+          "v": "Velocidad promedio: 80 km/h"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> VelocidadPromedio\n    <span class=\"kw\">Definir</span> <span class=\"var\">distancia</span>, <span class=\"var\">tiempo</span>, <span class=\"var\">velocidad</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Distancia recorrida (km):\"</span>;  <span class=\"fn\">Leer</span> <span class=\"var\">distancia</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Tiempo del viaje (horas):\"</span>;  <span class=\"fn\">Leer</span> <span class=\"var\">tiempo</span>;\n    <span class=\"var\">velocidad</span> <span class=\"op\"><-</span> <span class=\"var\">distancia</span> <span class=\"op\">/</span> <span class=\"var\">tiempo</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Velocidad promedio: \"</span>, <span class=\"var\">velocidad</span>, <span class=\"str\">\" km/h\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Un algoritmo puede resolver cualquier fórmula del mundo real. El proceso es siempre: identificar entradas, aplicar la fórmula y mostrar la salida."
+    },
+    {
+      "n": 16,
+      "ea": "1.1",
+      "level": "intermedio",
+      "titulo": "Intercambiar dos variables",
+      "panelTitulo": "Variable auxiliar — Intercambio sin perder datos",
+      "tags": [
+        "Leer",
+        "Entero",
+        "Variables",
+        "Auxiliar"
+      ],
+      "enunciado": "El usuario ingresa <strong>dos números enteros</strong>. El programa los <strong>intercambia</strong> usando una variable auxiliar y muestra los valores antes y después.",
+      "eps": [
+        {
+          "e": "Número A (Entero)\nNúmero B (Entero)",
+          "p": "aux ← a\na ← b\nb ← aux",
+          "s": "Valores antes y después del intercambio"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Ingresa A:"
+        },
+        {
+          "t": "i",
+          "v": "10"
+        },
+        {
+          "t": "o",
+          "v": "Ingresa B:"
+        },
+        {
+          "t": "i",
+          "v": "25"
+        },
+        {
+          "t": "o",
+          "v": "Antes  → A: 10  B: 25"
+        },
+        {
+          "t": "o",
+          "v": "Después → A: 25  B: 10"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> Intercambio\n    <span class=\"kw\">Definir</span> <span class=\"var\">a</span>, <span class=\"var\">b</span>, <span class=\"var\">aux</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingresa A:\"</span>; <span class=\"fn\">Leer</span> <span class=\"var\">a</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingresa B:\"</span>; <span class=\"fn\">Leer</span> <span class=\"var\">b</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Antes  → A: \"</span>, <span class=\"var\">a</span>, <span class=\"str\">\"  B: \"</span>, <span class=\"var\">b</span>;\n    <span class=\"var\">aux</span> <span class=\"op\"><-</span> <span class=\"var\">a</span>;\n    <span class=\"var\">a</span>   <span class=\"op\"><-</span> <span class=\"var\">b</span>;\n    <span class=\"var\">b</span>   <span class=\"op\"><-</span> <span class=\"var\">aux</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Después → A: \"</span>, <span class=\"var\">a</span>, <span class=\"str\">\"  B: \"</span>, <span class=\"var\">b</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Sin la variable auxiliar, si haces <strong>a ← b</strong> primero pierdes el valor original de <em>a</em>. ¡La variable auxiliar es esencial en el intercambio!"
+    },
+    {
+      "n": 17,
+      "ea": "1.1",
+      "level": "avanzado",
+      "titulo": "Calcular sueldo líquido",
+      "panelTitulo": "Algoritmo laboral — Bruto, AFP, Salud y Líquido",
+      "tags": [
+        "Leer",
+        "Real",
+        "Aritmética",
+        "Fórmula"
+      ],
+      "enunciado": "Lee el <strong>sueldo bruto</strong>. Calcula <strong>AFP (10%)</strong> y <strong>Salud (7%)</strong>. El sueldo líquido es el bruto menos ambos descuentos. Muestra el desglose completo.",
+      "eps": [
+        {
+          "e": "Sueldo bruto mensual (Real)",
+          "p": "afp ← bruto × 0.10\nsalud ← bruto × 0.07\nliquido ← bruto − afp − salud",
+          "s": "Desglose: bruto, AFP, salud y líquido"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Sueldo bruto ($):"
+        },
+        {
+          "t": "i",
+          "v": "800000"
+        },
+        {
+          "t": "o",
+          "v": "--- Liquidación ---"
+        },
+        {
+          "t": "o",
+          "v": "Sueldo bruto:  $800000"
+        },
+        {
+          "t": "o",
+          "v": "Descuento AFP: $80000"
+        },
+        {
+          "t": "o",
+          "v": "Descuento Sal: $56000"
+        },
+        {
+          "t": "o",
+          "v": "Sueldo líquido: $664000"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> SueldoLiquido\n    <span class=\"kw\">Definir</span> <span class=\"var\">bruto</span>, <span class=\"var\">afp</span>, <span class=\"var\">salud</span>, <span class=\"var\">liquido</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Sueldo bruto ($):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">bruto</span>;\n    <span class=\"var\">afp</span>    <span class=\"op\"><-</span> <span class=\"var\">bruto</span> <span class=\"op\">*</span> <span class=\"num\">0.10</span>;\n    <span class=\"var\">salud</span>  <span class=\"op\"><-</span> <span class=\"var\">bruto</span> <span class=\"op\">*</span> <span class=\"num\">0.07</span>;\n    <span class=\"var\">liquido</span> <span class=\"op\"><-</span> <span class=\"var\">bruto</span> <span class=\"op\">-</span> <span class=\"var\">afp</span> <span class=\"op\">-</span> <span class=\"var\">salud</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"--- Liquidación ---\"</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Sueldo bruto:  $\"</span>, <span class=\"var\">bruto</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Descuento AFP: $\"</span>, <span class=\"var\">afp</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Descuento Sal: $\"</span>, <span class=\"var\">salud</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Sueldo líquido: $\"</span>, <span class=\"var\">liquido</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Los porcentajes se expresan como decimales: 10% = 0.10, 7% = 0.07. Guardar cada descuento en su propia variable permite mostrar el desglose."
+    },
+    {
+      "n": 18,
+      "ea": "1.1",
+      "level": "avanzado",
+      "titulo": "Conversión de segundos a h:m:s",
+      "panelTitulo": "División entera y módulo — Descomponer segundos",
+      "tags": [
+        "Leer",
+        "Entero",
+        "Módulo",
+        "DIV"
+      ],
+      "enunciado": "El usuario ingresa una cantidad de <strong>segundos totales</strong>. El programa los desglosa en <strong>horas</strong>, <strong>minutos</strong> y <strong>segundos restantes</strong> usando <strong>DIV</strong> y <strong>MOD</strong>.",
+      "eps": [
+        {
+          "e": "Total de segundos (Entero)",
+          "p": "horas ← totalSeg DIV 3600\nminRest ← totalSeg MOD 3600\nminutos ← minRest DIV 60\nsegs ← minRest MOD 60",
+          "s": "\"Horas: \" + horas\n\"Minutos: \" + minutos\n\"Segundos: \" + segs"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Total de segundos:"
+        },
+        {
+          "t": "i",
+          "v": "3725"
+        },
+        {
+          "t": "o",
+          "v": "Horas: 1"
+        },
+        {
+          "t": "o",
+          "v": "Minutos: 2"
+        },
+        {
+          "t": "o",
+          "v": "Segundos: 5"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ConvertirSegundos\n    <span class=\"kw\">Definir</span> <span class=\"var\">totalSeg</span>, <span class=\"var\">horas</span>, <span class=\"var\">minutos</span>, <span class=\"var\">segs</span>, <span class=\"var\">minRest</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Total de segundos:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">totalSeg</span>;\n    <span class=\"var\">horas</span>   <span class=\"op\"><-</span> <span class=\"var\">totalSeg</span> <span class=\"kw\">DIV</span> <span class=\"num\">3600</span>;\n    <span class=\"var\">minRest</span> <span class=\"op\"><-</span> <span class=\"var\">totalSeg</span> <span class=\"kw\">MOD</span> <span class=\"num\">3600</span>;\n    <span class=\"var\">minutos</span> <span class=\"op\"><-</span> <span class=\"var\">minRest</span>  <span class=\"kw\">DIV</span> <span class=\"num\">60</span>;\n    <span class=\"var\">segs</span>    <span class=\"op\"><-</span> <span class=\"var\">minRest</span>  <span class=\"kw\">MOD</span> <span class=\"num\">60</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Horas: \"</span>,   <span class=\"var\">horas</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Minutos: \"</span>, <span class=\"var\">minutos</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Segundos: \"</span>,<span class=\"var\">segs</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "<strong>DIV</strong> retorna el cociente entero (sin decimales). <strong>MOD</strong> retorna el resto. Son fundamentales para convertir unidades y trabajar con ciclos."
+    },
+    {
+      "n": 19,
+      "ea": "1.1",
+      "level": "avanzado",
+      "titulo": "Interés simple",
+      "panelTitulo": "Fórmula financiera — I = C × r × t",
+      "tags": [
+        "Leer",
+        "Real",
+        "Fórmula",
+        "Aritmética"
+      ],
+      "enunciado": "Lee el <strong>capital</strong> inicial, la <strong>tasa anual</strong> (en %) y el <strong>tiempo</strong> en años. Calcula el <strong>interés simple</strong>: <em>I = C × (r/100) × t</em> y el <strong>monto final</strong>: <em>M = C + I</em>.",
+      "eps": [
+        {
+          "e": "Capital C (Real)\nTasa r en % (Real)\nTiempo t en años (Real)",
+          "p": "interes ← C × (r / 100) × t\nmonto ← C + interes",
+          "s": "\"Interés: $\" + interes\n\"Monto final: $\" + monto"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Capital inicial ($):"
+        },
+        {
+          "t": "i",
+          "v": "500000"
+        },
+        {
+          "t": "o",
+          "v": "Tasa anual (%):"
+        },
+        {
+          "t": "i",
+          "v": "5"
+        },
+        {
+          "t": "o",
+          "v": "Plazo (años):"
+        },
+        {
+          "t": "i",
+          "v": "3"
+        },
+        {
+          "t": "o",
+          "v": "Interés generado: $75000"
+        },
+        {
+          "t": "o",
+          "v": "Monto final: $575000"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> IntereSimple\n    <span class=\"kw\">Definir</span> <span class=\"var\">capital</span>, <span class=\"var\">tasa</span>, <span class=\"var\">tiempo</span>, <span class=\"var\">interes</span>, <span class=\"var\">monto</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Capital inicial ($):\"</span>;  <span class=\"fn\">Leer</span> <span class=\"var\">capital</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Tasa anual (%):\"</span>;       <span class=\"fn\">Leer</span> <span class=\"var\">tasa</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Plazo (años):\"</span>;         <span class=\"fn\">Leer</span> <span class=\"var\">tiempo</span>;\n    <span class=\"var\">interes</span> <span class=\"op\"><-</span> <span class=\"var\">capital</span> <span class=\"op\">*</span> (<span class=\"var\">tasa</span> <span class=\"op\">/</span> <span class=\"num\">100</span>) <span class=\"op\">*</span> <span class=\"var\">tiempo</span>;\n    <span class=\"var\">monto</span>   <span class=\"op\"><-</span> <span class=\"var\">capital</span> <span class=\"op\">+</span> <span class=\"var\">interes</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Interés generado: $\"</span>, <span class=\"var\">interes</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Monto final: $\"</span>, <span class=\"var\">monto</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Divide la tasa por 100 dentro de la fórmula para convertirla de porcentaje a decimal. Este patrón se repite en casi todos los cálculos financieros."
+    },
+    {
+      "n": 20,
+      "ea": "1.1",
+      "level": "avanzado",
+      "titulo": "Receta para el robot doméstico",
+      "panelTitulo": "Algoritmo cotidiano — Secuencia de pasos del robot",
+      "tags": [
+        "Algoritmo",
+        "Secuencia",
+        "Variables"
+      ],
+      "enunciado": "Modela en PSeInt la rutina matutina de un robot doméstico. Lee el <strong>nombre del habitante</strong> y ejecuta una secuencia de <strong>al menos 6 acciones</strong>. Usa una variable <em>paso</em> para numerar cada acción. (Basado en Guía 1.1.3 del curso.)",
+      "eps": [
+        {
+          "e": "Nombre del habitante (Caracter)",
+          "p": "Secuencia de 6 pasos numerados\npaso ← paso + 1 en cada acción",
+          "s": "Lista numerada de acciones del robot en consola"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Nombre del habitante:"
+        },
+        {
+          "t": "i",
+          "v": "Carlos"
+        },
+        {
+          "t": "o",
+          "v": "=== Robot Doméstico activo ==="
+        },
+        {
+          "t": "o",
+          "v": "Paso 1: Activando sensores de movimiento..."
+        },
+        {
+          "t": "o",
+          "v": "Paso 2: Reconocimiento del hogar completado."
+        },
+        {
+          "t": "o",
+          "v": "Paso 3: Despertando a: Carlos"
+        },
+        {
+          "t": "o",
+          "v": "Paso 4: Verificando temperatura del agua..."
+        },
+        {
+          "t": "o",
+          "v": "Paso 5: Preparando café."
+        },
+        {
+          "t": "o",
+          "v": "Paso 6: Desayuno listo. ¡Buen día!"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> RobotDomestico\n    <span class=\"kw\">Definir</span> <span class=\"var\">habitante</span> <span class=\"kw\">Como</span> Caracter;\n    <span class=\"kw\">Definir</span> <span class=\"var\">paso</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Nombre del habitante:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">habitante</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"=== Robot Doméstico activo ===\"</span>;\n    <span class=\"var\">paso</span> <span class=\"op\"><-</span> <span class=\"num\">1</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Paso \"</span>, <span class=\"var\">paso</span>, <span class=\"str\">\": Activando sensores de movimiento...\"</span>;\n    <span class=\"var\">paso</span> <span class=\"op\"><-</span> <span class=\"var\">paso</span> <span class=\"op\">+</span> <span class=\"num\">1</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Paso \"</span>, <span class=\"var\">paso</span>, <span class=\"str\">\": Reconocimiento del hogar completado.\"</span>;\n    <span class=\"var\">paso</span> <span class=\"op\"><-</span> <span class=\"var\">paso</span> <span class=\"op\">+</span> <span class=\"num\">1</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Paso \"</span>, <span class=\"var\">paso</span>, <span class=\"str\">\": Despertando a: \"</span>, <span class=\"var\">habitante</span>;\n    <span class=\"var\">paso</span> <span class=\"op\"><-</span> <span class=\"var\">paso</span> <span class=\"op\">+</span> <span class=\"num\">1</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Paso \"</span>, <span class=\"var\">paso</span>, <span class=\"str\">\": Verificando temperatura del agua...\"</span>;\n    <span class=\"var\">paso</span> <span class=\"op\"><-</span> <span class=\"var\">paso</span> <span class=\"op\">+</span> <span class=\"num\">1</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Paso \"</span>, <span class=\"var\">paso</span>, <span class=\"str\">\": Preparando café.\"</span>;\n    <span class=\"var\">paso</span> <span class=\"op\"><-</span> <span class=\"var\">paso</span> <span class=\"op\">+</span> <span class=\"num\">1</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Paso \"</span>, <span class=\"var\">paso</span>, <span class=\"str\">\": Desayuno listo. ¡Buen día!\"</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Un algoritmo es una secuencia de pasos ordenados. Este ejercicio viene de la Guía 1.1.3: imagina que programas las acciones de un robot doméstico real."
+    }
+  ]
+}

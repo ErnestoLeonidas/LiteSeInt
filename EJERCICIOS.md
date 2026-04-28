@@ -164,14 +164,19 @@ Toda integración futura de ejercicios debe alimentar la tabla siguiente. La inv
 
 | EA | Total | Adaptados | Requieren decisión | Excluidos temporales |
 |---|---|---|---|---|
-| 1.1 | 20 | 6 | 0 | 0 |
+| 1.1 | 20 | 20 | 0 | 0 |
 | 1.2 | 40 | 2 | 0 | 0 |
 | 1.3 | 40 | 5 | 0 | 0 |
 | 1.4 | 60 | 7 | 0 | 0 |
 | 1.5 | 15 | 0 | 0 | 0 |
 | 1.6 | 40 | 0 | 0 | 0 |
 | 1.7 | 30 | 0 | 0 | 0 |
-| **Total** | **245** | **20** | **0** | **0** |
+| **Total** | **245** | **34** | **0** | **0** |
+
+Notas de adaptación:
+- EA 1.1 #9 (Celsius a Fahrenheit): también existe como `ea1-2-009` (atribuido erróneamente a EA 1.2). El `ea1-1-009` usa el origen correcto.
+- EA 1.1 #18 (Segundos a h:m:s): también existe como `ea1-2-015`. El `ea1-1-018` usa el origen correcto (EA 1.1). DIV/MOD adaptados a `Trunc`/`mod`.
+- EA 1.1 #20: la variable `paso` es reservada en LiteSeInt (por `Con Paso` de `Para`); se renombra a `numPaso` en el código de referencia.
 
 A **v0.8.0** se integra un primer lote curado de **20 ejercicios** desde `ejercicios/guia.html`, adaptados al dialecto LiteSeInt y validados con `DocErrores.validarDocumento`. La fuente de datos vive en `js/ejercicios-data.js` y es consumida por el panel derecho. Los 225 ejercicios restantes permanecen como pendientes (no visibles), siguiendo la regla de calidad: todo ejercicio visible debe estar adaptado y probado.
 

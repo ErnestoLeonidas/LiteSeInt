@@ -1,0 +1,1681 @@
+{
+  "experience": {
+    "id": "1.3",
+    "label": "EA 1.3",
+    "titulo": "Estructuras de Decisión",
+    "desc": "Programa estructuras Si-Entonces, Según y decisiones anidadas.",
+    "color": "var(--yellow)",
+    "icon": "🔀"
+  },
+  "exercises": [
+    {
+      "n": 61,
+      "ea": "1.3",
+      "level": "basico",
+      "titulo": "Mayor de edad",
+      "panelTitulo": "Decisión simple — Verificar mayoría de edad",
+      "tags": [
+        "Leer",
+        "Entero",
+        "Si-Entonces",
+        "Comparación"
+      ],
+      "enunciado": "Lee la <strong>edad</strong> de una persona. Si la edad es <strong>mayor o igual a 18</strong>, muestra el mensaje <strong>\"Es mayor de edad\"</strong>. En caso contrario, muestra <strong>\"Es menor de edad\"</strong>.",
+      "eps": [
+        {
+          "e": "edad (Entero)",
+          "p": "Si edad >= 18 Entonces\n   mensaje ← \"Es mayor de edad\"\nSiNo\n   mensaje ← \"Es menor de edad\"\nFinSi",
+          "s": "Mensaje según la edad ingresada"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Edad:"
+        },
+        {
+          "t": "i",
+          "v": "20"
+        },
+        {
+          "t": "o",
+          "v": "Es mayor de edad"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> MayorDeEdad\n    <span class=\"kw\">Definir</span> <span class=\"var\">edad</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Edad:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">edad</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">edad</span> <span class=\"op\">&gt;=</span> <span class=\"num\">18</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Es mayor de edad\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Es menor de edad\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "El operador <strong>>=</strong> significa “mayor o igual que”."
+    },
+    {
+      "n": 62,
+      "ea": "1.3",
+      "level": "basico",
+      "titulo": "Aprobar o reprobar examen",
+      "panelTitulo": "Decisión simple — Resultado de una nota",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si-Entonces",
+        "Notas"
+      ],
+      "enunciado": "Lee una <strong>nota</strong>. Si la nota es <strong>mayor o igual a 4.0</strong>, muestra <strong>\"Aprobado\"</strong>. En caso contrario, muestra <strong>\"Reprobado\"</strong>.",
+      "eps": [
+        {
+          "e": "nota (Real)",
+          "p": "Si nota >= 4.0 Entonces\n   mostrar \"Aprobado\"\nSiNo\n   mostrar \"Reprobado\"\nFinSi",
+          "s": "Resultado del examen"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Nota:"
+        },
+        {
+          "t": "i",
+          "v": "3.8"
+        },
+        {
+          "t": "o",
+          "v": "Reprobado"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> AprobarExamen\n    <span class=\"kw\">Definir</span> <span class=\"var\">nota</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Nota:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">nota</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">nota</span> <span class=\"op\">&gt;=</span> <span class=\"num\">4.0</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Aprobado\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Reprobado\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Cuando trabajes con notas decimales, define la variable como <strong>Real</strong>."
+    },
+    {
+      "n": 63,
+      "ea": "1.3",
+      "level": "basico",
+      "titulo": "Número positivo, negativo o cero",
+      "panelTitulo": "Decisión doble anidada — Signo de un número",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si-Entonces",
+        "Anidado"
+      ],
+      "enunciado": "Lee un <strong>número</strong>. Si es <strong>mayor que 0</strong>, muestra <strong>\"Positivo\"</strong>. Si es <strong>menor que 0</strong>, muestra <strong>\"Negativo\"</strong>. En caso contrario, muestra <strong>\"Cero\"</strong>.",
+      "eps": [
+        {
+          "e": "n (Real)",
+          "p": "Si n > 0 Entonces\n   mostrar \"Positivo\"\nSiNo\n   Si n < 0 Entonces\n      mostrar \"Negativo\"\n   SiNo\n      mostrar \"Cero\"\n   FinSi\nFinSi",
+          "s": "Clasificación del número"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Número:"
+        },
+        {
+          "t": "i",
+          "v": "-7"
+        },
+        {
+          "t": "o",
+          "v": "Negativo"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> SignoNumero\n    <span class=\"kw\">Definir</span> <span class=\"var\">n</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Número:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">n</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">n</span> <span class=\"op\">&gt;</span> <span class=\"num\">0</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Positivo\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">n</span> <span class=\"op\">&lt;</span> <span class=\"num\">0</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Negativo\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Cero\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Este caso usa dos comparaciones para distinguir tres resultados posibles."
+    },
+    {
+      "n": 64,
+      "ea": "1.3",
+      "level": "basico",
+      "titulo": "Acceso con contraseña",
+      "panelTitulo": "Decisión simple — Validar clave",
+      "tags": [
+        "Leer",
+        "Cadena",
+        "Si-Entonces",
+        "Comparación"
+      ],
+      "enunciado": "Lee una <strong>contraseña</strong>. Si la contraseña es exactamente <strong>\"1234\"</strong>, muestra <strong>\"Acceso concedido\"</strong>. En caso contrario, muestra <strong>\"Acceso denegado\"</strong>.",
+      "eps": [
+        {
+          "e": "clave (Cadena)",
+          "p": "Si clave = \"1234\" Entonces\n   mostrar \"Acceso concedido\"\nSiNo\n   mostrar \"Acceso denegado\"\nFinSi",
+          "s": "Resultado del acceso"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Ingrese contraseña:"
+        },
+        {
+          "t": "i",
+          "v": "1234"
+        },
+        {
+          "t": "o",
+          "v": "Acceso concedido"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> AccesoClave\n    <span class=\"kw\">Definir</span> <span class=\"var\">clave</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingrese contraseña:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">clave</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">clave</span> <span class=\"op\">=</span> <span class=\"str\">\"1234\"</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Acceso concedido\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Acceso denegado\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Para comparar cadenas en PSeInt también se usa el operador <strong>=</strong>."
+    },
+    {
+      "n": 65,
+      "ea": "1.3",
+      "level": "basico",
+      "titulo": "Descuento para cliente socio",
+      "panelTitulo": "Decisión simple — Aplicar descuento",
+      "tags": [
+        "Leer",
+        "Cadena",
+        "Real",
+        "Si-Entonces"
+      ],
+      "enunciado": "Lee el <strong>precio</strong> de un producto y si el cliente es <strong>socio</strong> o no. Si la respuesta es <strong>\"si\"</strong>, aplica un <strong>10%</strong> de descuento. En caso contrario, deja el precio normal. Muestra el total a pagar.",
+      "eps": [
+        {
+          "e": "precio (Real)\nesSocio (Cadena)",
+          "p": "Si esSocio = \"si\" Entonces\n   total ← precio - precio * 0.10\nSiNo\n   total ← precio\nFinSi",
+          "s": "Total a pagar"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Precio del producto:"
+        },
+        {
+          "t": "i",
+          "v": "20000"
+        },
+        {
+          "t": "o",
+          "v": "¿Es socio? (si/no):"
+        },
+        {
+          "t": "i",
+          "v": "si"
+        },
+        {
+          "t": "o",
+          "v": "Total a pagar: 18000"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> DescuentoSocio\n    <span class=\"kw\">Definir</span> <span class=\"var\">precio</span>, <span class=\"var\">total</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"kw\">Definir</span> <span class=\"var\">esSocio</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Precio del producto:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">precio</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Es socio? (si/no):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">esSocio</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">esSocio</span> <span class=\"op\">=</span> <span class=\"str\">\"si\"</span> <span class=\"kw\">Entonces</span>\n        <span class=\"var\">total</span> <span class=\"op\"><-</span> <span class=\"var\">precio</span> <span class=\"op\">-</span> <span class=\"var\">precio</span> <span class=\"op\">*</span> <span class=\"num\">0.10</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"var\">total</span> <span class=\"op\"><-</span> <span class=\"var\">precio</span>;\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Total a pagar: \"</span>, <span class=\"var\">total</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Un descuento del 10% equivale a multiplicar por 0.10."
+    },
+    {
+      "n": 66,
+      "ea": "1.3",
+      "level": "basico",
+      "titulo": "Temperatura: frío o agradable",
+      "panelTitulo": "Decisión simple — Evaluar temperatura",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si-Entonces",
+        "Comparación"
+      ],
+      "enunciado": "Lee una <strong>temperatura</strong> en grados. Si es <strong>menor que 15</strong>, muestra <strong>\"Abrígate\"</strong>. En caso contrario, muestra <strong>\"Día agradable\"</strong>.",
+      "eps": [
+        {
+          "e": "temp (Real)",
+          "p": "Si temp < 15 Entonces\n   mostrar \"Abrígate\"\nSiNo\n   mostrar \"Día agradable\"\nFinSi",
+          "s": "Mensaje según temperatura"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Temperatura actual:"
+        },
+        {
+          "t": "i",
+          "v": "12"
+        },
+        {
+          "t": "o",
+          "v": "Abrígate"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> TemperaturaDia\n    <span class=\"kw\">Definir</span> <span class=\"var\">temp</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Temperatura actual:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">temp</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">temp</span> <span class=\"op\">&lt;</span> <span class=\"num\">15</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Abrígate\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Día agradable\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Las decisiones simples comparan un valor de entrada con una condición."
+    },
+    {
+      "n": 67,
+      "ea": "1.3",
+      "level": "basico",
+      "titulo": "Verificar stock de producto",
+      "panelTitulo": "Decisión simple — Disponibilidad de stock",
+      "tags": [
+        "Leer",
+        "Entero",
+        "Si-Entonces",
+        "Inventario"
+      ],
+      "enunciado": "Lee la cantidad de <strong>stock</strong> disponible de un producto. Si el stock es <strong>mayor que 0</strong>, muestra <strong>\"Hay disponibilidad\"</strong>. En caso contrario, muestra <strong>\"Producto agotado\"</strong>.",
+      "eps": [
+        {
+          "e": "stock (Entero)",
+          "p": "Si stock > 0 Entonces\n   mostrar \"Hay disponibilidad\"\nSiNo\n   mostrar \"Producto agotado\"\nFinSi",
+          "s": "Estado del producto"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Stock disponible:"
+        },
+        {
+          "t": "i",
+          "v": "0"
+        },
+        {
+          "t": "o",
+          "v": "Producto agotado"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> VerificarStock\n    <span class=\"kw\">Definir</span> <span class=\"var\">stock</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Stock disponible:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">stock</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">stock</span> <span class=\"op\">&gt;</span> <span class=\"num\">0</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Hay disponibilidad\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Producto agotado\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Si el stock es 0, ya no hay unidades disponibles."
+    },
+    {
+      "n": 68,
+      "ea": "1.3",
+      "level": "basico",
+      "titulo": "Número par o impar",
+      "panelTitulo": "Decisión simple — Uso de MOD",
+      "tags": [
+        "Leer",
+        "Entero",
+        "MOD",
+        "Si-Entonces"
+      ],
+      "enunciado": "Lee un <strong>número entero</strong>. Si el residuo de dividirlo por 2 es <strong>0</strong>, muestra <strong>\"Es par\"</strong>. En caso contrario, muestra <strong>\"Es impar\"</strong>.",
+      "eps": [
+        {
+          "e": "n (Entero)",
+          "p": "Si n MOD 2 = 0 Entonces\n   mostrar \"Es par\"\nSiNo\n   mostrar \"Es impar\"\nFinSi",
+          "s": "Clasificación del número"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Número entero:"
+        },
+        {
+          "t": "i",
+          "v": "11"
+        },
+        {
+          "t": "o",
+          "v": "Es impar"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ParImpar\n    <span class=\"kw\">Definir</span> <span class=\"var\">n</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Número entero:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">n</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">n</span> <span class=\"kw\">MOD</span> <span class=\"num\">2</span> <span class=\"op\">=</span> <span class=\"num\">0</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Es par\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Es impar\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "El operador <strong>MOD</strong> entrega el resto de una división entera."
+    },
+    {
+      "n": 69,
+      "ea": "1.3",
+      "level": "basico",
+      "titulo": "¿Llueve hoy?",
+      "panelTitulo": "Decisión simple — Recomendación según clima",
+      "tags": [
+        "Leer",
+        "Cadena",
+        "Si-Entonces",
+        "Texto"
+      ],
+      "enunciado": "Lee si hoy <strong>llueve</strong> o no. Si la respuesta es <strong>\"si\"</strong>, muestra <strong>\"Lleva paraguas\"</strong>. En caso contrario, muestra <strong>\"No necesitas paraguas\"</strong>.",
+      "eps": [
+        {
+          "e": "llueve (Cadena)",
+          "p": "Si llueve = \"si\" Entonces\n   mostrar \"Lleva paraguas\"\nSiNo\n   mostrar \"No necesitas paraguas\"\nFinSi",
+          "s": "Recomendación"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "¿Llueve hoy? (si/no):"
+        },
+        {
+          "t": "i",
+          "v": "si"
+        },
+        {
+          "t": "o",
+          "v": "Lleva paraguas"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> LlevarParaguas\n    <span class=\"kw\">Definir</span> <span class=\"var\">llueve</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Llueve hoy? (si/no):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">llueve</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">llueve</span> <span class=\"op\">=</span> <span class=\"str\">\"si\"</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Lleva paraguas\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"No necesitas paraguas\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Cuando uses respuestas tipo si/no, conviene indicar el formato esperado en el mensaje de entrada."
+    },
+    {
+      "n": 70,
+      "ea": "1.3",
+      "level": "basico",
+      "titulo": "Carrera de obstáculos — valla",
+      "panelTitulo": "Decisión simple — Acción frente a una valla",
+      "tags": [
+        "Leer",
+        "Cadena",
+        "Si-Entonces",
+        "Guía 1.3.2"
+      ],
+      "enunciado": "En una carrera de obstáculos, lee si hay una <strong>valla</strong> al frente. Si la respuesta es <strong>\"si\"</strong>, muestra <strong>\"Salta la valla\"</strong>. En caso contrario, muestra <strong>\"Continúa avanzando\"</strong>.",
+      "eps": [
+        {
+          "e": "hayValla (Cadena)",
+          "p": "Si hayValla = \"si\" Entonces\n   mostrar \"Salta la valla\"\nSiNo\n   mostrar \"Continúa avanzando\"\nFinSi",
+          "s": "Acción del corredor"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "¿Hay valla? (si/no):"
+        },
+        {
+          "t": "i",
+          "v": "si"
+        },
+        {
+          "t": "o",
+          "v": "Salta la valla"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ObstaculoValla\n    <span class=\"kw\">Definir</span> <span class=\"var\">hayValla</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Hay valla? (si/no):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">hayValla</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">hayValla</span> <span class=\"op\">=</span> <span class=\"str\">\"si\"</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Salta la valla\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Continúa avanzando\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Este ejercicio modela una decisión binaria muy simple: obstáculo presente o ausente."
+    },
+    {
+      "n": 71,
+      "ea": "1.3",
+      "level": "basico",
+      "titulo": "Carrera de obstáculos — túnel",
+      "panelTitulo": "Decisión simple — Acción frente a un túnel",
+      "tags": [
+        "Leer",
+        "Cadena",
+        "Si-Entonces",
+        "Guía 1.3.2"
+      ],
+      "enunciado": "En una carrera de obstáculos, lee si hay un <strong>túnel</strong> al frente. Si la respuesta es <strong>\"si\"</strong>, muestra <strong>\"Atraviesa el túnel\"</strong>. En caso contrario, muestra <strong>\"Continúa avanzando\"</strong>.",
+      "eps": [
+        {
+          "e": "hayTunel (Cadena)",
+          "p": "Si hayTunel = \"si\" Entonces\n   mostrar \"Atraviesa el túnel\"\nSiNo\n   mostrar \"Continúa avanzando\"\nFinSi",
+          "s": "Acción del corredor"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "¿Hay túnel? (si/no):"
+        },
+        {
+          "t": "i",
+          "v": "si"
+        },
+        {
+          "t": "o",
+          "v": "Atraviesa el túnel"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ObstaculoTunel\n    <span class=\"kw\">Definir</span> <span class=\"var\">hayTunel</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Hay túnel? (si/no):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">hayTunel</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">hayTunel</span> <span class=\"op\">=</span> <span class=\"str\">\"si\"</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Atraviesa el túnel\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Continúa avanzando\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "La estructura Si-Entonces permite elegir una acción según una condición."
+    },
+    {
+      "n": 72,
+      "ea": "1.3",
+      "level": "basico",
+      "titulo": "Carrera de obstáculos — laguna",
+      "panelTitulo": "Decisión simple — Resultado frente a una laguna",
+      "tags": [
+        "Leer",
+        "Cadena",
+        "Si-Entonces",
+        "Guía 1.3.2"
+      ],
+      "enunciado": "En una carrera de obstáculos, lee si hay una <strong>laguna</strong> al frente. Si la respuesta es <strong>\"si\"</strong>, muestra <strong>\"Cae a la laguna y pierde\"</strong>. En caso contrario, muestra <strong>\"Llega a la meta\"</strong>.",
+      "eps": [
+        {
+          "e": "hayLaguna (Cadena)",
+          "p": "Si hayLaguna = \"si\" Entonces\n   mostrar \"Cae a la laguna y pierde\"\nSiNo\n   mostrar \"Llega a la meta\"\nFinSi",
+          "s": "Resultado de la carrera"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "¿Hay laguna? (si/no):"
+        },
+        {
+          "t": "i",
+          "v": "no"
+        },
+        {
+          "t": "o",
+          "v": "Llega a la meta"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ObstaculoLaguna\n    <span class=\"kw\">Definir</span> <span class=\"var\">hayLaguna</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Hay laguna? (si/no):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">hayLaguna</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">hayLaguna</span> <span class=\"op\">=</span> <span class=\"str\">\"si\"</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Cae a la laguna y pierde\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Llega a la meta\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Aunque el problema tiene contexto de juego, sigue siendo una decisión simple."
+    },
+    {
+      "n": 73,
+      "ea": "1.3",
+      "level": "basico",
+      "titulo": "Vuelto suficiente",
+      "panelTitulo": "Decisión simple — Pago y vuelto",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si-Entonces",
+        "Aritmética"
+      ],
+      "enunciado": "Lee el <strong>precio</strong> de un producto y el <strong>monto pagado</strong>. Si el monto pagado es <strong>mayor o igual</strong> al precio, calcula y muestra el <strong>vuelto</strong>. En caso contrario, muestra <strong>\"Pago insuficiente\"</strong>.",
+      "eps": [
+        {
+          "e": "precio (Real)\npagado (Real)",
+          "p": "Si pagado >= precio Entonces\n   vuelto ← pagado - precio\n   mostrar vuelto\nSiNo\n   mostrar \"Pago insuficiente\"\nFinSi",
+          "s": "Vuelto o mensaje de pago insuficiente"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Precio del producto:"
+        },
+        {
+          "t": "i",
+          "v": "3500"
+        },
+        {
+          "t": "o",
+          "v": "Monto pagado:"
+        },
+        {
+          "t": "i",
+          "v": "5000"
+        },
+        {
+          "t": "o",
+          "v": "Vuelto: 1500"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> VueltoCompra\n    <span class=\"kw\">Definir</span> <span class=\"var\">precio</span>, <span class=\"var\">pagado</span>, <span class=\"var\">vuelto</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Precio del producto:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">precio</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Monto pagado:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">pagado</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">pagado</span> <span class=\"op\">&gt;=</span> <span class=\"var\">precio</span> <span class=\"kw\">Entonces</span>\n        <span class=\"var\">vuelto</span> <span class=\"op\"><-</span> <span class=\"var\">pagado</span> <span class=\"op\">-</span> <span class=\"var\">precio</span>;\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Vuelto: \"</span>, <span class=\"var\">vuelto</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Pago insuficiente\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Solo se calcula el vuelto si el dinero entregado alcanza para pagar el producto."
+    },
+    {
+      "n": 74,
+      "ea": "1.3",
+      "level": "basico",
+      "titulo": "Velocidad dentro del límite",
+      "panelTitulo": "Decisión simple — Control de velocidad",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si-Entonces",
+        "Comparación"
+      ],
+      "enunciado": "Lee la <strong>velocidad</strong> de un vehículo. Si la velocidad es <strong>menor o igual a 60</strong>, muestra <strong>\"Dentro del límite\"</strong>. En caso contrario, muestra <strong>\"Excede velocidad\"</strong>.",
+      "eps": [
+        {
+          "e": "velocidad (Real)",
+          "p": "Si velocidad <= 60 Entonces\n   mostrar \"Dentro del límite\"\nSiNo\n   mostrar \"Excede velocidad\"\nFinSi",
+          "s": "Resultado del control"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Velocidad del vehículo:"
+        },
+        {
+          "t": "i",
+          "v": "72"
+        },
+        {
+          "t": "o",
+          "v": "Excede velocidad"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> LimiteVelocidad\n    <span class=\"kw\">Definir</span> <span class=\"var\">velocidad</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Velocidad del vehículo:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">velocidad</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">velocidad</span> <span class=\"op\">&lt;=</span> <span class=\"num\">60</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Dentro del límite\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Excede velocidad\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "El operador <= evalúa si un valor es menor o igual que otro."
+    },
+    {
+      "n": 75,
+      "ea": "1.3",
+      "level": "basico",
+      "titulo": "¿Necesita cargar bencina?",
+      "panelTitulo": "Decisión simple — Nivel de combustible",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si-Entonces",
+        "Guía 1.3.3"
+      ],
+      "enunciado": "Lee la cantidad de <strong>litros de combustible</strong> en el vehículo. Si los litros son <strong>menores que 10</strong>, muestra <strong>\"Debe cargar bencina\"</strong>. En caso contrario, muestra <strong>\"Nivel adecuado\"</strong>.",
+      "eps": [
+        {
+          "e": "litros (Real)",
+          "p": "Si litros < 10 Entonces\n   mostrar \"Debe cargar bencina\"\nSiNo\n   mostrar \"Nivel adecuado\"\nFinSi",
+          "s": "Estado del combustible"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Litros de combustible:"
+        },
+        {
+          "t": "i",
+          "v": "8"
+        },
+        {
+          "t": "o",
+          "v": "Debe cargar bencina"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> CargarBencina\n    <span class=\"kw\">Definir</span> <span class=\"var\">litros</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Litros de combustible:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">litros</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">litros</span> <span class=\"op\">&lt;</span> <span class=\"num\">10</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Debe cargar bencina\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Nivel adecuado\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Este problema compara una cantidad medida con un valor mínimo esperado."
+    },
+    {
+      "n": 76,
+      "ea": "1.3",
+      "level": "intermedio",
+      "titulo": "Clasificar nota",
+      "panelTitulo": "Si anidado — I, S, MB o E",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si anidado",
+        "Notas"
+      ],
+      "enunciado": "Lee una <strong>nota</strong> y clasifícala según esta escala: si es <strong>menor que 4.0</strong>, muestra <strong>\"Insuficiente\"</strong>; si es <strong>menor que 5.0</strong>, muestra <strong>\"Suficiente\"</strong>; si es <strong>menor que 6.0</strong>, muestra <strong>\"Muy bueno\"</strong>; en cualquier otro caso, muestra <strong>\"Excelente\"</strong>.",
+      "eps": [
+        {
+          "e": "nota (Real)",
+          "p": "Si nota < 4 Entonces\n   mostrar \"Insuficiente\"\nSiNo\n   Si nota < 5 Entonces\n      mostrar \"Suficiente\"\n   SiNo\n      Si nota < 6 Entonces\n         mostrar \"Muy bueno\"\n      SiNo\n         mostrar \"Excelente\"\n      FinSi\n   FinSi\nFinSi",
+          "s": "Clasificación de la nota"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Nota final:"
+        },
+        {
+          "t": "i",
+          "v": "5.4"
+        },
+        {
+          "t": "o",
+          "v": "Muy bueno"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ClasificarNota\n    <span class=\"kw\">Definir</span> <span class=\"var\">nota</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Nota final:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">nota</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">nota</span> <span class=\"op\">&lt;</span> <span class=\"num\">4</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Insuficiente\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">nota</span> <span class=\"op\">&lt;</span> <span class=\"num\">5</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Suficiente\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"kw\">Si</span> <span class=\"var\">nota</span> <span class=\"op\">&lt;</span> <span class=\"num\">6</span> <span class=\"kw\">Entonces</span>\n                <span class=\"fn\">Escribir</span> <span class=\"str\">\"Muy bueno\"</span>;\n            <span class=\"kw\">SiNo</span>\n                <span class=\"fn\">Escribir</span> <span class=\"str\">\"Excelente\"</span>;\n            <span class=\"kw\">FinSi</span>\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "En una cadena de decisiones anidadas, el orden de las comparaciones sí importa."
+    },
+    {
+      "n": 77,
+      "ea": "1.3",
+      "level": "intermedio",
+      "titulo": "Tipo de triángulo",
+      "panelTitulo": "Si anidado — Equilátero, isósceles o escaleno",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si anidado",
+        "Geometría"
+      ],
+      "enunciado": "Lee las longitudes de los <strong>tres lados</strong> de un triángulo. Si los tres lados son iguales, muestra <strong>\"Equilátero\"</strong>. Si solo dos lados son iguales, muestra <strong>\"Isósceles\"</strong>. En caso contrario, muestra <strong>\"Escaleno\"</strong>.",
+      "eps": [
+        {
+          "e": "a, b, c (Real)",
+          "p": "Si a = b Y b = c Entonces\n   mostrar \"Equilátero\"\nSiNo\n   Si a = b O a = c O b = c Entonces\n      mostrar \"Isósceles\"\n   SiNo\n      mostrar \"Escaleno\"\n   FinSi\nFinSi",
+          "s": "Tipo de triángulo"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Lado 1:"
+        },
+        {
+          "t": "i",
+          "v": "5"
+        },
+        {
+          "t": "o",
+          "v": "Lado 2:"
+        },
+        {
+          "t": "i",
+          "v": "5"
+        },
+        {
+          "t": "o",
+          "v": "Lado 3:"
+        },
+        {
+          "t": "i",
+          "v": "8"
+        },
+        {
+          "t": "o",
+          "v": "Isósceles"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> TipoTriangulo\n    <span class=\"kw\">Definir</span> <span class=\"var\">a</span>, <span class=\"var\">b</span>, <span class=\"var\">c</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Lado 1:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">a</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Lado 2:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">b</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Lado 3:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">c</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">a</span> <span class=\"op\">=</span> <span class=\"var\">b</span> <span class=\"op\">Y</span> <span class=\"var\">b</span> <span class=\"op\">=</span> <span class=\"var\">c</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Equilátero\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">a</span> <span class=\"op\">=</span> <span class=\"var\">b</span> <span class=\"op\">O</span> <span class=\"var\">a</span> <span class=\"op\">=</span> <span class=\"var\">c</span> <span class=\"op\">O</span> <span class=\"var\">b</span> <span class=\"op\">=</span> <span class=\"var\">c</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Isósceles\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Escaleno\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Primero conviene comprobar si los tres lados son iguales, porque ese es el caso más específico."
+    },
+    {
+      "n": 78,
+      "ea": "1.3",
+      "level": "intermedio",
+      "titulo": "Rango de IMC",
+      "panelTitulo": "Si anidado — Bajo peso, normal, sobrepeso u obesidad",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si anidado",
+        "Salud"
+      ],
+      "enunciado": "Lee el <strong>IMC</strong> de una persona. Si el IMC es <strong>menor que 18.5</strong>, muestra <strong>\"Bajo peso\"</strong>. Si es <strong>menor que 25</strong>, muestra <strong>\"Normal\"</strong>. Si es <strong>menor que 30</strong>, muestra <strong>\"Sobrepeso\"</strong>. En cualquier otro caso, muestra <strong>\"Obesidad\"</strong>.",
+      "eps": [
+        {
+          "e": "imc (Real)",
+          "p": "Si imc < 18.5 Entonces\n   mostrar \"Bajo peso\"\nSiNo\n   Si imc < 25 Entonces\n      mostrar \"Normal\"\n   SiNo\n      Si imc < 30 Entonces\n         mostrar \"Sobrepeso\"\n      SiNo\n         mostrar \"Obesidad\"\n      FinSi\n   FinSi\nFinSi",
+          "s": "Categoría de IMC"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Ingrese IMC:"
+        },
+        {
+          "t": "i",
+          "v": "27.3"
+        },
+        {
+          "t": "o",
+          "v": "Sobrepeso"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ClasificarIMC\n    <span class=\"kw\">Definir</span> <span class=\"var\">imc</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingrese IMC:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">imc</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">imc</span> <span class=\"op\">&lt;</span> <span class=\"num\">18.5</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Bajo peso\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">imc</span> <span class=\"op\">&lt;</span> <span class=\"num\">25</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Normal\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"kw\">Si</span> <span class=\"var\">imc</span> <span class=\"op\">&lt;</span> <span class=\"num\">30</span> <span class=\"kw\">Entonces</span>\n                <span class=\"fn\">Escribir</span> <span class=\"str\">\"Sobrepeso\"</span>;\n            <span class=\"kw\">SiNo</span>\n                <span class=\"fn\">Escribir</span> <span class=\"str\">\"Obesidad\"</span>;\n            <span class=\"kw\">FinSi</span>\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Cada rango se evalúa en orden ascendente para evitar condiciones redundantes."
+    },
+    {
+      "n": 79,
+      "ea": "1.3",
+      "level": "intermedio",
+      "titulo": "Tipo de bencina a cargar",
+      "panelTitulo": "Si anidado — Regular, plus, premium o inválida",
+      "tags": [
+        "Leer",
+        "Entero",
+        "Si anidado",
+        "Guía 1.3.3"
+      ],
+      "enunciado": "Lee el <strong>tipo de bencina</strong> que desea cargar el cliente. Si el valor es <strong>93</strong>, muestra <strong>\"Bencina regular\"</strong>. Si es <strong>95</strong>, muestra <strong>\"Bencina plus\"</strong>. Si es <strong>97</strong>, muestra <strong>\"Bencina premium\"</strong>. En cualquier otro caso, muestra <strong>\"Tipo inválido\"</strong>.",
+      "eps": [
+        {
+          "e": "tipo (Entero)",
+          "p": "Si tipo = 93 Entonces\n   mostrar \"Bencina regular\"\nSiNo\n   Si tipo = 95 Entonces\n      mostrar \"Bencina plus\"\n   SiNo\n      Si tipo = 97 Entonces\n         mostrar \"Bencina premium\"\n      SiNo\n         mostrar \"Tipo inválido\"\n      FinSi\n   FinSi\nFinSi",
+          "s": "Tipo de combustible"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Tipo de bencina:"
+        },
+        {
+          "t": "i",
+          "v": "95"
+        },
+        {
+          "t": "o",
+          "v": "Bencina plus"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> TipoBencina\n    <span class=\"kw\">Definir</span> <span class=\"var\">tipo</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Tipo de bencina:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">tipo</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">tipo</span> <span class=\"op\">=</span> <span class=\"num\">93</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Bencina regular\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">tipo</span> <span class=\"op\">=</span> <span class=\"num\">95</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Bencina plus\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"kw\">Si</span> <span class=\"var\">tipo</span> <span class=\"op\">=</span> <span class=\"num\">97</span> <span class=\"kw\">Entonces</span>\n                <span class=\"fn\">Escribir</span> <span class=\"str\">\"Bencina premium\"</span>;\n            <span class=\"kw\">SiNo</span>\n                <span class=\"fn\">Escribir</span> <span class=\"str\">\"Tipo inválido\"</span>;\n            <span class=\"kw\">FinSi</span>\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Cuando hay varios valores posibles exactos, una cadena de Si anidados permite evaluarlos uno a uno."
+    },
+    {
+      "n": 80,
+      "ea": "1.3",
+      "level": "intermedio",
+      "titulo": "Diagnóstico de temperatura corporal",
+      "panelTitulo": "Si anidado — Hipotermia, normal o fiebre",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si anidado",
+        "Salud"
+      ],
+      "enunciado": "Lee la <strong>temperatura corporal</strong> de una persona. Si es <strong>menor que 36.1</strong>, muestra <strong>\"Hipotermia\"</strong>. Si es <strong>menor o igual a 37.2</strong>, muestra <strong>\"Temperatura normal\"</strong>. En caso contrario, muestra <strong>\"Fiebre\"</strong>.",
+      "eps": [
+        {
+          "e": "temperatura (Real)",
+          "p": "Si temperatura < 36.1 Entonces\n   mostrar \"Hipotermia\"\nSiNo\n   Si temperatura <= 37.2 Entonces\n      mostrar \"Temperatura normal\"\n   SiNo\n      mostrar \"Fiebre\"\n   FinSi\nFinSi",
+          "s": "Diagnóstico de temperatura"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Temperatura corporal:"
+        },
+        {
+          "t": "i",
+          "v": "38.1"
+        },
+        {
+          "t": "o",
+          "v": "Fiebre"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> TemperaturaCorporal\n    <span class=\"kw\">Definir</span> <span class=\"var\">temperatura</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Temperatura corporal:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">temperatura</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">temperatura</span> <span class=\"op\">&lt;</span> <span class=\"num\">36.1</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Hipotermia\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">temperatura</span> <span class=\"op\">&lt;=</span> <span class=\"num\">37.2</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Temperatura normal\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fiebre\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Aquí se mezclan operadores <, <= y el caso final por descarte."
+    },
+    {
+      "n": 81,
+      "ea": "1.3",
+      "level": "intermedio",
+      "titulo": "Cálculo de multa por exceso de velocidad",
+      "panelTitulo": "Si anidado — Sin multa, leve o grave",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si anidado",
+        "Tránsito"
+      ],
+      "enunciado": "Lee la <strong>velocidad</strong> de un vehículo. Si la velocidad es <strong>menor o igual a 60</strong>, muestra <strong>\"Sin multa\"</strong>. Si es <strong>menor o igual a 80</strong>, muestra <strong>\"Multa leve\"</strong>. En caso contrario, muestra <strong>\"Multa grave\"</strong>.",
+      "eps": [
+        {
+          "e": "velocidad (Real)",
+          "p": "Si velocidad <= 60 Entonces\n   mostrar \"Sin multa\"\nSiNo\n   Si velocidad <= 80 Entonces\n      mostrar \"Multa leve\"\n   SiNo\n      mostrar \"Multa grave\"\n   FinSi\nFinSi",
+          "s": "Tipo de multa"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Velocidad registrada:"
+        },
+        {
+          "t": "i",
+          "v": "76"
+        },
+        {
+          "t": "o",
+          "v": "Multa leve"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> MultaVelocidad\n    <span class=\"kw\">Definir</span> <span class=\"var\">velocidad</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Velocidad registrada:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">velocidad</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">velocidad</span> <span class=\"op\">&lt;=</span> <span class=\"num\">60</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Sin multa\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">velocidad</span> <span class=\"op\">&lt;=</span> <span class=\"num\">80</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Multa leve\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Multa grave\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Ordena las comparaciones desde el límite menor al mayor para clasificar correctamente."
+    },
+    {
+      "n": 82,
+      "ea": "1.3",
+      "level": "intermedio",
+      "titulo": "Descuento por monto de compra",
+      "panelTitulo": "Si anidado — 20%, 10% o sin descuento",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si anidado",
+        "Porcentaje"
+      ],
+      "enunciado": "Lee el <strong>monto de una compra</strong>. Si la compra es <strong>mayor o igual a 100000</strong>, aplica un <strong>20%</strong> de descuento. Si es <strong>mayor o igual a 50000</strong>, aplica un <strong>10%</strong>. En caso contrario, no aplica descuento. Muestra el total a pagar.",
+      "eps": [
+        {
+          "e": "compra (Real)",
+          "p": "Si compra >= 100000 Entonces\n   total ← compra - compra * 0.20\nSiNo\n   Si compra >= 50000 Entonces\n      total ← compra - compra * 0.10\n   SiNo\n      total ← compra\n   FinSi\nFinSi",
+          "s": "Total a pagar"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Monto de la compra:"
+        },
+        {
+          "t": "i",
+          "v": "75000"
+        },
+        {
+          "t": "o",
+          "v": "Total a pagar: 67500"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> DescuentoCompra\n    <span class=\"kw\">Definir</span> <span class=\"var\">compra</span>, <span class=\"var\">total</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Monto de la compra:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">compra</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">compra</span> <span class=\"op\">&gt;=</span> <span class=\"num\">100000</span> <span class=\"kw\">Entonces</span>\n        <span class=\"var\">total</span> <span class=\"op\"><-</span> <span class=\"var\">compra</span> <span class=\"op\">-</span> <span class=\"var\">compra</span> <span class=\"op\">*</span> <span class=\"num\">0.20</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">compra</span> <span class=\"op\">&gt;=</span> <span class=\"num\">50000</span> <span class=\"kw\">Entonces</span>\n            <span class=\"var\">total</span> <span class=\"op\"><-</span> <span class=\"var\">compra</span> <span class=\"op\">-</span> <span class=\"var\">compra</span> <span class=\"op\">*</span> <span class=\"num\">0.10</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"var\">total</span> <span class=\"op\"><-</span> <span class=\"var\">compra</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">FinSi</span>\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Total a pagar: \"</span>, <span class=\"var\">total</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Primero evalúa el mayor descuento, porque también cumple las compras más altas."
+    },
+    {
+      "n": 83,
+      "ea": "1.3",
+      "level": "intermedio",
+      "titulo": "Verificar triángulo válido",
+      "panelTitulo": "Si-Entonces — Desigualdad triangular",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si-Entonces",
+        "Y lógico"
+      ],
+      "enunciado": "Lee las longitudes de tres lados <strong>a</strong>, <strong>b</strong> y <strong>c</strong>. Si se cumple que <strong>a + b > c</strong>, <strong>a + c > b</strong> y <strong>b + c > a</strong>, muestra <strong>\"Triángulo válido\"</strong>. En caso contrario, muestra <strong>\"Triángulo inválido\"</strong>.",
+      "eps": [
+        {
+          "e": "a, b, c (Real)",
+          "p": "Si a + b > c Y a + c > b Y b + c > a Entonces\n   mostrar \"Triángulo válido\"\nSiNo\n   mostrar \"Triángulo inválido\"\nFinSi",
+          "s": "Validez del triángulo"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Lado a:"
+        },
+        {
+          "t": "i",
+          "v": "3"
+        },
+        {
+          "t": "o",
+          "v": "Lado b:"
+        },
+        {
+          "t": "i",
+          "v": "4"
+        },
+        {
+          "t": "o",
+          "v": "Lado c:"
+        },
+        {
+          "t": "i",
+          "v": "8"
+        },
+        {
+          "t": "o",
+          "v": "Triángulo inválido"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> TrianguloValido\n    <span class=\"kw\">Definir</span> <span class=\"var\">a</span>, <span class=\"var\">b</span>, <span class=\"var\">c</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Lado a:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">a</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Lado b:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">b</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Lado c:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">c</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">a</span> <span class=\"op\">+</span> <span class=\"var\">b</span> <span class=\"op\">&gt;</span> <span class=\"var\">c</span> <span class=\"op\">Y</span> <span class=\"var\">a</span> <span class=\"op\">+</span> <span class=\"var\">c</span> <span class=\"op\">&gt;</span> <span class=\"var\">b</span> <span class=\"op\">Y</span> <span class=\"var\">b</span> <span class=\"op\">+</span> <span class=\"var\">c</span> <span class=\"op\">&gt;</span> <span class=\"var\">a</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Triángulo válido\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Triángulo inválido\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "El operador Y exige que todas las condiciones sean verdaderas al mismo tiempo."
+    },
+    {
+      "n": 84,
+      "ea": "1.3",
+      "level": "intermedio",
+      "titulo": "Acceso por usuario y contraseña",
+      "panelTitulo": "Si-Entonces — Validación con condición compuesta",
+      "tags": [
+        "Leer",
+        "Cadena",
+        "Si-Entonces",
+        "Y lógico"
+      ],
+      "enunciado": "Lee un <strong>usuario</strong> y una <strong>contraseña</strong>. Si el usuario es <strong>\"admin\"</strong> y la clave es <strong>\"1234\"</strong>, muestra <strong>\"Acceso permitido\"</strong>. En caso contrario, muestra <strong>\"Acceso denegado\"</strong>.",
+      "eps": [
+        {
+          "e": "usuario (Cadena)\nclave (Cadena)",
+          "p": "Si usuario = \"admin\" Y clave = \"1234\" Entonces\n   mostrar \"Acceso permitido\"\nSiNo\n   mostrar \"Acceso denegado\"\nFinSi",
+          "s": "Resultado del acceso"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Usuario:"
+        },
+        {
+          "t": "i",
+          "v": "admin"
+        },
+        {
+          "t": "o",
+          "v": "Clave:"
+        },
+        {
+          "t": "i",
+          "v": "1234"
+        },
+        {
+          "t": "o",
+          "v": "Acceso permitido"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> AccesoUsuarioClave\n    <span class=\"kw\">Definir</span> <span class=\"var\">usuario</span>, <span class=\"var\">clave</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Usuario:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">usuario</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Clave:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">clave</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">usuario</span> <span class=\"op\">=</span> <span class=\"str\">\"admin\"</span> <span class=\"op\">Y</span> <span class=\"var\">clave</span> <span class=\"op\">=</span> <span class=\"str\">\"1234\"</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Acceso permitido\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Acceso denegado\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Ambos datos deben coincidir para permitir el acceso."
+    },
+    {
+      "n": 85,
+      "ea": "1.3",
+      "level": "intermedio",
+      "titulo": "Clasificar edad",
+      "panelTitulo": "Si anidado — Niño, joven, adulto o adulto mayor",
+      "tags": [
+        "Leer",
+        "Entero",
+        "Si anidado",
+        "Clasificación"
+      ],
+      "enunciado": "Lee una <strong>edad</strong>. Si es <strong>menor que 12</strong>, muestra <strong>\"Niño\"</strong>. Si es <strong>menor que 18</strong>, muestra <strong>\"Joven\"</strong>. Si es <strong>menor que 65</strong>, muestra <strong>\"Adulto\"</strong>. En caso contrario, muestra <strong>\"Adulto mayor\"</strong>.",
+      "eps": [
+        {
+          "e": "edad (Entero)",
+          "p": "Si edad < 12 Entonces\n   mostrar \"Niño\"\nSiNo\n   Si edad < 18 Entonces\n      mostrar \"Joven\"\n   SiNo\n      Si edad < 65 Entonces\n         mostrar \"Adulto\"\n      SiNo\n         mostrar \"Adulto mayor\"\n      FinSi\n   FinSi\nFinSi",
+          "s": "Categoría de edad"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Edad:"
+        },
+        {
+          "t": "i",
+          "v": "70"
+        },
+        {
+          "t": "o",
+          "v": "Adulto mayor"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ClasificarEdad\n    <span class=\"kw\">Definir</span> <span class=\"var\">edad</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Edad:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">edad</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">edad</span> <span class=\"op\">&lt;</span> <span class=\"num\">12</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Niño\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">edad</span> <span class=\"op\">&lt;</span> <span class=\"num\">18</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Joven\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"kw\">Si</span> <span class=\"var\">edad</span> <span class=\"op\">&lt;</span> <span class=\"num\">65</span> <span class=\"kw\">Entonces</span>\n                <span class=\"fn\">Escribir</span> <span class=\"str\">\"Adulto\"</span>;\n            <span class=\"kw\">SiNo</span>\n                <span class=\"fn\">Escribir</span> <span class=\"str\">\"Adulto mayor\"</span>;\n            <span class=\"kw\">FinSi</span>\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Cada rango se evalúa de menor a mayor para que no se solapen las categorías."
+    },
+    {
+      "n": 86,
+      "ea": "1.3",
+      "level": "intermedio",
+      "titulo": "Ganó o perdió la carrera de obstáculos",
+      "panelTitulo": "Si-Entonces — Evaluación con varias condiciones",
+      "tags": [
+        "Leer",
+        "Cadena",
+        "Si-Entonces",
+        "Y lógico"
+      ],
+      "enunciado": "Lee si en la carrera hubo <strong>valla</strong>, <strong>túnel</strong> y <strong>laguna</strong>. Si los tres valores son <strong>\"no\"</strong>, muestra <strong>\"Ganó la carrera\"</strong>. En caso contrario, muestra <strong>\"Perdió la carrera\"</strong>.",
+      "eps": [
+        {
+          "e": "valla, tunel, laguna (Cadena)",
+          "p": "Si valla = \"no\" Y tunel = \"no\" Y laguna = \"no\" Entonces\n   mostrar \"Ganó la carrera\"\nSiNo\n   mostrar \"Perdió la carrera\"\nFinSi",
+          "s": "Resultado de la carrera"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "¿Hay valla? (si/no):"
+        },
+        {
+          "t": "i",
+          "v": "no"
+        },
+        {
+          "t": "o",
+          "v": "¿Hay túnel? (si/no):"
+        },
+        {
+          "t": "i",
+          "v": "no"
+        },
+        {
+          "t": "o",
+          "v": "¿Hay laguna? (si/no):"
+        },
+        {
+          "t": "i",
+          "v": "si"
+        },
+        {
+          "t": "o",
+          "v": "Perdió la carrera"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> CarreraObstaculos\n    <span class=\"kw\">Definir</span> <span class=\"var\">valla</span>, <span class=\"var\">tunel</span>, <span class=\"var\">laguna</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Hay valla? (si/no):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">valla</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Hay túnel? (si/no):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">tunel</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"¿Hay laguna? (si/no):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">laguna</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">valla</span> <span class=\"op\">=</span> <span class=\"str\">\"no\"</span> <span class=\"op\">Y</span> <span class=\"var\">tunel</span> <span class=\"op\">=</span> <span class=\"str\">\"no\"</span> <span class=\"op\">Y</span> <span class=\"var\">laguna</span> <span class=\"op\">=</span> <span class=\"str\">\"no\"</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ganó la carrera\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Perdió la carrera\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Basta con que una condición no se cumpla para que el resultado sea perder."
+    },
+    {
+      "n": 87,
+      "ea": "1.3",
+      "level": "intermedio",
+      "titulo": "Nota final con asistencia",
+      "panelTitulo": "Si anidado — Reprobación por inasistencia o promedio",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si anidado",
+        "Promedio"
+      ],
+      "enunciado": "Lee tres <strong>notas</strong> y el <strong>porcentaje de asistencia</strong>. Si la asistencia es <strong>mayor o igual a 75</strong>, calcula el promedio y luego muestra <strong>\"Aprobado\"</strong> si el promedio es <strong>mayor o igual a 4.0</strong>, o <strong>\"Reprobado\"</strong> en caso contrario. Si la asistencia es menor a 75, muestra <strong>\"Reprobado por inasistencia\"</strong>.",
+      "eps": [
+        {
+          "e": "n1, n2, n3, asistencia (Real)",
+          "p": "Si asistencia >= 75 Entonces\n   promedio ← (n1 + n2 + n3) / 3\n   Si promedio >= 4 Entonces\n      mostrar \"Aprobado\"\n   SiNo\n      mostrar \"Reprobado\"\n   FinSi\nSiNo\n   mostrar \"Reprobado por inasistencia\"\nFinSi",
+          "s": "Resultado final"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Nota 1:"
+        },
+        {
+          "t": "i",
+          "v": "5.0"
+        },
+        {
+          "t": "o",
+          "v": "Nota 2:"
+        },
+        {
+          "t": "i",
+          "v": "4.2"
+        },
+        {
+          "t": "o",
+          "v": "Nota 3:"
+        },
+        {
+          "t": "i",
+          "v": "3.8"
+        },
+        {
+          "t": "o",
+          "v": "Asistencia (%):"
+        },
+        {
+          "t": "i",
+          "v": "80"
+        },
+        {
+          "t": "o",
+          "v": "Aprobado"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> NotaFinalAsistencia\n    <span class=\"kw\">Definir</span> <span class=\"var\">n1</span>, <span class=\"var\">n2</span>, <span class=\"var\">n3</span>, <span class=\"var\">asistencia</span>, <span class=\"var\">promedio</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Nota 1:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">n1</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Nota 2:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">n2</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Nota 3:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">n3</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Asistencia (%):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">asistencia</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">asistencia</span> <span class=\"op\">&gt;=</span> <span class=\"num\">75</span> <span class=\"kw\">Entonces</span>\n        <span class=\"var\">promedio</span> <span class=\"op\"><-</span> (<span class=\"var\">n1</span> <span class=\"op\">+</span> <span class=\"var\">n2</span> <span class=\"op\">+</span> <span class=\"var\">n3</span>) <span class=\"op\">/</span> <span class=\"num\">3</span>;\n        <span class=\"kw\">Si</span> <span class=\"var\">promedio</span> <span class=\"op\">&gt;=</span> <span class=\"num\">4</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Aprobado\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Reprobado\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Reprobado por inasistencia\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Primero se valida la asistencia; solo después se revisa el promedio."
+    },
+    {
+      "n": 88,
+      "ea": "1.3",
+      "level": "intermedio",
+      "titulo": "Costo de envío por peso y destino",
+      "panelTitulo": "Si anidado — Nacional o internacional",
+      "tags": [
+        "Leer",
+        "Cadena",
+        "Real",
+        "Si anidado"
+      ],
+      "enunciado": "Lee el <strong>destino</strong> del envío y el <strong>peso en kg</strong>. Si el destino es <strong>\"nacional\"</strong> y el peso es <strong>menor o igual a 5</strong>, el costo es <strong>2000</strong>; si es nacional y pesa más de 5, el costo es <strong>3500</strong>. Si el destino es <strong>\"internacional\"</strong> y el peso es menor o igual a 5, el costo es <strong>8000</strong>; si pesa más de 5, el costo es <strong>12000</strong>. Si el destino no corresponde, muestra <strong>\"Destino inválido\"</strong>.",
+      "eps": [
+        {
+          "e": "destino (Cadena)\npeso (Real)",
+          "p": "Si destino = \"nacional\" Entonces\n   Si peso <= 5 Entonces\n      costo ← 2000\n   SiNo\n      costo ← 3500\n   FinSi\nSiNo\n   Si destino = \"internacional\" Entonces\n      Si peso <= 5 Entonces\n         costo ← 8000\n      SiNo\n         costo ← 12000\n      FinSi\n   SiNo\n      mostrar \"Destino inválido\"\n   FinSi\nFinSi",
+          "s": "Costo del envío o mensaje de error"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Destino (nacional/internacional):"
+        },
+        {
+          "t": "i",
+          "v": "internacional"
+        },
+        {
+          "t": "o",
+          "v": "Peso en kg:"
+        },
+        {
+          "t": "i",
+          "v": "3"
+        },
+        {
+          "t": "o",
+          "v": "Costo del envío: 8000"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> CostoEnvio\n    <span class=\"kw\">Definir</span> <span class=\"var\">destino</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"kw\">Definir</span> <span class=\"var\">peso</span>, <span class=\"var\">costo</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Destino (nacional/internacional):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">destino</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Peso en kg:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">peso</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">destino</span> <span class=\"op\">=</span> <span class=\"str\">\"nacional\"</span> <span class=\"kw\">Entonces</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">peso</span> <span class=\"op\">&lt;=</span> <span class=\"num\">5</span> <span class=\"kw\">Entonces</span>\n            <span class=\"var\">costo</span> <span class=\"op\"><-</span> <span class=\"num\">2000</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"var\">costo</span> <span class=\"op\"><-</span> <span class=\"num\">3500</span>;\n        <span class=\"kw\">FinSi</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Costo del envío: \"</span>, <span class=\"var\">costo</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">destino</span> <span class=\"op\">=</span> <span class=\"str\">\"internacional\"</span> <span class=\"kw\">Entonces</span>\n            <span class=\"kw\">Si</span> <span class=\"var\">peso</span> <span class=\"op\">&lt;=</span> <span class=\"num\">5</span> <span class=\"kw\">Entonces</span>\n                <span class=\"var\">costo</span> <span class=\"op\"><-</span> <span class=\"num\">8000</span>;\n            <span class=\"kw\">SiNo</span>\n                <span class=\"var\">costo</span> <span class=\"op\"><-</span> <span class=\"num\">12000</span>;\n            <span class=\"kw\">FinSi</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Costo del envío: \"</span>, <span class=\"var\">costo</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Destino inválido\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Este ejercicio combina una decisión por tipo de destino con otra por peso."
+    },
+    {
+      "n": 89,
+      "ea": "1.3",
+      "level": "intermedio",
+      "titulo": "Bienvenida por hora",
+      "panelTitulo": "Si anidado — Buenos días, tardes o noches",
+      "tags": [
+        "Leer",
+        "Entero",
+        "Si anidado",
+        "Horario"
+      ],
+      "enunciado": "Lee una <strong>hora</strong> en formato de 0 a 23. Si la hora es <strong>menor que 12</strong>, muestra <strong>\"Buenos días\"</strong>. Si es <strong>menor que 18</strong>, muestra <strong>\"Buenas tardes\"</strong>. En caso contrario, muestra <strong>\"Buenas noches\"</strong>.",
+      "eps": [
+        {
+          "e": "hora (Entero)",
+          "p": "Si hora < 12 Entonces\n   mostrar \"Buenos días\"\nSiNo\n   Si hora < 18 Entonces\n      mostrar \"Buenas tardes\"\n   SiNo\n      mostrar \"Buenas noches\"\n   FinSi\nFinSi",
+          "s": "Saludo correspondiente"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Hora actual (0-23):"
+        },
+        {
+          "t": "i",
+          "v": "19"
+        },
+        {
+          "t": "o",
+          "v": "Buenas noches"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> SaludoHora\n    <span class=\"kw\">Definir</span> <span class=\"var\">hora</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Hora actual (0-23):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">hora</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">hora</span> <span class=\"op\">&lt;</span> <span class=\"num\">12</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Buenos días\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">hora</span> <span class=\"op\">&lt;</span> <span class=\"num\">18</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Buenas tardes\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Buenas noches\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Una misma entrada puede clasificarse en distintos rangos horarios."
+    },
+    {
+      "n": 90,
+      "ea": "1.3",
+      "level": "intermedio",
+      "titulo": "¿Es año bisiesto?",
+      "panelTitulo": "Si-Entonces — Condición lógica compuesta",
+      "tags": [
+        "Leer",
+        "Entero",
+        "Si-Entonces",
+        "MOD"
+      ],
+      "enunciado": "Lee un <strong>año</strong>. Si el año es divisible por <strong>4</strong> y además <strong>no</strong> es divisible por <strong>100</strong>, o bien es divisible por <strong>400</strong>, muestra <strong>\"Es bisiesto\"</strong>. En caso contrario, muestra <strong>\"No es bisiesto\"</strong>.",
+      "eps": [
+        {
+          "e": "anio (Entero)",
+          "p": "Si anio MOD 4 = 0 Y (anio MOD 100 <> 0 O anio MOD 400 = 0) Entonces\n   mostrar \"Es bisiesto\"\nSiNo\n   mostrar \"No es bisiesto\"\nFinSi",
+          "s": "Resultado de la evaluación"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Ingrese año:"
+        },
+        {
+          "t": "i",
+          "v": "2024"
+        },
+        {
+          "t": "o",
+          "v": "Es bisiesto"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> AnioBisiesto\n    <span class=\"kw\">Definir</span> <span class=\"var\">anio</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Ingrese año:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">anio</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">anio</span> <span class=\"kw\">MOD</span> <span class=\"num\">4</span> <span class=\"op\">=</span> <span class=\"num\">0</span> <span class=\"op\">Y</span> (<span class=\"var\">anio</span> <span class=\"kw\">MOD</span> <span class=\"num\">100</span> <span class=\"op\">&lt;&gt;</span> <span class=\"num\">0</span> <span class=\"op\">O</span> <span class=\"var\">anio</span> <span class=\"kw\">MOD</span> <span class=\"num\">400</span> <span class=\"op\">=</span> <span class=\"num\">0</span>) <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Es bisiesto\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"No es bisiesto\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Este es un buen ejemplo de uso combinado de MOD, Y, O y paréntesis."
+    },
+    {
+      "n": 91,
+      "ea": "1.3",
+      "level": "avanzado",
+      "titulo": "Menú de operaciones",
+      "panelTitulo": "Según — Sumar, restar o salir",
+      "tags": [
+        "Leer",
+        "Entero",
+        "Real",
+        "Según"
+      ],
+      "enunciado": "Lee una <strong>opción</strong> de menú y dos números reales. Según la opción ingresada: si es <strong>1</strong>, muestra la <strong>suma</strong>; si es <strong>2</strong>, muestra la <strong>resta</strong>; si es <strong>3</strong>, muestra <strong>\"Saliendo del programa\"</strong>. En cualquier otro caso, muestra <strong>\"Opción inválida\"</strong>.",
+      "eps": [
+        {
+          "e": "opcion (Entero)\na (Real)\nb (Real)",
+          "p": "Según opcion Hacer\n   1: resultado ← a + b\n   2: resultado ← a - b\n   3: mostrar \"Saliendo del programa\"\n   De Otro Modo: mostrar \"Opción inválida\"\nFinSegún",
+          "s": "Resultado de la operación o mensaje"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Opción (1=sumar, 2=restar, 3=salir):"
+        },
+        {
+          "t": "i",
+          "v": "1"
+        },
+        {
+          "t": "o",
+          "v": "Primer número:"
+        },
+        {
+          "t": "i",
+          "v": "8"
+        },
+        {
+          "t": "o",
+          "v": "Segundo número:"
+        },
+        {
+          "t": "i",
+          "v": "5"
+        },
+        {
+          "t": "o",
+          "v": "Resultado: 13"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> MenuOperaciones\n    <span class=\"kw\">Definir</span> <span class=\"var\">opcion</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">a</span>, <span class=\"var\">b</span>, <span class=\"var\">resultado</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Opción (1=sumar, 2=restar, 3=salir):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">opcion</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Primer número:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">a</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Segundo número:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">b</span>;\n    <span class=\"kw\">Segun</span> <span class=\"var\">opcion</span> <span class=\"kw\">Hacer</span>\n        <span class=\"num\">1</span>:\n            <span class=\"var\">resultado</span> <span class=\"op\"><-</span> <span class=\"var\">a</span> <span class=\"op\">+</span> <span class=\"var\">b</span>;\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Resultado: \"</span>, <span class=\"var\">resultado</span>;\n        <span class=\"num\">2</span>:\n            <span class=\"var\">resultado</span> <span class=\"op\"><-</span> <span class=\"var\">a</span> <span class=\"op\">-</span> <span class=\"var\">b</span>;\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Resultado: \"</span>, <span class=\"var\">resultado</span>;\n        <span class=\"num\">3</span>:\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Saliendo del programa\"</span>;\n        <span class=\"kw\">De Otro Modo</span>:\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Opción inválida\"</span>;\n    <span class=\"kw\">FinSegun</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "La estructura Según es útil cuando una sola variable puede tomar varios valores exactos."
+    },
+    {
+      "n": 92,
+      "ea": "1.3",
+      "level": "avanzado",
+      "titulo": "Día de la semana por número",
+      "panelTitulo": "Según — Lunes a domingo",
+      "tags": [
+        "Leer",
+        "Entero",
+        "Según",
+        "Selección múltiple"
+      ],
+      "enunciado": "Lee un número entre <strong>1 y 7</strong>. Según el valor ingresado, muestra el día correspondiente: <strong>1=Lunes</strong>, <strong>2=Martes</strong>, <strong>3=Miércoles</strong>, <strong>4=Jueves</strong>, <strong>5=Viernes</strong>, <strong>6=Sábado</strong>, <strong>7=Domingo</strong>. En cualquier otro caso, muestra <strong>\"Número inválido\"</strong>.",
+      "eps": [
+        {
+          "e": "num (Entero)",
+          "p": "Según num Hacer\n   1: mostrar \"Lunes\"\n   2: mostrar \"Martes\"\n   3: mostrar \"Miércoles\"\n   4: mostrar \"Jueves\"\n   5: mostrar \"Viernes\"\n   6: mostrar \"Sábado\"\n   7: mostrar \"Domingo\"\n   De Otro Modo: mostrar \"Número inválido\"\nFinSegún",
+          "s": "Día de la semana"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Número del día (1-7):"
+        },
+        {
+          "t": "i",
+          "v": "5"
+        },
+        {
+          "t": "o",
+          "v": "Viernes"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> DiaSemana\n    <span class=\"kw\">Definir</span> <span class=\"var\">num</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Número del día (1-7):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">num</span>;\n    <span class=\"kw\">Segun</span> <span class=\"var\">num</span> <span class=\"kw\">Hacer</span>\n        <span class=\"num\">1</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Lunes\"</span>;\n        <span class=\"num\">2</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Martes\"</span>;\n        <span class=\"num\">3</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Miércoles\"</span>;\n        <span class=\"num\">4</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Jueves\"</span>;\n        <span class=\"num\">5</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Viernes\"</span>;\n        <span class=\"num\">6</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Sábado\"</span>;\n        <span class=\"num\">7</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Domingo\"</span>;\n        <span class=\"kw\">De Otro Modo</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Número inválido\"</span>;\n    <span class=\"kw\">FinSegun</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Usa Según cuando los casos dependen de valores concretos de una misma variable."
+    },
+    {
+      "n": 93,
+      "ea": "1.3",
+      "level": "avanzado",
+      "titulo": "Estación del año por mes",
+      "panelTitulo": "Según — Verano, otoño, invierno o primavera",
+      "tags": [
+        "Leer",
+        "Entero",
+        "Según",
+        "Meses"
+      ],
+      "enunciado": "Lee un <strong>mes</strong> representado por un número del <strong>1 al 12</strong>. Según el mes, muestra la estación del año: <strong>12, 1 y 2 = Verano</strong>; <strong>3, 4 y 5 = Otoño</strong>; <strong>6, 7 y 8 = Invierno</strong>; <strong>9, 10 y 11 = Primavera</strong>. En cualquier otro caso, muestra <strong>\"Mes inválido\"</strong>.",
+      "eps": [
+        {
+          "e": "mes (Entero)",
+          "p": "Según mes Hacer\n   12,1,2: mostrar \"Verano\"\n   3,4,5: mostrar \"Otoño\"\n   6,7,8: mostrar \"Invierno\"\n   9,10,11: mostrar \"Primavera\"\n   De Otro Modo: mostrar \"Mes inválido\"\nFinSegún",
+          "s": "Estación del año"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Mes (1-12):"
+        },
+        {
+          "t": "i",
+          "v": "8"
+        },
+        {
+          "t": "o",
+          "v": "Invierno"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> EstacionAnio\n    <span class=\"kw\">Definir</span> <span class=\"var\">mes</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Mes (1-12):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">mes</span>;\n    <span class=\"kw\">Segun</span> <span class=\"var\">mes</span> <span class=\"kw\">Hacer</span>\n        <span class=\"num\">12</span>, <span class=\"num\">1</span>, <span class=\"num\">2</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Verano\"</span>;\n        <span class=\"num\">3</span>, <span class=\"num\">4</span>, <span class=\"num\">5</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Otoño\"</span>;\n        <span class=\"num\">6</span>, <span class=\"num\">7</span>, <span class=\"num\">8</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Invierno\"</span>;\n        <span class=\"num\">9</span>, <span class=\"num\">10</span>, <span class=\"num\">11</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Primavera\"</span>;\n        <span class=\"kw\">De Otro Modo</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Mes inválido\"</span>;\n    <span class=\"kw\">FinSegun</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "En Según puedes agrupar varios valores que conducen al mismo resultado."
+    },
+    {
+      "n": 94,
+      "ea": "1.3",
+      "level": "avanzado",
+      "titulo": "Tipo de bencina y nivel bajo",
+      "panelTitulo": "Si anidado + Según — Decidir si cargar y qué tipo",
+      "tags": [
+        "Leer",
+        "Real",
+        "Entero",
+        "Si anidado",
+        "Según"
+      ],
+      "enunciado": "Lee el <strong>nivel de combustible</strong> del vehículo. Si el nivel es <strong>menor que 10</strong>, pide además el <strong>tipo de bencina</strong>. Según el tipo, muestra: <strong>93 = Cargar bencina regular</strong>, <strong>95 = Cargar bencina plus</strong>, <strong>97 = Cargar bencina premium</strong>. En cualquier otro caso, muestra <strong>\"Tipo inválido\"</strong>. Si el nivel es <strong>10 o más</strong>, muestra <strong>\"No necesita cargar\"</strong>.",
+      "eps": [
+        {
+          "e": "nivel (Real)\ntipo (Entero)",
+          "p": "Si nivel < 10 Entonces\n   Según tipo Hacer\n      93: mostrar \"Cargar bencina regular\"\n      95: mostrar \"Cargar bencina plus\"\n      97: mostrar \"Cargar bencina premium\"\n      De Otro Modo: mostrar \"Tipo inválido\"\n   FinSegún\nSiNo\n   mostrar \"No necesita cargar\"\nFinSi",
+          "s": "Recomendación de carga"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Nivel de combustible:"
+        },
+        {
+          "t": "i",
+          "v": "6"
+        },
+        {
+          "t": "o",
+          "v": "Tipo de bencina (93/95/97):"
+        },
+        {
+          "t": "i",
+          "v": "97"
+        },
+        {
+          "t": "o",
+          "v": "Cargar bencina premium"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> TipoBencinaCompleto\n    <span class=\"kw\">Definir</span> <span class=\"var\">nivel</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"kw\">Definir</span> <span class=\"var\">tipo</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Nivel de combustible:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">nivel</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">nivel</span> <span class=\"op\">&lt;</span> <span class=\"num\">10</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Tipo de bencina (93/95/97):\"</span>;\n        <span class=\"fn\">Leer</span> <span class=\"var\">tipo</span>;\n        <span class=\"kw\">Segun</span> <span class=\"var\">tipo</span> <span class=\"kw\">Hacer</span>\n            <span class=\"num\">93</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Cargar bencina regular\"</span>;\n            <span class=\"num\">95</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Cargar bencina plus\"</span>;\n            <span class=\"num\">97</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Cargar bencina premium\"</span>;\n            <span class=\"kw\">De Otro Modo</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Tipo inválido\"</span>;\n        <span class=\"kw\">FinSegun</span>\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"No necesita cargar\"</span>;\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Aquí primero se toma una decisión general con Si, y luego una selección múltiple con Según."
+    },
+    {
+      "n": 95,
+      "ea": "1.3",
+      "level": "avanzado",
+      "titulo": "Calculadora de cuatro operaciones",
+      "panelTitulo": "Según + Si anidado — Suma, resta, multiplicación o división",
+      "tags": [
+        "Leer",
+        "Cadena",
+        "Real",
+        "Según",
+        "Si anidado"
+      ],
+      "enunciado": "Lee dos números reales y un <strong>operador</strong> matemático. Según el operador ingresado: <strong>+</strong>, <strong>-</strong>, <strong>*</strong> o <strong>/</strong>, realiza la operación correspondiente. En el caso de la división, primero verifica que el segundo número sea distinto de <strong>0</strong>. Si es <strong>0</strong>, muestra <strong>\"No se puede dividir por cero\"</strong>. En cualquier otro caso de operador, muestra <strong>\"Operador inválido\"</strong>.",
+      "eps": [
+        {
+          "e": "a, b (Real)\noperador (Cadena)",
+          "p": "Según operador Hacer\n   \"+\": resultado ← a + b\n   \"-\": resultado ← a - b\n   \"*\": resultado ← a * b\n   \"/\": Si b <> 0 Entonces resultado ← a / b SiNo mostrar \"No se puede dividir por cero\" FinSi\n   De Otro Modo: mostrar \"Operador inválido\"\nFinSegún",
+          "s": "Resultado o mensaje de error"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Primer número:"
+        },
+        {
+          "t": "i",
+          "v": "15"
+        },
+        {
+          "t": "o",
+          "v": "Segundo número:"
+        },
+        {
+          "t": "i",
+          "v": "3"
+        },
+        {
+          "t": "o",
+          "v": "Operador (+,-,*,/):"
+        },
+        {
+          "t": "i",
+          "v": "/"
+        },
+        {
+          "t": "o",
+          "v": "Resultado: 5"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> CalculadoraCuatro\n    <span class=\"kw\">Definir</span> <span class=\"var\">operador</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"kw\">Definir</span> <span class=\"var\">a</span>, <span class=\"var\">b</span>, <span class=\"var\">resultado</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Primer número:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">a</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Segundo número:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">b</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Operador (+,-,*,/):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">operador</span>;\n    <span class=\"kw\">Segun</span> <span class=\"var\">operador</span> <span class=\"kw\">Hacer</span>\n        <span class=\"str\">\"+\"</span>:\n            <span class=\"var\">resultado</span> <span class=\"op\"><-</span> <span class=\"var\">a</span> <span class=\"op\">+</span> <span class=\"var\">b</span>;\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Resultado: \"</span>, <span class=\"var\">resultado</span>;\n        <span class=\"str\">\"-\"</span>:\n            <span class=\"var\">resultado</span> <span class=\"op\"><-</span> <span class=\"var\">a</span> <span class=\"op\">-</span> <span class=\"var\">b</span>;\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Resultado: \"</span>, <span class=\"var\">resultado</span>;\n        <span class=\"str\">\"*\"</span>:\n            <span class=\"var\">resultado</span> <span class=\"op\"><-</span> <span class=\"var\">a</span> <span class=\"op\">*</span> <span class=\"var\">b</span>;\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Resultado: \"</span>, <span class=\"var\">resultado</span>;\n        <span class=\"str\">\"/\"</span>:\n            <span class=\"kw\">Si</span> <span class=\"var\">b</span> <span class=\"op\">&lt;&gt;</span> <span class=\"num\">0</span> <span class=\"kw\">Entonces</span>\n                <span class=\"var\">resultado</span> <span class=\"op\"><-</span> <span class=\"var\">a</span> <span class=\"op\">/</span> <span class=\"var\">b</span>;\n                <span class=\"fn\">Escribir</span> <span class=\"str\">\"Resultado: \"</span>, <span class=\"var\">resultado</span>;\n            <span class=\"kw\">SiNo</span>\n                <span class=\"fn\">Escribir</span> <span class=\"str\">\"No se puede dividir por cero\"</span>;\n            <span class=\"kw\">FinSi</span>\n        <span class=\"kw\">De Otro Modo</span>:\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Operador inválido\"</span>;\n    <span class=\"kw\">FinSegun</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "La división requiere una validación extra para evitar un error matemático."
+    },
+    {
+      "n": 96,
+      "ea": "1.3",
+      "level": "avanzado",
+      "titulo": "Clasificación tributaria por renta",
+      "panelTitulo": "Si anidado — Tramos de impuesto",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si anidado",
+        "Porcentaje",
+        "Finanzas"
+      ],
+      "enunciado": "Lee una <strong>renta</strong>. Si la renta es <strong>menor o igual a 500000</strong>, muestra <strong>\"Exento\"</strong>. Si es <strong>menor o igual a 1000000</strong>, muestra <strong>\"Impuesto 4%\"</strong>. Si es <strong>menor o igual a 2000000</strong>, muestra <strong>\"Impuesto 8%\"</strong>. Si es <strong>menor o igual a 4000000</strong>, muestra <strong>\"Impuesto 13.5%\"</strong>. En cualquier otro caso, muestra <strong>\"Impuesto 23%\"</strong>.",
+      "eps": [
+        {
+          "e": "renta (Real)",
+          "p": "Si renta <= 500000 Entonces\n   mostrar \"Exento\"\nSiNo\n   Si renta <= 1000000 Entonces\n      mostrar \"Impuesto 4%\"\n   SiNo\n      Si renta <= 2000000 Entonces\n         mostrar \"Impuesto 8%\"\n      SiNo\n         Si renta <= 4000000 Entonces\n            mostrar \"Impuesto 13.5%\"\n         SiNo\n            mostrar \"Impuesto 23%\"\n         FinSi\n      FinSi\n   FinSi\nFinSi",
+          "s": "Tramo tributario"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Renta mensual:"
+        },
+        {
+          "t": "i",
+          "v": "1750000"
+        },
+        {
+          "t": "o",
+          "v": "Impuesto 8%"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> ClasificacionTributaria\n    <span class=\"kw\">Definir</span> <span class=\"var\">renta</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Renta mensual:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">renta</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">renta</span> <span class=\"op\">&lt;=</span> <span class=\"num\">500000</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Exento\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">renta</span> <span class=\"op\">&lt;=</span> <span class=\"num\">1000000</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Impuesto 4%\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"kw\">Si</span> <span class=\"var\">renta</span> <span class=\"op\">&lt;=</span> <span class=\"num\">2000000</span> <span class=\"kw\">Entonces</span>\n                <span class=\"fn\">Escribir</span> <span class=\"str\">\"Impuesto 8%\"</span>;\n            <span class=\"kw\">SiNo</span>\n                <span class=\"kw\">Si</span> <span class=\"var\">renta</span> <span class=\"op\">&lt;=</span> <span class=\"num\">4000000</span> <span class=\"kw\">Entonces</span>\n                    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Impuesto 13.5%\"</span>;\n                <span class=\"kw\">SiNo</span>\n                    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Impuesto 23%\"</span>;\n                <span class=\"kw\">FinSi</span>\n            <span class=\"kw\">FinSi</span>\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Los tramos deben evaluarse de menor a mayor para asignar correctamente la categoría."
+    },
+    {
+      "n": 97,
+      "ea": "1.3",
+      "level": "avanzado",
+      "titulo": "Sistema de semáforo con duración",
+      "panelTitulo": "Según — Acción y tiempo de espera",
+      "tags": [
+        "Leer",
+        "Cadena",
+        "Según",
+        "Tránsito"
+      ],
+      "enunciado": "Lee el <strong>color</strong> de un semáforo. Según el color ingresado: <strong>\"rojo\"</strong> muestra <strong>\"Detenerse\"</strong> y <strong>60 segundos</strong>; <strong>\"amarillo\"</strong> muestra <strong>\"Precaución\"</strong> y <strong>5 segundos</strong>; <strong>\"verde\"</strong> muestra <strong>\"Avanzar\"</strong> y <strong>45 segundos</strong>. En cualquier otro caso, muestra <strong>\"Color inválido\"</strong>.",
+      "eps": [
+        {
+          "e": "color (Cadena)",
+          "p": "Según color Hacer\n   \"rojo\": mostrar \"Detenerse - 60 segundos\"\n   \"amarillo\": mostrar \"Precaución - 5 segundos\"\n   \"verde\": mostrar \"Avanzar - 45 segundos\"\n   De Otro Modo: mostrar \"Color inválido\"\nFinSegún",
+          "s": "Acción del semáforo"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Color del semáforo:"
+        },
+        {
+          "t": "i",
+          "v": "amarillo"
+        },
+        {
+          "t": "o",
+          "v": "Precaución - 5 segundos"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> SemaforoDuracion\n    <span class=\"kw\">Definir</span> <span class=\"var\">color</span> <span class=\"kw\">Como</span> Cadena;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Color del semáforo:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">color</span>;\n    <span class=\"kw\">Segun</span> <span class=\"var\">color</span> <span class=\"kw\">Hacer</span>\n        <span class=\"str\">\"rojo\"</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Detenerse - 60 segundos\"</span>;\n        <span class=\"str\">\"amarillo\"</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Precaución - 5 segundos\"</span>;\n        <span class=\"str\">\"verde\"</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Avanzar - 45 segundos\"</span>;\n        <span class=\"kw\">De Otro Modo</span>: <span class=\"fn\">Escribir</span> <span class=\"str\">\"Color inválido\"</span>;\n    <span class=\"kw\">FinSegun</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Según también funciona con cadenas, no solo con números."
+    },
+    {
+      "n": 98,
+      "ea": "1.3",
+      "level": "avanzado",
+      "titulo": "Convertidor de calificación a letra",
+      "panelTitulo": "Si anidado — A, B, C, D o F",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si anidado",
+        "Notas"
+      ],
+      "enunciado": "Lee una <strong>calificación numérica</strong> entre <strong>0 y 100</strong>. Si es <strong>90 o más</strong>, muestra <strong>\"A\"</strong>. Si es <strong>80 o más</strong>, muestra <strong>\"B\"</strong>. Si es <strong>70 o más</strong>, muestra <strong>\"C\"</strong>. Si es <strong>60 o más</strong>, muestra <strong>\"D\"</strong>. En caso contrario, muestra <strong>\"F\"</strong>.",
+      "eps": [
+        {
+          "e": "nota (Real)",
+          "p": "Si nota >= 90 Entonces\n   mostrar \"A\"\nSiNo\n   Si nota >= 80 Entonces\n      mostrar \"B\"\n   SiNo\n      Si nota >= 70 Entonces\n         mostrar \"C\"\n      SiNo\n         Si nota >= 60 Entonces\n            mostrar \"D\"\n         SiNo\n            mostrar \"F\"\n         FinSi\n      FinSi\n   FinSi\nFinSi",
+          "s": "Calificación en letra"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Calificación numérica:"
+        },
+        {
+          "t": "i",
+          "v": "84"
+        },
+        {
+          "t": "o",
+          "v": "B"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> CalificacionLetra\n    <span class=\"kw\">Definir</span> <span class=\"var\">nota</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Calificación numérica:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">nota</span>;\n    <span class=\"kw\">Si</span> <span class=\"var\">nota</span> <span class=\"op\">&gt;=</span> <span class=\"num\">90</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"A\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">nota</span> <span class=\"op\">&gt;=</span> <span class=\"num\">80</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"B\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"kw\">Si</span> <span class=\"var\">nota</span> <span class=\"op\">&gt;=</span> <span class=\"num\">70</span> <span class=\"kw\">Entonces</span>\n                <span class=\"fn\">Escribir</span> <span class=\"str\">\"C\"</span>;\n            <span class=\"kw\">SiNo</span>\n                <span class=\"kw\">Si</span> <span class=\"var\">nota</span> <span class=\"op\">&gt;=</span> <span class=\"num\">60</span> <span class=\"kw\">Entonces</span>\n                    <span class=\"fn\">Escribir</span> <span class=\"str\">\"D\"</span>;\n                <span class=\"kw\">SiNo</span>\n                    <span class=\"fn\">Escribir</span> <span class=\"str\">\"F\"</span>;\n                <span class=\"kw\">FinSi</span>\n            <span class=\"kw\">FinSi</span>\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">FinSi</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Cuando los rangos son descendentes, conviene comparar desde el valor más alto."
+    },
+    {
+      "n": 99,
+      "ea": "1.3",
+      "level": "avanzado",
+      "titulo": "Simulador de cajero ATM",
+      "panelTitulo": "Según + Si anidado — Saldo, retiro o depósito",
+      "tags": [
+        "Leer",
+        "Entero",
+        "Real",
+        "Según",
+        "Si anidado"
+      ],
+      "enunciado": "Lee el <strong>saldo actual</strong>, una <strong>operación</strong> y un <strong>monto</strong>. Según la operación ingresada: si es <strong>1</strong>, muestra el <strong>saldo actual</strong>; si es <strong>2</strong>, realiza un <strong>retiro</strong>, pero antes verifica que el monto no sea mayor al saldo; si lo es, muestra <strong>\"Fondos insuficientes\"</strong>; si es <strong>3</strong>, realiza un <strong>depósito</strong>. En cualquier otro caso, muestra <strong>\"Operación inválida\"</strong>.",
+      "eps": [
+        {
+          "e": "saldo, monto (Real)\noperacion (Entero)",
+          "p": "Según operacion Hacer\n   1: mostrar saldo\n   2: Si monto <= saldo Entonces saldo ← saldo - monto SiNo mostrar \"Fondos insuficientes\" FinSi\n   3: saldo ← saldo + monto\n   De Otro Modo: mostrar \"Operación inválida\"\nFinSegún",
+          "s": "Nuevo saldo o mensaje"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "Saldo actual:"
+        },
+        {
+          "t": "i",
+          "v": "50000"
+        },
+        {
+          "t": "o",
+          "v": "Operación (1=saldo, 2=retiro, 3=depósito):"
+        },
+        {
+          "t": "i",
+          "v": "2"
+        },
+        {
+          "t": "o",
+          "v": "Monto:"
+        },
+        {
+          "t": "i",
+          "v": "12000"
+        },
+        {
+          "t": "o",
+          "v": "Nuevo saldo: 38000"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> CajeroATM\n    <span class=\"kw\">Definir</span> <span class=\"var\">operacion</span> <span class=\"kw\">Como</span> Entero;\n    <span class=\"kw\">Definir</span> <span class=\"var\">saldo</span>, <span class=\"var\">monto</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Saldo actual:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">saldo</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Operación (1=saldo, 2=retiro, 3=depósito):\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">operacion</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Monto:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">monto</span>;\n    <span class=\"kw\">Segun</span> <span class=\"var\">operacion</span> <span class=\"kw\">Hacer</span>\n        <span class=\"num\">1</span>:\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Saldo actual: \"</span>, <span class=\"var\">saldo</span>;\n        <span class=\"num\">2</span>:\n            <span class=\"kw\">Si</span> <span class=\"var\">monto</span> <span class=\"op\">&lt;=</span> <span class=\"var\">saldo</span> <span class=\"kw\">Entonces</span>\n                <span class=\"var\">saldo</span> <span class=\"op\"><-</span> <span class=\"var\">saldo</span> <span class=\"op\">-</span> <span class=\"var\">monto</span>;\n                <span class=\"fn\">Escribir</span> <span class=\"str\">\"Nuevo saldo: \"</span>, <span class=\"var\">saldo</span>;\n            <span class=\"kw\">SiNo</span>\n                <span class=\"fn\">Escribir</span> <span class=\"str\">\"Fondos insuficientes\"</span>;\n            <span class=\"kw\">FinSi</span>\n        <span class=\"num\">3</span>:\n            <span class=\"var\">saldo</span> <span class=\"op\"><-</span> <span class=\"var\">saldo</span> <span class=\"op\">+</span> <span class=\"var\">monto</span>;\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Nuevo saldo: \"</span>, <span class=\"var\">saldo</span>;\n        <span class=\"kw\">De Otro Modo</span>:\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Operación inválida\"</span>;\n    <span class=\"kw\">FinSegun</span>\n<span class=\"kw\">FinProceso</span>",
+      "tip": "El retiro necesita validación adicional, por eso combina Según con un Si interno."
+    },
+    {
+      "n": 100,
+      "ea": "1.3",
+      "level": "avanzado",
+      "titulo": "Diagnóstico integral de salud",
+      "panelTitulo": "Si anidado — IMC, presión y temperatura",
+      "tags": [
+        "Leer",
+        "Real",
+        "Si anidado",
+        "Salud",
+        "Diagnóstico"
+      ],
+      "enunciado": "Lee el <strong>IMC</strong>, la <strong>presión sistólica</strong> y la <strong>temperatura corporal</strong> de una persona. Si el IMC es <strong>menor que 18.5</strong>, muestra <strong>\"Bajo peso\"</strong>; si es <strong>menor que 25</strong>, muestra <strong>\"Peso normal\"</strong>; en caso contrario, muestra <strong>\"Sobrepeso\"</strong>. Luego, si la presión sistólica es <strong>mayor o igual a 140</strong>, muestra <strong>\"Presión alta\"</strong>; en caso contrario, <strong>\"Presión normal\"</strong>. Finalmente, si la temperatura es <strong>mayor a 37.2</strong>, muestra <strong>\"Fiebre\"</strong>; en caso contrario, <strong>\"Sin fiebre\"</strong>.",
+      "eps": [
+        {
+          "e": "imc, presion, temperatura (Real)",
+          "p": "Clasificar IMC con Si anidado\nClasificar presión con Si\nClasificar temperatura con Si",
+          "s": "Diagnóstico integral en tres partes"
+        }
+      ],
+      "consola": [
+        {
+          "t": "o",
+          "v": "IMC:"
+        },
+        {
+          "t": "i",
+          "v": "27"
+        },
+        {
+          "t": "o",
+          "v": "Presión sistólica:"
+        },
+        {
+          "t": "i",
+          "v": "145"
+        },
+        {
+          "t": "o",
+          "v": "Temperatura corporal:"
+        },
+        {
+          "t": "i",
+          "v": "38"
+        },
+        {
+          "t": "o",
+          "v": "Estado IMC: Sobrepeso"
+        },
+        {
+          "t": "o",
+          "v": "Estado presión: Presión alta"
+        },
+        {
+          "t": "o",
+          "v": "Estado temperatura: Fiebre"
+        }
+      ],
+      "code": "<span class=\"kw\">Proceso</span> DiagnosticoSalud\n    <span class=\"kw\">Definir</span> <span class=\"var\">imc</span>, <span class=\"var\">presion</span>, <span class=\"var\">temperatura</span> <span class=\"kw\">Como</span> Real;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"IMC:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">imc</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Presión sistólica:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">presion</span>;\n    <span class=\"fn\">Escribir</span> <span class=\"str\">\"Temperatura corporal:\"</span>;\n    <span class=\"fn\">Leer</span> <span class=\"var\">temperatura</span>;\n\n    <span class=\"kw\">Si</span> <span class=\"var\">imc</span> <span class=\"op\">&lt;</span> <span class=\"num\">18.5</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Estado IMC: Bajo peso\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"kw\">Si</span> <span class=\"var\">imc</span> <span class=\"op\">&lt;</span> <span class=\"num\">25</span> <span class=\"kw\">Entonces</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Estado IMC: Peso normal\"</span>;\n        <span class=\"kw\">SiNo</span>\n            <span class=\"fn\">Escribir</span> <span class=\"str\">\"Estado IMC: Sobrepeso\"</span>;\n        <span class=\"kw\">FinSi</span>\n    <span class=\"kw\">FinSi</span>;\n\n    <span class=\"kw\">Si</span> <span class=\"var\">presion</span> <span class=\"op\">&gt;=</span> <span class=\"num\">140</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Estado presión: Presión alta\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Estado presión: Presión normal\"</span>;\n    <span class=\"kw\">FinSi</span>;\n\n    <span class=\"kw\">Si</span> <span class=\"var\">temperatura</span> <span class=\"op\">&gt;</span> <span class=\"num\">37.2</span> <span class=\"kw\">Entonces</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Estado temperatura: Fiebre\"</span>;\n    <span class=\"kw\">SiNo</span>\n        <span class=\"fn\">Escribir</span> <span class=\"str\">\"Estado temperatura: Sin fiebre\"</span>;\n    <span class=\"kw\">FinSi</span>;\n<span class=\"kw\">FinProceso</span>",
+      "tip": "Este ejercicio combina varias decisiones independientes para construir un diagnóstico más completo."
+    }
+  ]
+}
