@@ -6,9 +6,9 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v.0.8.3`
+- Versión visible en la app: `v.0.8.4`
 - Layout educativo: editor arriba, **consola debajo del editor** (redimensionable verticalmente) y **panel derecho con el banco de ejercicios integrado** (filtros, detalle y progreso local).
-- **245 ejercicios adaptados** desde `ejercicios/guia.html` al dialecto LiteSeInt, cargados desde archivos JSON normalizados `N1`–`N7`, con validación estática automática.
+- **245 ejercicios adaptados** desde `ejercicios/guia.html` al dialecto LiteSeInt, cargados desde archivos JSON normalizados `N1`–`N7`, con validación estática automática y formato de código de referencia consistente.
 - Ejemplos accesibles desde un menú desplegable en la cabecera del editor, agrupados por concepto.
 - Núcleo del lenguaje congelado para 1.0 (ver "Matriz de compatibilidad").
 - Reglas de adaptación de ejercicios documentadas en [`EJERCICIOS.md`](EJERCICIOS.md).
@@ -301,12 +301,12 @@ tests/
 
 El panel derecho muestra el banco de ejercicios adaptados desde `ejercicios/guia.html`. Permite:
 
-- **Filtrar** por nivel LiteSeInt visible (N1–N5), dificultad (`básico`/`intermedio`/`avanzado`) y estado de progreso (`pendiente`/`en curso`/`completado`).
+- **Filtrar** por nivel LiteSeInt visible (N1–N7), dificultad (`básico`/`intermedio`/`avanzado`) y estado de progreso (`pendiente`/`en curso`/`completado`).
 - **Ver el detalle** de un ejercicio: enunciado, conceptos, entrada/proceso/salida, salida esperada y pista colapsable.
 - **Cargar una plantilla** vacía (`Proceso ... FinProceso`) o el **código de referencia** adaptado, con confirmación previa para no sobrescribir el editor.
 - **Marcar progreso** manualmente como `pendiente`, `en curso` o `completado`. El estado se guarda en `localStorage` (`liteseint:exerciseProgress`) y persiste al recargar la página.
 
-A la fecha v.0.8.3, el banco contiene 245 ejercicios adaptados, cargados desde `json/N1.json` a `json/N7.json` mediante `js/ejercicios-data.js`. En la app quedan visibles N1–N5; N6 y N7 se mantienen preparados para evaluación futura. La regla de calidad se mantiene: **todo ejercicio visible debe estar adaptado** al dialecto LiteSeInt y pasar la validación estática. Detalles en [`EJERCICIOS.md`](EJERCICIOS.md).
+A la fecha v.0.8.4, el banco contiene 245 ejercicios adaptados, cargados desde `json/N1.json` a `json/N7.json` mediante `js/ejercicios-data.js`. En la app quedan visibles N1–N7. La regla de calidad se mantiene: **todo ejercicio visible debe estar adaptado** al dialecto LiteSeInt, pasar la validación estática y mantener un formato de referencia legible. Detalles en [`EJERCICIOS.md`](EJERCICIOS.md).
 
 ## Pruebas
 

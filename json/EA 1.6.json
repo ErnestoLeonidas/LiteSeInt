@@ -31,7 +31,7 @@
       },
       "salidaEsperada": "Ingrese su edad:\n> 20\n¿Está inscrita previamente? (SI/NO):\n> SI\nInscripción aceptada\nFin del proceso",
       "pista": "La estructura clave es un Si anidado: primero valida la edad (condición numérica), luego dentro valida la inscripción previa (condición de cadena). El mensaje \"Fin del proceso\" va fuera de ambos Si, por eso se muestra siempre.",
-      "codigoReferencia": "Proceso InscripcionTaller\n    Definir edad Como Entero\n    Definir inscrita Como Caracter\n    Escribir \"Ingrese su edad:\"\n    Leer edad\n    Escribir \"¿Está inscrita previamente? (SI/NO):\"\n    Leer inscrita\n    Si edad >= 18 Entonces\n        Si inscrita == \"SI\" Entonces\n            Escribir \"Inscripción aceptada\"\n        Sino\n            Escribir \"Inscripción rechazada\"\n        FinSi\n    Sino\n        Escribir \"Debe ser mayor de edad para poder inscribirse\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso InscripcionTaller\n  Definir edad Como Entero\n  Definir inscrita Como Caracter\n\n  Escribir \"Ingrese su edad:\"\n  Leer edad\n  Escribir \"¿Está inscrita previamente? (SI/NO):\"\n  Leer inscrita\n  Si edad >= 18 Entonces\n    Si inscrita == \"SI\" Entonces\n      Escribir \"Inscripción aceptada\"\n    Sino\n      Escribir \"Inscripción rechazada\"\n    FinSi\n  Sino\n    Escribir \"Debe ser mayor de edad para poder inscribirse\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -58,7 +58,7 @@
       },
       "salidaEsperada": "Ingrese el código de retiro:\n> 1045\n¿Recibió correo de confirmación? (SI/NO):\n> SI\nRetiro autorizado\nFin del proceso",
       "pista": "El código 0 o negativo es inválido desde el Si externo. Solo si el código es válido (>0) se evalúa si llegó el correo. Recuerda comparar cadenas con comillas.",
-      "codigoReferencia": "Proceso RetiroPedido\n    Definir codigo Como Entero\n    Definir correo Como Caracter\n    Escribir \"Ingrese el código de retiro:\"\n    Leer codigo\n    Escribir \"¿Recibió correo de confirmación? (SI/NO):\"\n    Leer correo\n    Si codigo > 0 Entonces\n        Si correo == \"SI\" Entonces\n            Escribir \"Retiro autorizado\"\n        Sino\n            Escribir \"Faltan requisitos para retirar\"\n        FinSi\n    Sino\n        Escribir \"Código inválido\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso RetiroPedido\n  Definir codigo Como Entero\n  Definir correo Como Caracter\n\n  Escribir \"Ingrese el código de retiro:\"\n  Leer codigo\n  Escribir \"¿Recibió correo de confirmación? (SI/NO):\"\n  Leer correo\n  Si codigo > 0 Entonces\n    Si correo == \"SI\" Entonces\n      Escribir \"Retiro autorizado\"\n    Sino\n      Escribir \"Faltan requisitos para retirar\"\n    FinSi\n  Sino\n    Escribir \"Código inválido\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -85,7 +85,7 @@
       },
       "salidaEsperada": "Cantidad solicitada:\n> 10\nCantidad disponible:\n> 15\nDespacho parcial con stock restante\nFin del proceso",
       "pista": "Aquí ambas variables son enteros. El Si externo determina si hay stock suficiente; el Si interno distingue si el despacho es exacto (quedan 0 unidades) o parcial.",
-      "codigoReferencia": "Proceso DespachoPedido\n    Definir solicitada, disponible Como Entero\n    Escribir \"Cantidad solicitada:\"\n    Leer solicitada\n    Escribir \"Cantidad disponible:\"\n    Leer disponible\n    Si solicitada <= disponible Entonces\n        Si solicitada == disponible Entonces\n            Escribir \"Despacho exacto\"\n        Sino\n            Escribir \"Despacho parcial con stock restante\"\n        FinSi\n    Sino\n        Escribir \"Stock insuficiente\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso DespachoPedido\n  Definir solicitada, disponible Como Entero\n\n  Escribir \"Cantidad solicitada:\"\n  Leer solicitada\n  Escribir \"Cantidad disponible:\"\n  Leer disponible\n  Si solicitada <= disponible Entonces\n    Si solicitada == disponible Entonces\n      Escribir \"Despacho exacto\"\n    Sino\n      Escribir \"Despacho parcial con stock restante\"\n    FinSi\n  Sino\n    Escribir \"Stock insuficiente\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -112,7 +112,7 @@
       },
       "salidaEsperada": "Saldo disponible:\n> 50000\nMonto de compra:\n> 50000\nCompra aprobada: saldo queda en cero\nFin del proceso",
       "pista": "Este ejercicio usa solo enteros. La igualdad exacta (saldo = monto) es el caso especial dentro del caso aprobado. Practica distinguir cuándo usar >= en el Si externo y = en el Si interno.",
-      "codigoReferencia": "Proceso CompraConSaldo\n    Definir saldo, monto Como Entero\n    Escribir \"Saldo disponible:\"\n    Leer saldo\n    Escribir \"Monto de compra:\"\n    Leer monto\n    Si saldo >= monto Entonces\n        Si saldo == monto Entonces\n            Escribir \"Compra aprobada: saldo queda en cero\"\n        Sino\n            Escribir \"Compra aprobada: queda saldo disponible\"\n        FinSi\n    Sino\n        Escribir \"Compra rechazada: saldo insuficiente\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso CompraConSaldo\n  Definir saldo, monto Como Entero\n\n  Escribir \"Saldo disponible:\"\n  Leer saldo\n  Escribir \"Monto de compra:\"\n  Leer monto\n  Si saldo >= monto Entonces\n    Si saldo == monto Entonces\n      Escribir \"Compra aprobada: saldo queda en cero\"\n    Sino\n      Escribir \"Compra aprobada: queda saldo disponible\"\n    FinSi\n  Sino\n    Escribir \"Compra rechazada: saldo insuficiente\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -139,7 +139,7 @@
       },
       "salidaEsperada": "Cupos disponibles:\n> 5\n¿Tiene reserva? (SI/NO):\n> NO\nIngreso rechazado: sin reserva\nFin del proceso",
       "pista": "Hay dos razones diferentes para rechazar: sin cupos (Si externo falla) o con cupos pero sin reserva (Si interno falla). Los mensajes de error son distintos en cada caso.",
-      "codigoReferencia": "Proceso IngresoSala\n    Definir cupos Como Entero\n    Definir reserva Como Caracter\n    Escribir \"Cupos disponibles:\"\n    Leer cupos\n    Escribir \"¿Tiene reserva? (SI/NO):\"\n    Leer reserva\n    Si cupos > 0 Entonces\n        Si reserva == \"SI\" Entonces\n            Escribir \"Ingreso permitido\"\n        Sino\n            Escribir \"Ingreso rechazado: sin reserva\"\n        FinSi\n    Sino\n        Escribir \"Ingreso rechazado: sin cupos\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso IngresoSala\n  Definir cupos Como Entero\n  Definir reserva Como Caracter\n\n  Escribir \"Cupos disponibles:\"\n  Leer cupos\n  Escribir \"¿Tiene reserva? (SI/NO):\"\n  Leer reserva\n  Si cupos > 0 Entonces\n    Si reserva == \"SI\" Entonces\n      Escribir \"Ingreso permitido\"\n    Sino\n      Escribir \"Ingreso rechazado: sin reserva\"\n    FinSi\n  Sino\n    Escribir \"Ingreso rechazado: sin cupos\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -166,7 +166,7 @@
       },
       "salidaEsperada": "Campos completados:\n> 5\n¿Acepta los términos? (SI/NO):\n> SI\nFormulario enviado\nFin del proceso",
       "pista": "El mínimo es 5 campos (>= 5). Si hay 4 o menos, ya falla en el Si externo sin llegar a preguntar por los términos.",
-      "codigoReferencia": "Proceso ValidarFormulario\n    Definir campos Como Entero\n    Definir terminos Como Caracter\n    Escribir \"Campos completados:\"\n    Leer campos\n    Escribir \"¿Acepta los términos? (SI/NO):\"\n    Leer terminos\n    Si campos >= 5 Entonces\n        Si terminos == \"SI\" Entonces\n            Escribir \"Formulario enviado\"\n        Sino\n            Escribir \"No se puede enviar: debe aceptar términos\"\n        FinSi\n    Sino\n        Escribir \"No se puede enviar: faltan campos\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso ValidarFormulario\n  Definir campos Como Entero\n  Definir terminos Como Caracter\n\n  Escribir \"Campos completados:\"\n  Leer campos\n  Escribir \"¿Acepta los términos? (SI/NO):\"\n  Leer terminos\n  Si campos >= 5 Entonces\n    Si terminos == \"SI\" Entonces\n      Escribir \"Formulario enviado\"\n    Sino\n      Escribir \"No se puede enviar: debe aceptar términos\"\n    FinSi\n  Sino\n    Escribir \"No se puede enviar: faltan campos\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -193,7 +193,7 @@
       },
       "salidaEsperada": "Personas en fila:\n> 12\nEstado de la caja (ABIERTA/CERRADA):\n> ABIERTA\nAtención lenta: fila larga\nFin del proceso",
       "pista": "Aquí el Si externo compara una cadena (estado de caja) y el Si interno compara un entero (cantidad en fila). El orden importa: si la caja está cerrada, no tiene sentido evaluar la fila.",
-      "codigoReferencia": "Proceso AtencionCaja\n    Definir fila Como Entero\n    Definir estado Como Caracter\n    Escribir \"Personas en fila:\"\n    Leer fila\n    Escribir \"Estado de la caja (ABIERTA/CERRADA):\"\n    Leer estado\n    Si estado == \"ABIERTA\" Entonces\n        Si fila > 10 Entonces\n            Escribir \"Atención lenta: fila larga\"\n        Sino\n            Escribir \"Atención normal\"\n        FinSi\n    Sino\n        Escribir \"No se puede atender: caja cerrada\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso AtencionCaja\n  Definir fila Como Entero\n  Definir estado Como Caracter\n\n  Escribir \"Personas en fila:\"\n  Leer fila\n  Escribir \"Estado de la caja (ABIERTA/CERRADA):\"\n  Leer estado\n  Si estado == \"ABIERTA\" Entonces\n    Si fila > 10 Entonces\n      Escribir \"Atención lenta: fila larga\"\n    Sino\n      Escribir \"Atención normal\"\n    FinSi\n  Sino\n    Escribir \"No se puede atender: caja cerrada\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -220,7 +220,7 @@
       },
       "salidaEsperada": "Total de la compra:\n> 45000\nTipo de cliente (NORMAL/PREMIUM):\n> NORMAL\nDescuento a aplicar: 0%\nFin del proceso",
       "pista": "Un cliente NORMAL que supera $30.000 obtiene 0% de descuento (no es un error: es la regla). Solo PREMIUM califica para el 15%. Monto bajo → sin descuento directamente.",
-      "codigoReferencia": "Proceso DescuentoCompra\n    Definir total Como Entero\n    Definir tipoCliente Como Caracter\n    Escribir \"Total de la compra:\"\n    Leer total\n    Escribir \"Tipo de cliente (NORMAL/PREMIUM):\"\n    Leer tipoCliente\n    Si total >= 30000 Entonces\n        Si tipoCliente == \"PREMIUM\" Entonces\n            Escribir \"Descuento a aplicar: 15%\"\n        Sino\n            Escribir \"Descuento a aplicar: 0%\"\n        FinSi\n    Sino\n        Escribir \"No hay descuento: compra baja\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso DescuentoCompra\n  Definir total Como Entero\n  Definir tipoCliente Como Caracter\n\n  Escribir \"Total de la compra:\"\n  Leer total\n  Escribir \"Tipo de cliente (NORMAL/PREMIUM):\"\n  Leer tipoCliente\n  Si total >= 30000 Entonces\n    Si tipoCliente == \"PREMIUM\" Entonces\n      Escribir \"Descuento a aplicar: 15%\"\n    Sino\n      Escribir \"Descuento a aplicar: 0%\"\n    FinSi\n  Sino\n    Escribir \"No hay descuento: compra baja\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -247,7 +247,7 @@
       },
       "salidaEsperada": "Espacios disponibles:\n> 0\n¿Tiene permiso de ingreso? (SI/NO):\n> SI\nAcceso denegado: estacionamiento lleno\nFin del proceso",
       "pista": "Cuando espacios = 0, el acceso se deniega inmediatamente (Si externo = falso) sin evaluar el permiso. El Si interno solo se ejecuta si hay espacio.",
-      "codigoReferencia": "Proceso AccesoEstacionamiento\n    Definir espacios Como Entero\n    Definir permiso Como Caracter\n    Escribir \"Espacios disponibles:\"\n    Leer espacios\n    Escribir \"¿Tiene permiso de ingreso? (SI/NO):\"\n    Leer permiso\n    Si espacios > 0 Entonces\n        Si permiso == \"SI\" Entonces\n            Escribir \"Acceso al estacionamiento permitido\"\n        Sino\n            Escribir \"Acceso denegado: no tiene permiso\"\n        FinSi\n    Sino\n        Escribir \"Acceso denegado: estacionamiento lleno\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso AccesoEstacionamiento\n  Definir espacios Como Entero\n  Definir permiso Como Caracter\n\n  Escribir \"Espacios disponibles:\"\n  Leer espacios\n  Escribir \"¿Tiene permiso de ingreso? (SI/NO):\"\n  Leer permiso\n  Si espacios > 0 Entonces\n    Si permiso == \"SI\" Entonces\n      Escribir \"Acceso al estacionamiento permitido\"\n    Sino\n      Escribir \"Acceso denegado: no tiene permiso\"\n    FinSi\n  Sino\n    Escribir \"Acceso denegado: estacionamiento lleno\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -274,7 +274,7 @@
       },
       "salidaEsperada": "Unidades en stock:\n> 3\n¿Presenta receta médica? (SI/NO):\n> NO\nNo se puede entregar: requiere receta\nFin del proceso",
       "pista": "Dos requisitos independientes deben cumplirse para entregar: que haya stock Y que haya receta. Si falla el primero, no se evalúa el segundo.",
-      "codigoReferencia": "Proceso EntregaMedicamento\n    Definir stock Como Entero\n    Definir receta Como Caracter\n    Escribir \"Unidades en stock:\"\n    Leer stock\n    Escribir \"¿Presenta receta médica? (SI/NO):\"\n    Leer receta\n    Si stock > 0 Entonces\n        Si receta == \"SI\" Entonces\n            Escribir \"Medicamento entregado\"\n        Sino\n            Escribir \"No se puede entregar: requiere receta\"\n        FinSi\n    Sino\n        Escribir \"No se puede entregar: sin stock\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso EntregaMedicamento\n  Definir stock Como Entero\n  Definir receta Como Caracter\n\n  Escribir \"Unidades en stock:\"\n  Leer stock\n  Escribir \"¿Presenta receta médica? (SI/NO):\"\n  Leer receta\n  Si stock > 0 Entonces\n    Si receta == \"SI\" Entonces\n      Escribir \"Medicamento entregado\"\n    Sino\n      Escribir \"No se puede entregar: requiere receta\"\n    FinSi\n  Sino\n    Escribir \"No se puede entregar: sin stock\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -301,7 +301,7 @@
       },
       "salidaEsperada": "Ingreso mensual:\n> 600000\n¿Tiene deudas vigentes? (SI/NO):\n> SI\nPréstamo rechazado: cliente con deudas\nFin del proceso",
       "pista": "Nota que aquí el Si interno aprueba cuando la respuesta es \"NO\" (no tiene deudas). Es habitual que la condición de aprobación sea la negación de un problema.",
-      "codigoReferencia": "Proceso AprobacionPrestamo\n    Definir ingreso Como Entero\n    Definir deudas Como Caracter\n    Escribir \"Ingreso mensual:\"\n    Leer ingreso\n    Escribir \"¿Tiene deudas vigentes? (SI/NO):\"\n    Leer deudas\n    Si ingreso >= 500000 Entonces\n        Si deudas == \"NO\" Entonces\n            Escribir \"Préstamo aprobado\"\n        Sino\n            Escribir \"Préstamo rechazado: cliente con deudas\"\n        FinSi\n    Sino\n        Escribir \"Préstamo rechazado: ingreso insuficiente\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso AprobacionPrestamo\n  Definir ingreso Como Entero\n  Definir deudas Como Caracter\n\n  Escribir \"Ingreso mensual:\"\n  Leer ingreso\n  Escribir \"¿Tiene deudas vigentes? (SI/NO):\"\n  Leer deudas\n  Si ingreso >= 500000 Entonces\n    Si deudas == \"NO\" Entonces\n      Escribir \"Préstamo aprobado\"\n    Sino\n      Escribir \"Préstamo rechazado: cliente con deudas\"\n    FinSi\n  Sino\n    Escribir \"Préstamo rechazado: ingreso insuficiente\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -328,7 +328,7 @@
       },
       "salidaEsperada": "Temperatura actual (°C):\n> 35\n¿Sistema de enfriamiento activo? (SI/NO):\n> SI\nTemperatura elevada: enfriamiento en curso\nFin del proceso",
       "pista": "La temperatura normal (<=30) no necesita revisar el enfriamiento. La alarma máxima solo se activa si hace calor Y el enfriamiento no está activo.",
-      "codigoReferencia": "Proceso ControlTemperatura\n    Definir temperatura Como Entero\n    Definir enfriamiento Como Caracter\n    Escribir \"Temperatura actual (°C):\"\n    Leer temperatura\n    Escribir \"¿Sistema de enfriamiento activo? (SI/NO):\"\n    Leer enfriamiento\n    Si temperatura > 30 Entonces\n        Si enfriamiento == \"NO\" Entonces\n            Escribir \"Alerta crítica: apague los equipos\"\n        Sino\n            Escribir \"Temperatura elevada: enfriamiento en curso\"\n        FinSi\n    Sino\n        Escribir \"Temperatura dentro del rango normal\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso ControlTemperatura\n  Definir temperatura Como Entero\n  Definir enfriamiento Como Caracter\n\n  Escribir \"Temperatura actual (°C):\"\n  Leer temperatura\n  Escribir \"¿Sistema de enfriamiento activo? (SI/NO):\"\n  Leer enfriamiento\n  Si temperatura > 30 Entonces\n    Si enfriamiento == \"NO\" Entonces\n      Escribir \"Alerta crítica: apague los equipos\"\n    Sino\n      Escribir \"Temperatura elevada: enfriamiento en curso\"\n    FinSi\n  Sino\n    Escribir \"Temperatura dentro del rango normal\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -355,7 +355,7 @@
       },
       "salidaEsperada": "Tamaño del archivo (MB):\n> 150\n¿Tiene cuenta premium? (SI/NO):\n> NO\nDescarga denegada: archivo muy grande\nFin del proceso",
       "pista": "Este ejercicio tiene Si anidado en ambas ramas (Entonces y SiNo). Es una variante más completa del patrón de la prueba.",
-      "codigoReferencia": "Proceso DescargaArchivo\n    Definir tamanio Como Entero\n    Definir premium Como Caracter\n    Escribir \"Tamaño del archivo (MB):\"\n    Leer tamanio\n    Escribir \"¿Tiene cuenta premium? (SI/NO):\"\n    Leer premium\n    Si tamanio <= 100 Entonces\n        Si tamanio == 100 Entonces\n            Escribir \"Descarga al límite permitido\"\n        Sino\n            Escribir \"Descarga permitida\"\n        FinSi\n    Sino\n        Si premium == \"SI\" Entonces\n            Escribir \"Descarga permitida por cuenta premium\"\n        Sino\n            Escribir \"Descarga denegada: archivo muy grande\"\n        FinSi\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso DescargaArchivo\n  Definir tamanio Como Entero\n  Definir premium Como Caracter\n\n  Escribir \"Tamaño del archivo (MB):\"\n  Leer tamanio\n  Escribir \"¿Tiene cuenta premium? (SI/NO):\"\n  Leer premium\n  Si tamanio <= 100 Entonces\n    Si tamanio == 100 Entonces\n      Escribir \"Descarga al límite permitido\"\n    Sino\n      Escribir \"Descarga permitida\"\n    FinSi\n  Sino\n    Si premium == \"SI\" Entonces\n      Escribir \"Descarga permitida por cuenta premium\"\n    Sino\n      Escribir \"Descarga denegada: archivo muy grande\"\n    FinSi\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -382,7 +382,7 @@
       },
       "salidaEsperada": "Número de personas del grupo:\n> 6\n¿Tiene reserva previa? (SI/NO):\n> NO\nSin reserva: sujeto a disponibilidad\nFin del proceso",
       "pista": "Sin reserva no significa rechazo total: el cliente puede igual esperar. Es diferente a tener el grupo muy grande, que sí bloquea directamente.",
-      "codigoReferencia": "Proceso ReservaMesa\n    Definir personas Como Entero\n    Definir reserva Como Caracter\n    Escribir \"Número de personas del grupo:\"\n    Leer personas\n    Escribir \"¿Tiene reserva previa? (SI/NO):\"\n    Leer reserva\n    Si personas <= 8 Entonces\n        Si reserva == \"SI\" Entonces\n            Escribir \"Mesa asignada\"\n        Sino\n            Escribir \"Sin reserva: sujeto a disponibilidad\"\n        FinSi\n    Sino\n        Escribir \"Grupo demasiado grande: no hay mesas disponibles\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso ReservaMesa\n  Definir personas Como Entero\n  Definir reserva Como Caracter\n\n  Escribir \"Número de personas del grupo:\"\n  Leer personas\n  Escribir \"¿Tiene reserva previa? (SI/NO):\"\n  Leer reserva\n  Si personas <= 8 Entonces\n    Si reserva == \"SI\" Entonces\n      Escribir \"Mesa asignada\"\n    Sino\n      Escribir \"Sin reserva: sujeto a disponibilidad\"\n    FinSi\n  Sino\n    Escribir \"Grupo demasiado grande: no hay mesas disponibles\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -409,7 +409,7 @@
       },
       "salidaEsperada": "Intentos fallidos acumulados:\n> 3\n¿Contraseña correcta? (SI/NO):\n> SI\nCuenta bloqueada por exceso de intentos\nFin del proceso",
       "pista": "Con 3 o más intentos (no menor a 3), la cuenta ya está bloqueada aunque la contraseña sea correcta. La condición es estricta: < 3, no <= 3.",
-      "codigoReferencia": "Proceso AccesoSistema\n    Definir intentos Como Entero\n    Definir clave Como Caracter\n    Escribir \"Intentos fallidos acumulados:\"\n    Leer intentos\n    Escribir \"¿Contraseña correcta? (SI/NO):\"\n    Leer clave\n    Si intentos < 3 Entonces\n        Si clave == \"SI\" Entonces\n            Escribir \"Acceso concedido\"\n        Sino\n            Escribir \"Contraseña incorrecta: intento registrado\"\n        FinSi\n    Sino\n        Escribir \"Cuenta bloqueada por exceso de intentos\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso AccesoSistema\n  Definir intentos Como Entero\n  Definir clave Como Caracter\n\n  Escribir \"Intentos fallidos acumulados:\"\n  Leer intentos\n  Escribir \"¿Contraseña correcta? (SI/NO):\"\n  Leer clave\n  Si intentos < 3 Entonces\n    Si clave == \"SI\" Entonces\n      Escribir \"Acceso concedido\"\n    Sino\n      Escribir \"Contraseña incorrecta: intento registrado\"\n    FinSi\n  Sino\n    Escribir \"Cuenta bloqueada por exceso de intentos\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -436,7 +436,7 @@
       },
       "salidaEsperada": "Promedio de notas (1-7):\n> 5\n¿Pago de arancel al día? (SI/NO):\n> SI\nMatrícula aprobada\nFin del proceso",
       "pista": "Nota de aprobación mínima en Chile es 4.0. El contexto es familiar para el estudiante.",
-      "codigoReferencia": "Proceso MatriculaUniversitaria\n    Definir promedio Como Entero\n    Definir pago Como Caracter\n    Escribir \"Promedio de notas (1-7):\"\n    Leer promedio\n    Escribir \"¿Pago de arancel al día? (SI/NO):\"\n    Leer pago\n    Si promedio >= 4 Entonces\n        Si pago == \"SI\" Entonces\n            Escribir \"Matrícula aprobada\"\n        Sino\n            Escribir \"Matrícula bloqueada: deuda pendiente\"\n        FinSi\n    Sino\n        Escribir \"Matrícula bloqueada: promedio insuficiente\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso MatriculaUniversitaria\n  Definir promedio Como Entero\n  Definir pago Como Caracter\n\n  Escribir \"Promedio de notas (1-7):\"\n  Leer promedio\n  Escribir \"¿Pago de arancel al día? (SI/NO):\"\n  Leer pago\n  Si promedio >= 4 Entonces\n    Si pago == \"SI\" Entonces\n      Escribir \"Matrícula aprobada\"\n    Sino\n      Escribir \"Matrícula bloqueada: deuda pendiente\"\n    FinSi\n  Sino\n    Escribir \"Matrícula bloqueada: promedio insuficiente\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -463,7 +463,7 @@
       },
       "salidaEsperada": "Intensidad de señal (1-10):\n> 7\n¿Dispositivo registrado en la red? (SI/NO):\n> NO\nConexión denegada: dispositivo no registrado\nFin del proceso",
       "pista": "La señal es condición física (si está bajo el umbral, nada más que hacer). El registro es condición administrativa. Ambas deben cumplirse para conectarse.",
-      "codigoReferencia": "Proceso ConexionWiFi\n    Definir senal Como Entero\n    Definir registrado Como Caracter\n    Escribir \"Intensidad de señal (1-10):\"\n    Leer senal\n    Escribir \"¿Dispositivo registrado en la red? (SI/NO):\"\n    Leer registrado\n    Si senal >= 5 Entonces\n        Si registrado == \"SI\" Entonces\n            Escribir \"Conexión establecida\"\n        Sino\n            Escribir \"Conexión denegada: dispositivo no registrado\"\n        FinSi\n    Sino\n        Escribir \"Conexión denegada: señal insuficiente\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso ConexionWiFi\n  Definir senal Como Entero\n  Definir registrado Como Caracter\n\n  Escribir \"Intensidad de señal (1-10):\"\n  Leer senal\n  Escribir \"¿Dispositivo registrado en la red? (SI/NO):\"\n  Leer registrado\n  Si senal >= 5 Entonces\n    Si registrado == \"SI\" Entonces\n      Escribir \"Conexión establecida\"\n    Sino\n      Escribir \"Conexión denegada: dispositivo no registrado\"\n    FinSi\n  Sino\n    Escribir \"Conexión denegada: señal insuficiente\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -490,7 +490,7 @@
       },
       "salidaEsperada": "Días desde la compra:\n> 15\n¿Fue comprado con garantía? (SI/NO):\n> NO\nReclamo aceptado sin garantía\nFin del proceso",
       "pista": "Ambas ramas del Si interno resultan en aceptación (con o sin garantía). Solo el SiNo externo rechaza. Esto es válido: el Si interno no siempre tiene una rama negativa de rechazo.",
-      "codigoReferencia": "Proceso ProcesamientoReclamo\n    Definir dias Como Entero\n    Definir garantia Como Caracter\n    Escribir \"Días desde la compra:\"\n    Leer dias\n    Escribir \"¿Fue comprado con garantía? (SI/NO):\"\n    Leer garantia\n    Si dias <= 30 Entonces\n        Si garantia == \"SI\" Entonces\n            Escribir \"Reclamo aceptado\"\n        Sino\n            Escribir \"Reclamo aceptado sin garantía\"\n        FinSi\n    Sino\n        Escribir \"Reclamo rechazado: plazo vencido\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso ProcesamientoReclamo\n  Definir dias Como Entero\n  Definir garantia Como Caracter\n\n  Escribir \"Días desde la compra:\"\n  Leer dias\n  Escribir \"¿Fue comprado con garantía? (SI/NO):\"\n  Leer garantia\n  Si dias <= 30 Entonces\n    Si garantia == \"SI\" Entonces\n      Escribir \"Reclamo aceptado\"\n    Sino\n      Escribir \"Reclamo aceptado sin garantía\"\n    FinSi\n  Sino\n    Escribir \"Reclamo rechazado: plazo vencido\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -517,7 +517,7 @@
       },
       "salidaEsperada": "Peso total del envío (kg):\n> 800\n¿Documentos completos? (SI/NO):\n> NO\nExportación en espera: faltan documentos\nFin del proceso",
       "pista": "El peso es el requisito físico (Si externo). Los documentos son el requisito administrativo (Si interno). Falta un documento → en espera, no rechazado definitivamente.",
-      "codigoReferencia": "Proceso ExportacionProducto\n    Definir peso Como Entero\n    Definir documentos Como Caracter\n    Escribir \"Peso total del envío (kg):\"\n    Leer peso\n    Escribir \"¿Documentos completos? (SI/NO):\"\n    Leer documentos\n    Si peso <= 1000 Entonces\n        Si documentos == \"SI\" Entonces\n            Escribir \"Exportación autorizada\"\n        Sino\n            Escribir \"Exportación en espera: faltan documentos\"\n        FinSi\n    Sino\n        Escribir \"Exportación rechazada: excede el peso permitido\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso ExportacionProducto\n  Definir peso Como Entero\n  Definir documentos Como Caracter\n\n  Escribir \"Peso total del envío (kg):\"\n  Leer peso\n  Escribir \"¿Documentos completos? (SI/NO):\"\n  Leer documentos\n  Si peso <= 1000 Entonces\n    Si documentos == \"SI\" Entonces\n      Escribir \"Exportación autorizada\"\n    Sino\n      Escribir \"Exportación en espera: faltan documentos\"\n    FinSi\n  Sino\n    Escribir \"Exportación rechazada: excede el peso permitido\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -544,7 +544,7 @@
       },
       "salidaEsperada": "Años de antigüedad:\n> 3\n¿Evaluación de desempeño aprobada? (SI/NO):\n> NO\nRenovación condicionada: evaluación reprobada\nFin del proceso",
       "pista": "\"Renovación condicionada\" implica que el trabajador tiene antigüedad suficiente pero la evaluación fue mala: se puede corregir. El rechazo definitivo viene de no tener antigüedad.",
-      "codigoReferencia": "Proceso RenovacionContrato\n    Definir antiguedad Como Entero\n    Definir evaluacion Como Caracter\n    Escribir \"Años de antigüedad:\"\n    Leer antiguedad\n    Escribir \"¿Evaluación de desempeño aprobada? (SI/NO):\"\n    Leer evaluacion\n    Si antiguedad >= 2 Entonces\n        Si evaluacion == \"SI\" Entonces\n            Escribir \"Contrato renovado\"\n        Sino\n            Escribir \"Renovación condicionada: evaluación reprobada\"\n        FinSi\n    Sino\n        Escribir \"Contrato no renovado: antigüedad insuficiente\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso RenovacionContrato\n  Definir antiguedad Como Entero\n  Definir evaluacion Como Caracter\n\n  Escribir \"Años de antigüedad:\"\n  Leer antiguedad\n  Escribir \"¿Evaluación de desempeño aprobada? (SI/NO):\"\n  Leer evaluacion\n  Si antiguedad >= 2 Entonces\n    Si evaluacion == \"SI\" Entonces\n      Escribir \"Contrato renovado\"\n    Sino\n      Escribir \"Renovación condicionada: evaluación reprobada\"\n    FinSi\n  Sino\n    Escribir \"Contrato no renovado: antigüedad insuficiente\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -571,7 +571,7 @@
       },
       "salidaEsperada": "Edad del solicitante:\n> 22\n¿Domicilio verificado? (SI/NO):\n> SI\nCuenta habilitada\nFin del proceso",
       "pista": "La mayoría de edad es el filtro legal. El domicilio es el requisito administrativo. Edad 18 exacta cumple (>=18). Domicilio sin verificar: el banco puede aún habilitarla después.",
-      "codigoReferencia": "Proceso HabilitacionCuenta\n    Definir edad Como Entero\n    Definir domicilio Como Caracter\n    Escribir \"Edad del solicitante:\"\n    Leer edad\n    Escribir \"¿Domicilio verificado? (SI/NO):\"\n    Leer domicilio\n    Si edad >= 18 Entonces\n        Si domicilio == \"SI\" Entonces\n            Escribir \"Cuenta habilitada\"\n        Sino\n            Escribir \"Cuenta no habilitada: falta verificar domicilio\"\n        FinSi\n    Sino\n        Escribir \"Cuenta no habilitada: menor de edad\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso HabilitacionCuenta\n  Definir edad Como Entero\n  Definir domicilio Como Caracter\n\n  Escribir \"Edad del solicitante:\"\n  Leer edad\n  Escribir \"¿Domicilio verificado? (SI/NO):\"\n  Leer domicilio\n  Si edad >= 18 Entonces\n    Si domicilio == \"SI\" Entonces\n      Escribir \"Cuenta habilitada\"\n    Sino\n      Escribir \"Cuenta no habilitada: falta verificar domicilio\"\n    FinSi\n  Sino\n    Escribir \"Cuenta no habilitada: menor de edad\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -598,7 +598,7 @@
       },
       "salidaEsperada": "Puntaje en prueba física (0-100):\n> 85\n¿Tiene ficha médica vigente? (SI/NO):\n> SI\nAdmitido al programa de alto rendimiento\nFin del proceso",
       "pista": "Prueba física (capacidad) y ficha médica (habilitación) son requisitos ortogonales: ambos deben cumplirse. El puntaje se valida primero porque sin él la ficha no importa.",
-      "codigoReferencia": "Proceso AdmisionDeportiva\n    Definir puntaje Como Entero\n    Definir fichaMedica Como Caracter\n    Escribir \"Puntaje en prueba física (0-100):\"\n    Leer puntaje\n    Escribir \"¿Tiene ficha médica vigente? (SI/NO):\"\n    Leer fichaMedica\n    Si puntaje >= 70 Entonces\n        Si fichaMedica == \"SI\" Entonces\n            Escribir \"Admitido al programa de alto rendimiento\"\n        Sino\n            Escribir \"No admitido: debe presentar ficha médica vigente\"\n        FinSi\n    Sino\n        Escribir \"No admitido: puntaje insuficiente en prueba física\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso AdmisionDeportiva\n  Definir puntaje Como Entero\n  Definir fichaMedica Como Caracter\n\n  Escribir \"Puntaje en prueba física (0-100):\"\n  Leer puntaje\n  Escribir \"¿Tiene ficha médica vigente? (SI/NO):\"\n  Leer fichaMedica\n  Si puntaje >= 70 Entonces\n    Si fichaMedica == \"SI\" Entonces\n      Escribir \"Admitido al programa de alto rendimiento\"\n    Sino\n      Escribir \"No admitido: debe presentar ficha médica vigente\"\n    FinSi\n  Sino\n    Escribir \"No admitido: puntaje insuficiente en prueba física\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -625,7 +625,7 @@
       },
       "salidaEsperada": "Caracteres del texto:\n> 300\n¿Incluye imágenes? (SI/NO):\n> SI\nAviso publicado con imágenes\nFin del proceso",
       "pista": "Ambas ramas del Si interno son resultados positivos (publicado). La diferencia es solo el detalle del mensaje. Este patrón entrena a no confundir SiNo como sinónimo de error.",
-      "codigoReferencia": "Proceso PublicacionAviso\n    Definir caracteres Como Entero\n    Definir imagen Como Caracter\n    Escribir \"Caracteres del texto:\"\n    Leer caracteres\n    Escribir \"¿Incluye imágenes? (SI/NO):\"\n    Leer imagen\n    Si caracteres <= 500 Entonces\n        Si imagen == \"SI\" Entonces\n            Escribir \"Aviso publicado con imágenes\"\n        Sino\n            Escribir \"Aviso publicado sin imágenes\"\n        FinSi\n    Sino\n        Escribir \"No se puede publicar: texto excede el límite\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso PublicacionAviso\n  Definir caracteres Como Entero\n  Definir imagen Como Caracter\n\n  Escribir \"Caracteres del texto:\"\n  Leer caracteres\n  Escribir \"¿Incluye imágenes? (SI/NO):\"\n  Leer imagen\n  Si caracteres <= 500 Entonces\n    Si imagen == \"SI\" Entonces\n      Escribir \"Aviso publicado con imágenes\"\n    Sino\n      Escribir \"Aviso publicado sin imágenes\"\n    FinSi\n  Sino\n    Escribir \"No se puede publicar: texto excede el límite\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -652,7 +652,7 @@
       },
       "salidaEsperada": "Documentos adjuntados:\n> 4\n¿Tiene clave única activa? (SI/NO):\n> NO\nTrámite no iniciado: clave única inactiva\nFin del proceso",
       "pista": "Contexto familiar para estudiantes chilenos: ClaveÚnica es la identidad digital del Estado. Primero la cantidad de documentos, luego la autenticación.",
-      "codigoReferencia": "Proceso TramiteEnLinea\n    Definir documentos Como Entero\n    Definir claveUnica Como Caracter\n    Escribir \"Documentos adjuntados:\"\n    Leer documentos\n    Escribir \"¿Tiene clave única activa? (SI/NO):\"\n    Leer claveUnica\n    Si documentos >= 3 Entonces\n        Si claveUnica == \"SI\" Entonces\n            Escribir \"Trámite iniciado en línea\"\n        Sino\n            Escribir \"Trámite no iniciado: clave única inactiva\"\n        FinSi\n    Sino\n        Escribir \"Trámite no iniciado: faltan documentos\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso TramiteEnLinea\n  Definir documentos Como Entero\n  Definir claveUnica Como Caracter\n\n  Escribir \"Documentos adjuntados:\"\n  Leer documentos\n  Escribir \"¿Tiene clave única activa? (SI/NO):\"\n  Leer claveUnica\n  Si documentos >= 3 Entonces\n    Si claveUnica == \"SI\" Entonces\n      Escribir \"Trámite iniciado en línea\"\n    Sino\n      Escribir \"Trámite no iniciado: clave única inactiva\"\n    FinSi\n  Sino\n    Escribir \"Trámite no iniciado: faltan documentos\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -679,7 +679,7 @@
       },
       "salidaEsperada": "Edad del pasajero:\n> 20\n¿Presenta credencial estudiantil vigente? (SI/NO):\n> SI\nTarifa escolar aplicada\nFin del proceso",
       "pista": "Nota que el SiNo del Si externo y el SiNo del Si interno pueden dar el mismo resultado (tarifa normal), pero con mensajes distintos. El Si anidado sirve para especificar la razón.",
-      "codigoReferencia": "Proceso TarifaEscolar\n    Definir edad Como Entero\n    Definir credencial Como Caracter\n    Escribir \"Edad del pasajero:\"\n    Leer edad\n    Escribir \"¿Presenta credencial estudiantil vigente? (SI/NO):\"\n    Leer credencial\n    Si edad <= 24 Entonces\n        Si credencial == \"SI\" Entonces\n            Escribir \"Tarifa escolar aplicada\"\n        Sino\n            Escribir \"Tarifa normal aplicada: sin credencial\"\n        FinSi\n    Sino\n        Escribir \"Tarifa normal aplicada: edad fuera del rango\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso TarifaEscolar\n  Definir edad Como Entero\n  Definir credencial Como Caracter\n\n  Escribir \"Edad del pasajero:\"\n  Leer edad\n  Escribir \"¿Presenta credencial estudiantil vigente? (SI/NO):\"\n  Leer credencial\n  Si edad <= 24 Entonces\n    Si credencial == \"SI\" Entonces\n      Escribir \"Tarifa escolar aplicada\"\n    Sino\n      Escribir \"Tarifa normal aplicada: sin credencial\"\n    FinSi\n  Sino\n    Escribir \"Tarifa normal aplicada: edad fuera del rango\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -706,7 +706,7 @@
       },
       "salidaEsperada": "Temperatura del producto (°C):\n> 3\n¿Vehículo con sistema de frío activo? (SI/NO):\n> SI\nDespacho autorizado\nFin del proceso",
       "pista": "Aquí la temperatura BAJA es la correcta (<=5). No confundir con otros ejercicios donde se evalúa temperatura alta. Leer bien el enunciado antes de programar.",
-      "codigoReferencia": "Proceso DespachoProdRefrig\n    Definir temperatura Como Entero\n    Definir frio Como Caracter\n    Escribir \"Temperatura del producto (°C):\"\n    Leer temperatura\n    Escribir \"¿Vehículo con sistema de frío activo? (SI/NO):\"\n    Leer frio\n    Si temperatura <= 5 Entonces\n        Si frio == \"SI\" Entonces\n            Escribir \"Despacho autorizado\"\n        Sino\n            Escribir \"Despacho denegado: vehículo sin sistema de frío\"\n        FinSi\n    Sino\n        Escribir \"Despacho denegado: temperatura fuera de rango\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso DespachoProdRefrig\n  Definir temperatura Como Entero\n  Definir frio Como Caracter\n\n  Escribir \"Temperatura del producto (°C):\"\n  Leer temperatura\n  Escribir \"¿Vehículo con sistema de frío activo? (SI/NO):\"\n  Leer frio\n  Si temperatura <= 5 Entonces\n    Si frio == \"SI\" Entonces\n      Escribir \"Despacho autorizado\"\n    Sino\n      Escribir \"Despacho denegado: vehículo sin sistema de frío\"\n    FinSi\n  Sino\n    Escribir \"Despacho denegado: temperatura fuera de rango\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -733,7 +733,7 @@
       },
       "salidaEsperada": "Monto total de la compra:\n> 25000\n¿Voucher dentro de vigencia? (SI/NO):\n> NO\nVoucher no aplicado: cupón vencido\nFin del proceso",
       "pista": "El monto mínimo es condición del negocio (Si externo). La vigencia del cupón es condición del cupón mismo (Si interno). Separar las responsabilidades ayuda a estructurar el Si anidado.",
-      "codigoReferencia": "Proceso AplicacionVoucher\n    Definir monto Como Entero\n    Definir vigente Como Caracter\n    Escribir \"Monto total de la compra:\"\n    Leer monto\n    Escribir \"¿Voucher dentro de vigencia? (SI/NO):\"\n    Leer vigente\n    Si monto >= 20000 Entonces\n        Si vigente == \"SI\" Entonces\n            Escribir \"Voucher aplicado: descuento del 10%\"\n        Sino\n            Escribir \"Voucher no aplicado: cupón vencido\"\n        FinSi\n    Sino\n        Escribir \"Voucher no aplicado: monto mínimo no alcanzado\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso AplicacionVoucher\n  Definir monto Como Entero\n  Definir vigente Como Caracter\n\n  Escribir \"Monto total de la compra:\"\n  Leer monto\n  Escribir \"¿Voucher dentro de vigencia? (SI/NO):\"\n  Leer vigente\n  Si monto >= 20000 Entonces\n    Si vigente == \"SI\" Entonces\n      Escribir \"Voucher aplicado: descuento del 10%\"\n    Sino\n      Escribir \"Voucher no aplicado: cupón vencido\"\n    FinSi\n  Sino\n    Escribir \"Voucher no aplicado: monto mínimo no alcanzado\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -760,7 +760,7 @@
       },
       "salidaEsperada": "Entradas disponibles:\n> 50\n¿Presenta credencial de registro? (SI/NO):\n> SI\nIngreso al evento autorizado\nFin del proceso",
       "pista": "Ejercicio muy similar al de la sala (175) pero con \"entradas\" en lugar de \"cupos\" y el énfasis en la credencial en lugar de la reserva. Útil para ver variaciones del mismo patrón.",
-      "codigoReferencia": "Proceso IngresoConferencia\n    Definir entradas Como Entero\n    Definir credencial Como Caracter\n    Escribir \"Entradas disponibles:\"\n    Leer entradas\n    Escribir \"¿Presenta credencial de registro? (SI/NO):\"\n    Leer credencial\n    Si entradas > 0 Entonces\n        Si credencial == \"SI\" Entonces\n            Escribir \"Ingreso al evento autorizado\"\n        Sino\n            Escribir \"Ingreso denegado: sin credencial\"\n        FinSi\n    Sino\n        Escribir \"Ingreso denegado: evento sin cupos\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso IngresoConferencia\n  Definir entradas Como Entero\n  Definir credencial Como Caracter\n\n  Escribir \"Entradas disponibles:\"\n  Leer entradas\n  Escribir \"¿Presenta credencial de registro? (SI/NO):\"\n  Leer credencial\n  Si entradas > 0 Entonces\n    Si credencial == \"SI\" Entonces\n      Escribir \"Ingreso al evento autorizado\"\n    Sino\n      Escribir \"Ingreso denegado: sin credencial\"\n    FinSi\n  Sino\n    Escribir \"Ingreso denegado: evento sin cupos\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -787,7 +787,7 @@
       },
       "salidaEsperada": "Sensores activos:\n> 1\n¿Código de seguridad correcto? (SI/NO):\n> SI\nAlarma no activada: sensores insuficientes\nFin del proceso",
       "pista": "Con 1 sensor (que sería = 2 verifica la infraestructura antes de la autenticación.",
-      "codigoReferencia": "Proceso ActivacionAlarma\n    Definir sensores Como Entero\n    Definir codigo Como Caracter\n    Escribir \"Sensores activos:\"\n    Leer sensores\n    Escribir \"¿Código de seguridad correcto? (SI/NO):\"\n    Leer codigo\n    Si sensores >= 2 Entonces\n        Si codigo == \"SI\" Entonces\n            Escribir \"Alarma activada\"\n        Sino\n            Escribir \"Alarma no activada: código incorrecto\"\n        FinSi\n    Sino\n        Escribir \"Alarma no activada: sensores insuficientes\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso ActivacionAlarma\n  Definir sensores Como Entero\n  Definir codigo Como Caracter\n\n  Escribir \"Sensores activos:\"\n  Leer sensores\n  Escribir \"¿Código de seguridad correcto? (SI/NO):\"\n  Leer codigo\n  Si sensores >= 2 Entonces\n    Si codigo == \"SI\" Entonces\n      Escribir \"Alarma activada\"\n    Sino\n      Escribir \"Alarma no activada: código incorrecto\"\n    FinSi\n  Sino\n    Escribir \"Alarma no activada: sensores insuficientes\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -814,7 +814,7 @@
       },
       "salidaEsperada": "Promedio de notas (1-7):\n> 6\n¿El aval tiene antecedentes limpios? (SI/NO):\n> SI\nCrédito educativo otorgado\nFin del proceso",
       "pista": "El promedio mínimo aquí es 5 (no 4 como para matrícula). Nota el cambio de umbral respecto al ejercicio 186. El aval es una tercera persona: el Si interno valida a alguien diferente al estudiante.",
-      "codigoReferencia": "Proceso CreditoEducativo\n    Definir promedio Como Entero\n    Definir aval Como Caracter\n    Escribir \"Promedio de notas (1-7):\"\n    Leer promedio\n    Escribir \"¿El aval tiene antecedentes limpios? (SI/NO):\"\n    Leer aval\n    Si promedio >= 5 Entonces\n        Si aval == \"SI\" Entonces\n            Escribir \"Crédito educativo otorgado\"\n        Sino\n            Escribir \"Crédito no otorgado: aval con antecedentes\"\n        FinSi\n    Sino\n        Escribir \"Crédito no otorgado: promedio insuficiente\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso CreditoEducativo\n  Definir promedio Como Entero\n  Definir aval Como Caracter\n\n  Escribir \"Promedio de notas (1-7):\"\n  Leer promedio\n  Escribir \"¿El aval tiene antecedentes limpios? (SI/NO):\"\n  Leer aval\n  Si promedio >= 5 Entonces\n    Si aval == \"SI\" Entonces\n      Escribir \"Crédito educativo otorgado\"\n    Sino\n      Escribir \"Crédito no otorgado: aval con antecedentes\"\n    FinSi\n  Sino\n    Escribir \"Crédito no otorgado: promedio insuficiente\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -841,7 +841,7 @@
       },
       "salidaEsperada": "Personas actualmente dentro:\n> 200\n¿Tiene entrada válida? (SI/NO):\n> SI\nIngreso denegado: aforo completo\nFin del proceso",
       "pista": "El límite es estricto: < 200 (no <=200). Con exactamente 200 ya es aforo completo. Cuidado con el signo del operador de comparación.",
-      "codigoReferencia": "Proceso ControlAforo\n    Definir personas Como Entero\n    Definir entrada Como Caracter\n    Escribir \"Personas actualmente dentro:\"\n    Leer personas\n    Escribir \"¿Tiene entrada válida? (SI/NO):\"\n    Leer entrada\n    Si personas < 200 Entonces\n        Si entrada == \"SI\" Entonces\n            Escribir \"Ingreso permitido\"\n        Sino\n            Escribir \"Ingreso denegado: entrada no válida\"\n        FinSi\n    Sino\n        Escribir \"Ingreso denegado: aforo completo\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso ControlAforo\n  Definir personas Como Entero\n  Definir entrada Como Caracter\n\n  Escribir \"Personas actualmente dentro:\"\n  Leer personas\n  Escribir \"¿Tiene entrada válida? (SI/NO):\"\n  Leer entrada\n  Si personas < 200 Entonces\n    Si entrada == \"SI\" Entonces\n      Escribir \"Ingreso permitido\"\n    Sino\n      Escribir \"Ingreso denegado: entrada no válida\"\n    FinSi\n  Sino\n    Escribir \"Ingreso denegado: aforo completo\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -868,7 +868,7 @@
       },
       "salidaEsperada": "Horas extras en el mes:\n> 12\n¿Asistencia perfecta? (SI/NO):\n> NO\nBono no asignado: sin asistencia perfecta\nFin del proceso",
       "pista": "Cumplir con las horas extras (Si externo) es condición cuantitativa. La asistencia perfecta (Si interno) es condición cualitativa de comportamiento. Ambas deben cumplirse.",
-      "codigoReferencia": "Proceso BonoProductividad\n    Definir horasExtras Como Entero\n    Definir asistencia Como Caracter\n    Escribir \"Horas extras en el mes:\"\n    Leer horasExtras\n    Escribir \"¿Asistencia perfecta? (SI/NO):\"\n    Leer asistencia\n    Si horasExtras >= 10 Entonces\n        Si asistencia == \"SI\" Entonces\n            Escribir \"Bono de productividad asignado\"\n        Sino\n            Escribir \"Bono no asignado: sin asistencia perfecta\"\n        FinSi\n    Sino\n        Escribir \"Bono no asignado: horas extras insuficientes\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso BonoProductividad\n  Definir horasExtras Como Entero\n  Definir asistencia Como Caracter\n\n  Escribir \"Horas extras en el mes:\"\n  Leer horasExtras\n  Escribir \"¿Asistencia perfecta? (SI/NO):\"\n  Leer asistencia\n  Si horasExtras >= 10 Entonces\n    Si asistencia == \"SI\" Entonces\n      Escribir \"Bono de productividad asignado\"\n    Sino\n      Escribir \"Bono no asignado: sin asistencia perfecta\"\n    FinSi\n  Sino\n    Escribir \"Bono no asignado: horas extras insuficientes\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -895,7 +895,7 @@
       },
       "salidaEsperada": "Año de fabricación:\n> 2015\n¿Tiene revisión técnica vigente? (SI/NO):\n> NO\nRegistro pendiente: debe obtener revisión técnica\nFin del proceso",
       "pista": "Año 2010 inclusive califica (>= 2010). Un vehículo 2009 es muy antiguo. La revisión técnica es el trámite pendiente para modelos modernos sin documentación.",
-      "codigoReferencia": "Proceso RegistroVehiculo\n    Definir anio Como Entero\n    Definir revision Como Caracter\n    Escribir \"Año de fabricación:\"\n    Leer anio\n    Escribir \"¿Tiene revisión técnica vigente? (SI/NO):\"\n    Leer revision\n    Si anio >= 2010 Entonces\n        Si revision == \"SI\" Entonces\n            Escribir \"Vehículo registrado exitosamente\"\n        Sino\n            Escribir \"Registro pendiente: debe obtener revisión técnica\"\n        FinSi\n    Sino\n        Escribir \"Vehículo no puede ser registrado: modelo muy antiguo\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso RegistroVehiculo\n  Definir anio Como Entero\n  Definir revision Como Caracter\n\n  Escribir \"Año de fabricación:\"\n  Leer anio\n  Escribir \"¿Tiene revisión técnica vigente? (SI/NO):\"\n  Leer revision\n  Si anio >= 2010 Entonces\n    Si revision == \"SI\" Entonces\n      Escribir \"Vehículo registrado exitosamente\"\n    Sino\n      Escribir \"Registro pendiente: debe obtener revisión técnica\"\n    FinSi\n  Sino\n    Escribir \"Vehículo no puede ser registrado: modelo muy antiguo\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -922,7 +922,7 @@
       },
       "salidaEsperada": "Días de vacaciones acumulados:\n> 10\n¿Jefe aprobó la solicitud? (SI/NO):\n> SI\nVacaciones aprobadas\nFin del proceso",
       "pista": "Sin los días suficientes (< 5), el jefe no puede ni aprobar. Los días son el requisito objetivo; la aprobación del jefe es el requisito subjetivo.",
-      "codigoReferencia": "Proceso SolicitudVacaciones\n    Definir dias Como Entero\n    Definir aprobacion Como Caracter\n    Escribir \"Días de vacaciones acumulados:\"\n    Leer dias\n    Escribir \"¿Jefe aprobó la solicitud? (SI/NO):\"\n    Leer aprobacion\n    Si dias >= 5 Entonces\n        Si aprobacion == \"SI\" Entonces\n            Escribir \"Vacaciones aprobadas\"\n        Sino\n            Escribir \"Vacaciones pendientes: requiere aprobación del jefe\"\n        FinSi\n    Sino\n        Escribir \"Vacaciones no aprobadas: días insuficientes acumulados\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso SolicitudVacaciones\n  Definir dias Como Entero\n  Definir aprobacion Como Caracter\n\n  Escribir \"Días de vacaciones acumulados:\"\n  Leer dias\n  Escribir \"¿Jefe aprobó la solicitud? (SI/NO):\"\n  Leer aprobacion\n  Si dias >= 5 Entonces\n    Si aprobacion == \"SI\" Entonces\n      Escribir \"Vacaciones aprobadas\"\n    Sino\n      Escribir \"Vacaciones pendientes: requiere aprobación del jefe\"\n    FinSi\n  Sino\n    Escribir \"Vacaciones no aprobadas: días insuficientes acumulados\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -949,7 +949,7 @@
       },
       "salidaEsperada": "Longitud de la contraseña:\n> 8\n¿Correo verificado? (SI/NO):\n> SI\nCuenta habilitada exitosamente\nFin del proceso",
       "pista": "Longitud mínima 8 caracteres es el estándar de seguridad. Una contraseña de exactamente 8 sí cumple (>=8). La verificación del correo es paso independiente.",
-      "codigoReferencia": "Proceso HabilitacionUsuarioWeb\n    Definir longitud Como Entero\n    Definir correo Como Caracter\n    Escribir \"Longitud de la contraseña:\"\n    Leer longitud\n    Escribir \"¿Correo verificado? (SI/NO):\"\n    Leer correo\n    Si longitud >= 8 Entonces\n        Si correo == \"SI\" Entonces\n            Escribir \"Cuenta habilitada exitosamente\"\n        Sino\n            Escribir \"Cuenta no habilitada: debe verificar el correo\"\n        FinSi\n    Sino\n        Escribir \"Cuenta no habilitada: contraseña demasiado corta\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso HabilitacionUsuarioWeb\n  Definir longitud Como Entero\n  Definir correo Como Caracter\n\n  Escribir \"Longitud de la contraseña:\"\n  Leer longitud\n  Escribir \"¿Correo verificado? (SI/NO):\"\n  Leer correo\n  Si longitud >= 8 Entonces\n    Si correo == \"SI\" Entonces\n      Escribir \"Cuenta habilitada exitosamente\"\n    Sino\n      Escribir \"Cuenta no habilitada: debe verificar el correo\"\n    FinSi\n  Sino\n    Escribir \"Cuenta no habilitada: contraseña demasiado corta\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -976,7 +976,7 @@
       },
       "salidaEsperada": "Días restantes para vencimiento:\n> 20\n¿Pasó inspección de calidad? (SI/NO):\n> NO\nProducto no habilitado: no pasó inspección\nFin del proceso",
       "pista": "10 días o menos es considerado 'próximo a vencer' (no > 10). 11 días o más puede venderse si pasa la inspección. Vencimiento y calidad son independientes.",
-      "codigoReferencia": "Proceso ControlCalidadProducto\n    Definir diasRestantes Como Entero\n    Definir inspeccion Como Caracter\n    Escribir \"Días restantes para vencimiento:\"\n    Leer diasRestantes\n    Escribir \"¿Pasó inspección de calidad? (SI/NO):\"\n    Leer inspeccion\n    Si diasRestantes > 10 Entonces\n        Si inspeccion == \"SI\" Entonces\n            Escribir \"Producto habilitado para la venta\"\n        Sino\n            Escribir \"Producto no habilitado: no pasó inspección\"\n        FinSi\n    Sino\n        Escribir \"Producto no habilitado: próximo a vencer\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso ControlCalidadProducto\n  Definir diasRestantes Como Entero\n  Definir inspeccion Como Caracter\n\n  Escribir \"Días restantes para vencimiento:\"\n  Leer diasRestantes\n  Escribir \"¿Pasó inspección de calidad? (SI/NO):\"\n  Leer inspeccion\n  Si diasRestantes > 10 Entonces\n    Si inspeccion == \"SI\" Entonces\n      Escribir \"Producto habilitado para la venta\"\n    Sino\n      Escribir \"Producto no habilitado: no pasó inspección\"\n    FinSi\n  Sino\n    Escribir \"Producto no habilitado: próximo a vencer\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1003,7 +1003,7 @@
       },
       "salidaEsperada": "Días de anticipación:\n> 3\n¿Tiene previsión de salud vigente? (SI/NO):\n> SI\nTurno médico confirmado\nFin del proceso",
       "pista": "El mínimo de 2 días es por operativa del sistema de salud. Pedir el turno para el mismo día o el siguiente (0 o 1 días) no alcanza. La previsión se revisa solo si hay tiempo suficiente.",
-      "codigoReferencia": "Proceso ConfirmacionTurno\n    Definir anticipacion Como Entero\n    Definir prevision Como Caracter\n    Escribir \"Días de anticipación:\"\n    Leer anticipacion\n    Escribir \"¿Tiene previsión de salud vigente? (SI/NO):\"\n    Leer prevision\n    Si anticipacion >= 2 Entonces\n        Si prevision == \"SI\" Entonces\n            Escribir \"Turno médico confirmado\"\n        Sino\n            Escribir \"Turno pendiente: debe regularizar previsión\"\n        FinSi\n    Sino\n        Escribir \"Turno no disponible: solicitud con muy poca anticipación\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso ConfirmacionTurno\n  Definir anticipacion Como Entero\n  Definir prevision Como Caracter\n\n  Escribir \"Días de anticipación:\"\n  Leer anticipacion\n  Escribir \"¿Tiene previsión de salud vigente? (SI/NO):\"\n  Leer prevision\n  Si anticipacion >= 2 Entonces\n    Si prevision == \"SI\" Entonces\n      Escribir \"Turno médico confirmado\"\n    Sino\n      Escribir \"Turno pendiente: debe regularizar previsión\"\n    FinSi\n  Sino\n    Escribir \"Turno no disponible: solicitud con muy poca anticipación\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1030,7 +1030,7 @@
       },
       "salidaEsperada": "Saldo disponible:\n> 5000\n¿PIN correcto? (SI/NO):\n> SI\nRetiro procesado\nFin del proceso",
       "pista": "Saldo 0 es insuficiente (no > 0). El PIN es la autenticación, el saldo es el requisito financiero. Primero se verifica el saldo (lo tangible), luego la identidad (lo lógico).",
-      "codigoReferencia": "Proceso RetiroEfectivo\n    Definir saldo Como Entero\n    Definir pin Como Caracter\n    Escribir \"Saldo disponible:\"\n    Leer saldo\n    Escribir \"¿PIN correcto? (SI/NO):\"\n    Leer pin\n    Si saldo > 0 Entonces\n        Si pin == \"SI\" Entonces\n            Escribir \"Retiro procesado\"\n        Sino\n            Escribir \"Retiro denegado: PIN incorrecto\"\n        FinSi\n    Sino\n        Escribir \"Retiro denegado: saldo insuficiente\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso RetiroEfectivo\n  Definir saldo Como Entero\n  Definir pin Como Caracter\n\n  Escribir \"Saldo disponible:\"\n  Leer saldo\n  Escribir \"¿PIN correcto? (SI/NO):\"\n  Leer pin\n  Si saldo > 0 Entonces\n    Si pin == \"SI\" Entonces\n      Escribir \"Retiro procesado\"\n    Sino\n      Escribir \"Retiro denegado: PIN incorrecto\"\n    FinSi\n  Sino\n    Escribir \"Retiro denegado: saldo insuficiente\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1057,7 +1057,7 @@
       },
       "salidaEsperada": "Horas de experiencia laboral:\n> 600\n¿Aprobó el examen de certificación? (SI/NO):\n> NO\nAcreditación no otorgada: debe aprobar el examen\nFin del proceso",
       "pista": "La experiencia se valida primero porque es el prerrequisito de admisión. El examen es la evaluación final. Sin experiencia suficiente no tiene sentido rendir el examen.",
-      "codigoReferencia": "Proceso AcreditacionTecnico\n    Definir horas Como Entero\n    Definir examen Como Caracter\n    Escribir \"Horas de experiencia laboral:\"\n    Leer horas\n    Escribir \"¿Aprobó el examen de certificación? (SI/NO):\"\n    Leer examen\n    Si horas >= 500 Entonces\n        Si examen == \"SI\" Entonces\n            Escribir \"Acreditación profesional otorgada\"\n        Sino\n            Escribir \"Acreditación no otorgada: debe aprobar el examen\"\n        FinSi\n    Sino\n        Escribir \"Acreditación no otorgada: experiencia insuficiente\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso AcreditacionTecnico\n  Definir horas Como Entero\n  Definir examen Como Caracter\n\n  Escribir \"Horas de experiencia laboral:\"\n  Leer horas\n  Escribir \"¿Aprobó el examen de certificación? (SI/NO):\"\n  Leer examen\n  Si horas >= 500 Entonces\n    Si examen == \"SI\" Entonces\n      Escribir \"Acreditación profesional otorgada\"\n    Sino\n      Escribir \"Acreditación no otorgada: debe aprobar el examen\"\n    FinSi\n  Sino\n    Escribir \"Acreditación no otorgada: experiencia insuficiente\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1084,7 +1084,7 @@
       },
       "salidaEsperada": "Nivel de toxicidad (1-10):\n> 8\n¿Es de origen biológico? (SI/NO):\n> SI\nResiduo peligroso biológico: tratamiento especial\nFin del proceso",
       "pista": "Ambas ramas del Si interno son 'tratamiento especial' pero el tipo de tratamiento difiere según si es biológico o químico. El Si anidado aquí sirve para especializar, no para aprobar/rechazar.",
-      "codigoReferencia": "Proceso ClasificacionResiduo\n    Definir toxicidad Como Entero\n    Definir biologico Como Caracter\n    Escribir \"Nivel de toxicidad (1-10):\"\n    Leer toxicidad\n    Escribir \"¿Es de origen biológico? (SI/NO):\"\n    Leer biologico\n    Si toxicidad > 5 Entonces\n        Si biologico == \"SI\" Entonces\n            Escribir \"Residuo peligroso biológico: tratamiento especial\"\n        Sino\n            Escribir \"Residuo peligroso químico: tratamiento especial\"\n        FinSi\n    Sino\n        Escribir \"Residuo no peligroso: disposición estándar\"\n    FinSi\n    Escribir \"Fin del proceso\"\nFinProceso",
+      "codigoReferencia": "Proceso ClasificacionResiduo\n  Definir toxicidad Como Entero\n  Definir biologico Como Caracter\n\n  Escribir \"Nivel de toxicidad (1-10):\"\n  Leer toxicidad\n  Escribir \"¿Es de origen biológico? (SI/NO):\"\n  Leer biologico\n  Si toxicidad > 5 Entonces\n    Si biologico == \"SI\" Entonces\n      Escribir \"Residuo peligroso biológico: tratamiento especial\"\n    Sino\n      Escribir \"Residuo peligroso químico: tratamiento especial\"\n    FinSi\n  Sino\n    Escribir \"Residuo no peligroso: disposición estándar\"\n  FinSi\n  Escribir \"Fin del proceso\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     }

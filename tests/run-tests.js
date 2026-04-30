@@ -123,7 +123,7 @@ test('evalua Y, O y No dentro de asignaciones logicas', async () => {
 });
 
 // =====================================================
-// Banco de ejercicios v.0.8.3
+// Banco de ejercicios v.0.8.4
 // =====================================================
 
 const CAMPOS_OBLIGATORIOS = [

@@ -32,7 +32,7 @@
       },
       "salidaEsperada": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10",
       "pista": "Todo ciclo Mientras necesita una condición de término y una actualización de la variable de control.",
-      "codigoReferencia": "Proceso NumerosDelUnoAlDiez\n    Definir contador Como Entero\n    contador = 1\n    Mientras contador <= 10 Hacer\n        Escribir contador\n        contador = contador + 1\n    FinMientras\nFinProceso",
+      "codigoReferencia": "Proceso NumerosDelUnoAlDiez\n  Definir contador Como Entero\n\n  contador = 1\n  Mientras contador <= 10 Hacer\n    Escribir contador\n\n    contador = contador + 1\n  FinMientras\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -60,7 +60,7 @@
       },
       "salidaEsperada": "Ingrese un número (0 para terminar):\n> 8\nIngrese un número (0 para terminar):\n> 15\nIngrese un número (0 para terminar):\n> 0\nPrograma terminado",
       "pista": "En este tipo de ejercicio, el valor 0 funciona como centinela para detener el ciclo.",
-      "codigoReferencia": "Proceso PedirNumerosHastaCero\n    Definir numero Como Entero\n    Escribir \"Ingrese un número (0 para terminar):\"\n    Leer numero\n    Mientras numero <> 0 Hacer\n        Escribir \"Ingrese un número (0 para terminar):\"\n        Leer numero\n    FinMientras\n    Escribir \"Programa terminado\"\nFinProceso",
+      "codigoReferencia": "Proceso PedirNumerosHastaCero\n  Definir numero Como Entero\n\n  Escribir \"Ingrese un número (0 para terminar):\"\n  Leer numero\n  Mientras numero <> 0 Hacer\n    Escribir \"Ingrese un número (0 para terminar):\"\n    Leer numero\n  FinMientras\n  Escribir \"Programa terminado\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -88,7 +88,7 @@
       },
       "salidaEsperada": "10\n9\n8\n7\n6\n5\n4\n3\n2\n1",
       "pista": "Un contador descendente también necesita actualización en cada vuelta para evitar un ciclo infinito.",
-      "codigoReferencia": "Proceso CuentaRegresiva\n    Definir contador Como Entero\n    contador = 10\n    Mientras contador >= 1 Hacer\n        Escribir contador\n        contador = contador - 1\n    FinMientras\nFinProceso",
+      "codigoReferencia": "Proceso CuentaRegresiva\n  Definir contador Como Entero\n\n  contador = 10\n  Mientras contador >= 1 Hacer\n    Escribir contador\n\n    contador = contador - 1\n  FinMientras\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -116,7 +116,7 @@
       },
       "salidaEsperada": "Ingrese N:\n> 5\nSuma acumulada: 15",
       "pista": "Un acumulador suele iniciarse en 0 cuando se van sumando valores.",
-      "codigoReferencia": "Proceso SumaPrimerosN\n    Definir N, contador, suma Como Entero\n    Escribir \"Ingrese N:\"\n    Leer N\n    contador = 1\n    suma = 0\n    Mientras contador <= N Hacer\n        suma = suma + contador\n        contador = contador + 1\n    FinMientras\n    Escribir \"Suma acumulada: \", suma\nFinProceso",
+      "codigoReferencia": "Proceso SumaPrimerosN\n  Definir N, contador, suma Como Entero\n\n  Escribir \"Ingrese N:\"\n  Leer N\n\n  contador = 1\n  suma     = 0\n  Mientras contador <= N Hacer\n    suma     = suma + contador\n    contador = contador + 1\n  FinMientras\n  Escribir \"Suma acumulada: \", suma\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -144,7 +144,7 @@
       },
       "salidaEsperada": "Ingrese un número:\n> 4\n4 x 1 = 4\n4 x 2 = 8\n4 x 3 = 12\n4 x 4 = 16\n4 x 5 = 20\n4 x 6 = 24\n4 x 7 = 28\n4 x 8 = 32\n4 x 9 = 36\n4 x 10 = 40",
       "pista": "Este ejercicio combina un contador con un cálculo repetitivo.",
-      "codigoReferencia": "Proceso TablaMultiplicar\n    Definir numero, contador, resultado Como Entero\n    Escribir \"Ingrese un número:\"\n    Leer numero\n    contador = 1\n    Mientras contador <= 10 Hacer\n        resultado = numero * contador\n        Escribir numero, \" x \", contador, \" = \", resultado\n        contador = contador + 1\n    FinMientras\nFinProceso",
+      "codigoReferencia": "Proceso TablaMultiplicar\n  Definir numero, contador, resultado Como Entero\n\n  Escribir \"Ingrese un número:\"\n  Leer numero\n\n  contador = 1\n  Mientras contador <= 10 Hacer\n    resultado = numero * contador\n\n    Escribir numero, \" x \", contador, \" = \", resultado\n\n    contador = contador + 1\n  FinMientras\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -172,7 +172,7 @@
       },
       "salidaEsperada": "Ingrese un número:\n> 5\nFactorial: 120",
       "pista": "Cuando el proceso requiere multiplicar valores sucesivos, el acumulador suele iniciarse en 1.",
-      "codigoReferencia": "Proceso FactorialNumero\n    Definir n, contador, factorial Como Entero\n    Escribir \"Ingrese un número:\"\n    Leer n\n    contador = 1\n    factorial = 1\n    Mientras contador <= n Hacer\n        factorial = factorial * contador\n        contador = contador + 1\n    FinMientras\n    Escribir \"Factorial: \", factorial\nFinProceso",
+      "codigoReferencia": "Proceso FactorialNumero\n  Definir n, contador, factorial Como Entero\n\n  Escribir \"Ingrese un número:\"\n  Leer n\n\n  contador  = 1\n  factorial = 1\n  Mientras contador <= n Hacer\n    factorial = factorial * contador\n    contador  = contador + 1\n  FinMientras\n  Escribir \"Factorial: \", factorial\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -200,7 +200,7 @@
       },
       "salidaEsperada": "Ingrese la contraseña:\n> hola\nClave incorrecta. Intente nuevamente:\n> 1234\nClave incorrecta. Intente nuevamente:\n> duoc123\nAcceso concedido",
       "pista": "Este ejercicio usa el ciclo Mientras como mecanismo de validación repetitiva.",
-      "codigoReferencia": "Proceso ValidarContrasena\n    Definir clave Como Caracter\n    Escribir \"Ingrese la contraseña:\"\n    Leer clave\n    Mientras clave <> \"duoc123\" Hacer\n        Escribir \"Clave incorrecta. Intente nuevamente:\"\n        Leer clave\n    FinMientras\n    Escribir \"Acceso concedido\"\nFinProceso",
+      "codigoReferencia": "Proceso ValidarContrasena\n  Definir clave Como Caracter\n\n  Escribir \"Ingrese la contraseña:\"\n  Leer clave\n  Mientras clave <> \"duoc123\" Hacer\n    Escribir \"Clave incorrecta. Intente nuevamente:\"\n    Leer clave\n  FinMientras\n  Escribir \"Acceso concedido\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -229,7 +229,7 @@
       },
       "salidaEsperada": "Ingrese número 1:\n> 8\nPar\nIngrese número 2:\n> 7\nImpar",
       "pista": "Aquí el ciclo controla cuántas veces se repite la entrada, y el Si decide qué mensaje mostrar en cada vuelta.",
-      "codigoReferencia": "Proceso DiezNumerosParImpar\n    Definir contador, numero Como Entero\n    contador = 1\n    Mientras contador <= 10 Hacer\n        Escribir \"Ingrese número \", contador, \":\"\n        Leer numero\n        Si numero mod 2 == 0 Entonces\n            Escribir \"Par\"\n        Sino\n            Escribir \"Impar\"\n        FinSi\n        contador = contador + 1\n    FinMientras\nFinProceso",
+      "codigoReferencia": "Proceso DiezNumerosParImpar\n  Definir contador, numero Como Entero\n\n  contador = 1\n  Mientras contador <= 10 Hacer\n    Escribir \"Ingrese número \", contador, \":\"\n    Leer numero\n    Si numero mod 2 == 0 Entonces\n      Escribir \"Par\"\n    Sino\n      Escribir \"Impar\"\n    FinSi\n    contador = contador + 1\n  FinMientras\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -258,7 +258,7 @@
       },
       "salidaEsperada": "Ingrese un número (0 para terminar):\n> 5\nIngrese un número (0 para terminar):\n> -2\nIngrese un número (0 para terminar):\n> 9\nIngrese un número (0 para terminar):\n> 0\nPositivos: 2\nNegativos: 1",
       "pista": "El 0 sirve como centinela: detiene el ciclo, pero no se cuenta como positivo ni como negativo.",
-      "codigoReferencia": "Proceso ContarPositivosNegativos\n    Definir numero, positivos, negativos Como Entero\n    positivos = 0\n    negativos = 0\n    Escribir \"Ingrese un número (0 para terminar):\"\n    Leer numero\n    Mientras numero <> 0 Hacer\n        Si numero > 0 Entonces\n            positivos = positivos + 1\n        Sino\n            Si numero < 0 Entonces\n                negativos = negativos + 1\n            FinSi\n        FinSi\n        Escribir \"Ingrese un número (0 para terminar):\"\n        Leer numero\n    FinMientras\n    Escribir \"Positivos: \", positivos\n    Escribir \"Negativos: \", negativos\nFinProceso",
+      "codigoReferencia": "Proceso ContarPositivosNegativos\n  Definir numero, positivos, negativos Como Entero\n\n  positivos = 0\n  negativos = 0\n\n  Escribir \"Ingrese un número (0 para terminar):\"\n  Leer numero\n  Mientras numero <> 0 Hacer\n    Si numero > 0 Entonces\n      positivos = positivos + 1\n    Sino\n      Si numero < 0 Entonces\n        negativos = negativos + 1\n      FinSi\n    FinSi\n    Escribir \"Ingrese un número (0 para terminar):\"\n    Leer numero\n  FinMientras\n  Escribir \"Positivos: \", positivos\n  Escribir \"Negativos: \", negativos\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -287,7 +287,7 @@
       },
       "salidaEsperada": "15\n30\n45",
       "pista": "Un número divisible por 3 y por 5 al mismo tiempo también es múltiplo de 15.",
-      "codigoReferencia": "Proceso DivisiblesPorTresYCinco\n    Definir contador Como Entero\n    contador = 1\n    Mientras contador <= 50 Hacer\n        Si contador mod 3 == 0 Entonces\n            Si contador mod 5 == 0 Entonces\n                Escribir contador\n            FinSi\n        FinSi\n        contador = contador + 1\n    FinMientras\nFinProceso",
+      "codigoReferencia": "Proceso DivisiblesPorTresYCinco\n  Definir contador Como Entero\n\n  contador = 1\n  Mientras contador <= 50 Hacer\n    Si contador mod 3 == 0 Entonces\n      Si contador mod 5 == 0 Entonces\n        Escribir contador\n      FinSi\n    FinSi\n    contador = contador + 1\n  FinMientras\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -316,7 +316,7 @@
       },
       "salidaEsperada": "Ingrese una nota (-1 para terminar):\n> 5.0\nIngrese una nota (-1 para terminar):\n> 4.2\nIngrese una nota (-1 para terminar):\n> 3.8\nIngrese una nota (-1 para terminar):\n> -1\nPromedio: 4.33333\nAprobado",
       "pista": "El valor -1 es un centinela y no debe incluirse en el cálculo del promedio.",
-      "codigoReferencia": "Proceso PromedioNotasHastaMenosUno\n    Definir nota, suma, promedio Como Real\n    Definir cantidad Como Entero\n    suma = 0\n    cantidad = 0\n    Escribir \"Ingrese una nota (-1 para terminar):\"\n    Leer nota\n    Mientras nota <> -1 Hacer\n        suma = suma + nota\n        cantidad = cantidad + 1\n        Escribir \"Ingrese una nota (-1 para terminar):\"\n        Leer nota\n    FinMientras\n    promedio = suma / cantidad\n    Escribir \"Promedio: \", promedio\n    Si promedio >= 4 Entonces\n        Escribir \"Aprobado\"\n    Sino\n        Escribir \"Reprobado\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso PromedioNotasHastaMenosUno\n  Definir nota, suma, promedio Como Real\n  Definir cantidad Como Entero\n\n  suma     = 0\n  cantidad = 0\n\n  Escribir \"Ingrese una nota (-1 para terminar):\"\n  Leer nota\n  Mientras nota <> -1 Hacer\n    suma     = suma + nota\n    cantidad = cantidad + 1\n\n    Escribir \"Ingrese una nota (-1 para terminar):\"\n    Leer nota\n  FinMientras\n  promedio = suma / cantidad\n\n  Escribir \"Promedio: \", promedio\n  Si promedio >= 4 Entonces\n    Escribir \"Aprobado\"\n  Sino\n    Escribir \"Reprobado\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -345,7 +345,7 @@
       },
       "salidaEsperada": "Saldo inicial: 50000\nIngrese monto a retirar (0 para terminar):\n> 12000\nRetiro realizado. Saldo actual: 38000\nIngrese monto a retirar (0 para terminar):\n> 40000\nFondos insuficientes\nIngrese monto a retirar (0 para terminar):\n> 0\nOperación finalizada",
       "pista": "Una validación dentro del ciclo permite decidir si la operación se ejecuta o se rechaza en cada iteración.",
-      "codigoReferencia": "Proceso CajeroConSaldo\n    Definir saldo, retiro Como Real\n    saldo = 50000\n    Escribir \"Saldo inicial: \", saldo\n    Escribir \"Ingrese monto a retirar (0 para terminar):\"\n    Leer retiro\n    Mientras retiro <> 0 Hacer\n        Si retiro <= saldo Entonces\n            saldo = saldo - retiro\n            Escribir \"Retiro realizado. Saldo actual: \", saldo\n        Sino\n            Escribir \"Fondos insuficientes\"\n        FinSi\n        Escribir \"Ingrese monto a retirar (0 para terminar):\"\n        Leer retiro\n    FinMientras\n    Escribir \"Operación finalizada\"\nFinProceso",
+      "codigoReferencia": "Proceso CajeroConSaldo\n  Definir saldo, retiro Como Real\n\n  saldo = 50000\n\n  Escribir \"Saldo inicial: \", saldo\n  Escribir \"Ingrese monto a retirar (0 para terminar):\"\n  Leer retiro\n  Mientras retiro <> 0 Hacer\n    Si retiro <= saldo Entonces\n      saldo = saldo - retiro\n\n      Escribir \"Retiro realizado. Saldo actual: \", saldo\n    Sino\n      Escribir \"Fondos insuficientes\"\n    FinSi\n    Escribir \"Ingrese monto a retirar (0 para terminar):\"\n    Leer retiro\n  FinMientras\n  Escribir \"Operación finalizada\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -374,7 +374,7 @@
       },
       "salidaEsperada": "Ingrese un número (0 para terminar):\n> 8\nIngrese un número (0 para terminar):\n> 3\nIngrese un número (0 para terminar):\n> 15\nIngrese un número (0 para terminar):\n> -4\nIngrese un número (0 para terminar):\n> 0\nMayor: 15\nMenor: -4",
       "pista": "El primer número válido suele usarse para inicializar tanto el mayor como el menor.",
-      "codigoReferencia": "Proceso MayorYMenorHastaCero\n    Definir numero, mayor, menor Como Entero\n    Escribir \"Ingrese un número (0 para terminar):\"\n    Leer numero\n    Si numero <> 0 Entonces\n        mayor = numero\n        menor = numero\n        Escribir \"Ingrese un número (0 para terminar):\"\n        Leer numero\n        Mientras numero <> 0 Hacer\n            Si numero > mayor Entonces\n                mayor = numero\n            FinSi\n            Si numero < menor Entonces\n                menor = numero\n            FinSi\n            Escribir \"Ingrese un número (0 para terminar):\"\n            Leer numero\n        FinMientras\n        Escribir \"Mayor: \", mayor\n        Escribir \"Menor: \", menor\n    Sino\n        Escribir \"No se ingresaron números válidos\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso MayorYMenorHastaCero\n  Definir numero, mayor, menor Como Entero\n\n  Escribir \"Ingrese un número (0 para terminar):\"\n  Leer numero\n  Si numero <> 0 Entonces\n    mayor = numero\n    menor = numero\n\n    Escribir \"Ingrese un número (0 para terminar):\"\n    Leer numero\n    Mientras numero <> 0 Hacer\n      Si numero > mayor Entonces\n        mayor = numero\n      FinSi\n      Si numero < menor Entonces\n        menor = numero\n      FinSi\n      Escribir \"Ingrese un número (0 para terminar):\"\n      Leer numero\n    FinMientras\n    Escribir \"Mayor: \", mayor\n    Escribir \"Menor: \", menor\n  Sino\n    Escribir \"No se ingresaron números válidos\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -403,7 +403,7 @@
       },
       "salidaEsperada": "Menú: 1 sumar, 2 restar, 3 multiplicar, 4 dividir, 0 salir\nOpción:\n> 1\nPrimer número:\n> 8\nSegundo número:\n> 4\nResultado: 12\nMenú: 1 sumar, 2 restar, 3 multiplicar, 4 dividir, 0 salir\nOpción:\n> 0\nPrograma finalizado",
       "pista": "Este ejercicio combina repetición, selección múltiple y validación específica para la división.",
-      "codigoReferencia": "Proceso MenuInteractivoOperaciones\n    Definir opcion Como Entero\n    Definir a, b, resultado Como Real\n    Escribir \"Menú: 1 sumar, 2 restar, 3 multiplicar, 4 dividir, 0 salir\"\n    Escribir \"Opción:\"\n    Leer opcion\n    Mientras opcion <> 0 Hacer\n        Escribir \"Primer número:\"\n        Leer a\n        Escribir \"Segundo número:\"\n        Leer b\n        Segun opcion Hacer\n            1:\n                resultado = a + b\n                Escribir \"Resultado: \", resultado\n            2:\n                resultado = a - b\n                Escribir \"Resultado: \", resultado\n            3:\n                resultado = a * b\n                Escribir \"Resultado: \", resultado\n            4:\n                Si b <> 0 Entonces\n                    resultado = a / b\n                    Escribir \"Resultado: \", resultado\n                Sino\n                    Escribir \"No se puede dividir por cero\"\n                FinSi\n            De Otro Modo:\n                Escribir \"Opción inválida\"\n        FinSegun\n        Escribir \"Menú: 1 sumar, 2 restar, 3 multiplicar, 4 dividir, 0 salir\"\n        Escribir \"Opción:\"\n        Leer opcion\n    FinMientras\n    Escribir \"Programa finalizado\"\nFinProceso",
+      "codigoReferencia": "Proceso MenuInteractivoOperaciones\n  Definir opcion Como Entero\n  Definir a, b, resultado Como Real\n\n  Escribir \"Menú: 1 sumar, 2 restar, 3 multiplicar, 4 dividir, 0 salir\"\n  Escribir \"Opción:\"\n  Leer opcion\n  Mientras opcion <> 0 Hacer\n    Escribir \"Primer número:\"\n    Leer a\n    Escribir \"Segundo número:\"\n    Leer b\n    Segun opcion Hacer\n      1:\n        resultado = a + b\n\n        Escribir \"Resultado: \", resultado\n      2:\n        resultado = a - b\n\n        Escribir \"Resultado: \", resultado\n      3:\n        resultado = a * b\n\n        Escribir \"Resultado: \", resultado\n      4:\n        Si b <> 0 Entonces\n          resultado = a / b\n\n          Escribir \"Resultado: \", resultado\n        Sino\n          Escribir \"No se puede dividir por cero\"\n        FinSi\n      De Otro Modo:\n        Escribir \"Opción inválida\"\n    FinSegun\n    Escribir \"Menú: 1 sumar, 2 restar, 3 multiplicar, 4 dividir, 0 salir\"\n    Escribir \"Opción:\"\n    Leer opcion\n  FinMientras\n  Escribir \"Programa finalizado\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -432,7 +432,7 @@
       },
       "salidaEsperada": "Ingrese voto (1, 2, 3 o 0 para terminar):\n> 1\nIngrese voto (1, 2, 3 o 0 para terminar):\n> 3\nIngrese voto (1, 2, 3 o 0 para terminar):\n> 3\nIngrese voto (1, 2, 3 o 0 para terminar):\n> 0\nCandidato 1: 1 votos\nCandidato 2: 0 votos\nCandidato 3: 2 votos\nGanador: Candidato 3",
       "pista": "El ciclo permite ingresar muchos votos, Según distribuye el conteo y los Si finales comparan quién obtuvo más.",
-      "codigoReferencia": "Proceso SistemaVotacion\n    Definir voto, c1, c2, c3 Como Entero\n    c1 = 0\n    c2 = 0\n    c3 = 0\n    Escribir \"Ingrese voto (1, 2, 3 o 0 para terminar):\"\n    Leer voto\n    Mientras voto <> 0 Hacer\n        Si voto >= 1 Y voto <= 3 Entonces\n            Segun voto Hacer\n                1: c1 = c1 + 1\n                2: c2 = c2 + 1\n                3: c3 = c3 + 1\n            FinSegun\n        Sino\n            Escribir \"Voto inválido\"\n        FinSi\n        Escribir \"Ingrese voto (1, 2, 3 o 0 para terminar):\"\n        Leer voto\n    FinMientras\n    Escribir \"Candidato 1: \", c1, \" votos\"\n    Escribir \"Candidato 2: \", c2, \" votos\"\n    Escribir \"Candidato 3: \", c3, \" votos\"\n    Si c1 > c2 Y c1 > c3 Entonces\n        Escribir \"Ganador: Candidato 1\"\n    Sino\n        Si c2 > c1 Y c2 > c3 Entonces\n            Escribir \"Ganador: Candidato 2\"\n        Sino\n            Si c3 > c1 Y c3 > c2 Entonces\n                Escribir \"Ganador: Candidato 3\"\n            Sino\n                Escribir \"Empate o sin votos suficientes\"\n            FinSi\n        FinSi\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso SistemaVotacion\n  Definir voto, c1, c2, c3 Como Entero\n\n  c1 = 0\n  c2 = 0\n  c3 = 0\n\n  Escribir \"Ingrese voto (1, 2, 3 o 0 para terminar):\"\n  Leer voto\n  Mientras voto <> 0 Hacer\n    Si voto >= 1 Y voto <= 3 Entonces\n      Segun voto Hacer\n        1: c1 = c1 + 1\n        2: c2 = c2 + 1\n        3: c3 = c3 + 1\n      FinSegun\n    Sino\n      Escribir \"Voto inválido\"\n    FinSi\n    Escribir \"Ingrese voto (1, 2, 3 o 0 para terminar):\"\n    Leer voto\n  FinMientras\n  Escribir \"Candidato 1: \", c1, \" votos\"\n  Escribir \"Candidato 2: \", c2, \" votos\"\n  Escribir \"Candidato 3: \", c3, \" votos\"\n  Si c1 > c2 Y c1 > c3 Entonces\n    Escribir \"Ganador: Candidato 1\"\n  Sino\n    Si c2 > c1 Y c2 > c3 Entonces\n      Escribir \"Ganador: Candidato 2\"\n    Sino\n      Si c3 > c1 Y c3 > c2 Entonces\n        Escribir \"Ganador: Candidato 3\"\n      Sino\n        Escribir \"Empate o sin votos suficientes\"\n      FinSi\n    FinSi\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -461,7 +461,7 @@
       },
       "salidaEsperada": "Ingrese número (999 para terminar):\n> -5\nIngrese número (999 para terminar):\n> 8\nIngrese número (999 para terminar):\n> 120\nIngrese número (999 para terminar):\n> 999\nRango < 0: 1\nRango 1-10: 1\nRango 11-50: 0\nRango 51-100: 0\nRango >100: 1\nRango con más números: empate o múltiple máximo",
       "pista": "Aquí Según clasifica por rango y los Si finales comparan los contadores para decidir cuál predominó.",
-      "codigoReferencia": "Proceso ClasificarCincoRangos\n    Definir numero, r1, r2, r3, r4, r5 Como Entero\n    r1 = 0\n    r2 = 0\n    r3 = 0\n    r4 = 0\n    r5 = 0\n    Escribir \"Ingrese número (999 para terminar):\"\n    Leer numero\n    Mientras numero <> 999 Hacer\n        Si numero < 0 Entonces\n                r1 = r1 + 1\n        Sino\n            Si numero >= 1 Y numero <= 10 Entonces\n                r2 = r2 + 1\n            Sino\n                Si numero >= 11 Y numero <= 50 Entonces\n                r3 = r3 + 1\n                Sino\n                    Si numero >= 51 Y numero <= 100 Entonces\n                r4 = r4 + 1\n                    Sino\n                        Si numero > 100 Entonces\n                r5 = r5 + 1\n                        FinSi\n                    FinSi\n                FinSi\n            FinSi\n        FinSi\n        Escribir \"Ingrese número (999 para terminar):\"\n        Leer numero\n    FinMientras\n    Escribir \"Rango < 0: \", r1\n    Escribir \"Rango 1-10: \", r2\n    Escribir \"Rango 11-50: \", r3\n    Escribir \"Rango 51-100: \", r4\n    Escribir \"Rango >100: \", r5\n    Si r1 > r2 Y r1 > r3 Y r1 > r4 Y r1 > r5 Entonces\n        Escribir \"Rango con más números: < 0\"\n    Sino\n        Si r2 > r1 Y r2 > r3 Y r2 > r4 Y r2 > r5 Entonces\n            Escribir \"Rango con más números: 1-10\"\n        Sino\n            Si r3 > r1 Y r3 > r2 Y r3 > r4 Y r3 > r5 Entonces\n                Escribir \"Rango con más números: 11-50\"\n            Sino\n                Si r4 > r1 Y r4 > r2 Y r4 > r3 Y r4 > r5 Entonces\n                    Escribir \"Rango con más números: 51-100\"\n                Sino\n                    Si r5 > r1 Y r5 > r2 Y r5 > r3 Y r5 > r4 Entonces\n                        Escribir \"Rango con más números: >100\"\n                    Sino\n                        Escribir \"Rango con más números: empate o múltiple máximo\"\n                    FinSi\n                FinSi\n            FinSi\n        FinSi\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso ClasificarCincoRangos\n  Definir numero, r1, r2, r3, r4, r5 Como Entero\n\n  r1 = 0\n  r2 = 0\n  r3 = 0\n  r4 = 0\n  r5 = 0\n\n  Escribir \"Ingrese número (999 para terminar):\"\n  Leer numero\n  Mientras numero <> 999 Hacer\n    Si numero < 0 Entonces\n      r1 = r1 + 1\n    Sino\n      Si numero >= 1 Y numero <= 10 Entonces\n        r2 = r2 + 1\n      Sino\n        Si numero >= 11 Y numero <= 50 Entonces\n          r3 = r3 + 1\n        Sino\n          Si numero >= 51 Y numero <= 100 Entonces\n            r4 = r4 + 1\n          Sino\n            Si numero > 100 Entonces\n              r5 = r5 + 1\n            FinSi\n          FinSi\n        FinSi\n      FinSi\n    FinSi\n    Escribir \"Ingrese número (999 para terminar):\"\n    Leer numero\n  FinMientras\n  Escribir \"Rango < 0: \", r1\n  Escribir \"Rango 1-10: \", r2\n  Escribir \"Rango 11-50: \", r3\n  Escribir \"Rango 51-100: \", r4\n  Escribir \"Rango >100: \", r5\n  Si r1 > r2 Y r1 > r3 Y r1 > r4 Y r1 > r5 Entonces\n    Escribir \"Rango con más números: < 0\"\n  Sino\n    Si r2 > r1 Y r2 > r3 Y r2 > r4 Y r2 > r5 Entonces\n      Escribir \"Rango con más números: 1-10\"\n    Sino\n      Si r3 > r1 Y r3 > r2 Y r3 > r4 Y r3 > r5 Entonces\n        Escribir \"Rango con más números: 11-50\"\n      Sino\n        Si r4 > r1 Y r4 > r2 Y r4 > r3 Y r4 > r5 Entonces\n          Escribir \"Rango con más números: 51-100\"\n        Sino\n          Si r5 > r1 Y r5 > r2 Y r5 > r3 Y r5 > r4 Entonces\n            Escribir \"Rango con más números: >100\"\n          Sino\n            Escribir \"Rango con más números: empate o múltiple máximo\"\n          FinSi\n        FinSi\n      FinSi\n    FinSi\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -490,7 +490,7 @@
       },
       "salidaEsperada": "Nombre del estudiante (fin para terminar):\n> Ana\nNota:\n> 5.6\nAsistencia (%):\n> 82\nConcepto: B\nSituación: Aprueba\nNombre del estudiante (fin para terminar):\n> fin",
       "pista": "El concepto depende de la nota; la aprobación final depende de nota y asistencia.",
-      "codigoReferencia": "Proceso MiniSistemaNotas\n    Definir nombre, concepto Como Caracter\n    Definir nota, asistencia Como Real\n    Definir notaEntera Como Entero\n    Escribir \"Nombre del estudiante (fin para terminar):\"\n    Leer nombre\n    Mientras nombre <> \"fin\" Hacer\n        Escribir \"Nota:\"\n        Leer nota\n        Escribir \"Asistencia (%):\"\n        Leer asistencia\n        notaEntera = Trunc(nota)\n        Segun notaEntera Hacer\n            6, 7: concepto = \"MB\"\n            5: concepto = \"B\"\n            4: concepto = \"S\"\n            De Otro Modo:\n              concepto = \"I\"\n        FinSegun\n        Escribir \"Concepto: \", concepto\n        Si asistencia >= 75 Entonces\n            Si nota >= 4 Entonces\n                Escribir \"Situación: Aprueba\"\n            Sino\n                Escribir \"Situación: Reprueba\"\n            FinSi\n        Sino\n            Escribir \"Situación: Reprueba por asistencia\"\n        FinSi\n        Escribir \"Nombre del estudiante (fin para terminar):\"\n        Leer nombre\n    FinMientras\nFinProceso",
+      "codigoReferencia": "Proceso MiniSistemaNotas\n  Definir nombre, concepto Como Caracter\n  Definir nota, asistencia Como Real\n  Definir notaEntera Como Entero\n\n  Escribir \"Nombre del estudiante (fin para terminar):\"\n  Leer nombre\n  Mientras nombre <> \"fin\" Hacer\n    Escribir \"Nota:\"\n    Leer nota\n    Escribir \"Asistencia (%):\"\n    Leer asistencia\n\n    notaEntera = Trunc(nota)\n    Segun notaEntera Hacer\n      6, 7: concepto = \"MB\"\n      5: concepto = \"B\"\n      4: concepto = \"S\"\n      De Otro Modo:\n        concepto = \"I\"\n    FinSegun\n    Escribir \"Concepto: \", concepto\n    Si asistencia >= 75 Entonces\n      Si nota >= 4 Entonces\n        Escribir \"Situación: Aprueba\"\n      Sino\n        Escribir \"Situación: Reprueba\"\n      FinSi\n    Sino\n      Escribir \"Situación: Reprueba por asistencia\"\n    FinSi\n    Escribir \"Nombre del estudiante (fin para terminar):\"\n    Leer nombre\n  FinMientras\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -519,7 +519,7 @@
       },
       "salidaEsperada": "Ingrese color del semáforo (o salir):\n> verde\nAvanzar\nIngrese color del semáforo (o salir):\n> azul\nColor inválido\nIngrese color del semáforo (o salir):\n> salir",
       "pista": "La validación previa evita ejecutar Según con valores que no corresponden al problema.",
-      "codigoReferencia": "Proceso SimuladorSemaforo\n    Definir color Como Caracter\n    Escribir \"Ingrese color del semáforo (o salir):\"\n    Leer color\n    Mientras color <> \"salir\" Hacer\n        Si color == \"rojo\" O color == \"amarillo\" O color == \"verde\" Entonces\n            Segun color Hacer\n                \"verde\": Escribir \"Avanzar\"\n                \"amarillo\": Escribir \"Precaución\"\n                \"rojo\": Escribir \"Detener\"\n            FinSegun\n        Sino\n            Escribir \"Color inválido\"\n        FinSi\n        Escribir \"Ingrese color del semáforo (o salir):\"\n        Leer color\n    FinMientras\nFinProceso",
+      "codigoReferencia": "Proceso SimuladorSemaforo\n  Definir color Como Caracter\n\n  Escribir \"Ingrese color del semáforo (o salir):\"\n  Leer color\n  Mientras color <> \"salir\" Hacer\n    Si color == \"rojo\" O color == \"amarillo\" O color == \"verde\" Entonces\n      Segun color Hacer\n        \"verde\": Escribir \"Avanzar\"\n        \"amarillo\": Escribir \"Precaución\"\n        \"rojo\": Escribir \"Detener\"\n      FinSegun\n    Sino\n      Escribir \"Color inválido\"\n    FinSi\n    Escribir \"Ingrese color del semáforo (o salir):\"\n    Leer color\n  FinMientras\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -548,7 +548,7 @@
       },
       "salidaEsperada": "Figura (1 círculo, 2 rectángulo, 3 triángulo, 0 salir):\n> 2\nBase:\n> 5\nAltura:\n> 3\nÁrea: 15\nFigura (1 círculo, 2 rectángulo, 3 triángulo, 0 salir):\n> 0",
       "pista": "Según elige la fórmula adecuada y Si valida que las medidas tengan sentido físico.",
-      "codigoReferencia": "Proceso AreaDeFiguras\n    Definir opcion Como Entero\n    Definir radio, base, altura, area, PI Como Real\n    PI = 3.14159\n    Escribir \"Figura (1 círculo, 2 rectángulo, 3 triángulo, 0 salir):\"\n    Leer opcion\n    Mientras opcion <> 0 Hacer\n        Segun opcion Hacer\n            1:\n                Escribir \"Radio:\"\n                Leer radio\n                Si radio > 0 Entonces\n                    area = PI * radio ^ 2\n                    Escribir \"Área: \", area\n                Sino\n                    Escribir \"Valor inválido\"\n                FinSi\n            2:\n                Escribir \"Base:\"\n                Leer base\n                Escribir \"Altura:\"\n                Leer altura\n                Si base > 0 Y altura > 0 Entonces\n                    area = base * altura\n                    Escribir \"Área: \", area\n                Sino\n                    Escribir \"Valores inválidos\"\n                FinSi\n            3:\n                Escribir \"Base:\"\n                Leer base\n                Escribir \"Altura:\"\n                Leer altura\n                Si base > 0 Y altura > 0 Entonces\n                    area = base * altura / 2\n                    Escribir \"Área: \", area\n                Sino\n                    Escribir \"Valores inválidos\"\n                FinSi\n            De Otro Modo:\n                Escribir \"Opción inválida\"\n        FinSegun\n        Escribir \"Figura (1 círculo, 2 rectángulo, 3 triángulo, 0 salir):\"\n        Leer opcion\n    FinMientras\nFinProceso",
+      "codigoReferencia": "Proceso AreaDeFiguras\n  Definir opcion Como Entero\n  Definir radio, base, altura, area, PI Como Real\n\n  PI = 3.14159\n\n  Escribir \"Figura (1 círculo, 2 rectángulo, 3 triángulo, 0 salir):\"\n  Leer opcion\n  Mientras opcion <> 0 Hacer\n    Segun opcion Hacer\n      1:\n        Escribir \"Radio:\"\n        Leer radio\n        Si radio > 0 Entonces\n          area = PI * radio ^ 2\n\n          Escribir \"Área: \", area\n        Sino\n          Escribir \"Valor inválido\"\n        FinSi\n      2:\n        Escribir \"Base:\"\n        Leer base\n        Escribir \"Altura:\"\n        Leer altura\n        Si base > 0 Y altura > 0 Entonces\n          area = base * altura\n\n          Escribir \"Área: \", area\n        Sino\n          Escribir \"Valores inválidos\"\n        FinSi\n      3:\n        Escribir \"Base:\"\n        Leer base\n        Escribir \"Altura:\"\n        Leer altura\n        Si base > 0 Y altura > 0 Entonces\n          area = base * altura / 2\n\n          Escribir \"Área: \", area\n        Sino\n          Escribir \"Valores inválidos\"\n        FinSi\n      De Otro Modo:\n        Escribir \"Opción inválida\"\n    FinSegun\n    Escribir \"Figura (1 círculo, 2 rectángulo, 3 triángulo, 0 salir):\"\n    Leer opcion\n  FinMientras\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -577,7 +577,7 @@
       },
       "salidaEsperada": "Categoría del producto (1, 2, 3 o 0 para terminar):\n> 2\nPrecio del producto:\n> 10000\n¿Tiene tarjeta de puntos? (si/no):\n> si\nSubtotal con descuentos: 7600\nCategoría del producto (1, 2, 3 o 0 para terminar):\n> 0\nTotal acumulado: 7600",
       "pista": "El descuento por categoría se aplica primero y luego, si corresponde, el descuento adicional por tarjeta.",
-      "codigoReferencia": "Proceso SistemaCompras\n    Definir categoria Como Entero\n    Definir precio, subtotal, total Como Real\n    Definir tarjeta Como Caracter\n    total = 0\n    Escribir \"Categoría del producto (1, 2, 3 o 0 para terminar):\"\n    Leer categoria\n    Mientras categoria <> 0 Hacer\n        Escribir \"Precio del producto:\"\n        Leer precio\n        Segun categoria Hacer\n            1: subtotal = precio - precio * 0.10\n            2: subtotal = precio - precio * 0.20\n            3: subtotal = precio - precio * 0.30\n            De Otro Modo:\n                Escribir \"Categoría inválida\"\n        FinSegun\n        Si categoria >= 1 Y categoria <= 3 Entonces\n            Escribir \"¿Tiene tarjeta de puntos? (si/no):\"\n            Leer tarjeta\n            Si tarjeta == \"si\" Entonces\n                subtotal = subtotal - subtotal * 0.05\n            FinSi\n            Escribir \"Subtotal con descuentos: \", subtotal\n            total = total + subtotal\n        FinSi\n        Escribir \"Categoría del producto (1, 2, 3 o 0 para terminar):\"\n        Leer categoria\n    FinMientras\n    Escribir \"Total acumulado: \", total\nFinProceso",
+      "codigoReferencia": "Proceso SistemaCompras\n  Definir categoria Como Entero\n  Definir precio, subtotal, total Como Real\n  Definir tarjeta Como Caracter\n\n  total = 0\n\n  Escribir \"Categoría del producto (1, 2, 3 o 0 para terminar):\"\n  Leer categoria\n  Mientras categoria <> 0 Hacer\n    Escribir \"Precio del producto:\"\n    Leer precio\n    Segun categoria Hacer\n      1: subtotal = precio - precio * 0.10\n      2: subtotal = precio - precio * 0.20\n      3: subtotal = precio - precio * 0.30\n      De Otro Modo:\n        Escribir \"Categoría inválida\"\n    FinSegun\n    Si categoria >= 1 Y categoria <= 3 Entonces\n      Escribir \"¿Tiene tarjeta de puntos? (si/no):\"\n      Leer tarjeta\n      Si tarjeta == \"si\" Entonces\n        subtotal = subtotal - subtotal * 0.05\n      FinSi\n      Escribir \"Subtotal con descuentos: \", subtotal\n\n      total = total + subtotal\n    FinSi\n    Escribir \"Categoría del producto (1, 2, 3 o 0 para terminar):\"\n    Leer categoria\n  FinMientras\n  Escribir \"Total acumulado: \", total\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -605,7 +605,7 @@
       },
       "salidaEsperada": "Ingrese un número positivo:\n> -3\nIngrese un número positivo:\n> 0\nIngrese un número positivo:\n> 7\nNúmero válido: 7",
       "pista": "En Repetir-Hasta el bloque se ejecuta al menos una vez antes de evaluar la condición.",
-      "codigoReferencia": "Proceso NumeroPositivo\n    Definir numero Como Entero\n    Repetir\n        Escribir \"Ingrese un número positivo:\"\n        Leer numero\n    Hasta Que numero > 0\n    Escribir \"Número válido: \", numero\nFinProceso",
+      "codigoReferencia": "Proceso NumeroPositivo\n  Definir numero Como Entero\n\n  Repetir\n    Escribir \"Ingrese un número positivo:\"\n    Leer numero\n  Hasta Que numero > 0\n  Escribir \"Número válido: \", numero\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -633,7 +633,7 @@
       },
       "salidaEsperada": "1\n3\n5\n7\n9\n11\n13\n15\n17\n19",
       "pista": "Sumar 2 en cada iteración permite recorrer solo los números impares.",
-      "codigoReferencia": "Proceso ImparesUnoAlDiecinueve\n    Definir numero Como Entero\n    numero = 1\n    Repetir\n        Escribir numero\n        numero = numero + 2\n    Hasta Que numero > 19\nFinProceso",
+      "codigoReferencia": "Proceso ImparesUnoAlDiecinueve\n  Definir numero Como Entero\n\n  numero = 1\n  Repetir\n    Escribir numero\n\n    numero = numero + 2\n  Hasta Que numero > 19\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -661,7 +661,7 @@
       },
       "salidaEsperada": "Adivine el número secreto:\n> 20\nAdivine el número secreto:\n> 50\nAdivine el número secreto:\n> 42\n¡Correcto!\nIntentos: 3",
       "pista": "El contador de intentos se incrementa cada vez que el usuario ingresa un valor.",
-      "codigoReferencia": "Proceso AdivinarNumeroSecreto\n    Definir secreto, numero, intentos Como Entero\n    secreto = 42\n    intentos = 0\n    Repetir\n        Escribir \"Adivine el número secreto:\"\n        Leer numero\n        intentos = intentos + 1\n    Hasta Que numero == secreto\n    Escribir \"¡Correcto!\"\n    Escribir \"Intentos: \", intentos\nFinProceso",
+      "codigoReferencia": "Proceso AdivinarNumeroSecreto\n  Definir secreto, numero, intentos Como Entero\n\n  secreto  = 42\n  intentos = 0\n  Repetir\n    Escribir \"Adivine el número secreto:\"\n    Leer numero\n\n    intentos = intentos + 1\n  Hasta Que numero == secreto\n  Escribir \"¡Correcto!\"\n  Escribir \"Intentos: \", intentos\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -689,7 +689,7 @@
       },
       "salidaEsperada": "Ingrese un número entero positivo:\n> 538\nSuma de dígitos: 16",
       "pista": "MOD obtiene el último dígito y DIV elimina ese dígito del número.",
-      "codigoReferencia": "Proceso SumaDigitos\n    Definir numero, digito, suma Como Entero\n    Escribir \"Ingrese un número entero positivo:\"\n    Leer numero\n    suma = 0\n    Repetir\n        digito = numero mod 10\n        suma = suma + digito\n        numero = Trunc(numero / 10)\n    Hasta Que numero == 0\n    Escribir \"Suma de dígitos: \", suma\nFinProceso",
+      "codigoReferencia": "Proceso SumaDigitos\n  Definir numero, digito, suma Como Entero\n\n  Escribir \"Ingrese un número entero positivo:\"\n  Leer numero\n\n  suma = 0\n  Repetir\n    digito = numero mod 10\n    suma   = suma + digito\n    numero = Trunc(numero / 10)\n  Hasta Que numero == 0\n  Escribir \"Suma de dígitos: \", suma\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -717,7 +717,7 @@
       },
       "salidaEsperada": "Ingrese edad (0 para terminar):\n> 18\nIngrese edad (0 para terminar):\n> 25\nIngrese edad (0 para terminar):\n> 32\nIngrese edad (0 para terminar):\n> 0\nSuma total de edades: 75",
       "pista": "El valor 0 solo sirve para detener el ciclo; como no altera la suma, no genera problema al acumularlo.",
-      "codigoReferencia": "Proceso SumaEdades\n    Definir edad, suma Como Entero\n    suma = 0\n    Repetir\n        Escribir \"Ingrese edad (0 para terminar):\"\n        Leer edad\n        suma = suma + edad\n    Hasta Que edad == 0\n    Escribir \"Suma total de edades: \", suma\nFinProceso",
+      "codigoReferencia": "Proceso SumaEdades\n  Definir edad, suma Como Entero\n\n  suma = 0\n  Repetir\n    Escribir \"Ingrese edad (0 para terminar):\"\n    Leer edad\n\n    suma = suma + edad\n  Hasta Que edad == 0\n  Escribir \"Suma total de edades: \", suma\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -745,7 +745,7 @@
       },
       "salidaEsperada": "Ingrese límite:\n> 20\n0\n1\n1\n2\n3\n5\n8\n13",
       "pista": "Cada nuevo término de Fibonacci se obtiene sumando los dos anteriores.",
-      "codigoReferencia": "Proceso FibonacciHastaLimite\n    Definir limite, a, b, c Como Entero\n    Escribir \"Ingrese límite:\"\n    Leer limite\n    a = 0\n    b = 1\n    Repetir\n        Escribir a\n        c = a + b\n        a = b\n        b = c\n    Hasta Que a > limite\nFinProceso",
+      "codigoReferencia": "Proceso FibonacciHastaLimite\n  Definir limite, a, b, c Como Entero\n\n  Escribir \"Ingrese límite:\"\n  Leer limite\n\n  a = 0\n  b = 1\n  Repetir\n    Escribir a\n\n    c = a + b\n    a = b\n    b = c\n  Hasta Que a > limite\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -773,7 +773,7 @@
       },
       "salidaEsperada": "Ingrese una vocal:\n> b\nError: debe ingresar una vocal\nIngrese una vocal:\n> u\nVocal válida: u",
       "pista": "Repetir-Hasta es ideal para validaciones donde quieres obligar al usuario a ingresar un dato correcto.",
-      "codigoReferencia": "Proceso IngresarSoloVocales\n    Definir letra Como Caracter\n    Repetir\n        Escribir \"Ingrese una vocal:\"\n        Leer letra\n        Si letra <> \"a\" Y letra <> \"e\" Y letra <> \"i\" Y letra <> \"o\" Y letra <> \"u\" Entonces\n            Escribir \"Error: debe ingresar una vocal\"\n        FinSi\n    Hasta Que letra == \"a\" O letra == \"e\" O letra == \"i\" O letra == \"o\" O letra == \"u\"\n    Escribir \"Vocal válida: \", letra\nFinProceso",
+      "codigoReferencia": "Proceso IngresarSoloVocales\n  Definir letra Como Caracter\n\n  Repetir\n    Escribir \"Ingrese una vocal:\"\n    Leer letra\n    Si letra <> \"a\" Y letra <> \"e\" Y letra <> \"i\" Y letra <> \"o\" Y letra <> \"u\" Entonces\n      Escribir \"Error: debe ingresar una vocal\"\n    FinSi\n  Hasta Que letra == \"a\" O letra == \"e\" O letra == \"i\" O letra == \"o\" O letra == \"u\"\n  Escribir \"Vocal válida: \", letra\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -802,7 +802,7 @@
       },
       "salidaEsperada": "Ingrese un número:\n> 40\nMenor o igual que el promedio actual\nIngrese un número:\n> 30\nMenor o igual que el promedio actual\nIngrese un número:\n> 50\nMayor que el promedio actual\nSuma acumulada: 120",
       "pista": "El promedio actual cambia en cada iteración, porque depende de la suma y de la cantidad de datos ingresados.",
-      "codigoReferencia": "Proceso AcumularHastaSuperarCien\n    Definir numero, suma, promedio Como Real\n    Definir cantidad Como Entero\n    suma = 0\n    cantidad = 0\n    Repetir\n        Escribir \"Ingrese un número:\"\n        Leer numero\n        suma = suma + numero\n        cantidad = cantidad + 1\n        promedio = suma / cantidad\n        Si numero > promedio Entonces\n            Escribir \"Mayor que el promedio actual\"\n        Sino\n            Escribir \"Menor o igual que el promedio actual\"\n        FinSi\n    Hasta Que suma > 100\n    Escribir \"Suma acumulada: \", suma\nFinProceso",
+      "codigoReferencia": "Proceso AcumularHastaSuperarCien\n  Definir numero, suma, promedio Como Real\n  Definir cantidad Como Entero\n\n  suma     = 0\n  cantidad = 0\n  Repetir\n    Escribir \"Ingrese un número:\"\n    Leer numero\n\n    suma     = suma + numero\n    cantidad = cantidad + 1\n    promedio = suma / cantidad\n    Si numero > promedio Entonces\n      Escribir \"Mayor que el promedio actual\"\n    Sino\n      Escribir \"Menor o igual que el promedio actual\"\n    FinSi\n  Hasta Que suma > 100\n  Escribir \"Suma acumulada: \", suma\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -831,7 +831,7 @@
       },
       "salidaEsperada": "Dado: 2\nMenor o igual que 3\nDado: 5\nMayor que 3\nDado: 6\nMayor que 3",
       "pista": "Aleatorio(1,6) permite simular un dado estándar.",
-      "codigoReferencia": "Proceso SimularDadoHastaSeis\n    Definir dado Como Entero\n    Repetir\n        dado = 6\n        Escribir \"Dado: \", dado\n        Si dado > 3 Entonces\n            Escribir \"Mayor que 3\"\n        Sino\n            Escribir \"Menor o igual que 3\"\n        FinSi\n    Hasta Que dado == 6\nFinProceso",
+      "codigoReferencia": "Proceso SimularDadoHastaSeis\n  Definir dado Como Entero\n\n  Repetir\n    dado = 6\n\n    Escribir \"Dado: \", dado\n    Si dado > 3 Entonces\n      Escribir \"Mayor que 3\"\n    Sino\n      Escribir \"Menor o igual que 3\"\n    FinSi\n  Hasta Que dado == 6\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -860,7 +860,7 @@
       },
       "salidaEsperada": "Ingrese temperatura en Celsius (999 para salir):\n> 10\nFrío\nIngrese temperatura en Celsius (999 para salir):\n> 20\nTemplado\nIngrese temperatura en Celsius (999 para salir):\n> 30\nCaluroso\nIngrese temperatura en Celsius (999 para salir):\n> 999",
       "pista": "El 999 funciona como valor especial de salida y no debe clasificarse como temperatura.",
-      "codigoReferencia": "Proceso ClasificarTemperaturaCelsius\n    Definir temp Como Real\n    Repetir\n        Escribir \"Ingrese temperatura en Celsius (999 para salir):\"\n        Leer temp\n        Si temp <> 999 Entonces\n            Si temp < 15 Entonces\n                Escribir \"Frío\"\n            Sino\n                Si temp < 25 Entonces\n                    Escribir \"Templado\"\n                Sino\n                    Escribir \"Caluroso\"\n                FinSi\n            FinSi\n        FinSi\n    Hasta Que temp == 999\nFinProceso",
+      "codigoReferencia": "Proceso ClasificarTemperaturaCelsius\n  Definir temp Como Real\n\n  Repetir\n    Escribir \"Ingrese temperatura en Celsius (999 para salir):\"\n    Leer temp\n    Si temp <> 999 Entonces\n      Si temp < 15 Entonces\n        Escribir \"Frío\"\n      Sino\n        Si temp < 25 Entonces\n          Escribir \"Templado\"\n        Sino\n          Escribir \"Caluroso\"\n        FinSi\n      FinSi\n    FinSi\n  Hasta Que temp == 999\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -889,7 +889,7 @@
       },
       "salidaEsperada": "Ingrese un número entero (0 para terminar):\n> 4\nIngrese un número entero (0 para terminar):\n> -8\nIngrese un número entero (0 para terminar):\n> 7\nIngrese un número entero (0 para terminar):\n> -3\nIngrese un número entero (0 para terminar):\n> 0\nPares positivos: 1\nPares negativos: 1\nImpares positivos: 1\nImpares negativos: 1",
       "pista": "Este problema primero distingue por paridad y luego por signo.",
-      "codigoReferencia": "Proceso ClasificarSignoParidad\n    Definir numero, pp, pn, ip, in Como Entero\n    pp = 0\n    pn = 0\n    ip = 0\n    in = 0\n    Repetir\n        Escribir \"Ingrese un número entero (0 para terminar):\"\n        Leer numero\n        Si numero <> 0 Entonces\n            Si numero mod 2 == 0 Entonces\n                Si numero > 0 Entonces\n                    pp = pp + 1\n                Sino\n                    pn = pn + 1\n                FinSi\n            Sino\n                Si numero > 0 Entonces\n                    ip = ip + 1\n                Sino\n                    in = in + 1\n                FinSi\n            FinSi\n        FinSi\n    Hasta Que numero == 0\n    Escribir \"Pares positivos: \", pp\n    Escribir \"Pares negativos: \", pn\n    Escribir \"Impares positivos: \", ip\n    Escribir \"Impares negativos: \", in\nFinProceso",
+      "codigoReferencia": "Proceso ClasificarSignoParidad\n  Definir numero, pp, pn, ip, in Como Entero\n\n  pp = 0\n  pn = 0\n  ip = 0\n  in = 0\n  Repetir\n    Escribir \"Ingrese un número entero (0 para terminar):\"\n    Leer numero\n    Si numero <> 0 Entonces\n      Si numero mod 2 == 0 Entonces\n        Si numero > 0 Entonces\n          pp = pp + 1\n        Sino\n          pn = pn + 1\n        FinSi\n      Sino\n        Si numero > 0 Entonces\n          ip = ip + 1\n        Sino\n          in = in + 1\n        FinSi\n      FinSi\n    FinSi\n  Hasta Que numero == 0\n  Escribir \"Pares positivos: \", pp\n  Escribir \"Pares negativos: \", pn\n  Escribir \"Impares positivos: \", ip\n  Escribir \"Impares negativos: \", in\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -918,7 +918,7 @@
       },
       "salidaEsperada": "Ingrese salario (-1 para terminar):\n> 450000\nIngrese salario (-1 para terminar):\n> 700000\nIngrese salario (-1 para terminar):\n> -1\nEmpleados con bono: 1\nEmpleados sin bono: 1",
       "pista": "El valor -1 se usa solo para terminar la repetición; no debe contarse como salario válido.",
-      "codigoReferencia": "Proceso BonoSegunSalario\n    Definir salario Como Real\n    Definir conBono, sinBono Como Entero\n    conBono = 0\n    sinBono = 0\n    Repetir\n        Escribir \"Ingrese salario (-1 para terminar):\"\n        Leer salario\n        Si salario <> -1 Entonces\n            Si salario < 500000 Entonces\n                conBono = conBono + 1\n            Sino\n                sinBono = sinBono + 1\n            FinSi\n        FinSi\n    Hasta Que salario == -1\n    Escribir \"Empleados con bono: \", conBono\n    Escribir \"Empleados sin bono: \", sinBono\nFinProceso",
+      "codigoReferencia": "Proceso BonoSegunSalario\n  Definir salario Como Real\n  Definir conBono, sinBono Como Entero\n\n  conBono = 0\n  sinBono = 0\n  Repetir\n    Escribir \"Ingrese salario (-1 para terminar):\"\n    Leer salario\n    Si salario <> -1 Entonces\n      Si salario < 500000 Entonces\n        conBono = conBono + 1\n      Sino\n        sinBono = sinBono + 1\n      FinSi\n    FinSi\n  Hasta Que salario == -1\n  Escribir \"Empleados con bono: \", conBono\n  Escribir \"Empleados sin bono: \", sinBono\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -947,7 +947,7 @@
       },
       "salidaEsperada": "Adivine el número:\n> 50\nMuy alto\nAdivine el número:\n> 10\nMuy bajo\nAdivine el número:\n> 30\nCorrecto",
       "pista": "El Si más externo revisa si acertó; si no, el Si interno decide qué pista mostrar.",
-      "codigoReferencia": "Proceso JuegoMayorMenor\n    Definir secreto, numero Como Entero\n    secreto = 30\n    Repetir\n        Escribir \"Adivine el número:\"\n        Leer numero\n        Si numero == secreto Entonces\n            Escribir \"Correcto\"\n        Sino\n            Si numero > secreto Entonces\n                Escribir \"Muy alto\"\n            Sino\n                Escribir \"Muy bajo\"\n            FinSi\n        FinSi\n    Hasta Que numero == secreto\nFinProceso",
+      "codigoReferencia": "Proceso JuegoMayorMenor\n  Definir secreto, numero Como Entero\n\n  secreto = 30\n  Repetir\n    Escribir \"Adivine el número:\"\n    Leer numero\n    Si numero == secreto Entonces\n      Escribir \"Correcto\"\n    Sino\n      Si numero > secreto Entonces\n        Escribir \"Muy alto\"\n      Sino\n        Escribir \"Muy bajo\"\n      FinSi\n    FinSi\n  Hasta Que numero == secreto\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -977,7 +977,7 @@
       },
       "salidaEsperada": "Día (1-7, 0 para terminar):\n> 3\nMonto vendido:\n> 150000\nMiércoles\nBuena venta\nDía (1-7, 0 para terminar):\n> 0\nDía con mayor venta: Miércoles\nMonto mayor: 150000",
       "pista": "Conviene guardar tanto el monto máximo como el nombre del día asociado a ese máximo.",
-      "codigoReferencia": "Proceso RegistrarVentasDiarias\n    Definir dia Como Entero\n    Definir monto, mayorVenta Como Real\n    Definir nombreDia, mejorDia Como Caracter\n    mayorVenta = -1\n    mejorDia = \"\"\n    Repetir\n        Escribir \"Día (1-7, 0 para terminar):\"\n        Leer dia\n        Si dia <> 0 Entonces\n            Escribir \"Monto vendido:\"\n            Leer monto\n            Segun dia Hacer\n                1: nombreDia = \"Lunes\"\n                2: nombreDia = \"Martes\"\n                3: nombreDia = \"Miércoles\"\n                4: nombreDia = \"Jueves\"\n                5: nombreDia = \"Viernes\"\n                6: nombreDia = \"Sábado\"\n                7: nombreDia = \"Domingo\"\n                De Otro Modo:\n                  nombreDia = \"Día inválido\"\n            FinSegun\n            Escribir nombreDia\n            Si monto > 100000 Entonces\n                Escribir \"Buena venta\"\n            Sino\n                Escribir \"Venta normal\"\n            FinSi\n            Si monto > mayorVenta Entonces\n                mayorVenta = monto\n                mejorDia = nombreDia\n            FinSi\n        FinSi\n    Hasta Que dia == 0\n    Escribir \"Día con mayor venta: \", mejorDia\n    Escribir \"Monto mayor: \", mayorVenta\nFinProceso",
+      "codigoReferencia": "Proceso RegistrarVentasDiarias\n  Definir dia Como Entero\n  Definir monto, mayorVenta Como Real\n  Definir nombreDia, mejorDia Como Caracter\n\n  mayorVenta = -1\n  mejorDia   = \"\"\n  Repetir\n    Escribir \"Día (1-7, 0 para terminar):\"\n    Leer dia\n    Si dia <> 0 Entonces\n      Escribir \"Monto vendido:\"\n      Leer monto\n      Segun dia Hacer\n        1: nombreDia = \"Lunes\"\n        2: nombreDia = \"Martes\"\n        3: nombreDia = \"Miércoles\"\n        4: nombreDia = \"Jueves\"\n        5: nombreDia = \"Viernes\"\n        6: nombreDia = \"Sábado\"\n        7: nombreDia = \"Domingo\"\n        De Otro Modo:\n          nombreDia = \"Día inválido\"\n      FinSegun\n      Escribir nombreDia\n      Si monto > 100000 Entonces\n        Escribir \"Buena venta\"\n      Sino\n        Escribir \"Venta normal\"\n      FinSi\n      Si monto > mayorVenta Entonces\n        mayorVenta = monto\n        mejorDia   = nombreDia\n      FinSi\n    FinSi\n  Hasta Que dia == 0\n  Escribir \"Día con mayor venta: \", mejorDia\n  Escribir \"Monto mayor: \", mayorVenta\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1007,7 +1007,7 @@
       },
       "salidaEsperada": "Usuario:\n> admin\nContraseña:\n> 123\nPrimer intento fallido\nUsuario:\n> admin\nContraseña:\n> duoc123\nAcceso concedido",
       "pista": "Aquí la repetición depende de dos condiciones de salida: acertar o llegar al máximo de intentos.",
-      "codigoReferencia": "Proceso LoginConIntentos\n    Definir usuario, clave Como Caracter\n    Definir intentos Como Entero\n    Definir acceso Como Logico\n    intentos = 0\n    acceso = Falso\n    Repetir\n        intentos = intentos + 1\n        Escribir \"Usuario:\"\n        Leer usuario\n        Escribir \"Contraseña:\"\n        Leer clave\n        Si usuario == \"admin\" Entonces\n            Si clave == \"duoc123\" Entonces\n                acceso = Verdadero\n                Escribir \"Acceso concedido\"\n            Sino\n                Segun intentos Hacer\n                    1: Escribir \"Primer intento fallido\"\n                    2: Escribir \"Segundo intento fallido\"\n                    3: Escribir \"Tercer intento fallido\"\n                FinSegun\n            FinSi\n        Sino\n            Segun intentos Hacer\n                1: Escribir \"Primer intento fallido\"\n                2: Escribir \"Segundo intento fallido\"\n                3: Escribir \"Tercer intento fallido\"\n            FinSegun\n        FinSi\n    Hasta Que acceso == Verdadero O intentos == 3\n    Si acceso == Falso Entonces\n        Escribir \"Cuenta bloqueada\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso LoginConIntentos\n  Definir usuario, clave Como Caracter\n  Definir intentos Como Entero\n  Definir acceso Como Logico\n\n  intentos = 0\n  acceso   = Falso\n  Repetir\n    intentos = intentos + 1\n\n    Escribir \"Usuario:\"\n    Leer usuario\n    Escribir \"Contraseña:\"\n    Leer clave\n    Si usuario == \"admin\" Entonces\n      Si clave == \"duoc123\" Entonces\n        acceso = Verdadero\n\n        Escribir \"Acceso concedido\"\n      Sino\n        Segun intentos Hacer\n          1: Escribir \"Primer intento fallido\"\n          2: Escribir \"Segundo intento fallido\"\n          3: Escribir \"Tercer intento fallido\"\n        FinSegun\n      FinSi\n    Sino\n      Segun intentos Hacer\n        1: Escribir \"Primer intento fallido\"\n        2: Escribir \"Segundo intento fallido\"\n        3: Escribir \"Tercer intento fallido\"\n      FinSegun\n    FinSi\n  Hasta Que acceso == Verdadero O intentos == 3\n  Si acceso == Falso Entonces\n    Escribir \"Cuenta bloqueada\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1037,7 +1037,7 @@
       },
       "salidaEsperada": "Peso (kg):\n> 70\nAltura (m):\n> 1.75\nIMC: 22.8571\nClasificación: Normal\n¿Desea continuar? (si/no):\n> no",
       "pista": "Según con Verdadero sirve para clasificar valores por rangos.",
-      "codigoReferencia": "Proceso CalculadoraIMC\n    Definir peso, altura, imc Como Real\n    Definir continuar, clasificacion Como Caracter\n    Repetir\n        Escribir \"Peso (kg):\"\n        Leer peso\n        Escribir \"Altura (m):\"\n        Leer altura\n        Si altura > 0 Entonces\n            imc = peso / (altura ^ 2)\n            Escribir \"IMC: \", imc\n            Si imc < 18.5 Entonces\n                clasificacion = \"Bajo peso\"\n            Sino\n                Si imc < 25 Entonces\n                clasificacion = \"Normal\"\n                Sino\n                    Si imc < 30 Entonces\n                clasificacion = \"Sobrepeso\"\n                    Sino\n                  clasificacion = \"Obesidad\"\n                    FinSi\n                FinSi\n            FinSi\n            Escribir \"Clasificación: \", clasificacion\n        Sino\n            Escribir \"Altura inválida\"\n        FinSi\n        Escribir \"¿Desea continuar? (si/no):\"\n        Leer continuar\n    Hasta Que continuar == \"no\"\nFinProceso",
+      "codigoReferencia": "Proceso CalculadoraIMC\n  Definir peso, altura, imc Como Real\n  Definir continuar, clasificacion Como Caracter\n\n  Repetir\n    Escribir \"Peso (kg):\"\n    Leer peso\n    Escribir \"Altura (m):\"\n    Leer altura\n    Si altura > 0 Entonces\n      imc = peso / (altura ^ 2)\n\n      Escribir \"IMC: \", imc\n      Si imc < 18.5 Entonces\n        clasificacion = \"Bajo peso\"\n      Sino\n        Si imc < 25 Entonces\n          clasificacion = \"Normal\"\n        Sino\n          Si imc < 30 Entonces\n            clasificacion = \"Sobrepeso\"\n          Sino\n            clasificacion = \"Obesidad\"\n          FinSi\n        FinSi\n      FinSi\n      Escribir \"Clasificación: \", clasificacion\n    Sino\n      Escribir \"Altura inválida\"\n    FinSi\n    Escribir \"¿Desea continuar? (si/no):\"\n    Leer continuar\n  Hasta Que continuar == \"no\"\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1067,7 +1067,7 @@
       },
       "salidaEsperada": "Nombre del estudiante (fin para terminar):\n> Ana\nNota:\n> 5.8\nLetra: B\nNombre del estudiante (fin para terminar):\n> fin\nAprobados: 1\nReprobados: 0",
       "pista": "La letra y la condición de aprobación son dos clasificaciones distintas del mismo dato.",
-      "codigoReferencia": "Proceso RegistrarNotasEstudiantes\n    Definir nombre, letra Como Caracter\n    Definir nota Como Real\n    Definir aprobados, reprobados Como Entero\n    aprobados = 0\n    reprobados = 0\n    Repetir\n        Escribir \"Nombre del estudiante (fin para terminar):\"\n        Leer nombre\n        Si nombre <> \"fin\" Entonces\n            Escribir \"Nota:\"\n            Leer nota\n            Si nota >= 6.5 Entonces\n                letra = \"A\"\n            Sino\n                Si nota >= 5.5 Entonces\n                letra = \"B\"\n                Sino\n                    Si nota >= 4.5 Entonces\n                letra = \"C\"\n                    Sino\n                        Si nota >= 4.0 Entonces\n                letra = \"D\"\n                        Sino\n                  letra = \"F\"\n                        FinSi\n                    FinSi\n                FinSi\n            FinSi\n            Escribir \"Letra: \", letra\n            Si nota >= 4 Entonces\n                aprobados = aprobados + 1\n            Sino\n                reprobados = reprobados + 1\n            FinSi\n        FinSi\n    Hasta Que nombre == \"fin\"\n    Escribir \"Aprobados: \", aprobados\n    Escribir \"Reprobados: \", reprobados\nFinProceso",
+      "codigoReferencia": "Proceso RegistrarNotasEstudiantes\n  Definir nombre, letra Como Caracter\n  Definir nota Como Real\n  Definir aprobados, reprobados Como Entero\n\n  aprobados  = 0\n  reprobados = 0\n  Repetir\n    Escribir \"Nombre del estudiante (fin para terminar):\"\n    Leer nombre\n    Si nombre <> \"fin\" Entonces\n      Escribir \"Nota:\"\n      Leer nota\n      Si nota >= 6.5 Entonces\n        letra = \"A\"\n      Sino\n        Si nota >= 5.5 Entonces\n          letra = \"B\"\n        Sino\n          Si nota >= 4.5 Entonces\n            letra = \"C\"\n          Sino\n            Si nota >= 4.0 Entonces\n              letra = \"D\"\n            Sino\n              letra = \"F\"\n            FinSi\n          FinSi\n        FinSi\n      FinSi\n      Escribir \"Letra: \", letra\n      Si nota >= 4 Entonces\n        aprobados = aprobados + 1\n      Sino\n        reprobados = reprobados + 1\n      FinSi\n    FinSi\n  Hasta Que nombre == \"fin\"\n  Escribir \"Aprobados: \", aprobados\n  Escribir \"Reprobados: \", reprobados\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1097,7 +1097,7 @@
       },
       "salidaEsperada": "Ingrese turno (1-5, 0 para terminar):\n> 2\nVentanilla asignada: B\nEstado: con tiempo de espera\nIngrese turno (1-5, 0 para terminar):\n> 1\nVentanilla asignada: A\nEstado: disponible\nIngrese turno (1-5, 0 para terminar):\n> 0\nAtendidos: 1\nEn espera: 1",
       "pista": "Puedes modelar la disponibilidad con una regla simple, como usar la paridad del turno para decidir si espera o no.",
-      "codigoReferencia": "Proceso SistemaDeTurnos\n    Definir turno, atendidos, enEspera Como Entero\n    Definir ventanilla Como Caracter\n    atendidos = 0\n    enEspera = 0\n    Repetir\n        Escribir \"Ingrese turno (1-5, 0 para terminar):\"\n        Leer turno\n        Si turno <> 0 Entonces\n            Segun turno Hacer\n                1: ventanilla = \"A\"\n                2: ventanilla = \"B\"\n                3: ventanilla = \"C\"\n                4: ventanilla = \"D\"\n                5: ventanilla = \"E\"\n                De Otro Modo:\n                  ventanilla = \"INV\"\n            FinSegun\n            Si ventanilla <> \"INV\" Entonces\n                Escribir \"Ventanilla asignada: \", ventanilla\n                Si turno mod 2 == 0 Entonces\n                    Escribir \"Estado: con tiempo de espera\"\n                    enEspera = enEspera + 1\n                Sino\n                    Escribir \"Estado: disponible\"\n                    atendidos = atendidos + 1\n                FinSi\n            Sino\n                Escribir \"Turno inválido\"\n            FinSi\n        FinSi\n    Hasta Que turno == 0\n    Escribir \"Atendidos: \", atendidos\n    Escribir \"En espera: \", enEspera\nFinProceso",
+      "codigoReferencia": "Proceso SistemaDeTurnos\n  Definir turno, atendidos, enEspera Como Entero\n  Definir ventanilla Como Caracter\n\n  atendidos = 0\n  enEspera  = 0\n  Repetir\n    Escribir \"Ingrese turno (1-5, 0 para terminar):\"\n    Leer turno\n    Si turno <> 0 Entonces\n      Segun turno Hacer\n        1: ventanilla = \"A\"\n        2: ventanilla = \"B\"\n        3: ventanilla = \"C\"\n        4: ventanilla = \"D\"\n        5: ventanilla = \"E\"\n        De Otro Modo:\n          ventanilla = \"INV\"\n      FinSegun\n      Si ventanilla <> \"INV\" Entonces\n        Escribir \"Ventanilla asignada: \", ventanilla\n        Si turno mod 2 == 0 Entonces\n          Escribir \"Estado: con tiempo de espera\"\n\n          enEspera = enEspera + 1\n        Sino\n          Escribir \"Estado: disponible\"\n\n          atendidos = atendidos + 1\n        FinSi\n      Sino\n        Escribir \"Turno inválido\"\n      FinSi\n    FinSi\n  Hasta Que turno == 0\n  Escribir \"Atendidos: \", atendidos\n  Escribir \"En espera: \", enEspera\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1127,7 +1127,7 @@
       },
       "salidaEsperada": "Calificación (1-5, 0 para terminar):\n> 5\nExcelente\nCalificación (1-5, 0 para terminar):\n> 2\nMala\nCalificación (1-5, 0 para terminar):\n> 0\nSatisfechos: 1\nInsatisfechos: 1\nNeutros: 0",
       "pista": "Este ejercicio separa dos tareas: interpretar el puntaje y agruparlo en categorías generales.",
-      "codigoReferencia": "Proceso EncuestaSatisfaccion\n    Definir calificacion, satisfechos, insatisfechos, neutros Como Entero\n    satisfechos = 0\n    insatisfechos = 0\n    neutros = 0\n    Repetir\n        Escribir \"Calificación (1-5, 0 para terminar):\"\n        Leer calificacion\n        Si calificacion <> 0 Entonces\n            Segun calificacion Hacer\n                1: Escribir \"Muy mala\"\n                2: Escribir \"Mala\"\n                3: Escribir \"Regular\"\n                4: Escribir \"Buena\"\n                5: Escribir \"Excelente\"\n                De Otro Modo:\n                  Escribir \"Valor inválido\"\n            FinSegun\n            Si calificacion >= 4 Entonces\n                satisfechos = satisfechos + 1\n            Sino\n                Si calificacion <= 2 Entonces\n                    insatisfechos = insatisfechos + 1\n                Sino\n                    neutros = neutros + 1\n                FinSi\n            FinSi\n        FinSi\n    Hasta Que calificacion == 0\n    Escribir \"Satisfechos: \", satisfechos\n    Escribir \"Insatisfechos: \", insatisfechos\n    Escribir \"Neutros: \", neutros\nFinProceso",
+      "codigoReferencia": "Proceso EncuestaSatisfaccion\n  Definir calificacion, satisfechos, insatisfechos, neutros Como Entero\n\n  satisfechos   = 0\n  insatisfechos = 0\n  neutros       = 0\n  Repetir\n    Escribir \"Calificación (1-5, 0 para terminar):\"\n    Leer calificacion\n    Si calificacion <> 0 Entonces\n      Segun calificacion Hacer\n        1: Escribir \"Muy mala\"\n        2: Escribir \"Mala\"\n        3: Escribir \"Regular\"\n        4: Escribir \"Buena\"\n        5: Escribir \"Excelente\"\n        De Otro Modo:\n          Escribir \"Valor inválido\"\n      FinSegun\n      Si calificacion >= 4 Entonces\n        satisfechos = satisfechos + 1\n      Sino\n        Si calificacion <= 2 Entonces\n          insatisfechos = insatisfechos + 1\n        Sino\n          neutros = neutros + 1\n        FinSi\n      FinSi\n    FinSi\n  Hasta Que calificacion == 0\n  Escribir \"Satisfechos: \", satisfechos\n  Escribir \"Insatisfechos: \", insatisfechos\n  Escribir \"Neutros: \", neutros\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1157,7 +1157,7 @@
       },
       "salidaEsperada": "Acción (1 agregar, 2 vender, 3 consultar, 4 salir):\n> 1\nCantidad a agregar:\n> 10\nStock actualizado: 10\nAcción (1 agregar, 2 vender, 3 consultar, 4 salir):\n> 2\nCantidad a vender:\n> 4\nStock actualizado: 6\nAcción (1 agregar, 2 vender, 3 consultar, 4 salir):\n> 4",
       "pista": "La validación de cantidades y la verificación de stock deben hacerse antes de modificar el inventario.",
-      "codigoReferencia": "Proceso MiniERPInventario\n    Definir accion, cantidad, stock Como Entero\n    stock = 0\n    Repetir\n        Escribir \"Acción (1 agregar, 2 vender, 3 consultar, 4 salir):\"\n        Leer accion\n        Segun accion Hacer\n            1:\n                Escribir \"Cantidad a agregar:\"\n                Leer cantidad\n                Si cantidad > 0 Entonces\n                    stock = stock + cantidad\n                    Escribir \"Stock actualizado: \", stock\n                Sino\n                    Escribir \"Cantidad inválida\"\n                FinSi\n            2:\n                Escribir \"Cantidad a vender:\"\n                Leer cantidad\n                Si cantidad > 0 Entonces\n                    Si cantidad <= stock Entonces\n                        stock = stock - cantidad\n                        Escribir \"Stock actualizado: \", stock\n                    Sino\n                        Escribir \"No hay stock suficiente\"\n                    FinSi\n                Sino\n                    Escribir \"Cantidad inválida\"\n                FinSi\n            3:\n                Escribir \"Stock actual: \", stock\n            4:\n                Escribir \"Saliendo del sistema\"\n            De Otro Modo:\n                Escribir \"Acción inválida\"\n        FinSegun\n    Hasta Que accion == 4\nFinProceso",
+      "codigoReferencia": "Proceso MiniERPInventario\n  Definir accion, cantidad, stock Como Entero\n\n  stock = 0\n  Repetir\n    Escribir \"Acción (1 agregar, 2 vender, 3 consultar, 4 salir):\"\n    Leer accion\n    Segun accion Hacer\n      1:\n        Escribir \"Cantidad a agregar:\"\n        Leer cantidad\n        Si cantidad > 0 Entonces\n          stock = stock + cantidad\n\n          Escribir \"Stock actualizado: \", stock\n        Sino\n          Escribir \"Cantidad inválida\"\n        FinSi\n      2:\n        Escribir \"Cantidad a vender:\"\n        Leer cantidad\n        Si cantidad > 0 Entonces\n          Si cantidad <= stock Entonces\n            stock = stock - cantidad\n\n            Escribir \"Stock actualizado: \", stock\n          Sino\n            Escribir \"No hay stock suficiente\"\n          FinSi\n        Sino\n          Escribir \"Cantidad inválida\"\n        FinSi\n      3:\n        Escribir \"Stock actual: \", stock\n      4:\n        Escribir \"Saliendo del sistema\"\n      De Otro Modo:\n        Escribir \"Acción inválida\"\n    FinSegun\n  Hasta Que accion == 4\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1185,7 +1185,7 @@
       },
       "salidaEsperada": "Ingrese N:\n> 5\n1\n2\n3\n4\n5",
       "pista": "El ciclo Para es ideal cuando conoces desde el inicio cuántas veces debe repetirse un proceso.",
-      "codigoReferencia": "Proceso NumerosDelUnoAlN\n    Definir N, i Como Entero\n    Escribir \"Ingrese N:\"\n    Leer N\n    Para i = 1 Hasta N Con Paso 1 Hacer\n        Escribir i\n    FinPara\nFinProceso",
+      "codigoReferencia": "Proceso NumerosDelUnoAlN\n  Definir N, i Como Entero\n\n  Escribir \"Ingrese N:\"\n  Leer N\n  Para i = 1 Hasta N Con Paso 1 Hacer\n    Escribir i\n  FinPara\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1213,7 +1213,7 @@
       },
       "salidaEsperada": "Ingrese A:\n> 3\nIngrese B:\n> 6\nSuma total: 18",
       "pista": "Cuando se quiere sumar una secuencia de valores, suele usarse un acumulador inicializado en 0.",
-      "codigoReferencia": "Proceso SumaEntreAyB\n    Definir A, B, i, suma Como Entero\n    Escribir \"Ingrese A:\"\n    Leer A\n    Escribir \"Ingrese B:\"\n    Leer B\n    suma = 0\n    Para i = A Hasta B Con Paso 1 Hacer\n        suma = suma + i\n    FinPara\n    Escribir \"Suma total: \", suma\nFinProceso",
+      "codigoReferencia": "Proceso SumaEntreAyB\n  Definir A, B, i, suma Como Entero\n\n  Escribir \"Ingrese A:\"\n  Leer A\n  Escribir \"Ingrese B:\"\n  Leer B\n\n  suma = 0\n  Para i = A Hasta B Con Paso 1 Hacer\n    suma = suma + i\n  FinPara\n  Escribir \"Suma total: \", suma\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1241,7 +1241,7 @@
       },
       "salidaEsperada": "Ingrese un número:\n> 3\n3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12\n3 x 5 = 15\n3 x 6 = 18\n3 x 7 = 21\n3 x 8 = 24\n3 x 9 = 27\n3 x 10 = 30",
       "pista": "El ciclo Para permite recorrer exactamente los 10 valores que necesita la tabla.",
-      "codigoReferencia": "Proceso TablaMultiplicarPara\n    Definir numero, i, resultado Como Entero\n    Escribir \"Ingrese un número:\"\n    Leer numero\n    Para i = 1 Hasta 10 Con Paso 1 Hacer\n        resultado = numero * i\n        Escribir numero, \" x \", i, \" = \", resultado\n    FinPara\nFinProceso",
+      "codigoReferencia": "Proceso TablaMultiplicarPara\n  Definir numero, i, resultado Como Entero\n\n  Escribir \"Ingrese un número:\"\n  Leer numero\n  Para i = 1 Hasta 10 Con Paso 1 Hacer\n    resultado = numero * i\n\n    Escribir numero, \" x \", i, \" = \", resultado\n  FinPara\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1269,7 +1269,7 @@
       },
       "salidaEsperada": "Ingrese base:\n> 2\nIngrese exponente:\n> 5\nPotencia: 32",
       "pista": "El acumulador debe comenzar en 1, porque 1 es el elemento neutro de la multiplicación.",
-      "codigoReferencia": "Proceso PotenciaIterativa\n    Definir base, exponente, i, potencia Como Entero\n    Escribir \"Ingrese base:\"\n    Leer base\n    Escribir \"Ingrese exponente:\"\n    Leer exponente\n    potencia = 1\n    Para i = 1 Hasta exponente Con Paso 1 Hacer\n        potencia = potencia * base\n    FinPara\n    Escribir \"Potencia: \", potencia\nFinProceso",
+      "codigoReferencia": "Proceso PotenciaIterativa\n  Definir base, exponente, i, potencia Como Entero\n\n  Escribir \"Ingrese base:\"\n  Leer base\n  Escribir \"Ingrese exponente:\"\n  Leer exponente\n\n  potencia = 1\n  Para i = 1 Hasta exponente Con Paso 1 Hacer\n    potencia = potencia * base\n  FinPara\n  Escribir \"Potencia: \", potencia\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1297,7 +1297,7 @@
       },
       "salidaEsperada": "Ingrese cantidad de filas:\n> 4\n*\n**\n***\n****",
       "pista": "El ciclo externo controla las filas y el interno la cantidad de asteriscos de cada fila.",
-      "codigoReferencia": "Proceso TrianguloAsteriscos\n    Definir N, i, j Como Entero\n    Definir linea Como Caracter\n    Escribir \"Ingrese cantidad de filas:\"\n    Leer N\n    Para i = 1 Hasta N Con Paso 1 Hacer\n        linea = \"\"\n        Para j = 1 Hasta i Con Paso 1 Hacer\n            linea = linea + \"*\"\n        FinPara\n        Escribir linea\n    FinPara\nFinProceso",
+      "codigoReferencia": "Proceso TrianguloAsteriscos\n  Definir N, i, j Como Entero\n  Definir linea Como Caracter\n\n  Escribir \"Ingrese cantidad de filas:\"\n  Leer N\n  Para i = 1 Hasta N Con Paso 1 Hacer\n    linea = \"\"\n    Para j = 1 Hasta i Con Paso 1 Hacer\n      linea = linea + \"*\"\n    FinPara\n    Escribir linea\n  FinPara\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1325,7 +1325,7 @@
       },
       "salidaEsperada": "Ingrese cantidad de notas:\n> 3\nIngrese nota 1:\n> 5.0\nIngrese nota 2:\n> 4.5\nIngrese nota 3:\n> 6.0\nPromedio: 5.16667",
       "pista": "Después de acumular todas las notas, el promedio se obtiene dividiendo la suma por la cantidad.",
-      "codigoReferencia": "Proceso PromedioDeNNotas\n    Definir N, i Como Entero\n    Definir nota, suma, promedio Como Real\n    Escribir \"Ingrese cantidad de notas:\"\n    Leer N\n    suma = 0\n    Para i = 1 Hasta N Con Paso 1 Hacer\n        Escribir \"Ingrese nota \", i, \":\"\n        Leer nota\n        suma = suma + nota\n    FinPara\n    promedio = suma / N\n    Escribir \"Promedio: \", promedio\nFinProceso",
+      "codigoReferencia": "Proceso PromedioDeNNotas\n  Definir N, i Como Entero\n  Definir nota, suma, promedio Como Real\n\n  Escribir \"Ingrese cantidad de notas:\"\n  Leer N\n\n  suma = 0\n  Para i = 1 Hasta N Con Paso 1 Hacer\n    Escribir \"Ingrese nota \", i, \":\"\n    Leer nota\n\n    suma = suma + nota\n  FinPara\n  promedio = suma / N\n\n  Escribir \"Promedio: \", promedio\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1353,7 +1353,7 @@
       },
       "salidaEsperada": "Ingrese K:\n> 20\n20\n40\n60\n80\n100",
       "pista": "Modificar el paso del ciclo permite avanzar directamente entre múltiplos, sin revisar todos los números.",
-      "codigoReferencia": "Proceso MultiplosDeK\n    Definir K, i Como Entero\n    Escribir \"Ingrese K:\"\n    Leer K\n    Para i = K Hasta 100 Con Paso K Hacer\n        Escribir i\n    FinPara\nFinProceso",
+      "codigoReferencia": "Proceso MultiplosDeK\n  Definir K, i Como Entero\n\n  Escribir \"Ingrese K:\"\n  Leer K\n  Para i = K Hasta 100 Con Paso K Hacer\n    Escribir i\n  FinPara\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1382,7 +1382,7 @@
       },
       "salidaEsperada": "2\n3\n5\n7\n11\n13",
       "pista": "Un número primo tiene exactamente dos divisores: 1 y él mismo.",
-      "codigoReferencia": "Proceso PrimosDelUnoAlCien\n    Definir i, j, divisores Como Entero\n    Para i = 1 Hasta 100 Con Paso 1 Hacer\n        divisores = 0\n        Para j = 1 Hasta i Con Paso 1 Hacer\n            Si i mod j == 0 Entonces\n                divisores = divisores + 1\n            FinSi\n        FinPara\n        Si divisores == 2 Entonces\n            Escribir i\n        FinSi\n    FinPara\nFinProceso",
+      "codigoReferencia": "Proceso PrimosDelUnoAlCien\n  Definir i, j, divisores Como Entero\n\n  Para i = 1 Hasta 100 Con Paso 1 Hacer\n    divisores = 0\n    Para j = 1 Hasta i Con Paso 1 Hacer\n      Si i mod j == 0 Entonces\n        divisores = divisores + 1\n      FinSi\n    FinPara\n    Si divisores == 2 Entonces\n      Escribir i\n    FinSi\n  FinPara\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1411,7 +1411,7 @@
       },
       "salidaEsperada": "Cantidad de calificaciones:\n> 4\nIngrese calificación 1:\n> 5.0\nAprobado\nIngrese calificación 2:\n> 3.5\nReprobado\nAprobados: 1\nReprobados: 1\nPorcentaje de aprobación: 25",
       "pista": "El porcentaje de aprobación se calcula con la proporción de aprobados respecto del total.",
-      "codigoReferencia": "Proceso ClasificarNCalificaciones\n    Definir N, i, aprobados, reprobados Como Entero\n    Definir nota, porcentaje Como Real\n    Escribir \"Cantidad de calificaciones:\"\n    Leer N\n    aprobados = 0\n    reprobados = 0\n    Para i = 1 Hasta N Con Paso 1 Hacer\n        Escribir \"Ingrese calificación \", i, \":\"\n        Leer nota\n        Si nota >= 4 Entonces\n            Escribir \"Aprobado\"\n            aprobados = aprobados + 1\n        Sino\n            Escribir \"Reprobado\"\n            reprobados = reprobados + 1\n        FinSi\n    FinPara\n    porcentaje = aprobados * 100 / N\n    Escribir \"Aprobados: \", aprobados\n    Escribir \"Reprobados: \", reprobados\n    Escribir \"Porcentaje de aprobación: \", porcentaje\nFinProceso",
+      "codigoReferencia": "Proceso ClasificarNCalificaciones\n  Definir N, i, aprobados, reprobados Como Entero\n  Definir nota, porcentaje Como Real\n\n  Escribir \"Cantidad de calificaciones:\"\n  Leer N\n\n  aprobados  = 0\n  reprobados = 0\n  Para i = 1 Hasta N Con Paso 1 Hacer\n    Escribir \"Ingrese calificación \", i, \":\"\n    Leer nota\n    Si nota >= 4 Entonces\n      Escribir \"Aprobado\"\n\n      aprobados = aprobados + 1\n    Sino\n      Escribir \"Reprobado\"\n\n      reprobados = reprobados + 1\n    FinSi\n  FinPara\n  porcentaje = aprobados * 100 / N\n\n  Escribir \"Aprobados: \", aprobados\n  Escribir \"Reprobados: \", reprobados\n  Escribir \"Porcentaje de aprobación: \", porcentaje\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1440,7 +1440,7 @@
       },
       "salidaEsperada": "Ingrese temperatura máxima en °C:\n> 3\n0 °C = 32 °F - Frío\n1 °C = 33.8 °F - Frío\n2 °C = 35.6 °F - Frío\n3 °C = 37.4 °F - Frío",
       "pista": "La clasificación se basa en °C, mientras que Fahrenheit se calcula solo para mostrar la conversión.",
-      "codigoReferencia": "Proceso ConversionTemperatura\n    Definir N, celsius Como Entero\n    Definir fahrenheit Como Real\n    Escribir \"Ingrese temperatura máxima en °C:\"\n    Leer N\n    Para celsius = 0 Hasta N Con Paso 1 Hacer\n        fahrenheit = celsius * 9 / 5 + 32\n        Si celsius < 15 Entonces\n            Escribir celsius, \" °C = \", fahrenheit, \" °F - Frío\"\n        Sino\n            Si celsius < 25 Entonces\n                Escribir celsius, \" °C = \", fahrenheit, \" °F - Templado\"\n            Sino\n                Escribir celsius, \" °C = \", fahrenheit, \" °F - Caluroso\"\n            FinSi\n        FinSi\n    FinPara\nFinProceso",
+      "codigoReferencia": "Proceso ConversionTemperatura\n  Definir N, celsius Como Entero\n  Definir fahrenheit Como Real\n\n  Escribir \"Ingrese temperatura máxima en °C:\"\n  Leer N\n  Para celsius = 0 Hasta N Con Paso 1 Hacer\n    fahrenheit = celsius * 9 / 5 + 32\n    Si celsius < 15 Entonces\n      Escribir celsius, \" °C = \", fahrenheit, \" °F - Frío\"\n    Sino\n      Si celsius < 25 Entonces\n        Escribir celsius, \" °C = \", fahrenheit, \" °F - Templado\"\n      Sino\n        Escribir celsius, \" °C = \", fahrenheit, \" °F - Caluroso\"\n      FinSi\n    FinSi\n  FinPara\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1469,7 +1469,7 @@
       },
       "salidaEsperada": "Número: 6\nDivisores propios: 1 2 3\nPerfecto",
       "pista": "Los divisores propios de un número son todos sus divisores positivos menores que él mismo.",
-      "codigoReferencia": "Proceso DivisoresYPerfectos\n    Definir i, j, suma Como Entero\n    Definir linea Como Caracter\n    Para i = 1 Hasta 20 Con Paso 1 Hacer\n        suma = 0\n        linea = \"\"\n        Para j = 1 Hasta i - 1 Con Paso 1 Hacer\n            Si i mod j == 0 Entonces\n                linea = linea + j + \" \"\n                suma = suma + j\n            FinSi\n        FinPara\n        Escribir \"Número: \", i\n        Escribir \"Divisores propios: \", linea\n        Si suma == i Entonces\n            Escribir \"Perfecto\"\n        Sino\n            Escribir \"No perfecto\"\n        FinSi\n    FinPara\nFinProceso",
+      "codigoReferencia": "Proceso DivisoresYPerfectos\n  Definir i, j, suma Como Entero\n  Definir linea Como Caracter\n\n  Para i = 1 Hasta 20 Con Paso 1 Hacer\n    suma  = 0\n    linea = \"\"\n    Para j = 1 Hasta i - 1 Con Paso 1 Hacer\n      Si i mod j == 0 Entonces\n        linea = linea + j + \" \"\n        suma  = suma + j\n      FinSi\n    FinPara\n    Escribir \"Número: \", i\n    Escribir \"Divisores propios: \", linea\n    Si suma == i Entonces\n      Escribir \"Perfecto\"\n    Sino\n      Escribir \"No perfecto\"\n    FinSi\n  FinPara\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1498,7 +1498,7 @@
       },
       "salidaEsperada": "Cantidad de trabajadores:\n> 2\nIngrese sueldo trabajador 1:\n> 1200000\nSueldo líquido: 1080000\nIngrese sueldo trabajador 2:\n> 800000\nSueldo líquido: 800000",
       "pista": "El sueldo líquido depende de si el valor supera o no el umbral definido para el descuento.",
-      "codigoReferencia": "Proceso SueldoLiquidoTrabajadores\n    Definir N, i Como Entero\n    Definir sueldo, liquido Como Real\n    Escribir \"Cantidad de trabajadores:\"\n    Leer N\n    Para i = 1 Hasta N Con Paso 1 Hacer\n        Escribir \"Ingrese sueldo trabajador \", i, \":\"\n        Leer sueldo\n        Si sueldo > 1000000 Entonces\n            liquido = sueldo - sueldo * 0.10\n        Sino\n            liquido = sueldo\n        FinSi\n        Escribir \"Sueldo líquido: \", liquido\n    FinPara\nFinProceso",
+      "codigoReferencia": "Proceso SueldoLiquidoTrabajadores\n  Definir N, i Como Entero\n  Definir sueldo, liquido Como Real\n\n  Escribir \"Cantidad de trabajadores:\"\n  Leer N\n  Para i = 1 Hasta N Con Paso 1 Hacer\n    Escribir \"Ingrese sueldo trabajador \", i, \":\"\n    Leer sueldo\n    Si sueldo > 1000000 Entonces\n      liquido = sueldo - sueldo * 0.10\n    Sino\n      liquido = sueldo\n    FinSi\n    Escribir \"Sueldo líquido: \", liquido\n  FinPara\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1527,7 +1527,7 @@
       },
       "salidaEsperada": "Ingrese cantidad de filas:\n> 5\n1\n1 1\n1 2 1\n1 3 3 1\n1 4 6 4 1",
       "pista": "Los extremos de cada fila del triángulo de Pascal siempre valen 1; el resto se puede calcular con combinaciones.",
-      "codigoReferencia": "Proceso TrianguloDePascal\n    Definir N, i, j, k, valor Como Entero\n    Definir linea Como Caracter\n    Escribir \"Ingrese cantidad de filas:\"\n    Leer N\n    Para i = 0 Hasta N - 1 Con Paso 1 Hacer\n        linea = \"\"\n        Para j = 0 Hasta i Con Paso 1 Hacer\n            Si j == 0 O j == i Entonces\n                valor = 1\n            Sino\n                valor = 1\n                Para k = 1 Hasta j Con Paso 1 Hacer\n                    valor = valor * (i - k + 1) / k\n                FinPara\n            FinSi\n            linea = linea + valor + \" \"\n        FinPara\n        Escribir linea\n    FinPara\nFinProceso",
+      "codigoReferencia": "Proceso TrianguloDePascal\n  Definir N, i, j, k, valor Como Entero\n  Definir linea Como Caracter\n\n  Escribir \"Ingrese cantidad de filas:\"\n  Leer N\n  Para i = 0 Hasta N - 1 Con Paso 1 Hacer\n    linea = \"\"\n    Para j = 0 Hasta i Con Paso 1 Hacer\n      Si j == 0 O j == i Entonces\n        valor = 1\n      Sino\n        valor = 1\n        Para k = 1 Hasta j Con Paso 1 Hacer\n          valor = valor * (i - k + 1) / k\n        FinPara\n      FinSi\n      linea = linea + valor + \" \"\n    FinPara\n    Escribir linea\n  FinPara\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1557,7 +1557,7 @@
       },
       "salidaEsperada": "Estudiante 1 - Nombre:\n> Ana\nNota asignatura 1:\n> 5.5\nConcepto: B\nInforme final: Aprueba todas",
       "pista": "Puedes usar un indicador lógico para recordar si el estudiante reprobó al menos una asignatura.",
-      "codigoReferencia": "Proceso InformeNotasEstudiantes\n    Definir i, j, notaEntera Como Entero\n    Definir nota Como Real\n    Definir nombre, concepto Como Caracter\n    Definir repruebaAlguna Como Logico\n    Para i = 1 Hasta 5 Con Paso 1 Hacer\n        Escribir \"Estudiante \", i, \" - Nombre:\"\n        Leer nombre\n        repruebaAlguna = Falso\n        Para j = 1 Hasta 4 Con Paso 1 Hacer\n            Escribir \"Nota asignatura \", j, \":\"\n            Leer nota\n            notaEntera = Trunc(nota)\n            Segun notaEntera Hacer\n                6, 7: concepto = \"MB\"\n                5: concepto = \"B\"\n                4: concepto = \"S\"\n                De Otro Modo:\n                  concepto = \"I\"\n            FinSegun\n            Escribir \"Concepto: \", concepto\n            Si nota < 4 Entonces\n                repruebaAlguna = Verdadero\n            FinSi\n        FinPara\n        Si repruebaAlguna == Verdadero Entonces\n            Escribir \"Informe final: Reprueba alguna asignatura\"\n        Sino\n            Escribir \"Informe final: Aprueba todas\"\n        FinSi\n    FinPara\nFinProceso",
+      "codigoReferencia": "Proceso InformeNotasEstudiantes\n  Definir i, j, notaEntera Como Entero\n  Definir nota Como Real\n  Definir nombre, concepto Como Caracter\n  Definir repruebaAlguna Como Logico\n\n  Para i = 1 Hasta 5 Con Paso 1 Hacer\n    Escribir \"Estudiante \", i, \" - Nombre:\"\n    Leer nombre\n\n    repruebaAlguna = Falso\n    Para j = 1 Hasta 4 Con Paso 1 Hacer\n      Escribir \"Nota asignatura \", j, \":\"\n      Leer nota\n\n      notaEntera = Trunc(nota)\n      Segun notaEntera Hacer\n        6, 7: concepto = \"MB\"\n        5: concepto = \"B\"\n        4: concepto = \"S\"\n        De Otro Modo:\n          concepto = \"I\"\n      FinSegun\n      Escribir \"Concepto: \", concepto\n      Si nota < 4 Entonces\n        repruebaAlguna = Verdadero\n      FinSi\n    FinPara\n    Si repruebaAlguna == Verdadero Entonces\n      Escribir \"Informe final: Reprueba alguna asignatura\"\n    Sino\n      Escribir \"Informe final: Aprueba todas\"\n    FinSi\n  FinPara\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1587,7 +1587,7 @@
       },
       "salidaEsperada": "Cantidad de autos:\n> 1\nHoras de permanencia del auto 1:\n> 4\n¿Cliente frecuente? (si/no):\n> si\nCosto final: 3600",
       "pista": "Puedes usar un paso previo con Si para traducir las horas a un tramo y luego resolver la tarifa con Según.",
-      "codigoReferencia": "Proceso CostoEstacionamiento\n    Definir N, i, tramo Como Entero\n    Definir horas, costo Como Real\n    Definir frecuente Como Caracter\n    Escribir \"Cantidad de autos:\"\n    Leer N\n    Para i = 1 Hasta N Con Paso 1 Hacer\n        Escribir \"Horas de permanencia del auto \", i, \":\"\n        Leer horas\n        Si horas <= 2 Entonces\n            tramo = 1\n        Sino\n            Si horas <= 5 Entonces\n                tramo = 2\n            Sino\n                tramo = 3\n            FinSi\n        FinSi\n        Segun tramo Hacer\n            1: costo = horas * 1000\n            2: costo = horas * 1000\n            3: costo = horas * 800\n        FinSegun\n        Escribir \"¿Cliente frecuente? (si/no):\"\n        Leer frecuente\n        Si frecuente == \"si\" Entonces\n            costo = costo - costo * 0.10\n        FinSi\n        Escribir \"Costo final: \", costo\n    FinPara\nFinProceso",
+      "codigoReferencia": "Proceso CostoEstacionamiento\n  Definir N, i, tramo Como Entero\n  Definir horas, costo Como Real\n  Definir frecuente Como Caracter\n\n  Escribir \"Cantidad de autos:\"\n  Leer N\n  Para i = 1 Hasta N Con Paso 1 Hacer\n    Escribir \"Horas de permanencia del auto \", i, \":\"\n    Leer horas\n    Si horas <= 2 Entonces\n      tramo = 1\n    Sino\n      Si horas <= 5 Entonces\n        tramo = 2\n      Sino\n        tramo = 3\n      FinSi\n    FinSi\n    Segun tramo Hacer\n      1: costo = horas * 1000\n      2: costo = horas * 1000\n      3: costo = horas * 800\n    FinSegun\n    Escribir \"¿Cliente frecuente? (si/no):\"\n    Leer frecuente\n    Si frecuente == \"si\" Entonces\n      costo = costo - costo * 0.10\n    FinSi\n    Escribir \"Costo final: \", costo\n  FinPara\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1617,7 +1617,7 @@
       },
       "salidaEsperada": "Monto del préstamo:\n> 120000\nNúmero de cuotas:\n> 4\nUmbral de alerta:\n> 50000\nCuota 1 - Inicio - Saldo restante: 90000\nAlerta: saldo restante alto",
       "pista": "Puedes definir la categoría de la cuota según su posición dentro del crédito.",
-      "codigoReferencia": "Proceso TablaAmortizacion\n    Definir monto, cuota, saldo, umbral Como Real\n    Definir N, i, categoria Como Entero\n    Escribir \"Monto del préstamo:\"\n    Leer monto\n    Escribir \"Número de cuotas:\"\n    Leer N\n    Escribir \"Umbral de alerta:\"\n    Leer umbral\n    cuota = monto / N\n    saldo = monto\n    Para i = 1 Hasta N Con Paso 1 Hacer\n        saldo = saldo - cuota\n        Si i == 1 Entonces\n            categoria = 1\n        Sino\n            Si i == N Entonces\n                categoria = 3\n            Sino\n                categoria = 2\n            FinSi\n        FinSi\n        Segun categoria Hacer\n            1: Escribir \"Cuota \", i, \" - Inicio - Saldo restante: \", saldo\n            2: Escribir \"Cuota \", i, \" - Medio - Saldo restante: \", saldo\n            3: Escribir \"Cuota \", i, \" - Final - Saldo restante: \", saldo\n        FinSegun\n        Si saldo > umbral Entonces\n            Escribir \"Alerta: saldo restante alto\"\n        FinSi\n    FinPara\nFinProceso",
+      "codigoReferencia": "Proceso TablaAmortizacion\n  Definir monto, cuota, saldo, umbral Como Real\n  Definir N, i, categoria Como Entero\n\n  Escribir \"Monto del préstamo:\"\n  Leer monto\n  Escribir \"Número de cuotas:\"\n  Leer N\n  Escribir \"Umbral de alerta:\"\n  Leer umbral\n\n  cuota = monto / N\n  saldo = monto\n  Para i = 1 Hasta N Con Paso 1 Hacer\n    saldo = saldo - cuota\n    Si i == 1 Entonces\n      categoria = 1\n    Sino\n      Si i == N Entonces\n        categoria = 3\n      Sino\n        categoria = 2\n      FinSi\n    FinSi\n    Segun categoria Hacer\n      1: Escribir \"Cuota \", i, \" - Inicio - Saldo restante: \", saldo\n      2: Escribir \"Cuota \", i, \" - Medio - Saldo restante: \", saldo\n      3: Escribir \"Cuota \", i, \" - Final - Saldo restante: \", saldo\n    FinSegun\n    Si saldo > umbral Entonces\n      Escribir \"Alerta: saldo restante alto\"\n    FinSi\n  FinPara\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1647,7 +1647,7 @@
       },
       "salidaEsperada": "Cantidad de rondas:\n> 2\nMarcador local ronda 1:\n> 2\nMarcador visita ronda 1:\n> 1\nResultado: Victoria local",
       "pista": "Puedes usar una codificación intermedia para el resultado y luego resolverla con Según.",
-      "codigoReferencia": "Proceso TorneoDeportivo\n    Definir N, ronda, local, visita, estado Como Entero\n    Definir puntosLocal, puntosVisita Como Entero\n    puntosLocal = 0\n    puntosVisita = 0\n    Escribir \"Cantidad de rondas:\"\n    Leer N\n    Para ronda = 1 Hasta N Con Paso 1 Hacer\n        Escribir \"Marcador local ronda \", ronda, \":\"\n        Leer local\n        Escribir \"Marcador visita ronda \", ronda, \":\"\n        Leer visita\n        Si local > visita Entonces\n            estado = 1\n        Sino\n            Si local == visita Entonces\n                estado = 2\n            Sino\n                estado = 3\n            FinSi\n        FinSi\n        Segun estado Hacer\n            1:\n                Escribir \"Resultado: Victoria local\"\n                puntosLocal = puntosLocal + 3\n            2:\n                Escribir \"Resultado: Empate\"\n                puntosLocal = puntosLocal + 1\n                puntosVisita = puntosVisita + 1\n            3:\n                Escribir \"Resultado: Victoria visita\"\n                puntosVisita = puntosVisita + 3\n        FinSegun\n        Si puntosLocal >= 9 O puntosVisita >= 9 Entonces\n            Escribir \"Algún equipo aseguró el campeonato\"\n        FinSi\n    FinPara\nFinProceso",
+      "codigoReferencia": "Proceso TorneoDeportivo\n  Definir N, ronda, local, visita, estado Como Entero\n  Definir puntosLocal, puntosVisita Como Entero\n\n  puntosLocal  = 0\n  puntosVisita = 0\n\n  Escribir \"Cantidad de rondas:\"\n  Leer N\n  Para ronda = 1 Hasta N Con Paso 1 Hacer\n    Escribir \"Marcador local ronda \", ronda, \":\"\n    Leer local\n    Escribir \"Marcador visita ronda \", ronda, \":\"\n    Leer visita\n    Si local > visita Entonces\n      estado = 1\n    Sino\n      Si local == visita Entonces\n        estado = 2\n      Sino\n        estado = 3\n      FinSi\n    FinSi\n    Segun estado Hacer\n      1:\n        Escribir \"Resultado: Victoria local\"\n\n        puntosLocal = puntosLocal + 3\n\n      2:\n        Escribir \"Resultado: Empate\"\n\n        puntosLocal  = puntosLocal + 1\n        puntosVisita = puntosVisita + 1\n\n      3:\n        Escribir \"Resultado: Victoria visita\"\n\n        puntosVisita = puntosVisita + 3\n    FinSegun\n    Si puntosLocal >= 9 O puntosVisita >= 9 Entonces\n      Escribir \"Algún equipo aseguró el campeonato\"\n    FinSi\n  FinPara\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1677,7 +1677,7 @@
       },
       "salidaEsperada": "Cantidad de transacciones:\n> 1\nSaldo inicial:\n> 100000\nTipo (1 depósito, 2 retiro, 3 transferencia, 4 pago servicio):\n> 2\nMonto:\n> 20000\nSaldo actualizado: 80000",
       "pista": "El tipo de transacción define la lógica base, y la validación del saldo decide si la operación se puede ejecutar.",
-      "codigoReferencia": "Proceso TransaccionesBancarias\n    Definir N, i, tipo Como Entero\n    Definir monto, saldo Como Real\n    Escribir \"Cantidad de transacciones:\"\n    Leer N\n    Escribir \"Saldo inicial:\"\n    Leer saldo\n    Para i = 1 Hasta N Con Paso 1 Hacer\n        Escribir \"Tipo (1 depósito, 2 retiro, 3 transferencia, 4 pago servicio):\"\n        Leer tipo\n        Escribir \"Monto:\"\n        Leer monto\n        Segun tipo Hacer\n            1:\n                saldo = saldo + monto\n            2:\n                Si monto <= saldo Entonces\n                    saldo = saldo - monto\n                Sino\n                    Escribir \"Saldo insuficiente\"\n                FinSi\n            3:\n                Si monto + 500 <= saldo Entonces\n                    saldo = saldo - monto - 500\n                Sino\n                    Escribir \"Saldo insuficiente para transferencia\"\n                FinSi\n            4:\n                Si monto + 200 <= saldo Entonces\n                    saldo = saldo - monto - 200\n                Sino\n                    Escribir \"Saldo insuficiente para pago\"\n                FinSi\n            De Otro Modo:\n                Escribir \"Tipo inválido\"\n        FinSegun\n        Escribir \"Saldo actualizado: \", saldo\n    FinPara\nFinProceso",
+      "codigoReferencia": "Proceso TransaccionesBancarias\n  Definir N, i, tipo Como Entero\n  Definir monto, saldo Como Real\n\n  Escribir \"Cantidad de transacciones:\"\n  Leer N\n  Escribir \"Saldo inicial:\"\n  Leer saldo\n  Para i = 1 Hasta N Con Paso 1 Hacer\n    Escribir \"Tipo (1 depósito, 2 retiro, 3 transferencia, 4 pago servicio):\"\n    Leer tipo\n    Escribir \"Monto:\"\n    Leer monto\n    Segun tipo Hacer\n      1:\n        saldo = saldo + monto\n\n      2:\n        Si monto <= saldo Entonces\n          saldo = saldo - monto\n        Sino\n          Escribir \"Saldo insuficiente\"\n        FinSi\n      3:\n        Si monto + 500 <= saldo Entonces\n          saldo = saldo - monto - 500\n        Sino\n          Escribir \"Saldo insuficiente para transferencia\"\n        FinSi\n      4:\n        Si monto + 200 <= saldo Entonces\n          saldo = saldo - monto - 200\n        Sino\n          Escribir \"Saldo insuficiente para pago\"\n        FinSi\n      De Otro Modo:\n        Escribir \"Tipo inválido\"\n    FinSegun\n    Escribir \"Saldo actualizado: \", saldo\n  FinPara\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1707,7 +1707,7 @@
       },
       "salidaEsperada": "Día 1\nHora 1: Atención\nHora 7: Cierre - Hora extra",
       "pista": "El ciclo externo recorre los días y el interno organiza las horas dentro de cada jornada.",
-      "codigoReferencia": "Proceso HorarioSemanalEmpleado\n    Definir dia, hora Como Entero\n    Definir actividad Como Caracter\n    Para dia = 1 Hasta 5 Con Paso 1 Hacer\n        Escribir \"Día \", dia\n        Para hora = 1 Hasta 8 Con Paso 1 Hacer\n            Segun hora Hacer\n                1, 2, 3: actividad = \"Atención\"\n                4, 5, 6: actividad = \"Gestión interna\"\n                7, 8: actividad = \"Cierre\"\n            FinSegun\n            Si hora > 6 Entonces\n                Escribir \"Hora \", hora, \": \", actividad, \" - Hora extra\"\n            Sino\n                Escribir \"Hora \", hora, \": \", actividad\n            FinSi\n        FinPara\n    FinPara\nFinProceso",
+      "codigoReferencia": "Proceso HorarioSemanalEmpleado\n  Definir dia, hora Como Entero\n  Definir actividad Como Caracter\n\n  Para dia = 1 Hasta 5 Con Paso 1 Hacer\n    Escribir \"Día \", dia\n    Para hora = 1 Hasta 8 Con Paso 1 Hacer\n      Segun hora Hacer\n        1, 2, 3: actividad = \"Atención\"\n        4, 5, 6: actividad = \"Gestión interna\"\n        7, 8: actividad = \"Cierre\"\n      FinSegun\n      Si hora > 6 Entonces\n        Escribir \"Hora \", hora, \": \", actividad, \" - Hora extra\"\n      Sino\n        Escribir \"Hora \", hora, \": \", actividad\n      FinSi\n    FinPara\n  FinPara\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1737,7 +1737,7 @@
       },
       "salidaEsperada": "Cantidad de productos:\n> 1\nNombre del producto 1:\n> Mouse\nPrecio:\n> 15000\nCantidad:\n> 3\nCategoría: Económico\nAlerta: stock bajo\nValor total inventario: 45000\nProducto de mayor valor acumulado: Mouse",
       "pista": "El valor acumulado de un producto se obtiene multiplicando su precio por su cantidad en stock.",
-      "codigoReferencia": "Proceso InventarioProductos\n    Definir N, i, cantidad, categoria Como Entero\n    Definir precio, valor, totalInventario, mayorValor Como Real\n    Definir nombre, productoMayor Como Caracter\n    totalInventario = 0\n    mayorValor = -1\n    productoMayor = \"\"\n    Escribir \"Cantidad de productos:\"\n    Leer N\n    Para i = 1 Hasta N Con Paso 1 Hacer\n        Escribir \"Nombre del producto \", i, \":\"\n        Leer nombre\n        Escribir \"Precio:\"\n        Leer precio\n        Escribir \"Cantidad:\"\n        Leer cantidad\n        Si precio < 20000 Entonces\n            categoria = 1\n        Sino\n            Si precio <= 50000 Entonces\n                categoria = 2\n            Sino\n                categoria = 3\n            FinSi\n        FinSi\n        Segun categoria Hacer\n            1: Escribir \"Categoría: Económico\"\n            2: Escribir \"Categoría: Estándar\"\n            3: Escribir \"Categoría: Premium\"\n        FinSegun\n        Si cantidad < 5 Entonces\n            Escribir \"Alerta: stock bajo\"\n        FinSi\n        valor = precio * cantidad\n        totalInventario = totalInventario + valor\n        Si valor > mayorValor Entonces\n            mayorValor = valor\n            productoMayor = nombre\n        FinSi\n    FinPara\n    Escribir \"Valor total inventario: \", totalInventario\n    Escribir \"Producto de mayor valor acumulado: \", productoMayor\nFinProceso",
+      "codigoReferencia": "Proceso InventarioProductos\n  Definir N, i, cantidad, categoria Como Entero\n  Definir precio, valor, totalInventario, mayorValor Como Real\n  Definir nombre, productoMayor Como Caracter\n\n  totalInventario = 0\n  mayorValor      = -1\n  productoMayor   = \"\"\n\n  Escribir \"Cantidad de productos:\"\n  Leer N\n  Para i = 1 Hasta N Con Paso 1 Hacer\n    Escribir \"Nombre del producto \", i, \":\"\n    Leer nombre\n    Escribir \"Precio:\"\n    Leer precio\n    Escribir \"Cantidad:\"\n    Leer cantidad\n    Si precio < 20000 Entonces\n      categoria = 1\n    Sino\n      Si precio <= 50000 Entonces\n        categoria = 2\n      Sino\n        categoria = 3\n      FinSi\n    FinSi\n    Segun categoria Hacer\n      1: Escribir \"Categoría: Económico\"\n      2: Escribir \"Categoría: Estándar\"\n      3: Escribir \"Categoría: Premium\"\n    FinSegun\n    Si cantidad < 5 Entonces\n      Escribir \"Alerta: stock bajo\"\n    FinSi\n    valor           = precio * cantidad\n    totalInventario = totalInventario + valor\n    Si valor > mayorValor Entonces\n      mayorValor    = valor\n      productoMayor = nombre\n    FinSi\n  FinPara\n  Escribir \"Valor total inventario: \", totalInventario\n  Escribir \"Producto de mayor valor acumulado: \", productoMayor\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     }

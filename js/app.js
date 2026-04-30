@@ -344,7 +344,7 @@ function invalidarErroresVisuales() {
     const tip = bootstrap.Tooltip.getInstance(this);
     if (tip) tip.dispose();
   });
-  document.getElementById("errorDecoLayer").innerHTML = "";
+  setMirrorLayerHTML("errorDecoLayer", "");
 }
 
 function limpiarEjecucionHighlight() {
@@ -391,9 +391,10 @@ function renderizarSubrayados() {
   const errPorLinea = errorVisualState.erroresPorLinea;
 
   if (!errPorLinea || errPorLinea.size === 0) {
-    document.getElementById("errorDecoLayer").innerHTML = lineas
-      .map(() => "")
-      .join("\n");
+    setMirrorLayerHTML(
+      "errorDecoLayer",
+      lineas.map(() => "").join("\n"),
+    );
     return;
   }
 
@@ -405,7 +406,7 @@ function renderizarSubrayados() {
     return renderErrorUnderlines(linea, erroresLinea);
   });
 
-  document.getElementById("errorDecoLayer").innerHTML = htmlLines.join("\n");
+  setMirrorLayerHTML("errorDecoLayer", htmlLines.join("\n"));
 }
 
 function renderErrorUnderlines(linea, errores) {
@@ -493,17 +494,45 @@ function resaltarLineaEjecutando(lineaIdx) {
 
 $("#editor").on("scroll", function () {
   const st = this.scrollTop;
-  const sl = this.scrollLeft;
   document.getElementById("lineNumbers").scrollTop = st;
   document.getElementById("lineOverlays").scrollTop = st;
-  document.getElementById("syntaxLayer").scrollTop = st;
-  document.getElementById("syntaxLayer").scrollLeft = sl;
-  document.getElementById("errorDecoLayer").scrollTop = st;
-  document.getElementById("errorDecoLayer").scrollLeft = sl;
+  syncEditorMirrorScroll();
   const hl = document.getElementById(NOMBRE_HIGHLIGHT_ID);
   if (hl) posicionarResalteNombre(hl);
   actualizarIndentGuides();
 });
+
+function getMirrorLayerContent(layerId) {
+  const layer = document.getElementById(layerId);
+  if (!layer) return null;
+
+  let content = layer.querySelector(".editor-mirror-content");
+  if (!content) {
+    content = document.createElement("div");
+    content.className = "editor-mirror-content";
+    layer.appendChild(content);
+  }
+
+  return content;
+}
+
+function setMirrorLayerHTML(layerId, html) {
+  const content = getMirrorLayerContent(layerId);
+  if (!content) return;
+  content.innerHTML = html;
+  syncEditorMirrorScroll();
+}
+
+function syncEditorMirrorScroll() {
+  const editor = document.getElementById("editor");
+  if (!editor) return;
+
+  const transform = `translate(${-editor.scrollLeft}px, ${-editor.scrollTop}px)`;
+  for (const layerId of ["syntaxLayer", "errorDecoLayer"]) {
+    const content = getMirrorLayerContent(layerId);
+    if (content) content.style.transform = transform;
+  }
+}
 
 // =========================================
 // 7. INDENT GUIDES
@@ -811,7 +840,7 @@ function actualizarSyntaxHighlight() {
     depth = r.depth;
     return r.html;
   });
-  document.getElementById("syntaxLayer").innerHTML = htmlLines.join("\n");
+  setMirrorLayerHTML("syntaxLayer", htmlLines.join("\n"));
 }
 
 function resaltarLinea_syntax(linea, userVarsSet, depth = 0) {
@@ -1500,7 +1529,7 @@ const NIVELES_LITESEINT = [
   { id: 7, titulo: "Patrones de procesamiento" },
 ];
 
-const NIVELES_VISIBLES = [1, 2, 3, 4, 5];
+const NIVELES_VISIBLES = [1, 2, 3, 4, 5, 6, 7];
 
 const PROGRESO_KEY = "liteseint:exerciseProgress";
 const ESTADOS_PROGRESO = ["pendiente", "en-curso", "completado"];

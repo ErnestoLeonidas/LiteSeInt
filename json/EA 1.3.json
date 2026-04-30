@@ -31,7 +31,7 @@
       },
       "salidaEsperada": "Edad:\n> 20\nEs mayor de edad",
       "pista": "El operador >= significa “mayor o igual que”.",
-      "codigoReferencia": "Proceso MayorDeEdad\n    Definir edad Como Entero\n    Escribir \"Edad:\"\n    Leer edad\n    Si edad >= 18 Entonces\n        Escribir \"Es mayor de edad\"\n    Sino\n        Escribir \"Es menor de edad\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso MayorDeEdad\n  Definir edad Como Entero\n\n  Escribir \"Edad:\"\n  Leer edad\n  Si edad >= 18 Entonces\n    Escribir \"Es mayor de edad\"\n  Sino\n    Escribir \"Es menor de edad\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -58,7 +58,7 @@
       },
       "salidaEsperada": "Nota:\n> 3.8\nReprobado",
       "pista": "Cuando trabajes con notas decimales, define la variable como Real.",
-      "codigoReferencia": "Proceso AprobarExamen\n    Definir nota Como Real\n    Escribir \"Nota:\"\n    Leer nota\n    Si nota >= 4.0 Entonces\n        Escribir \"Aprobado\"\n    Sino\n        Escribir \"Reprobado\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso AprobarExamen\n  Definir nota Como Real\n\n  Escribir \"Nota:\"\n  Leer nota\n  Si nota >= 4.0 Entonces\n    Escribir \"Aprobado\"\n  Sino\n    Escribir \"Reprobado\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -85,7 +85,7 @@
       },
       "salidaEsperada": "Número:\n> -7\nNegativo",
       "pista": "Este caso usa dos comparaciones para distinguir tres resultados posibles.",
-      "codigoReferencia": "Proceso SignoNumero\n    Definir n Como Real\n    Escribir \"Número:\"\n    Leer n\n    Si n > 0 Entonces\n        Escribir \"Positivo\"\n    Sino\n        Si n < 0 Entonces\n            Escribir \"Negativo\"\n        Sino\n            Escribir \"Cero\"\n        FinSi\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso SignoNumero\n  Definir n Como Real\n\n  Escribir \"Número:\"\n  Leer n\n  Si n > 0 Entonces\n    Escribir \"Positivo\"\n  Sino\n    Si n < 0 Entonces\n      Escribir \"Negativo\"\n    Sino\n      Escribir \"Cero\"\n    FinSi\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -112,7 +112,7 @@
       },
       "salidaEsperada": "Ingrese contraseña:\n> 1234\nAcceso concedido",
       "pista": "Para comparar Caracter en LiteSeInt se usa el operador ==.",
-      "codigoReferencia": "Proceso AccesoClave\n    Definir clave Como Caracter\n    Escribir \"Ingrese contraseña:\"\n    Leer clave\n    Si clave == \"1234\" Entonces\n        Escribir \"Acceso concedido\"\n    Sino\n        Escribir \"Acceso denegado\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso AccesoClave\n  Definir clave Como Caracter\n\n  Escribir \"Ingrese contraseña:\"\n  Leer clave\n  Si clave == \"1234\" Entonces\n    Escribir \"Acceso concedido\"\n  Sino\n    Escribir \"Acceso denegado\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -139,7 +139,7 @@
       },
       "salidaEsperada": "Precio del producto:\n> 20000\n¿Es socio? (si/no):\n> si\nTotal a pagar: 18000",
       "pista": "Un descuento del 10% equivale a multiplicar por 0.10.",
-      "codigoReferencia": "Proceso DescuentoSocio\n    Definir precio, total Como Real\n    Definir esSocio Como Caracter\n    Escribir \"Precio del producto:\"\n    Leer precio\n    Escribir \"¿Es socio? (si/no):\"\n    Leer esSocio\n    Si esSocio == \"si\" Entonces\n        total = precio - precio * 0.10\n    Sino\n        total = precio\n    FinSi\n    Escribir \"Total a pagar: \", total\nFinProceso",
+      "codigoReferencia": "Proceso DescuentoSocio\n  Definir precio, total Como Real\n  Definir esSocio Como Caracter\n\n  Escribir \"Precio del producto:\"\n  Leer precio\n  Escribir \"¿Es socio? (si/no):\"\n  Leer esSocio\n  Si esSocio == \"si\" Entonces\n    total = precio - precio * 0.10\n  Sino\n    total = precio\n  FinSi\n  Escribir \"Total a pagar: \", total\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -166,7 +166,7 @@
       },
       "salidaEsperada": "Temperatura actual:\n> 12\nAbrígate",
       "pista": "Las decisiones simples comparan un valor de entrada con una condición.",
-      "codigoReferencia": "Proceso TemperaturaDia\n    Definir temp Como Real\n    Escribir \"Temperatura actual:\"\n    Leer temp\n    Si temp < 15 Entonces\n        Escribir \"Abrígate\"\n    Sino\n        Escribir \"Día agradable\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso TemperaturaDia\n  Definir temp Como Real\n\n  Escribir \"Temperatura actual:\"\n  Leer temp\n  Si temp < 15 Entonces\n    Escribir \"Abrígate\"\n  Sino\n    Escribir \"Día agradable\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -193,7 +193,7 @@
       },
       "salidaEsperada": "Stock disponible:\n> 0\nProducto agotado",
       "pista": "Si el stock es 0, ya no hay unidades disponibles.",
-      "codigoReferencia": "Proceso VerificarStock\n    Definir stock Como Entero\n    Escribir \"Stock disponible:\"\n    Leer stock\n    Si stock > 0 Entonces\n        Escribir \"Hay disponibilidad\"\n    Sino\n        Escribir \"Producto agotado\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso VerificarStock\n  Definir stock Como Entero\n\n  Escribir \"Stock disponible:\"\n  Leer stock\n  Si stock > 0 Entonces\n    Escribir \"Hay disponibilidad\"\n  Sino\n    Escribir \"Producto agotado\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -220,7 +220,7 @@
       },
       "salidaEsperada": "Número entero:\n> 11\nEs impar",
       "pista": "El operador MOD entrega el resto de una división entera.",
-      "codigoReferencia": "Proceso ParImpar\n    Definir n Como Entero\n    Escribir \"Número entero:\"\n    Leer n\n    Si n mod 2 == 0 Entonces\n        Escribir \"Es par\"\n    Sino\n        Escribir \"Es impar\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso ParImpar\n  Definir n Como Entero\n\n  Escribir \"Número entero:\"\n  Leer n\n  Si n mod 2 == 0 Entonces\n    Escribir \"Es par\"\n  Sino\n    Escribir \"Es impar\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -247,7 +247,7 @@
       },
       "salidaEsperada": "¿Llueve hoy? (si/no):\n> si\nLleva paraguas",
       "pista": "Cuando uses respuestas tipo si/no, conviene indicar el formato esperado en el mensaje de entrada.",
-      "codigoReferencia": "Proceso LlevarParaguas\n    Definir llueve Como Caracter\n    Escribir \"¿Llueve hoy? (si/no):\"\n    Leer llueve\n    Si llueve == \"si\" Entonces\n        Escribir \"Lleva paraguas\"\n    Sino\n        Escribir \"No necesitas paraguas\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso LlevarParaguas\n  Definir llueve Como Caracter\n\n  Escribir \"¿Llueve hoy? (si/no):\"\n  Leer llueve\n  Si llueve == \"si\" Entonces\n    Escribir \"Lleva paraguas\"\n  Sino\n    Escribir \"No necesitas paraguas\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -274,7 +274,7 @@
       },
       "salidaEsperada": "¿Hay valla? (si/no):\n> si\nSalta la valla",
       "pista": "Este ejercicio modela una decisión binaria muy simple: obstáculo presente o ausente.",
-      "codigoReferencia": "Proceso ObstaculoValla\n    Definir hayValla Como Caracter\n    Escribir \"¿Hay valla? (si/no):\"\n    Leer hayValla\n    Si hayValla == \"si\" Entonces\n        Escribir \"Salta la valla\"\n    Sino\n        Escribir \"Continúa avanzando\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso ObstaculoValla\n  Definir hayValla Como Caracter\n\n  Escribir \"¿Hay valla? (si/no):\"\n  Leer hayValla\n  Si hayValla == \"si\" Entonces\n    Escribir \"Salta la valla\"\n  Sino\n    Escribir \"Continúa avanzando\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -301,7 +301,7 @@
       },
       "salidaEsperada": "¿Hay túnel? (si/no):\n> si\nAtraviesa el túnel",
       "pista": "La estructura Si-Entonces permite elegir una acción según una condición.",
-      "codigoReferencia": "Proceso ObstaculoTunel\n    Definir hayTunel Como Caracter\n    Escribir \"¿Hay túnel? (si/no):\"\n    Leer hayTunel\n    Si hayTunel == \"si\" Entonces\n        Escribir \"Atraviesa el túnel\"\n    Sino\n        Escribir \"Continúa avanzando\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso ObstaculoTunel\n  Definir hayTunel Como Caracter\n\n  Escribir \"¿Hay túnel? (si/no):\"\n  Leer hayTunel\n  Si hayTunel == \"si\" Entonces\n    Escribir \"Atraviesa el túnel\"\n  Sino\n    Escribir \"Continúa avanzando\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -328,7 +328,7 @@
       },
       "salidaEsperada": "¿Hay laguna? (si/no):\n> no\nLlega a la meta",
       "pista": "Aunque el problema tiene contexto de juego, sigue siendo una decisión simple.",
-      "codigoReferencia": "Proceso ObstaculoLaguna\n    Definir hayLaguna Como Caracter\n    Escribir \"¿Hay laguna? (si/no):\"\n    Leer hayLaguna\n    Si hayLaguna == \"si\" Entonces\n        Escribir \"Cae a la laguna y pierde\"\n    Sino\n        Escribir \"Llega a la meta\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso ObstaculoLaguna\n  Definir hayLaguna Como Caracter\n\n  Escribir \"¿Hay laguna? (si/no):\"\n  Leer hayLaguna\n  Si hayLaguna == \"si\" Entonces\n    Escribir \"Cae a la laguna y pierde\"\n  Sino\n    Escribir \"Llega a la meta\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -355,7 +355,7 @@
       },
       "salidaEsperada": "Precio del producto:\n> 3500\nMonto pagado:\n> 5000\nVuelto: 1500",
       "pista": "Solo se calcula el vuelto si el dinero entregado alcanza para pagar el producto.",
-      "codigoReferencia": "Proceso VueltoCompra\n    Definir precio, pagado, vuelto Como Real\n    Escribir \"Precio del producto:\"\n    Leer precio\n    Escribir \"Monto pagado:\"\n    Leer pagado\n    Si pagado >= precio Entonces\n        vuelto = pagado - precio\n        Escribir \"Vuelto: \", vuelto\n    Sino\n        Escribir \"Pago insuficiente\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso VueltoCompra\n  Definir precio, pagado, vuelto Como Real\n\n  Escribir \"Precio del producto:\"\n  Leer precio\n  Escribir \"Monto pagado:\"\n  Leer pagado\n  Si pagado >= precio Entonces\n    vuelto = pagado - precio\n\n    Escribir \"Vuelto: \", vuelto\n  Sino\n    Escribir \"Pago insuficiente\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -382,7 +382,7 @@
       },
       "salidaEsperada": "Velocidad del vehículo:\n> 72\nExcede velocidad",
       "pista": "El operador <= evalúa si un valor es menor o igual que otro.",
-      "codigoReferencia": "Proceso LimiteVelocidad\n    Definir velocidad Como Real\n    Escribir \"Velocidad del vehículo:\"\n    Leer velocidad\n    Si velocidad <= 60 Entonces\n        Escribir \"Dentro del límite\"\n    Sino\n        Escribir \"Excede velocidad\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso LimiteVelocidad\n  Definir velocidad Como Real\n\n  Escribir \"Velocidad del vehículo:\"\n  Leer velocidad\n  Si velocidad <= 60 Entonces\n    Escribir \"Dentro del límite\"\n  Sino\n    Escribir \"Excede velocidad\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -409,7 +409,7 @@
       },
       "salidaEsperada": "Litros de combustible:\n> 8\nDebe cargar bencina",
       "pista": "Este problema compara una cantidad medida con un valor mínimo esperado.",
-      "codigoReferencia": "Proceso CargarBencina\n    Definir litros Como Real\n    Escribir \"Litros de combustible:\"\n    Leer litros\n    Si litros < 10 Entonces\n        Escribir \"Debe cargar bencina\"\n    Sino\n        Escribir \"Nivel adecuado\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso CargarBencina\n  Definir litros Como Real\n\n  Escribir \"Litros de combustible:\"\n  Leer litros\n  Si litros < 10 Entonces\n    Escribir \"Debe cargar bencina\"\n  Sino\n    Escribir \"Nivel adecuado\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -436,7 +436,7 @@
       },
       "salidaEsperada": "Nota final:\n> 5.4\nMuy bueno",
       "pista": "En una cadena de decisiones anidadas, el orden de las comparaciones sí importa.",
-      "codigoReferencia": "Proceso ClasificarNota\n    Definir nota Como Real\n    Escribir \"Nota final:\"\n    Leer nota\n    Si nota < 4 Entonces\n        Escribir \"Insuficiente\"\n    Sino\n        Si nota < 5 Entonces\n            Escribir \"Suficiente\"\n        Sino\n            Si nota < 6 Entonces\n                Escribir \"Muy bueno\"\n            Sino\n                Escribir \"Excelente\"\n            FinSi\n        FinSi\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso ClasificarNota\n  Definir nota Como Real\n\n  Escribir \"Nota final:\"\n  Leer nota\n  Si nota < 4 Entonces\n    Escribir \"Insuficiente\"\n  Sino\n    Si nota < 5 Entonces\n      Escribir \"Suficiente\"\n    Sino\n      Si nota < 6 Entonces\n        Escribir \"Muy bueno\"\n      Sino\n        Escribir \"Excelente\"\n      FinSi\n    FinSi\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -463,7 +463,7 @@
       },
       "salidaEsperada": "Lado 1:\n> 5\nLado 2:\n> 5\nLado 3:\n> 8\nIsósceles",
       "pista": "Primero conviene comprobar si los tres lados son iguales, porque ese es el caso más específico.",
-      "codigoReferencia": "Proceso TipoTriangulo\n    Definir a, b, c Como Real\n    Escribir \"Lado 1:\"\n    Leer a\n    Escribir \"Lado 2:\"\n    Leer b\n    Escribir \"Lado 3:\"\n    Leer c\n    Si a == b Y b == c Entonces\n        Escribir \"Equilátero\"\n    Sino\n        Si a == b O a == c O b == c Entonces\n            Escribir \"Isósceles\"\n        Sino\n            Escribir \"Escaleno\"\n        FinSi\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso TipoTriangulo\n  Definir a, b, c Como Real\n\n  Escribir \"Lado 1:\"\n  Leer a\n  Escribir \"Lado 2:\"\n  Leer b\n  Escribir \"Lado 3:\"\n  Leer c\n  Si a == b Y b == c Entonces\n    Escribir \"Equilátero\"\n  Sino\n    Si a == b O a == c O b == c Entonces\n      Escribir \"Isósceles\"\n    Sino\n      Escribir \"Escaleno\"\n    FinSi\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -490,7 +490,7 @@
       },
       "salidaEsperada": "Ingrese IMC:\n> 27.3\nSobrepeso",
       "pista": "Cada rango se evalúa en orden ascendente para evitar condiciones redundantes.",
-      "codigoReferencia": "Proceso ClasificarIMC\n    Definir imc Como Real\n    Escribir \"Ingrese IMC:\"\n    Leer imc\n    Si imc < 18.5 Entonces\n        Escribir \"Bajo peso\"\n    Sino\n        Si imc < 25 Entonces\n            Escribir \"Normal\"\n        Sino\n            Si imc < 30 Entonces\n                Escribir \"Sobrepeso\"\n            Sino\n                Escribir \"Obesidad\"\n            FinSi\n        FinSi\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso ClasificarIMC\n  Definir imc Como Real\n\n  Escribir \"Ingrese IMC:\"\n  Leer imc\n  Si imc < 18.5 Entonces\n    Escribir \"Bajo peso\"\n  Sino\n    Si imc < 25 Entonces\n      Escribir \"Normal\"\n    Sino\n      Si imc < 30 Entonces\n        Escribir \"Sobrepeso\"\n      Sino\n        Escribir \"Obesidad\"\n      FinSi\n    FinSi\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -517,7 +517,7 @@
       },
       "salidaEsperada": "Tipo de bencina:\n> 95\nBencina plus",
       "pista": "Cuando hay varios valores posibles exactos, una cadena de Si anidados permite evaluarlos uno a uno.",
-      "codigoReferencia": "Proceso TipoBencina\n    Definir tipo Como Entero\n    Escribir \"Tipo de bencina:\"\n    Leer tipo\n    Si tipo == 93 Entonces\n        Escribir \"Bencina regular\"\n    Sino\n        Si tipo == 95 Entonces\n            Escribir \"Bencina plus\"\n        Sino\n            Si tipo == 97 Entonces\n                Escribir \"Bencina premium\"\n            Sino\n                Escribir \"Tipo inválido\"\n            FinSi\n        FinSi\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso TipoBencina\n  Definir tipo Como Entero\n\n  Escribir \"Tipo de bencina:\"\n  Leer tipo\n  Si tipo == 93 Entonces\n    Escribir \"Bencina regular\"\n  Sino\n    Si tipo == 95 Entonces\n      Escribir \"Bencina plus\"\n    Sino\n      Si tipo == 97 Entonces\n        Escribir \"Bencina premium\"\n      Sino\n        Escribir \"Tipo inválido\"\n      FinSi\n    FinSi\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -544,7 +544,7 @@
       },
       "salidaEsperada": "Temperatura corporal:\n> 38.1\nFiebre",
       "pista": "Aquí se mezclan operadores <, <= y el caso final por descarte.",
-      "codigoReferencia": "Proceso TemperaturaCorporal\n    Definir temperatura Como Real\n    Escribir \"Temperatura corporal:\"\n    Leer temperatura\n    Si temperatura < 36.1 Entonces\n        Escribir \"Hipotermia\"\n    Sino\n        Si temperatura <= 37.2 Entonces\n            Escribir \"Temperatura normal\"\n        Sino\n            Escribir \"Fiebre\"\n        FinSi\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso TemperaturaCorporal\n  Definir temperatura Como Real\n\n  Escribir \"Temperatura corporal:\"\n  Leer temperatura\n  Si temperatura < 36.1 Entonces\n    Escribir \"Hipotermia\"\n  Sino\n    Si temperatura <= 37.2 Entonces\n      Escribir \"Temperatura normal\"\n    Sino\n      Escribir \"Fiebre\"\n    FinSi\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -571,7 +571,7 @@
       },
       "salidaEsperada": "Velocidad registrada:\n> 76\nMulta leve",
       "pista": "Ordena las comparaciones desde el límite menor al mayor para clasificar correctamente.",
-      "codigoReferencia": "Proceso MultaVelocidad\n    Definir velocidad Como Real\n    Escribir \"Velocidad registrada:\"\n    Leer velocidad\n    Si velocidad <= 60 Entonces\n        Escribir \"Sin multa\"\n    Sino\n        Si velocidad <= 80 Entonces\n            Escribir \"Multa leve\"\n        Sino\n            Escribir \"Multa grave\"\n        FinSi\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso MultaVelocidad\n  Definir velocidad Como Real\n\n  Escribir \"Velocidad registrada:\"\n  Leer velocidad\n  Si velocidad <= 60 Entonces\n    Escribir \"Sin multa\"\n  Sino\n    Si velocidad <= 80 Entonces\n      Escribir \"Multa leve\"\n    Sino\n      Escribir \"Multa grave\"\n    FinSi\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -598,7 +598,7 @@
       },
       "salidaEsperada": "Monto de la compra:\n> 75000\nTotal a pagar: 67500",
       "pista": "Primero evalúa el mayor descuento, porque también cumple las compras más altas.",
-      "codigoReferencia": "Proceso DescuentoCompra\n    Definir compra, total Como Real\n    Escribir \"Monto de la compra:\"\n    Leer compra\n    Si compra >= 100000 Entonces\n        total = compra - compra * 0.20\n    Sino\n        Si compra >= 50000 Entonces\n            total = compra - compra * 0.10\n        Sino\n            total = compra\n        FinSi\n    FinSi\n    Escribir \"Total a pagar: \", total\nFinProceso",
+      "codigoReferencia": "Proceso DescuentoCompra\n  Definir compra, total Como Real\n\n  Escribir \"Monto de la compra:\"\n  Leer compra\n  Si compra >= 100000 Entonces\n    total = compra - compra * 0.20\n  Sino\n    Si compra >= 50000 Entonces\n      total = compra - compra * 0.10\n    Sino\n      total = compra\n    FinSi\n  FinSi\n  Escribir \"Total a pagar: \", total\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -625,7 +625,7 @@
       },
       "salidaEsperada": "Lado a:\n> 3\nLado b:\n> 4\nLado c:\n> 8\nTriángulo inválido",
       "pista": "El operador Y exige que todas las condiciones sean verdaderas al mismo tiempo.",
-      "codigoReferencia": "Proceso TrianguloValido\n    Definir a, b, c Como Real\n    Escribir \"Lado a:\"\n    Leer a\n    Escribir \"Lado b:\"\n    Leer b\n    Escribir \"Lado c:\"\n    Leer c\n    Si a + b > c Y a + c > b Y b + c > a Entonces\n        Escribir \"Triángulo válido\"\n    Sino\n        Escribir \"Triángulo inválido\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso TrianguloValido\n  Definir a, b, c Como Real\n\n  Escribir \"Lado a:\"\n  Leer a\n  Escribir \"Lado b:\"\n  Leer b\n  Escribir \"Lado c:\"\n  Leer c\n  Si a + b > c Y a + c > b Y b + c > a Entonces\n    Escribir \"Triángulo válido\"\n  Sino\n    Escribir \"Triángulo inválido\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -652,7 +652,7 @@
       },
       "salidaEsperada": "Usuario:\n> admin\nClave:\n> 1234\nAcceso permitido",
       "pista": "Ambos datos deben coincidir para permitir el acceso.",
-      "codigoReferencia": "Proceso AccesoUsuarioClave\n    Definir usuario, clave Como Caracter\n    Escribir \"Usuario:\"\n    Leer usuario\n    Escribir \"Clave:\"\n    Leer clave\n    Si usuario == \"admin\" Y clave == \"1234\" Entonces\n        Escribir \"Acceso permitido\"\n    Sino\n        Escribir \"Acceso denegado\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso AccesoUsuarioClave\n  Definir usuario, clave Como Caracter\n\n  Escribir \"Usuario:\"\n  Leer usuario\n  Escribir \"Clave:\"\n  Leer clave\n  Si usuario == \"admin\" Y clave == \"1234\" Entonces\n    Escribir \"Acceso permitido\"\n  Sino\n    Escribir \"Acceso denegado\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -679,7 +679,7 @@
       },
       "salidaEsperada": "Edad:\n> 70\nAdulto mayor",
       "pista": "Cada rango se evalúa de menor a mayor para que no se solapen las categorías.",
-      "codigoReferencia": "Proceso ClasificarEdad\n    Definir edad Como Entero\n    Escribir \"Edad:\"\n    Leer edad\n    Si edad < 12 Entonces\n        Escribir \"Niño\"\n    Sino\n        Si edad < 18 Entonces\n            Escribir \"Joven\"\n        Sino\n            Si edad < 65 Entonces\n                Escribir \"Adulto\"\n            Sino\n                Escribir \"Adulto mayor\"\n            FinSi\n        FinSi\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso ClasificarEdad\n  Definir edad Como Entero\n\n  Escribir \"Edad:\"\n  Leer edad\n  Si edad < 12 Entonces\n    Escribir \"Niño\"\n  Sino\n    Si edad < 18 Entonces\n      Escribir \"Joven\"\n    Sino\n      Si edad < 65 Entonces\n        Escribir \"Adulto\"\n      Sino\n        Escribir \"Adulto mayor\"\n      FinSi\n    FinSi\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -706,7 +706,7 @@
       },
       "salidaEsperada": "¿Hay valla? (si/no):\n> no\n¿Hay túnel? (si/no):\n> no\n¿Hay laguna? (si/no):\n> si\nPerdió la carrera",
       "pista": "Basta con que una condición no se cumpla para que el resultado sea perder.",
-      "codigoReferencia": "Proceso CarreraObstaculos\n    Definir valla, tunel, laguna Como Caracter\n    Escribir \"¿Hay valla? (si/no):\"\n    Leer valla\n    Escribir \"¿Hay túnel? (si/no):\"\n    Leer tunel\n    Escribir \"¿Hay laguna? (si/no):\"\n    Leer laguna\n    Si valla == \"no\" Y tunel == \"no\" Y laguna == \"no\" Entonces\n        Escribir \"Ganó la carrera\"\n    Sino\n        Escribir \"Perdió la carrera\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso CarreraObstaculos\n  Definir valla, tunel, laguna Como Caracter\n\n  Escribir \"¿Hay valla? (si/no):\"\n  Leer valla\n  Escribir \"¿Hay túnel? (si/no):\"\n  Leer tunel\n  Escribir \"¿Hay laguna? (si/no):\"\n  Leer laguna\n  Si valla == \"no\" Y tunel == \"no\" Y laguna == \"no\" Entonces\n    Escribir \"Ganó la carrera\"\n  Sino\n    Escribir \"Perdió la carrera\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -733,7 +733,7 @@
       },
       "salidaEsperada": "Nota 1:\n> 5.0\nNota 2:\n> 4.2\nNota 3:\n> 3.8\nAsistencia (%):\n> 80\nAprobado",
       "pista": "Primero se valida la asistencia; solo después se revisa el promedio.",
-      "codigoReferencia": "Proceso NotaFinalAsistencia\n    Definir n1, n2, n3, asistencia, promedio Como Real\n    Escribir \"Nota 1:\"\n    Leer n1\n    Escribir \"Nota 2:\"\n    Leer n2\n    Escribir \"Nota 3:\"\n    Leer n3\n    Escribir \"Asistencia (%):\"\n    Leer asistencia\n    Si asistencia >= 75 Entonces\n        promedio = (n1 + n2 + n3) / 3\n        Si promedio >= 4 Entonces\n            Escribir \"Aprobado\"\n        Sino\n            Escribir \"Reprobado\"\n        FinSi\n    Sino\n        Escribir \"Reprobado por inasistencia\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso NotaFinalAsistencia\n  Definir n1, n2, n3, asistencia, promedio Como Real\n\n  Escribir \"Nota 1:\"\n  Leer n1\n  Escribir \"Nota 2:\"\n  Leer n2\n  Escribir \"Nota 3:\"\n  Leer n3\n  Escribir \"Asistencia (%):\"\n  Leer asistencia\n  Si asistencia >= 75 Entonces\n    promedio = (n1 + n2 + n3) / 3\n    Si promedio >= 4 Entonces\n      Escribir \"Aprobado\"\n    Sino\n      Escribir \"Reprobado\"\n    FinSi\n  Sino\n    Escribir \"Reprobado por inasistencia\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -760,7 +760,7 @@
       },
       "salidaEsperada": "Destino (nacional/internacional):\n> internacional\nPeso en kg:\n> 3\nCosto del envío: 8000",
       "pista": "Este ejercicio combina una decisión por tipo de destino con otra por peso.",
-      "codigoReferencia": "Proceso CostoEnvio\n    Definir destino Como Caracter\n    Definir peso, costo Como Real\n    Escribir \"Destino (nacional/internacional):\"\n    Leer destino\n    Escribir \"Peso en kg:\"\n    Leer peso\n    Si destino == \"nacional\" Entonces\n        Si peso <= 5 Entonces\n            costo = 2000\n        Sino\n            costo = 3500\n        FinSi\n        Escribir \"Costo del envío: \", costo\n    Sino\n        Si destino == \"internacional\" Entonces\n            Si peso <= 5 Entonces\n                costo = 8000\n            Sino\n                costo = 12000\n            FinSi\n            Escribir \"Costo del envío: \", costo\n        Sino\n            Escribir \"Destino inválido\"\n        FinSi\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso CostoEnvio\n  Definir destino Como Caracter\n  Definir peso, costo Como Real\n\n  Escribir \"Destino (nacional/internacional):\"\n  Leer destino\n  Escribir \"Peso en kg:\"\n  Leer peso\n  Si destino == \"nacional\" Entonces\n    Si peso <= 5 Entonces\n      costo = 2000\n    Sino\n      costo = 3500\n    FinSi\n    Escribir \"Costo del envío: \", costo\n  Sino\n    Si destino == \"internacional\" Entonces\n      Si peso <= 5 Entonces\n        costo = 8000\n      Sino\n        costo = 12000\n      FinSi\n      Escribir \"Costo del envío: \", costo\n    Sino\n      Escribir \"Destino inválido\"\n    FinSi\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -787,7 +787,7 @@
       },
       "salidaEsperada": "Hora actual (0-23):\n> 19\nBuenas noches",
       "pista": "Una misma entrada puede clasificarse en distintos rangos horarios.",
-      "codigoReferencia": "Proceso SaludoHora\n    Definir hora Como Entero\n    Escribir \"Hora actual (0-23):\"\n    Leer hora\n    Si hora < 12 Entonces\n        Escribir \"Buenos días\"\n    Sino\n        Si hora < 18 Entonces\n            Escribir \"Buenas tardes\"\n        Sino\n            Escribir \"Buenas noches\"\n        FinSi\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso SaludoHora\n  Definir hora Como Entero\n\n  Escribir \"Hora actual (0-23):\"\n  Leer hora\n  Si hora < 12 Entonces\n    Escribir \"Buenos días\"\n  Sino\n    Si hora < 18 Entonces\n      Escribir \"Buenas tardes\"\n    Sino\n      Escribir \"Buenas noches\"\n    FinSi\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -814,7 +814,7 @@
       },
       "salidaEsperada": "Ingrese año:\n> 2024\nEs bisiesto",
       "pista": "Este es un buen ejemplo de uso combinado de MOD, Y, O y paréntesis.",
-      "codigoReferencia": "Proceso AnioBisiesto\n    Definir anio Como Entero\n    Escribir \"Ingrese año:\"\n    Leer anio\n    Si anio mod 4 == 0 Y (anio mod 100 <> 0 O anio mod 400 == 0) Entonces\n        Escribir \"Es bisiesto\"\n    Sino\n        Escribir \"No es bisiesto\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso AnioBisiesto\n  Definir anio Como Entero\n\n  Escribir \"Ingrese año:\"\n  Leer anio\n  Si anio mod 4 == 0 Y (anio mod 100 <> 0 O anio mod 400 == 0) Entonces\n    Escribir \"Es bisiesto\"\n  Sino\n    Escribir \"No es bisiesto\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -841,7 +841,7 @@
       },
       "salidaEsperada": "Opción (1=sumar, 2=restar, 3=salir):\n> 1\nPrimer número:\n> 8\nSegundo número:\n> 5\nResultado: 13",
       "pista": "La estructura Según es útil cuando una sola variable puede tomar varios valores exactos.",
-      "codigoReferencia": "Proceso MenuOperaciones\n    Definir opcion Como Entero\n    Definir a, b, resultado Como Real\n    Escribir \"Opción (1=sumar, 2=restar, 3=salir):\"\n    Leer opcion\n    Escribir \"Primer número:\"\n    Leer a\n    Escribir \"Segundo número:\"\n    Leer b\n    Segun opcion Hacer\n        1:\n            resultado = a + b\n            Escribir \"Resultado: \", resultado\n        2:\n            resultado = a - b\n            Escribir \"Resultado: \", resultado\n        3:\n            Escribir \"Saliendo del programa\"\n        De Otro Modo:\n            Escribir \"Opción inválida\"\n    FinSegun\nFinProceso",
+      "codigoReferencia": "Proceso MenuOperaciones\n  Definir opcion Como Entero\n  Definir a, b, resultado Como Real\n\n  Escribir \"Opción (1=sumar, 2=restar, 3=salir):\"\n  Leer opcion\n  Escribir \"Primer número:\"\n  Leer a\n  Escribir \"Segundo número:\"\n  Leer b\n  Segun opcion Hacer\n    1:\n      resultado = a + b\n\n      Escribir \"Resultado: \", resultado\n    2:\n      resultado = a - b\n\n      Escribir \"Resultado: \", resultado\n    3:\n      Escribir \"Saliendo del programa\"\n    De Otro Modo:\n      Escribir \"Opción inválida\"\n  FinSegun\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -868,7 +868,7 @@
       },
       "salidaEsperada": "Número del día (1-7):\n> 5\nViernes",
       "pista": "Usa Según cuando los casos dependen de valores concretos de una misma variable.",
-      "codigoReferencia": "Proceso DiaSemana\n    Definir num Como Entero\n    Escribir \"Número del día (1-7):\"\n    Leer num\n    Segun num Hacer\n        1: Escribir \"Lunes\"\n        2: Escribir \"Martes\"\n        3: Escribir \"Miércoles\"\n        4: Escribir \"Jueves\"\n        5: Escribir \"Viernes\"\n        6: Escribir \"Sábado\"\n        7: Escribir \"Domingo\"\n        De Otro Modo:\n          Escribir \"Número inválido\"\n    FinSegun\nFinProceso",
+      "codigoReferencia": "Proceso DiaSemana\n  Definir num Como Entero\n\n  Escribir \"Número del día (1-7):\"\n  Leer num\n  Segun num Hacer\n    1: Escribir \"Lunes\"\n    2: Escribir \"Martes\"\n    3: Escribir \"Miércoles\"\n    4: Escribir \"Jueves\"\n    5: Escribir \"Viernes\"\n    6: Escribir \"Sábado\"\n    7: Escribir \"Domingo\"\n    De Otro Modo:\n      Escribir \"Número inválido\"\n  FinSegun\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -895,7 +895,7 @@
       },
       "salidaEsperada": "Mes (1-12):\n> 8\nInvierno",
       "pista": "En Según puedes agrupar varios valores que conducen al mismo resultado.",
-      "codigoReferencia": "Proceso EstacionAnio\n    Definir mes Como Entero\n    Escribir \"Mes (1-12):\"\n    Leer mes\n    Segun mes Hacer\n        12, 1, 2: Escribir \"Verano\"\n        3, 4, 5: Escribir \"Otoño\"\n        6, 7, 8: Escribir \"Invierno\"\n        9, 10, 11: Escribir \"Primavera\"\n        De Otro Modo:\n          Escribir \"Mes inválido\"\n    FinSegun\nFinProceso",
+      "codigoReferencia": "Proceso EstacionAnio\n  Definir mes Como Entero\n\n  Escribir \"Mes (1-12):\"\n  Leer mes\n  Segun mes Hacer\n    12, 1, 2: Escribir \"Verano\"\n    3, 4, 5: Escribir \"Otoño\"\n    6, 7, 8: Escribir \"Invierno\"\n    9, 10, 11: Escribir \"Primavera\"\n    De Otro Modo:\n      Escribir \"Mes inválido\"\n  FinSegun\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -923,7 +923,7 @@
       },
       "salidaEsperada": "Nivel de combustible:\n> 6\nTipo de bencina (93/95/97):\n> 97\nCargar bencina premium",
       "pista": "Aquí primero se toma una decisión general con Si, y luego una selección múltiple con Según.",
-      "codigoReferencia": "Proceso TipoBencinaCompleto\n    Definir nivel Como Real\n    Definir tipo Como Entero\n    Escribir \"Nivel de combustible:\"\n    Leer nivel\n    Si nivel < 10 Entonces\n        Escribir \"Tipo de bencina (93/95/97):\"\n        Leer tipo\n        Segun tipo Hacer\n            93: Escribir \"Cargar bencina regular\"\n            95: Escribir \"Cargar bencina plus\"\n            97: Escribir \"Cargar bencina premium\"\n            De Otro Modo:\n              Escribir \"Tipo inválido\"\n        FinSegun\n    Sino\n        Escribir \"No necesita cargar\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso TipoBencinaCompleto\n  Definir nivel Como Real\n  Definir tipo Como Entero\n\n  Escribir \"Nivel de combustible:\"\n  Leer nivel\n  Si nivel < 10 Entonces\n    Escribir \"Tipo de bencina (93/95/97):\"\n    Leer tipo\n    Segun tipo Hacer\n      93: Escribir \"Cargar bencina regular\"\n      95: Escribir \"Cargar bencina plus\"\n      97: Escribir \"Cargar bencina premium\"\n      De Otro Modo:\n        Escribir \"Tipo inválido\"\n    FinSegun\n  Sino\n    Escribir \"No necesita cargar\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -951,7 +951,7 @@
       },
       "salidaEsperada": "Primer número:\n> 15\nSegundo número:\n> 3\nOperador (+,-,*,/):\n> /\nResultado: 5",
       "pista": "La división requiere una validación extra para evitar un error matemático.",
-      "codigoReferencia": "Proceso CalculadoraCuatro\n    Definir operador Como Caracter\n    Definir a, b, resultado Como Real\n    Escribir \"Primer número:\"\n    Leer a\n    Escribir \"Segundo número:\"\n    Leer b\n    Escribir \"Operador (+,-,*,/):\"\n    Leer operador\n    Segun operador Hacer\n        \"+\":\n            resultado = a + b\n            Escribir \"Resultado: \", resultado\n        \"-\":\n            resultado = a - b\n            Escribir \"Resultado: \", resultado\n        \"*\":\n            resultado = a * b\n            Escribir \"Resultado: \", resultado\n        \"/\":\n            Si b <> 0 Entonces\n                resultado = a / b\n                Escribir \"Resultado: \", resultado\n            Sino\n                Escribir \"No se puede dividir por cero\"\n            FinSi\n        De Otro Modo:\n            Escribir \"Operador inválido\"\n    FinSegun\nFinProceso",
+      "codigoReferencia": "Proceso CalculadoraCuatro\n  Definir operador Como Caracter\n  Definir a, b, resultado Como Real\n\n  Escribir \"Primer número:\"\n  Leer a\n  Escribir \"Segundo número:\"\n  Leer b\n  Escribir \"Operador (+,-,*,/):\"\n  Leer operador\n  Segun operador Hacer\n    \"+\":\n      resultado = a + b\n\n      Escribir \"Resultado: \", resultado\n    \"-\":\n      resultado = a - b\n\n      Escribir \"Resultado: \", resultado\n    \"*\":\n      resultado = a * b\n\n      Escribir \"Resultado: \", resultado\n    \"/\":\n      Si b <> 0 Entonces\n        resultado = a / b\n\n        Escribir \"Resultado: \", resultado\n      Sino\n        Escribir \"No se puede dividir por cero\"\n      FinSi\n    De Otro Modo:\n      Escribir \"Operador inválido\"\n  FinSegun\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -979,7 +979,7 @@
       },
       "salidaEsperada": "Renta mensual:\n> 1750000\nImpuesto 8%",
       "pista": "Los tramos deben evaluarse de menor a mayor para asignar correctamente la categoría.",
-      "codigoReferencia": "Proceso ClasificacionTributaria\n    Definir renta Como Real\n    Escribir \"Renta mensual:\"\n    Leer renta\n    Si renta <= 500000 Entonces\n        Escribir \"Exento\"\n    Sino\n        Si renta <= 1000000 Entonces\n            Escribir \"Impuesto 4%\"\n        Sino\n            Si renta <= 2000000 Entonces\n                Escribir \"Impuesto 8%\"\n            Sino\n                Si renta <= 4000000 Entonces\n                    Escribir \"Impuesto 13.5%\"\n                Sino\n                    Escribir \"Impuesto 23%\"\n                FinSi\n            FinSi\n        FinSi\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso ClasificacionTributaria\n  Definir renta Como Real\n\n  Escribir \"Renta mensual:\"\n  Leer renta\n  Si renta <= 500000 Entonces\n    Escribir \"Exento\"\n  Sino\n    Si renta <= 1000000 Entonces\n      Escribir \"Impuesto 4%\"\n    Sino\n      Si renta <= 2000000 Entonces\n        Escribir \"Impuesto 8%\"\n      Sino\n        Si renta <= 4000000 Entonces\n          Escribir \"Impuesto 13.5%\"\n        Sino\n          Escribir \"Impuesto 23%\"\n        FinSi\n      FinSi\n    FinSi\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1006,7 +1006,7 @@
       },
       "salidaEsperada": "Color del semáforo:\n> amarillo\nPrecaución - 5 segundos",
       "pista": "Según también funciona con cadenas, no solo con números.",
-      "codigoReferencia": "Proceso SemaforoDuracion\n    Definir color Como Caracter\n    Escribir \"Color del semáforo:\"\n    Leer color\n    Segun color Hacer\n        \"rojo\": Escribir \"Detenerse - 60 segundos\"\n        \"amarillo\": Escribir \"Precaución - 5 segundos\"\n        \"verde\": Escribir \"Avanzar - 45 segundos\"\n        De Otro Modo:\n          Escribir \"Color inválido\"\n    FinSegun\nFinProceso",
+      "codigoReferencia": "Proceso SemaforoDuracion\n  Definir color Como Caracter\n\n  Escribir \"Color del semáforo:\"\n  Leer color\n  Segun color Hacer\n    \"rojo\": Escribir \"Detenerse - 60 segundos\"\n    \"amarillo\": Escribir \"Precaución - 5 segundos\"\n    \"verde\": Escribir \"Avanzar - 45 segundos\"\n    De Otro Modo:\n      Escribir \"Color inválido\"\n  FinSegun\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1033,7 +1033,7 @@
       },
       "salidaEsperada": "Calificación numérica:\n> 84\nB",
       "pista": "Cuando los rangos son descendentes, conviene comparar desde el valor más alto.",
-      "codigoReferencia": "Proceso CalificacionLetra\n    Definir nota Como Real\n    Escribir \"Calificación numérica:\"\n    Leer nota\n    Si nota >= 90 Entonces\n        Escribir \"A\"\n    Sino\n        Si nota >= 80 Entonces\n            Escribir \"B\"\n        Sino\n            Si nota >= 70 Entonces\n                Escribir \"C\"\n            Sino\n                Si nota >= 60 Entonces\n                    Escribir \"D\"\n                Sino\n                    Escribir \"F\"\n                FinSi\n            FinSi\n        FinSi\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso CalificacionLetra\n  Definir nota Como Real\n\n  Escribir \"Calificación numérica:\"\n  Leer nota\n  Si nota >= 90 Entonces\n    Escribir \"A\"\n  Sino\n    Si nota >= 80 Entonces\n      Escribir \"B\"\n    Sino\n      Si nota >= 70 Entonces\n        Escribir \"C\"\n      Sino\n        Si nota >= 60 Entonces\n          Escribir \"D\"\n        Sino\n          Escribir \"F\"\n        FinSi\n      FinSi\n    FinSi\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1061,7 +1061,7 @@
       },
       "salidaEsperada": "Saldo actual:\n> 50000\nOperación (1=saldo, 2=retiro, 3=depósito):\n> 2\nMonto:\n> 12000\nNuevo saldo: 38000",
       "pista": "El retiro necesita validación adicional, por eso combina Según con un Si interno.",
-      "codigoReferencia": "Proceso CajeroATM\n    Definir operacion Como Entero\n    Definir saldo, monto Como Real\n    Escribir \"Saldo actual:\"\n    Leer saldo\n    Escribir \"Operación (1=saldo, 2=retiro, 3=depósito):\"\n    Leer operacion\n    Escribir \"Monto:\"\n    Leer monto\n    Segun operacion Hacer\n        1:\n            Escribir \"Saldo actual: \", saldo\n        2:\n            Si monto <= saldo Entonces\n                saldo = saldo - monto\n                Escribir \"Nuevo saldo: \", saldo\n            Sino\n                Escribir \"Fondos insuficientes\"\n            FinSi\n        3:\n            saldo = saldo + monto\n            Escribir \"Nuevo saldo: \", saldo\n        De Otro Modo:\n            Escribir \"Operación inválida\"\n    FinSegun\nFinProceso",
+      "codigoReferencia": "Proceso CajeroATM\n  Definir operacion Como Entero\n  Definir saldo, monto Como Real\n\n  Escribir \"Saldo actual:\"\n  Leer saldo\n  Escribir \"Operación (1=saldo, 2=retiro, 3=depósito):\"\n  Leer operacion\n  Escribir \"Monto:\"\n  Leer monto\n  Segun operacion Hacer\n    1:\n      Escribir \"Saldo actual: \", saldo\n    2:\n      Si monto <= saldo Entonces\n        saldo = saldo - monto\n\n        Escribir \"Nuevo saldo: \", saldo\n      Sino\n        Escribir \"Fondos insuficientes\"\n      FinSi\n    3:\n      saldo = saldo + monto\n\n      Escribir \"Nuevo saldo: \", saldo\n    De Otro Modo:\n      Escribir \"Operación inválida\"\n  FinSegun\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     },
@@ -1089,7 +1089,7 @@
       },
       "salidaEsperada": "IMC:\n> 27\nPresión sistólica:\n> 145\nTemperatura corporal:\n> 38\nEstado IMC: Sobrepeso\nEstado presión: Presión alta\nEstado temperatura: Fiebre",
       "pista": "Este ejercicio combina varias decisiones independientes para construir un diagnóstico más completo.",
-      "codigoReferencia": "Proceso DiagnosticoSalud\n    Definir imc, presion, temperatura Como Real\n    Escribir \"IMC:\"\n    Leer imc\n    Escribir \"Presión sistólica:\"\n    Leer presion\n    Escribir \"Temperatura corporal:\"\n    Leer temperatura\n    Si imc < 18.5 Entonces\n        Escribir \"Estado IMC: Bajo peso\"\n    Sino\n        Si imc < 25 Entonces\n            Escribir \"Estado IMC: Peso normal\"\n        Sino\n            Escribir \"Estado IMC: Sobrepeso\"\n        FinSi\n    FinSi\n    Si presion >= 140 Entonces\n        Escribir \"Estado presión: Presión alta\"\n    Sino\n        Escribir \"Estado presión: Presión normal\"\n    FinSi\n    Si temperatura > 37.2 Entonces\n        Escribir \"Estado temperatura: Fiebre\"\n    Sino\n        Escribir \"Estado temperatura: Sin fiebre\"\n    FinSi\nFinProceso",
+      "codigoReferencia": "Proceso DiagnosticoSalud\n  Definir imc, presion, temperatura Como Real\n\n  Escribir \"IMC:\"\n  Leer imc\n  Escribir \"Presión sistólica:\"\n  Leer presion\n  Escribir \"Temperatura corporal:\"\n  Leer temperatura\n  Si imc < 18.5 Entonces\n    Escribir \"Estado IMC: Bajo peso\"\n  Sino\n    Si imc < 25 Entonces\n      Escribir \"Estado IMC: Peso normal\"\n    Sino\n      Escribir \"Estado IMC: Sobrepeso\"\n    FinSi\n  FinSi\n  Si presion >= 140 Entonces\n    Escribir \"Estado presión: Presión alta\"\n  Sino\n    Escribir \"Estado presión: Presión normal\"\n  FinSi\n  Si temperatura > 37.2 Entonces\n    Escribir \"Estado temperatura: Fiebre\"\n  Sino\n    Escribir \"Estado temperatura: Sin fiebre\"\n  FinSi\nFinProceso",
       "estadoAdaptacion": "adaptado",
       "motivoExclusion": ""
     }

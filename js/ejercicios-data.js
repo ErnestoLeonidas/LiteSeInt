@@ -1,5 +1,5 @@
 /* ==============================================
-   ejercicios-data.js — Banco de ejercicios LiteSeInt v.0.8.3
+   ejercicios-data.js — Banco de ejercicios LiteSeInt v.0.8.4
    Carga los ejercicios normalizados desde json/N*.json.
    ============================================== */
 

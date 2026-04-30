@@ -6,6 +6,25 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.8.4] — 2026-04-30
+
+Corrección visual del editor y normalización del estilo de los códigos de referencia del banco de ejercicios.
+
+### Corregido
+- **Editor**: sincroniza el scroll real del `textarea` con las capas espejo de sintaxis y subrayados para que el cursor, la selección y el texto coloreado no se desalineen en contextos largos.
+- **Editor**: unifica la altura de línea usada por `textarea`, resaltado, subrayados, overlays y gutter para evitar acumulación de redondeo al hacer scroll.
+
+### Cambiado
+- **`codigoReferencia` en `json/EA 1.1.json`–`json/EA 1.7.json` y `json/N1.json`–`json/N7.json`**: formato consistente con 2 espacios por nivel, comas con espacio en `Definir`, separación entre declaraciones, entrada/salida y operaciones, y asignaciones consecutivas alineadas.
+- **Ejercicios visibles**: N1–N7 quedan visibles en la app.
+- **Documentación**: `README.md`, `EJERCICIOS.md`, comentarios de banco y versión visible actualizados a `v.0.8.4`.
+
+### Validado
+- **490 `codigoReferencia` adaptados** pasan validación estática.
+- **Pruebas**: `npm test` pasa con 11 pruebas.
+
+---
+
 ## [0.8.3] — 2026-04-29 (reorganización N1-N7)
 
 Refactorización del banco de ejercicios: los archivos `json/EA 1.x.json` fueron renombrados a `json/N1.json`–`json/N7.json`. Los ids de ejercicios pasaron de `ea1-x-###` a `n1-001`... `n7-030`. El campo `nivelLiteSeInt` refleja ahora el número de nivel (1-7). Solo los niveles N1–N5 son visibles en la app; N6 y N7 quedan preparados como evaluación futura (`NIVELES_VISIBLES = [1, 2, 3, 4, 5]`).

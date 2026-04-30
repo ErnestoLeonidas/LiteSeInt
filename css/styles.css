@@ -35,8 +35,8 @@
   --bracket-1: #56cdfc;
   --bracket-2: #c99be8;
   --font-code: 'JetBrains Mono', 'Space Mono', monospace;
-  --line-height-val: 1.65;
-  --line-px: 21.45px;
+  --line-px: 22px;
+  --line-height-val: var(--line-px);
   --header-h: 52px;
   --toolbar-h: 44px;
   --example-bar-h: 40px;
@@ -400,7 +400,7 @@ body::before {
 /* Syntax highlight layer */
 .syntax-highlight-layer {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  padding: 8px 8px 8px 16px; z-index: 3; pointer-events: none;
+  z-index: 3; pointer-events: none;
   font-family: var(--font-code); font-size: 13px;
   line-height: var(--line-height-val);
   white-space: pre; overflow: hidden;
@@ -423,12 +423,20 @@ body::before {
 /* ---- Error decoration layer (underlines) ---- */
 .error-decoration-layer {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  padding: 8px 8px 8px 16px; z-index: 2; pointer-events: none;
+  z-index: 2; pointer-events: none;
   font-family: var(--font-code); font-size: 13px;
   line-height: var(--line-height-val);
   white-space: pre; overflow: hidden;
   color: transparent;
   margin: 0; border: none;
+}
+
+.editor-mirror-content {
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  min-width: max-content;
+  will-change: transform;
 }
 
 .error-underline {
@@ -915,7 +923,7 @@ body::before {
 }
 
 /* ========================================
-    EXERCISE BANK (right panel — v.0.8.3)
+    EXERCISE BANK (right panel — v.0.8.4)
     ======================================== */
 .ej-filters {
   display: grid;
