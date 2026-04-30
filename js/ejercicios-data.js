@@ -1,6 +1,6 @@
 /* ==============================================
-   ejercicios-data.js — Banco de ejercicios LiteSeInt v.0.8.2
-   Carga los ejercicios normalizados desde json/EA *.json.
+   ejercicios-data.js — Banco de ejercicios LiteSeInt v.0.8.3
+   Carga los ejercicios normalizados desde json/N*.json.
    ============================================== */
 
 (function (global) {
@@ -11,13 +11,13 @@
   const GRADOS_VALIDOS = ['guiado', 'con-pista', 'practica', 'desafio'];
 
   const EJERCICIOS_JSON_PATHS = [
-    'json/EA 1.1.json',
-    'json/EA 1.2.json',
-    'json/EA 1.3.json',
-    'json/EA 1.4.json',
-    'json/EA 1.5.json',
-    'json/EA 1.6.json',
-    'json/EA 1.7.json',
+    'json/N1.json',
+    'json/N2.json',
+    'json/N3.json',
+    'json/N4.json',
+    'json/N5.json',
+    'json/N6.json',
+    'json/N7.json',
   ];
 
   const EJERCICIOS = [];

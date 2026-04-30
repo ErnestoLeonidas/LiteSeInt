@@ -6,7 +6,20 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
-## [v.0.8.2] — 2026-04-28
+## [0.8.3] — 2026-04-29 (reorganización N1-N7)
+
+Refactorización del banco de ejercicios: los archivos `json/EA 1.x.json` fueron renombrados a `json/N1.json`–`json/N7.json`. Los ids de ejercicios pasaron de `ea1-x-###` a `n1-001`... `n7-030`. El campo `nivelLiteSeInt` refleja ahora el número de nivel (1-7). Solo los niveles N1–N5 son visibles en la app; N6 y N7 quedan preparados como evaluación futura (`NIVELES_VISIBLES = [1, 2, 3, 4, 5]`).
+
+### Cambiado
+- **`json/N1.json`–`json/N7.json`**: reemplazan a `json/EA 1.1.json`–`json/EA 1.7.json`. Todos los ejercicios conservan su `origen` original para trazabilidad.
+- **`js/ejercicios-data.js`**: `EJERCICIOS_JSON_PATHS` apunta a los nuevos archivos N1–N7.
+- **`js/app.js`**: agrega `NIVELES_VISIBLES = [1, 2, 3, 4, 5]`; `ejerciciosVisibles()` filtra por ese array; `NIVELES_LITESEINT` actualizado a N1–N7.
+- **`EJERCICIOS.md`**: tabla de estructura actualizada a N1–N7.
+- **Versión visible**: `v.0.8.3`.
+
+---
+
+## [0.8.2] — 2026-04-28
 
 Consolidación del banco de ejercicios. Esta versión mueve la fuente real de ejercicios a JSON normalizados por EA y deja `js/ejercicios-data.js` como cargador único del banco.
 

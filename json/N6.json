@@ -1,7 +1,7 @@
 {
   "experience": {
-    "id": "1.6",
-    "label": "EA 1.6",
+    "id": "6",
+    "label": "N6",
     "titulo": "Ejercicio Tipo Prueba Parte 1",
     "desc": "40 ejercicios de decisión anidada al estilo del Ejercicio 1 del parcial. Practica pseudocódigo en LiteSeInt con estructuras Si-Entonces anidadas.",
     "color": "var(--green)",
@@ -9,11 +9,11 @@
   },
   "exercises": [
     {
-      "id": "ea1-6-176",
+      "id": "n6-001",
       "origen": "json/EA 1.6.json #176",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Inscripción a taller gratuito",
@@ -36,11 +36,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-177",
+      "id": "n6-002",
       "origen": "json/EA 1.6.json #177",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Retiro de pedido en punto de entrega",
@@ -63,11 +63,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-178",
+      "id": "n6-003",
       "origen": "json/EA 1.6.json #178",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Despacho de pedido por stock",
@@ -90,11 +90,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-179",
+      "id": "n6-004",
       "origen": "json/EA 1.6.json #179",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Compra con saldo disponible",
@@ -117,11 +117,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-180",
+      "id": "n6-005",
       "origen": "json/EA 1.6.json #180",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Ingreso a sala con reserva",
@@ -144,11 +144,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-181",
+      "id": "n6-006",
       "origen": "json/EA 1.6.json #181",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Validación de formulario web",
@@ -171,11 +171,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-182",
+      "id": "n6-007",
       "origen": "json/EA 1.6.json #182",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Atención en caja abierta",
@@ -198,11 +198,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-183",
+      "id": "n6-008",
       "origen": "json/EA 1.6.json #183",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Descuento según tipo de cliente",
@@ -225,11 +225,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-184",
+      "id": "n6-009",
       "origen": "json/EA 1.6.json #184",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Acceso a estacionamiento",
@@ -252,11 +252,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-185",
+      "id": "n6-010",
       "origen": "json/EA 1.6.json #185",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Entrega de medicamento en farmacia",
@@ -279,11 +279,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-186",
+      "id": "n6-011",
       "origen": "json/EA 1.6.json #186",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Aprobación de préstamo bancario",
@@ -306,11 +306,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-187",
+      "id": "n6-012",
       "origen": "json/EA 1.6.json #187",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Control de temperatura de servidor",
@@ -333,11 +333,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-188",
+      "id": "n6-013",
       "origen": "json/EA 1.6.json #188",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Descarga de archivo según tamaño",
@@ -360,11 +360,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-189",
+      "id": "n6-014",
       "origen": "json/EA 1.6.json #189",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Reserva de mesa en restaurante",
@@ -387,11 +387,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-190",
+      "id": "n6-015",
       "origen": "json/EA 1.6.json #190",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Acceso al sistema con intentos fallidos",
@@ -414,11 +414,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-191",
+      "id": "n6-016",
       "origen": "json/EA 1.6.json #191",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Matrícula universitaria",
@@ -441,11 +441,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-192",
+      "id": "n6-017",
       "origen": "json/EA 1.6.json #192",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Conexión a red WiFi institucional",
@@ -468,11 +468,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-193",
+      "id": "n6-018",
       "origen": "json/EA 1.6.json #193",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Procesamiento de reclamo de cliente",
@@ -495,11 +495,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-194",
+      "id": "n6-019",
       "origen": "json/EA 1.6.json #194",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Exportación de producto por aduanas",
@@ -522,11 +522,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-195",
+      "id": "n6-020",
       "origen": "json/EA 1.6.json #195",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Renovación de contrato laboral",
@@ -549,11 +549,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-196",
+      "id": "n6-021",
       "origen": "json/EA 1.6.json #196",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Habilitación de cuenta bancaria",
@@ -576,11 +576,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-197",
+      "id": "n6-022",
       "origen": "json/EA 1.6.json #197",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Admisión a programa deportivo",
@@ -603,11 +603,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-198",
+      "id": "n6-023",
       "origen": "json/EA 1.6.json #198",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Publicación de aviso en clasificados",
@@ -630,11 +630,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-199",
+      "id": "n6-024",
       "origen": "json/EA 1.6.json #199",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Trámite en línea con clave única",
@@ -657,11 +657,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-200",
+      "id": "n6-025",
       "origen": "json/EA 1.6.json #200",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Tarifa escolar en transporte",
@@ -684,11 +684,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-201",
+      "id": "n6-026",
       "origen": "json/EA 1.6.json #201",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Despacho de producto refrigerado",
@@ -711,11 +711,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-202",
+      "id": "n6-027",
       "origen": "json/EA 1.6.json #202",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Aplicación de voucher de descuento",
@@ -738,11 +738,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-203",
+      "id": "n6-028",
       "origen": "json/EA 1.6.json #203",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Ingreso a conferencia con credencial",
@@ -765,11 +765,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-204",
+      "id": "n6-029",
       "origen": "json/EA 1.6.json #204",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Activación de alarma domiciliaria",
@@ -792,11 +792,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-205",
+      "id": "n6-030",
       "origen": "json/EA 1.6.json #205",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Crédito educativo con aval",
@@ -819,11 +819,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-206",
+      "id": "n6-031",
       "origen": "json/EA 1.6.json #206",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Control de aforo en recinto",
@@ -846,11 +846,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-207",
+      "id": "n6-032",
       "origen": "json/EA 1.6.json #207",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Bono de productividad laboral",
@@ -873,11 +873,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-208",
+      "id": "n6-033",
       "origen": "json/EA 1.6.json #208",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Registro de vehículo",
@@ -900,11 +900,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-209",
+      "id": "n6-034",
       "origen": "json/EA 1.6.json #209",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Solicitud de vacaciones",
@@ -927,11 +927,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-210",
+      "id": "n6-035",
       "origen": "json/EA 1.6.json #210",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Habilitación de cuenta de usuario web",
@@ -954,11 +954,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-211",
+      "id": "n6-036",
       "origen": "json/EA 1.6.json #211",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Control de calidad de producto",
@@ -981,11 +981,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-212",
+      "id": "n6-037",
       "origen": "json/EA 1.6.json #212",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Confirmación de turno médico",
@@ -1008,11 +1008,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-213",
+      "id": "n6-038",
       "origen": "json/EA 1.6.json #213",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Retiro de efectivo en cajero automático",
@@ -1035,11 +1035,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-214",
+      "id": "n6-039",
       "origen": "json/EA 1.6.json #214",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Acreditación profesional de técnico",
@@ -1062,11 +1062,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-6-215",
+      "id": "n6-040",
       "origen": "json/EA 1.6.json #215",
-      "modulo": "EA 1.6",
+      "modulo": "N6",
       "experiencia": "Ejercicio Tipo Prueba Parte 1",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 6,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Clasificación de residuo ambiental",

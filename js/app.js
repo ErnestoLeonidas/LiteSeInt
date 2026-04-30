@@ -1491,17 +1491,16 @@ function cargarEjemplo(nombre) {
 // =========================================
 
 const NIVELES_LITESEINT = [
-  { id: 0, titulo: "Orientación" },
-  { id: 1, titulo: "Secuencia y salida" },
+  { id: 1, titulo: "Introducción a los Algoritmos" },
   { id: 2, titulo: "Variables, tipos y entrada" },
   { id: 3, titulo: "Expresiones y E·P·S" },
   { id: 4, titulo: "Decisiones simples" },
   { id: 5, titulo: "Decisiones múltiples" },
   { id: 6, titulo: "Repetición controlada" },
   { id: 7, titulo: "Patrones de procesamiento" },
-  { id: 8, titulo: "Programas integradores" },
-  { id: 9, titulo: "Puente hacia Python" },
 ];
+
+const NIVELES_VISIBLES = [1, 2, 3, 4, 5];
 
 const PROGRESO_KEY = "liteseint:exerciseProgress";
 const ESTADOS_PROGRESO = ["pendiente", "en-curso", "completado"];
@@ -1558,7 +1557,9 @@ function setEstadoEjercicio(id, estado) {
 
 function ejerciciosVisibles() {
   if (!window.EjerciciosLiteSeInt) return [];
-  return window.EjerciciosLiteSeInt.listarAdaptados();
+  return window.EjerciciosLiteSeInt.listarAdaptados().filter(
+    (e) => NIVELES_VISIBLES.includes(e.nivelLiteSeInt),
+  );
 }
 
 function poblarFiltroNivel() {
@@ -1826,7 +1827,7 @@ async function inicializarBancoEjercicios() {
     await cargarBancoEjerciciosDesdeJson();
   } catch (err) {
     console.error(err);
-    renderizarEstadoCargaEjercicios("No se pudieron cargar los ejercicios desde los JSON de las EAs.");
+    renderizarEstadoCargaEjercicios("No se pudieron cargar los ejercicios desde los archivos JSON.");
     $("#ejDetail").html(
       '<p class="ej-detail-empty">Revisa que la página se esté sirviendo desde un servidor local y que el archivo JSON exista.</p>',
     );

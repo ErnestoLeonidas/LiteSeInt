@@ -8,21 +8,23 @@ Este documento define cómo se adaptan los ejercicios de `ejercicios/guia.html` 
 
 Para 1.0, **los ejercicios se adaptan a LiteSeInt**. LiteSeInt no debe crecer sin control para aceptar todo lo que aparezca en la guía. Si un ejercicio requiere algo fuera de alcance, queda marcado como "requiere adaptación" o "excluido temporalmente", no visible como ejercicio listo.
 
-## Estructura pedagógica de `ejercicios/guia.html`
+## Estructura del banco de ejercicios LiteSeInt
 
-La guía contiene **245 ejercicios** distribuidos en 7 Experiencias de Aprendizaje (EA):
+El banco contiene **245 ejercicios** distribuidos en 7 niveles (N1–N7). Cada nivel tiene su propio archivo JSON en `json/N*.json` y corresponde a una Experiencia de Aprendizaje original de `guia.html`.
 
-| EA | Título | Cant. | Conceptos principales |
-|---|---|---|---|
-| 1.1 | Introducción a los Algoritmos | 20 | `Escribir`, `Definir`, `Leer`, asignación, tipos, expresiones |
-| 1.2 | Diagramas de Flujo y Pseudocódigo | 40 | E·P·S, fórmulas, secuencias, conversiones, `MOD`, `DIV` |
-| 1.3 | Estructuras de Decisión | 40 | `Si`/`Sino`, `Si` anidado, `Segun` |
-| 1.4 | Estructuras de Repetición | 60 | `Mientras`, `Para`, `Repetir`, contador y acumulador |
-| 1.5 | Desafíos | 15 | Combinación libre de los conceptos anteriores |
-| 1.6 | Tipo Prueba Parte 1 | 40 | `Si` anidado al estilo del parcial |
-| 1.7 | Tipo Prueba Parte 2 | 30 | Menú de 3 opciones, ciclo `Mientras`, contador y acumulador |
+| Nivel | Archivo | EA de origen | Título | Cant. | Visible en app |
+|---|---|---|---|---|---|
+| N1 | `json/N1.json` | EA 1.1 | Introducción a los Algoritmos | 20 | Sí |
+| N2 | `json/N2.json` | EA 1.2 | Diagramas de Flujo y Pseudocódigo | 40 | Sí |
+| N3 | `json/N3.json` | EA 1.3 | Estructuras de Decisión | 40 | Sí |
+| N4 | `json/N4.json` | EA 1.4 | Estructuras de Repetición | 60 | Sí |
+| N5 | `json/N5.json` | EA 1.5 | Desafíos | 15 | Sí |
+| N6 | `json/N6.json` | EA 1.6 | Tipo Prueba Parte 1 | 40 | No (evaluación futura) |
+| N7 | `json/N7.json` | EA 1.7 | Tipo Prueba Parte 2 | 30 | No (evaluación futura) |
 
-Distribución por nivel reportada en la guía: 91 básicos, 84 intermedios, 70 avanzados.
+N6 y N7 se cargan pero no aparecen en el banco visible de la app (`NIVELES_VISIBLES = [1, 2, 3, 4, 5]` en `js/app.js`).
+
+Distribución por dificultad: 91 básicos, 84 intermedios, 70 avanzados.
 
 ## Nueva estructura de aprendizaje LiteSeInt
 
@@ -45,22 +47,19 @@ Cada ejercicio integrado debe clasificarse según la actividad principal que pro
 | Modificar | Cambiar una parte acotada del programa. | Transferir gradualmente responsabilidad al estudiante. |
 | Crear | Resolver un problema nuevo con el mismo concepto. | Practicar autonomía y consolidar el aprendizaje. |
 
-### Niveles de aprendizaje propuestos
+### Niveles de aprendizaje
 
-Los 245 ejercicios de `guia.html` deben mapearse a esta ruta, aunque su EA original sea distinta.
+Los 245 ejercicios del banco están distribuidos en 7 niveles. Los niveles visibles en la app son N1–N5; N6 y N7 están preparados como evaluación futura.
 
-| Nivel | Nombre | Conceptos principales | Fuente probable en la guía |
+| Nivel | Nombre | Conceptos principales | Visible |
 |---|---|---|---|
-| 0 | Orientación | interfaz, editor, consola, ejecutar, leer errores | ejercicios mínimos de EA 1.1 |
-| 1 | Secuencia y salida | `Proceso`, `FinProceso`, `Escribir`, comentarios | EA 1.1 |
-| 2 | Variables, tipos y entrada | `Definir`, `Leer`, asignación, tipos | EA 1.1, EA 1.2 |
-| 3 | Expresiones y E/P/S | fórmulas, operadores, paréntesis, funciones nativas | EA 1.2 |
-| 4 | Decisiones simples | `Si`, `Sino`, comparaciones, validación simple | EA 1.3 |
-| 5 | Decisiones múltiples y anidadas | `Si` anidado, `Segun`, operadores lógicos | EA 1.3, EA 1.6 |
-| 6 | Repetición controlada | `Mientras`, `Repetir`, `HastaQue`, `Para` | EA 1.4 |
-| 7 | Patrones de procesamiento | contador, acumulador, promedio, máximo, mínimo | EA 1.4, EA 1.5, EA 1.7 |
-| 8 | Programas integradores con menú | menú persistente, estado, análisis final | EA 1.7, EA 1.5 |
-| 9 | Puente hacia Python | equivalencias conceptuales con Python | ejercicios ya resueltos en niveles previos |
+| N1 | Introducción a los Algoritmos | `Proceso`, `FinProceso`, `Escribir`, `Definir`, `Leer`, asignación, tipos | Sí |
+| N2 | Diagramas de Flujo y Pseudocódigo | E·P·S, fórmulas, operadores, secuencias, conversiones | Sí |
+| N3 | Estructuras de Decisión | `Si`/`Sino`, `Si` anidado, `Segun`, operadores lógicos | Sí |
+| N4 | Estructuras de Repetición | `Mientras`, `Para`, `Repetir`, contador, acumulador | Sí |
+| N5 | Desafíos | Combinación libre de los conceptos anteriores | Sí |
+| N6 | Tipo Prueba Parte 1 | `Si` anidado al estilo del parcial | No |
+| N7 | Tipo Prueba Parte 2 | Menú de 3 opciones, ciclo `Mientras`, contador y acumulador | No |
 
 ### Grados de ayuda
 
@@ -83,7 +82,7 @@ Cuando se extraigan ejercicios desde `guia.html`, cada ejercicio adaptado debe g
 |---|---|
 | `id` | Identificador estable del ejercicio. |
 | `origen` | Referencia al ejercicio original en `guia.html` cuando exista. |
-| `nivelLiteSeInt` | Nivel 0-9 de la ruta LiteSeInt. |
+| `nivelLiteSeInt` | Nivel 1-7 de la ruta LiteSeInt (N1–N7). |
 | `gradoAyuda` | Guiado, con pista, práctica o desafío. |
 | `conceptos` | Comandos o patrones que practica. |
 | `dificultad` | Básico, intermedio o avanzado. |
@@ -178,7 +177,7 @@ Notas de adaptación:
 - EA 1.1 #18 (Segundos a h:m:s): también existe como `ea1-2-015`. El `ea1-1-018` usa el origen correcto (EA 1.1). DIV/MOD adaptados a `Trunc`/`mod`.
 - EA 1.1 #20: la variable `paso` es reservada en LiteSeInt (por `Con Paso` de `Para`); se renombra a `numPaso` en el código de referencia.
 
-A **v.0.8.2** se completa la migración del banco a **245 ejercicios adaptados** desde `ejercicios/guia.html`, distribuidos en `json/EA 1.1.json` a `json/EA 1.7.json`. `js/ejercicios-data.js` es ahora el punto único de carga del banco y consume esos JSON normalizados para exponer `EjerciciosLiteSeInt` al panel derecho.
+A **v.0.8.3** el banco mantiene **245 ejercicios adaptados** desde `ejercicios/guia.html`, reorganizados en `json/N1.json` a `json/N7.json`. `js/ejercicios-data.js` es el punto único de carga del banco y consume esos JSON normalizados para exponer `EjerciciosLiteSeInt` al panel derecho.
 
 Pendiente: optimizar los JSON de **EA 1.6** y **EA 1.7**. Aunque sus ejercicios ya están normalizados y pasan validación estática, requieren una revisión de calidad pedagógica para reducir repetición, mejorar enunciados/pistas y ajustar progresión.
 

@@ -1,7 +1,7 @@
 {
   "experience": {
-    "id": "1.7",
-    "label": "EA 1.7",
+    "id": "7",
+    "label": "N7",
     "titulo": "Ejercicio Tipo Prueba Parte 2",
     "desc": "30 ejercicios con menú de 3 opciones, ciclo Mientras, contador y acumulador, al estilo del Ejercicio 2 del parcial.",
     "color": "var(--yellow)",
@@ -9,11 +9,11 @@
   },
   "exercises": [
     {
-      "id": "ea1-7-216",
+      "id": "n7-001",
       "origen": "json/EA 1.7.json #216",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Registro de ventas diarias",
@@ -38,11 +38,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-217",
+      "id": "n7-002",
       "origen": "json/EA 1.7.json #217",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Registro de kilometraje recorrido",
@@ -67,11 +67,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-218",
+      "id": "n7-003",
       "origen": "json/EA 1.7.json #218",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Registro de horas de estudio semanales",
@@ -96,11 +96,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-219",
+      "id": "n7-004",
       "origen": "json/EA 1.7.json #219",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Registro de calorías consumidas",
@@ -125,11 +125,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-220",
+      "id": "n7-005",
       "origen": "json/EA 1.7.json #220",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Registro de pagos de servicios del hogar",
@@ -154,11 +154,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-221",
+      "id": "n7-006",
       "origen": "json/EA 1.7.json #221",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Registro de unidades producidas por turno",
@@ -183,11 +183,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-222",
+      "id": "n7-007",
       "origen": "json/EA 1.7.json #222",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Registro de donaciones en campaña benéfica",
@@ -212,11 +212,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-223",
+      "id": "n7-008",
       "origen": "json/EA 1.7.json #223",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Registro de horas extra en el mes",
@@ -241,11 +241,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-224",
+      "id": "n7-009",
       "origen": "json/EA 1.7.json #224",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Registro de asistencia a clases",
@@ -270,11 +270,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-225",
+      "id": "n7-010",
       "origen": "json/EA 1.7.json #225",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "basico",
       "gradoAyuda": "con-pista",
       "titulo": "Registro de multas de tránsito",
@@ -299,11 +299,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-226",
+      "id": "n7-011",
       "origen": "json/EA 1.7.json #226",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Registro de notas del semestre",
@@ -328,11 +328,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-227",
+      "id": "n7-012",
       "origen": "json/EA 1.7.json #227",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Registro de temperaturas diarias",
@@ -357,11 +357,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-228",
+      "id": "n7-013",
       "origen": "json/EA 1.7.json #228",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Registro de tiempos de atención en call center",
@@ -386,11 +386,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-229",
+      "id": "n7-014",
       "origen": "json/EA 1.7.json #229",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Registro de consumo eléctrico por área",
@@ -415,11 +415,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-230",
+      "id": "n7-015",
       "origen": "json/EA 1.7.json #230",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Registro de tiempo en pantalla semanal",
@@ -444,11 +444,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-231",
+      "id": "n7-016",
       "origen": "json/EA 1.7.json #231",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Registro de peso en controles médicos",
@@ -473,11 +473,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-232",
+      "id": "n7-017",
       "origen": "json/EA 1.7.json #232",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Registro de pasos caminados",
@@ -502,11 +502,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-233",
+      "id": "n7-018",
       "origen": "json/EA 1.7.json #233",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Registro de precipitaciones mensuales",
@@ -531,11 +531,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-234",
+      "id": "n7-019",
       "origen": "json/EA 1.7.json #234",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Registro de tiempo de carga de páginas web",
@@ -560,11 +560,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-235",
+      "id": "n7-020",
       "origen": "json/EA 1.7.json #235",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
       "titulo": "Registro de temperaturas para detectar el más caluroso",
@@ -589,11 +589,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-236",
+      "id": "n7-021",
       "origen": "json/EA 1.7.json #236",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Registro de ventas por vendedor",
@@ -618,11 +618,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-237",
+      "id": "n7-022",
       "origen": "json/EA 1.7.json #237",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Registro de tiempos en competencia de atletismo",
@@ -647,11 +647,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-238",
+      "id": "n7-023",
       "origen": "json/EA 1.7.json #238",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Registro de consumo de combustible por viaje",
@@ -676,11 +676,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-239",
+      "id": "n7-024",
       "origen": "json/EA 1.7.json #239",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Registro de notas para identificar la más alta",
@@ -705,11 +705,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-240",
+      "id": "n7-025",
       "origen": "json/EA 1.7.json #240",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Registro de productos con stock bajo",
@@ -734,11 +734,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-241",
+      "id": "n7-026",
       "origen": "json/EA 1.7.json #241",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Registro de alumnos aprobados y reprobados",
@@ -763,11 +763,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-242",
+      "id": "n7-027",
       "origen": "json/EA 1.7.json #242",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Registro de pedidos con entrega atrasada",
@@ -792,11 +792,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-243",
+      "id": "n7-028",
       "origen": "json/EA 1.7.json #243",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Registro de empleados con sueldo alto",
@@ -821,11 +821,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-244",
+      "id": "n7-029",
       "origen": "json/EA 1.7.json #244",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Registro de artículos sobre el presupuesto",
@@ -850,11 +850,11 @@
       "motivoExclusion": ""
     },
     {
-      "id": "ea1-7-245",
+      "id": "n7-030",
       "origen": "json/EA 1.7.json #245",
-      "modulo": "EA 1.7",
+      "modulo": "N7",
       "experiencia": "Ejercicio Tipo Prueba Parte 2",
-      "nivelLiteSeInt": 8,
+      "nivelLiteSeInt": 7,
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
       "titulo": "Registro de velocidades en tramos de ruta",
