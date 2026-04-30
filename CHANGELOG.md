@@ -6,6 +6,27 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.8.5] — 2026-04-30
+
+Cierre de la fase "Documentación Integrada": el panel de aprendizaje ahora combina banco de ejercicios, referencia de comandos, ruta del estudiante y guía de errores comunes dentro de la app.
+
+### Agregado
+- **Documentación interna de comandos**: nueva vista `Comandos` con sintaxis soportada, descripción breve, ejemplo mínimo y ejercicios recomendados para practicar cada construcción.
+- **Ruta del estudiante**: nueva vista `Ruta` con recorrido N1–N7, progreso local por nivel y accesos directos a ejercicios iniciales.
+- **Errores comunes**: nueva vista `Errores` con correcciones para variable no definida, variable no inicializada, cierres faltantes, sintaxis PSeInt no soportada y confusión entre `=` y `==`.
+- **Temas visuales**: selector de tema persistente con paletas `Hacker`, `Ocean` y `Sunset`.
+
+### Cambiado
+- **Panel de aprendizaje**: el banco pasa a una navegación por pestañas y puede moverse entre izquierda/derecha con asa de arrastre persistente.
+- **Banco de ejercicios**: filtros convertidos a píldoras, barra de progreso compacta, lista colapsable y numeración visible `N#-##` en cada ejercicio.
+- **`json/N1.json`–`json/N7.json`**: cada ejercicio incorpora el campo `numero`, validado por pruebas.
+- **Documentación**: `README.md`, `EJERCICIOS.md`, comentarios de banco y versión visible actualizados a `v.0.8.5`.
+
+### Validado
+- **Pruebas**: `npm test` pasa con 11 pruebas.
+
+---
+
 ## [0.8.4] — 2026-04-30
 
 Corrección visual del editor y normalización del estilo de los códigos de referencia del banco de ejercicios.

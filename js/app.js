@@ -31,6 +31,162 @@ function resetErrorVisualState() {
 }
 
 // =========================================
+// THEME SYSTEM
+// =========================================
+
+const THEME_KEY = 'liteseint_theme';
+const THEMES = [
+  { id: 'hacker', label: 'Hacker' },
+  { id: 'ocean',  label: 'Ocean'  },
+  { id: 'sunset', label: 'Sunset' },
+];
+
+function initTheme() {
+  const saved = localStorage.getItem(THEME_KEY);
+  const theme = THEMES.find(t => t.id === saved) || THEMES[0];
+  applyTheme(theme);
+}
+
+function applyTheme(theme) {
+  document.body.setAttribute('data-theme', theme.id);
+  const nameEl = document.getElementById('themeName');
+  if (nameEl) nameEl.textContent = theme.label;
+  try { localStorage.setItem(THEME_KEY, theme.id); } catch(e) {}
+}
+
+function cycleTheme() {
+  const current = document.body.getAttribute('data-theme') || 'hacker';
+  const idx = THEMES.findIndex(t => t.id === current);
+  const next = THEMES[(idx + 1) % THEMES.length];
+  applyTheme(next);
+}
+
+// =========================================
+// PANEL DRAG-TO-SWAP
+// =========================================
+
+const PANEL_ORDER_KEY = 'liteseint_panel_order';
+
+function initPanelDrag() {
+  const container = document.querySelector('.main-container');
+  if (!container) return;
+  let dragging = null;
+
+  container.querySelectorAll('[data-draggable]').forEach(panel => {
+    const handle = panel.querySelector('.panel-drag-handle');
+    if (!handle) return;
+
+    handle.addEventListener('mousedown', () => {
+      panel.setAttribute('draggable', 'true');
+      const cleanup = () => {
+        if (!dragging) panel.removeAttribute('draggable');
+        document.removeEventListener('mouseup', cleanup);
+      };
+      document.addEventListener('mouseup', cleanup);
+    });
+
+    panel.addEventListener('dragstart', e => {
+      dragging = panel;
+      e.dataTransfer.effectAllowed = 'move';
+      requestAnimationFrame(() => panel.classList.add('panel-dragging'));
+    });
+
+    panel.addEventListener('dragend', () => {
+      panel.removeAttribute('draggable');
+      panel.classList.remove('panel-dragging');
+      container.querySelectorAll('[data-draggable]').forEach(p => p.classList.remove('panel-drag-over'));
+      dragging = null;
+    });
+
+    panel.addEventListener('dragover', e => {
+      if (!dragging || panel === dragging) return;
+      e.preventDefault();
+      panel.classList.add('panel-drag-over');
+    });
+
+    panel.addEventListener('dragleave', e => {
+      if (!panel.contains(e.relatedTarget)) panel.classList.remove('panel-drag-over');
+    });
+
+    panel.addEventListener('drop', e => {
+      e.preventDefault();
+      panel.classList.remove('panel-drag-over');
+      if (!dragging || dragging === panel) return;
+      const siblings = [...container.querySelectorAll('[data-draggable]')];
+      const srcIdx = siblings.indexOf(dragging);
+      const tgtIdx = siblings.indexOf(panel);
+      if (srcIdx < tgtIdx) container.insertBefore(dragging, panel.nextSibling);
+      else container.insertBefore(dragging, panel);
+      updateLearningPanelBorder();
+      savePanelOrder();
+    });
+  });
+}
+
+function updateLearningPanelBorder() {
+  const container = document.querySelector('.main-container');
+  const lp = document.querySelector('.learning-panel');
+  if (!container || !lp) return;
+  const panels = [...container.querySelectorAll('[data-draggable]')];
+  lp.classList.toggle('panel-on-right', panels[0] !== lp);
+}
+
+function savePanelOrder() {
+  const container = document.querySelector('.main-container');
+  const lp = document.querySelector('.learning-panel');
+  if (!container || !lp) return;
+  const isLeft = [...container.querySelectorAll('[data-draggable]')][0] === lp;
+  try { localStorage.setItem(PANEL_ORDER_KEY, isLeft ? 'left' : 'right'); } catch(e) {}
+}
+
+function restorePanelOrder() {
+  const saved = localStorage.getItem(PANEL_ORDER_KEY);
+  if (!saved) return;
+  const container = document.querySelector('.main-container');
+  const lp = document.querySelector('.learning-panel');
+  const ws = document.querySelector('.workspace-column');
+  if (!container || !lp || !ws) return;
+  const panels = [...container.querySelectorAll('[data-draggable]')];
+  const currentlyLeft = panels[0] === lp;
+  if (saved === 'right' && currentlyLeft) {
+    container.appendChild(lp);
+    updateLearningPanelBorder();
+  } else if (saved === 'left' && !currentlyLeft) {
+    container.insertBefore(lp, ws);
+    updateLearningPanelBorder();
+  }
+}
+
+// =========================================
+// EXERCISE LIST TOGGLE
+// =========================================
+
+const EJ_LISTA_KEY = 'liteseint_ej_lista';
+
+function initEjListaToggle() {
+  const btn = document.getElementById('btnToggleEjLista');
+  if (!btn) return;
+  const saved = localStorage.getItem(EJ_LISTA_KEY);
+  if (saved === 'hidden') setEjListaVisible(false);
+  btn.addEventListener('click', () => {
+    const collapsed = document.querySelector('.ej-workspace')?.classList.contains('ej-lista-colapsada');
+    setEjListaVisible(collapsed);
+  });
+}
+
+function setEjListaVisible(visible) {
+  const workspace = document.querySelector('.ej-workspace');
+  const btn = document.getElementById('btnToggleEjLista');
+  if (!workspace) return;
+  workspace.classList.toggle('ej-lista-colapsada', !visible);
+  if (btn) {
+    btn.textContent = visible ? '◀' : '▶';
+    btn.title = visible ? 'Ocultar lista de ejercicios' : 'Mostrar lista de ejercicios';
+  }
+  try { localStorage.setItem(EJ_LISTA_KEY, visible ? 'visible' : 'hidden'); } catch(e) {}
+}
+
+// =========================================
 // 2. INTÉRPRETE
 // =========================================
 
@@ -1516,20 +1672,146 @@ function cargarEjemplo(nombre) {
 }
 
 // =========================================
-// 11.b BANCO DE EJERCICIOS (panel derecho)
+// 11.b BANCO DE EJERCICIOS Y DOCUMENTACION (panel de aprendizaje)
 // =========================================
 
 const NIVELES_LITESEINT = [
   { id: 1, titulo: "Introducción a los Algoritmos" },
-  { id: 2, titulo: "Variables, tipos y entrada" },
-  { id: 3, titulo: "Expresiones y E·P·S" },
-  { id: 4, titulo: "Decisiones simples" },
-  { id: 5, titulo: "Decisiones múltiples" },
-  { id: 6, titulo: "Repetición controlada" },
-  { id: 7, titulo: "Patrones de procesamiento" },
+  { id: 2, titulo: "Diagramas de Flujo y Pseudocódigo" },
+  { id: 3, titulo: "Estructuras de Decisión" },
+  { id: 4, titulo: "Estructuras de Repetición" },
+  { id: 5, titulo: "Desafíos" },
+  { id: 6, titulo: "Tipo Prueba Parte 1" },
+  { id: 7, titulo: "Tipo Prueba Parte 2" },
 ];
 
 const NIVELES_VISIBLES = [1, 2, 3, 4, 5, 6, 7];
+
+const DOC_COMANDOS = [
+  {
+    nombre: "Proceso / FinProceso",
+    sintaxis: "Proceso nombre\n  instrucciones\nFinProceso",
+    ejemplo: "Proceso saludo\n  Escribir \"Hola\"\nFinProceso",
+    descripcion: "Todo programa LiteSeInt empieza con Proceso y termina con FinProceso.",
+    ejercicios: ["n1-001", "n1-002"],
+  },
+  {
+    nombre: "Definir",
+    sintaxis: "Definir variable[, otra] Como Entero|Real|Caracter|Logico",
+    ejemplo: "Definir edad Como Entero\nDefinir nombre Como Caracter",
+    descripcion: "Declara variables antes de usarlas e indica el tipo de dato que guardan.",
+    ejercicios: ["n1-003", "n1-004"],
+  },
+  {
+    nombre: "Asignación",
+    sintaxis: "variable = expresion",
+    ejemplo: "total = precio * cantidad",
+    descripcion: "Guarda el resultado de una expresión en una variable ya definida.",
+    ejercicios: ["n1-006", "n1-007"],
+  },
+  {
+    nombre: "Leer",
+    sintaxis: "Leer variable",
+    ejemplo: "Escribir \"Ingresa tu edad:\"\nLeer edad",
+    descripcion: "Pide un dato por consola y lo guarda en una variable compatible.",
+    ejercicios: ["n1-005", "n2-001"],
+  },
+  {
+    nombre: "Escribir",
+    sintaxis: "Escribir expresion[, expresion...]",
+    ejemplo: "Escribir \"Resultado: \", total",
+    descripcion: "Muestra texto, números, variables o varias expresiones separadas por coma.",
+    ejercicios: ["n1-001", "n1-002"],
+  },
+  {
+    nombre: "Si / Sino / FinSi",
+    sintaxis: "Si condicion Entonces\n  instrucciones\nSino\n  instrucciones\nFinSi",
+    ejemplo: "Si edad >= 18 Entonces\n  Escribir \"Mayor\"\nSino\n  Escribir \"Menor\"\nFinSi",
+    descripcion: "Ejecuta una rama u otra según una condición lógica.",
+    ejercicios: ["n3-001", "n3-002"],
+  },
+  {
+    nombre: "Mientras / FinMientras",
+    sintaxis: "Mientras condicion Hacer\n  instrucciones\nFinMientras",
+    ejemplo: "Mientras i <= 10 Hacer\n  Escribir i\n  i = i + 1\nFinMientras",
+    descripcion: "Repite instrucciones mientras la condición siga siendo verdadera.",
+    ejercicios: ["n4-001", "n4-002"],
+  },
+  {
+    nombre: "Repetir / HastaQue",
+    sintaxis: "Repetir\n  instrucciones\nHastaQue condicion",
+    ejemplo: "Repetir\n  Leer clave\nHastaQue clave == \"ok\"",
+    descripcion: "Ejecuta el bloque al menos una vez y luego evalúa la condición de salida.",
+    ejercicios: ["n4-007", "n4-021"],
+  },
+  {
+    nombre: "Para / FinPara",
+    sintaxis: "Para i = inicio Hasta fin [Con Paso paso] Hacer\n  instrucciones\nFinPara",
+    ejemplo: "Para i = 1 Hasta 5 Hacer\n  Escribir i\nFinPara",
+    descripcion: "Repite un bloque con un contador que avanza automáticamente.",
+    ejercicios: ["n4-005", "n4-006"],
+  },
+  {
+    nombre: "Segun / FinSegun",
+    sintaxis: "Segun expresion Hacer\n  valor: instrucciones\n  De Otro Modo: instrucciones\nFinSegun",
+    ejemplo: "Segun dia Hacer\n  1: Escribir \"Lunes\"\n  De Otro Modo: Escribir \"Otro\"\nFinSegun",
+    descripcion: "Selecciona una alternativa entre varios casos posibles.",
+    ejercicios: ["n3-031", "n3-032"],
+  },
+  {
+    nombre: "Funciones nativas",
+    sintaxis: "Abs(x), Redon(x), Trunc(x), Longitud(texto), Mayusculas(texto), Minusculas(texto)",
+    ejemplo: "Escribir Mayusculas(nombre)\nEscribir Redon(promedio)",
+    descripcion: "Resuelven operaciones comunes de texto y números dentro de expresiones.",
+    ejercicios: ["n2-010", "n2-011"],
+  },
+  {
+    nombre: "Comentarios",
+    sintaxis: "// texto",
+    ejemplo: "// Calcula el promedio\npromedio = suma / 3",
+    descripcion: "Documentan el programa y no se ejecutan.",
+    ejercicios: ["n1-006", "n1-008"],
+  },
+];
+
+const DOC_ERRORES_COMUNES = [
+  {
+    titulo: "Variable no definida",
+    causa: "Usar una variable que nunca fue declarada con Definir.",
+    arreglo: "Agrega Definir antes de leer, asignar o escribir esa variable.",
+    ejemplo: "Definir edad Como Entero\nLeer edad",
+  },
+  {
+    titulo: "Variable no inicializada",
+    causa: "Leer el valor de una variable declarada pero sin dato útil para esa operación.",
+    arreglo: "Asigna un valor inicial o usa Leer antes de operar con ella.",
+    ejemplo: "suma = 0",
+  },
+  {
+    titulo: "Falta FinSi",
+    causa: "Abrir un Si y cerrar el programa o un bloque externo antes de cerrar la condición.",
+    arreglo: "Cierra cada Si con FinSi en el mismo nivel de indentación.",
+    ejemplo: "Si edad >= 18 Entonces\n  Escribir \"Mayor\"\nFinSi",
+  },
+  {
+    titulo: "Falta FinMientras",
+    causa: "Abrir un Mientras sin cerrar su bloque.",
+    arreglo: "Agrega FinMientras después de las instrucciones repetidas.",
+    ejemplo: "Mientras i <= 5 Hacer\n  i = i + 1\nFinMientras",
+  },
+  {
+    titulo: "Sintaxis PSeInt no soportada",
+    causa: "Usar alias fuera del dialecto LiteSeInt, como <-, Cadena, SiNo, MOD o DIV.",
+    arreglo: "Usa =, Caracter, Sino y mod en minúscula.",
+    ejemplo: "nombre = \"Ana\"\nresto = numero mod 2",
+  },
+  {
+    titulo: "Confusión entre = y ==",
+    causa: "Usar = para comparar dentro de una condición.",
+    arreglo: "Usa = para asignar y == para comparar.",
+    ejemplo: "Si clave == \"ok\" Entonces",
+  },
+];
 
 const PROGRESO_KEY = "liteseint:exerciseProgress";
 const ESTADOS_PROGRESO = ["pendiente", "en-curso", "completado"];
@@ -1591,27 +1873,152 @@ function ejerciciosVisibles() {
   );
 }
 
+function ejerciciosPorIds(ids) {
+  if (!window.EjerciciosLiteSeInt) return [];
+  return ids
+    .map((id) => window.EjerciciosLiteSeInt.porId(id))
+    .filter(Boolean)
+    .filter((e) => e.estadoAdaptacion === "adaptado");
+}
+
+function crearLinkEjercicio(ejercicio) {
+  return $("<button>")
+    .addClass("learning-doc-exercise")
+    .attr("type", "button")
+    .text(`${ejercicio.numero || ejercicio.id} · ${ejercicio.titulo}`)
+    .on("click", () => {
+      cambiarVistaAprendizaje("ejercicios");
+      seleccionarEjercicio(ejercicio.id);
+    });
+}
+
+function renderizarDocsComandos() {
+  const $cont = $("#learningViewComandos");
+  if (!$cont.length) return;
+  $cont.empty();
+  $cont.append($("<p>").addClass("learning-doc-intro").text(
+    "Referencia rápida de los comandos soportados por LiteSeInt, con ejemplos mínimos y ejercicios para practicar.",
+  ));
+
+  DOC_COMANDOS.forEach((doc) => {
+    const $card = $("<article>").addClass("learning-doc-card");
+    $card.append($("<h4>").text(doc.nombre));
+    $card.append($("<p>").text(doc.descripcion));
+    $card.append($("<div>").addClass("learning-doc-label").text("Sintaxis"));
+    $card.append($("<pre>").text(doc.sintaxis));
+    $card.append($("<div>").addClass("learning-doc-label").text("Ejemplo"));
+    $card.append($("<pre>").text(doc.ejemplo));
+
+    const ejercicios = ejerciciosPorIds(doc.ejercicios);
+    if (ejercicios.length) {
+      const $recs = $("<div>").addClass("learning-doc-recs");
+      $recs.append($("<div>").addClass("learning-doc-label").text("Practicar con"));
+      ejercicios.forEach((e) => $recs.append(crearLinkEjercicio(e)));
+      $card.append($recs);
+    }
+    $cont.append($card);
+  });
+}
+
+function renderizarRutaEstudiante() {
+  const $cont = $("#learningViewRuta");
+  if (!$cont.length) return;
+  $cont.empty();
+  $cont.append($("<p>").addClass("learning-doc-intro").text(
+    "Ruta sugerida para avanzar desde programas lineales hasta patrones de procesamiento.",
+  ));
+
+  NIVELES_LITESEINT.forEach((nivel) => {
+    const ejercicios = ejerciciosVisibles().filter((e) => e.nivelLiteSeInt === nivel.id);
+    const completados = ejercicios.filter((e) => estadoEjercicio(e.id) === "completado").length;
+    const recomendados = ejercicios.slice(0, 3);
+    const $card = $("<article>").addClass("learning-route-card");
+    $card.append($("<div>").addClass("learning-route-num").text(`N${nivel.id}`));
+    const $body = $("<div>").addClass("learning-route-body");
+    $body.append($("<h4>").text(nivel.titulo));
+    $body.append($("<p>").text(`${completados}/${ejercicios.length} ejercicios completados`));
+    if (recomendados.length) {
+      const $recs = $("<div>").addClass("learning-doc-recs");
+      recomendados.forEach((e) => $recs.append(crearLinkEjercicio(e)));
+      $body.append($recs);
+    }
+    $card.append($body);
+    $cont.append($card);
+  });
+}
+
+function renderizarErroresComunes() {
+  const $cont = $("#learningViewErrores");
+  if (!$cont.length) return;
+  $cont.empty();
+  $cont.append($("<p>").addClass("learning-doc-intro").text(
+    "Errores frecuentes del dialecto LiteSeInt y la forma directa de corregirlos.",
+  ));
+
+  DOC_ERRORES_COMUNES.forEach((err) => {
+    const $card = $("<article>").addClass("learning-doc-card");
+    $card.append($("<h4>").text(err.titulo));
+    $card.append($("<p>").append($("<b>").text("Causa: ")).append(document.createTextNode(err.causa)));
+    $card.append($("<p>").append($("<b>").text("Corrección: ")).append(document.createTextNode(err.arreglo)));
+    $card.append($("<div>").addClass("learning-doc-label").text("Ejemplo"));
+    $card.append($("<pre>").text(err.ejemplo));
+    $cont.append($card);
+  });
+}
+
+function renderizarAprendizajeIntegrado() {
+  renderizarDocsComandos();
+  renderizarRutaEstudiante();
+  renderizarErroresComunes();
+}
+
+function cambiarVistaAprendizaje(view) {
+  $(".learning-tab").toggleClass("active", false);
+  $(`.learning-tab[data-learning-view="${view}"]`).addClass("active");
+  $(".learning-view").removeClass("active");
+  $(`[data-learning-panel-view="${view}"]`).addClass("active");
+  $("#btnToggleEjLista").toggle(view === "ejercicios");
+}
+
+function initLearningTabs() {
+  $(document).on("click", ".learning-tab", function () {
+    cambiarVistaAprendizaje(this.dataset.learningView);
+  });
+}
+
 function poblarFiltroNivel() {
-  const $sel = $("#ejFiltroNivel");
-  if (!$sel.length) return;
-  $sel.find("option:not(:first)").remove();
+  const group = document.getElementById('ejFiltroNivelGroup');
+  if (!group) return;
+  const activeVal = group.querySelector('.ej-pill.active')?.dataset.val ?? '';
+  group.innerHTML = '';
+
+  const allBtn = document.createElement('button');
+  allBtn.className = 'ej-pill' + (activeVal === '' ? ' active' : '');
+  allBtn.dataset.filter = 'nivel';
+  allBtn.dataset.val = '';
+  allBtn.textContent = 'Todo';
+  group.appendChild(allBtn);
+
   const presentes = new Set(ejerciciosVisibles().map((e) => e.nivelLiteSeInt));
   for (const n of NIVELES_LITESEINT) {
     if (!presentes.has(n.id)) continue;
-    $sel.append(
-      $("<option>").val(String(n.id)).text(`Nivel ${n.id} — ${n.titulo}`),
-    );
+    const btn = document.createElement('button');
+    btn.className = 'ej-pill' + (activeVal === String(n.id) ? ' active' : '');
+    btn.dataset.filter = 'nivel';
+    btn.dataset.val = String(n.id);
+    btn.textContent = `N${n.id}`;
+    group.appendChild(btn);
   }
 }
 
 function aplicarFiltros(lista) {
-  const nivel = $("#ejFiltroNivel").val();
-  const dif = $("#ejFiltroDificultad").val();
-  const estado = $("#ejFiltroEstado").val();
+  const nivel = document.querySelector('#ejFiltroNivelGroup .ej-pill.active')?.dataset.val ?? '';
+  const dif   = document.querySelector('#ejFiltroDifGroup .ej-pill.active')?.dataset.val ?? '';
+  const estado = document.querySelector('#ejFiltroEstadoGroup .ej-pill.active')?.dataset.val ?? '';
   return lista.filter((e) => {
-    if (nivel !== "" && String(e.nivelLiteSeInt) !== nivel) return false;
-    if (dif !== "" && e.dificultad !== dif) return false;
-    if (estado !== "" && estadoEjercicio(e.id) !== estado) return false;
+    if (nivel !== '' && String(e.nivelLiteSeInt) !== nivel) return false;
+    if (dif   !== '' && e.dificultad !== dif) return false;
+    if (estado !== '' && estadoEjercicio(e.id) !== estado) return false;
     return true;
   });
 }
@@ -1619,19 +2026,43 @@ function aplicarFiltros(lista) {
 function renderizarResumenProgreso() {
   const $cont = $("#ejProgresoResumen");
   if (!$cont.length) return;
-  const total = ejerciciosVisibles().length;
-  let completados = 0;
-  let enCurso = 0;
-  for (const e of ejerciciosVisibles()) {
+  const visibles = ejerciciosVisibles();
+  const total = visibles.length;
+  const conteo = {
+    "completado": 0,
+    "en-curso": 0,
+    "pendiente": 0,
+  };
+  for (const e of visibles) {
     const st = estadoEjercicio(e.id);
-    if (st === "completado") completados++;
-    else if (st === "en-curso") enCurso++;
+    conteo[st] = (conteo[st] || 0) + 1;
   }
-  $cont.html(
-    `<span class="ej-prog-pill done">✓ ${completados}</span>` +
-      `<span class="ej-prog-pill running">▸ ${enCurso}</span>` +
-      `<span class="ej-prog-pill total">de ${total}</span>`,
-  );
+  const completados = conteo.completado;
+  const enCurso = conteo["en-curso"];
+  const pendientes = conteo.pendiente;
+  const tooltip = [
+    `Completados: ${completados}`,
+    `En progreso: ${enCurso}`,
+    `Pendientes: ${pendientes}`,
+    `Total: ${total}`,
+  ].join("\n");
+  const crearTramo = (cantidad, estado, etiqueta) => {
+    const proporcion = total > 0 ? cantidad / total : 0;
+    const ancho = proporcion * 100;
+    return `<span class="ej-progress-segment ${estado}" style="--seg-width:${ancho}%" aria-label="${etiqueta}: ${cantidad}"><span>${cantidad}</span></span>`;
+  };
+
+  $cont
+    .attr("title", tooltip)
+    .attr("data-tooltip", tooltip)
+    .html(
+      `<span class="ej-progress-label">progreso:</span>` +
+      `<div class="ej-progress-modern-bar" aria-label="${tooltip}">` +
+        crearTramo(completados, "done", "Completados") +
+        crearTramo(enCurso, "running", "En curso") +
+        crearTramo(pendientes, "pending", "Pendientes") +
+      `</div>`,
+    );
 }
 
 function renderizarListaEjercicios() {
@@ -1649,7 +2080,7 @@ function renderizarListaEjercicios() {
     return;
   }
 
-  for (const e of visibles) {
+  visibles.forEach((e) => {
     const estado = estadoEjercicio(e.id);
     const $item = $("<li>")
       .addClass("ej-item")
@@ -1659,18 +2090,21 @@ function renderizarListaEjercicios() {
       .attr("tabindex", "0");
     if (e.id === ejercicioSeleccionadoId) $item.addClass("selected");
 
+    const $content = $("<div>").addClass("ej-item-content");
     const $head = $("<div>").addClass("ej-item-head");
-    $head.append($("<span>").addClass("ej-item-nivel").text(`N${e.nivelLiteSeInt}`));
+    $head.append($("<span>").addClass("ej-item-numero").text(e.numero));
     $head.append($("<span>").addClass("ej-item-dif").addClass(`dif-${e.dificultad}`).text(e.dificultad));
     $head.append($("<span>").addClass(`ej-item-estado est-${estado}`).text(ESTADO_LABEL[estado]));
-    $item.append($head);
-    $item.append($("<p>").addClass("ej-item-titulo").text(e.titulo));
+    $content.append($head);
+    $content.append($("<p>").addClass("ej-item-titulo").text(e.titulo));
     const conceptos = (e.conceptos || []).slice(0, 4).join(" · ");
     if (conceptos) {
-      $item.append($("<p>").addClass("ej-item-conceptos").text(conceptos));
+      $content.append($("<p>").addClass("ej-item-conceptos").text(conceptos));
     }
+
+    $item.append($content);
     $lista.append($item);
-  }
+  });
 }
 
 function renderizarEstadoCargaEjercicios(mensaje) {
@@ -1772,6 +2206,7 @@ function mostrarDetalleEjercicio(id) {
         setEstadoEjercicio(e.id, st);
         renderizarListaEjercicios();
         renderizarResumenProgreso();
+        renderizarRutaEstudiante();
         mostrarDetalleEjercicio(e.id);
       });
     $estado.append($b);
@@ -1785,7 +2220,7 @@ function plantillaInicial(ejercicio) {
     .replace(/[^a-z0-9áéíóúüñ]+/g, "_")
     .replace(/^_+|_+$/g, "")
     .replace(/^[0-9]/, "p_$&") || "ejercicio";
-  return `Proceso ${nombre}\n  // ${ejercicio.titulo}\n  // Enunciado: revisa el panel derecho.\n\n\nFinProceso`;
+  return `Proceso ${nombre}\n  // ${ejercicio.titulo}\n  // Enunciado: revisa el panel de aprendizaje.\n\n\nFinProceso`;
 }
 
 function reemplazarEditorConfirmando(nuevoCodigo, mensaje) {
@@ -1865,8 +2300,15 @@ async function inicializarBancoEjercicios() {
   poblarFiltroNivel();
   renderizarListaEjercicios();
   renderizarResumenProgreso();
+  renderizarAprendizajeIntegrado();
 
-  $("#ejFiltroNivel, #ejFiltroDificultad, #ejFiltroEstado").on("change", () => {
+  $(document).on("click", ".ej-pill", function () {
+    const filter = this.dataset.filter;
+    const groupId = filter === 'nivel' ? 'ejFiltroNivelGroup'
+                  : filter === 'dif'   ? 'ejFiltroDifGroup'
+                  : 'ejFiltroEstadoGroup';
+    document.querySelectorAll(`#${groupId} .ej-pill`).forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
     renderizarListaEjercicios();
   });
 }
@@ -1979,6 +2421,11 @@ $(document).ready(function () {
   const editor = document.getElementById("editor");
   editor.value = ESTRUCTURA_INICIAL;
   actualizarLineas();
+  initTheme();
+  restorePanelOrder();
+  initPanelDrag();
+  initEjListaToggle();
+  initLearningTabs();
 
   const pos = ESTRUCTURA_INICIAL.indexOf("\n") + 1;
   editor.setSelectionRange(pos, pos);
@@ -2043,6 +2490,7 @@ $(document).ready(function () {
   $("#btnLimpiarConsola").on("click", limpiarConsola);
   $("#btnLimpiarTodo").on("click", limpiarTodo);
   $("#btnDescargar").on("click", descargar);
+  $("#btnTheme").on("click", cycleTheme);
   $(".console-header").on("click", function (e) {
     if ($(e.target).closest(".console-header-actions, button").length) return;
     toggleMobileConsoleCollapsed();

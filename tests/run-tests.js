@@ -123,12 +123,12 @@ test('evalua Y, O y No dentro de asignaciones logicas', async () => {
 });
 
 // =====================================================
-// Banco de ejercicios v.0.8.4
+// Banco de ejercicios v.0.8.5
 // =====================================================
 
 const CAMPOS_OBLIGATORIOS = [
   'id', 'origen', 'modulo', 'experiencia', 'nivelLiteSeInt',
-  'dificultad', 'gradoAyuda', 'titulo', 'conceptos', 'enunciado',
+  'numero', 'dificultad', 'gradoAyuda', 'titulo', 'conceptos', 'enunciado',
   'entradaProcesoSalida', 'salidaEsperada', 'pista',
   'codigoReferencia', 'estadoAdaptacion', 'motivoExclusion',
 ];
@@ -166,6 +166,11 @@ test('banco de ejercicios: solo estados, dificultades y grados permitidos', () =
       `Grado inválido en ${e.id}: ${e.gradoAyuda}`);
     assert(Number.isInteger(e.nivelLiteSeInt) && e.nivelLiteSeInt >= 0 && e.nivelLiteSeInt <= 9,
       `Nivel fuera de rango en ${e.id}: ${e.nivelLiteSeInt}`);
+    assert.strictEqual(
+      e.numero,
+      `N${e.nivelLiteSeInt}-${String(Number(e.id.split('-')[1])).padStart(2, '0')}`,
+      `Numero inválido en ${e.id}: ${e.numero}`,
+    );
   }
 });
 

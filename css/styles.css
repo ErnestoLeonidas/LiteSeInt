@@ -13,6 +13,10 @@
   --accent: #00ff88;
   --accent-dim: #00cc6a;
   --accent-bg: #00ff8810;
+  --selected: #70a1ff;
+  --selected-dim: #4d7fd6;
+  --selected-bg: rgba(112, 161, 255, 0.10);
+  --selected-shadow: rgba(112, 161, 255, 0.16);
   --text-primary: #c8d6e5;
   --text-secondary: #5c6a7a;
   --text-muted: #3a4555;
@@ -103,6 +107,65 @@ body::before {
 
 .app-logo-text { font-size: 15px; font-weight: 600; letter-spacing: 1px; }
 .app-logo-text span { color: var(--accent); }
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---- Panel drag handle ---- */
+.panel-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  color: var(--text-muted);
+  padding: 0 3px;
+  border: none;
+  background: transparent;
+  transition: color 0.15s;
+  user-select: none;
+  flex-shrink: 0;
+  border-radius: 3px;
+}
+.panel-drag-handle:hover { color: var(--accent); background: var(--accent-bg); }
+.panel-drag-handle:active { cursor: grabbing; }
+.panel-drag-handle svg { width: 10px; height: 14px; pointer-events: none; display: block; }
+
+/* Panel states during drag */
+.panel-dragging { opacity: 0.35; transition: opacity 0.1s; }
+[data-draggable].panel-drag-over { box-shadow: inset 0 0 0 2px var(--accent); }
+
+.btn-theme {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: 6px;
+  padding: 5px 11px;
+  font-family: var(--font-code);
+  font-size: 10.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.btn-theme:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-bg);
+  box-shadow: 0 0 12px rgba(0,0,0,0.3);
+}
+
+.theme-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
 
 .app-version {
   font-size: 10px; color: var(--text-secondary);
@@ -692,7 +755,7 @@ body::before {
 }
 
 /* ========================================
-    LEARNING PANEL (right column)
+    LEARNING PANEL (left column)
     ======================================== */
 .learning-panel {
   flex-shrink: 0;
@@ -700,8 +763,14 @@ body::before {
   display: flex;
   flex-direction: column;
   background: rgba(0,0,0,0.15);
-  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
   min-height: 0;
+}
+
+/* When exercises panel is dragged to the right side */
+.learning-panel.panel-on-right {
+  border-right: none;
+  border-left: 1px solid var(--border-color);
 }
 
 .learning-panel-header {
@@ -720,8 +789,37 @@ body::before {
   gap: 8px;
 }
 
-.learning-panel-toggle {
+.lph-actions {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-toggle-ej-lista {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  border-radius: 4px;
+  padding: 0 6px;
+  height: 20px;
+  font-family: var(--font-code);
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.btn-toggle-ej-lista:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.learning-panel-toggle {
   background: transparent;
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
@@ -756,6 +854,60 @@ body::before {
   border-radius: 999px;
 }
 
+.learning-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.learning-tab {
+  min-width: 0;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  border-radius: 4px;
+  padding: 4px 5px;
+  font-family: var(--font-code);
+  font-size: 9.5px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: all 0.15s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.learning-tab:hover {
+  border-color: var(--accent-dim);
+  color: var(--text-primary);
+  background: var(--accent-bg);
+}
+
+.learning-tab.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.learning-view {
+  display: none;
+  min-height: 0;
+  height: calc(100% - 32px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+.learning-view.active {
+  display: block;
+}
+
+.learning-view[data-learning-panel-view="ejercicios"].active {
+  overflow: hidden;
+}
+
 .learning-panel-intro {
   font-size: 11px;
   color: var(--text-secondary);
@@ -777,13 +929,91 @@ body::before {
   gap: 12px;
   height: 100%;
   min-height: 0;
+  transition: grid-template-columns 0.2s ease;
+}
+
+/* Collapsed: narrow navigation bar */
+.ej-workspace.ej-lista-colapsada {
+  grid-template-columns: 50px 1fr;
+}
+.ej-workspace.ej-lista-colapsada .ej-list-column {
+  overflow: hidden;
+  scrollbar-width: none;
+  min-width: 0;
+  padding: 0;
+  opacity: 1;
+  pointer-events: auto;
+}
+.ej-workspace.ej-lista-colapsada .ej-list::-webkit-scrollbar {
+  display: none;
+}
+.ej-workspace.ej-lista-colapsada .ej-filters,
+.ej-workspace.ej-lista-colapsada .ej-progress-summary,
+.ej-workspace.ej-lista-colapsada .ej-item-dif,
+.ej-workspace.ej-lista-colapsada .ej-item-estado,
+.ej-workspace.ej-lista-colapsada .ej-item-titulo,
+.ej-workspace.ej-lista-colapsada .ej-item-conceptos {
+  display: none;
+}
+.ej-workspace.ej-lista-colapsada .ej-list {
+  gap: 3px;
+  margin: 0;
+  scrollbar-width: none;
+}
+.ej-workspace.ej-lista-colapsada .ej-item {
+  width: 46px;
+  min-height: 30px;
+  padding: 0;
+  border-radius: 4px;
+  border-width: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.ej-workspace.ej-lista-colapsada .ej-item-content {
+  width: 100%;
+  flex: 0 0 100%;
+  min-width: 0;
+}
+.ej-workspace.ej-lista-colapsada .ej-item-head {
+  margin: 0;
+  justify-content: center;
+}
+.ej-workspace.ej-lista-colapsada .ej-item-numero {
+  width: 100%;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  font-size: 8.5px;
+  letter-spacing: 0;
+  line-height: 1;
+}
+.ej-workspace.ej-lista-colapsada .ej-item.estado-completado {
+  border: 1px solid var(--accent);
+}
+.ej-workspace.ej-lista-colapsada .ej-item.estado-en-curso {
+  border: 1px solid var(--warning);
+}
+.ej-workspace.ej-lista-colapsada .ej-item.estado-pendiente {
+  border: 1px solid var(--border-color);
+}
+.ej-workspace.ej-lista-colapsada .ej-item.selected {
+  border: 1px solid var(--selected);
+}
+.ej-workspace.ej-lista-colapsada .ej-detail-column {
+  border-left: 1px dashed var(--border-color);
+  padding-left: 10px;
 }
 
 .ej-list-column,
 .ej-detail-column {
   min-width: 0;
   min-height: 0;
-  overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) transparent;
 }
@@ -791,9 +1021,11 @@ body::before {
 .ej-list-column {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .ej-detail-column {
+  overflow-y: auto;
   border-left: 1px dashed var(--border-color);
   padding-left: 12px;
 }
@@ -922,80 +1154,251 @@ body::before {
   margin-bottom: 6px;
 }
 
-/* ========================================
-    EXERCISE BANK (right panel — v.0.8.4)
-    ======================================== */
-.ej-filters {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px 8px;
-  margin-bottom: 10px;
+.learning-doc-intro {
+  margin: 0 0 10px 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-secondary);
 }
 
-.ej-filter {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.learning-doc-card,
+.learning-route-card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 9px 10px;
+  margin-bottom: 8px;
+}
+
+.learning-doc-card h4,
+.learning-route-card h4 {
+  margin: 0 0 5px 0;
+  color: var(--text-primary);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.learning-doc-card p,
+.learning-route-card p {
+  margin: 0 0 7px 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.learning-doc-label {
+  margin: 7px 0 3px 0;
+  color: var(--accent);
   font-size: 9.5px;
-  color: var(--text-muted);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.7px;
   text-transform: uppercase;
 }
 
-.ej-filter:first-child {
-  grid-column: 1 / -1;
-}
-
-.ej-filter select {
-  background: rgba(255,255,255,0.04);
-  color: var(--text-primary);
+.learning-doc-card pre {
+  margin: 0;
+  padding: 7px 8px;
+  background: var(--bg-console);
   border: 1px solid var(--border-color);
-  border-radius: 4px;
-  padding: 3px 6px;
-  font-family: var(--font-code);
-  font-size: 11px;
-  outline: none;
-  cursor: pointer;
-  transition: border-color 0.15s;
-}
-
-.ej-filter select:focus,
-.ej-filter select:hover {
-  border-color: var(--accent-dim);
-}
-
-.ej-progress-summary {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 10px;
+  border-radius: 5px;
+  color: var(--text-primary);
   font-family: var(--font-code);
   font-size: 10.5px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
-.ej-prog-pill {
-  padding: 2px 7px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.04);
-  color: var(--text-secondary);
+.learning-doc-recs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 7px;
+}
+
+.learning-doc-exercise {
+  width: 100%;
+  text-align: left;
+  background: transparent;
   border: 1px solid var(--border-color);
-  letter-spacing: 0.3px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  padding: 4px 7px;
+  font-family: var(--font-code);
+  font-size: 10px;
+  line-height: 1.35;
+  cursor: pointer;
 }
 
-.ej-prog-pill.done {
+.learning-doc-exercise:hover {
   color: var(--accent);
   border-color: var(--accent-dim);
   background: var(--accent-bg);
 }
 
-.ej-prog-pill.running {
-  color: var(--warning);
-  border-color: rgba(255,165,2,0.35);
-  background: rgba(255,165,2,0.08);
+.learning-route-card {
+  display: flex;
+  gap: 10px;
 }
 
-.ej-prog-pill.total {
+.learning-route-num {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--accent-dim);
+  border-radius: 50%;
+  color: var(--accent);
+  background: var(--accent-bg);
+  font-family: var(--font-code);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.learning-route-body {
+  min-width: 0;
+  flex: 1;
+}
+
+/* ========================================
+    EXERCISE BANK
+    ======================================== */
+.ej-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.ej-filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* Filter pills */
+.ej-pill {
+  background: transparent;
+  border: 1px solid var(--border-color);
   color: var(--text-muted);
+  border-radius: 10px;
+  padding: 2px 9px;
+  font-family: var(--font-code);
+  font-size: 9.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.3px;
+  line-height: 1.6;
+}
+.ej-pill:hover {
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+}
+.ej-pill.active {
+  background: var(--accent-bg);
+  border-color: var(--accent-dim);
+  color: var(--accent);
+}
+.ej-pill-basico.active { color: var(--accent); border-color: var(--accent-dim); background: var(--accent-bg); }
+.ej-pill-inter.active  { color: var(--warning); border-color: rgba(255,165,2,0.4); background: rgba(255,165,2,0.08); }
+.ej-pill-avanz.active  { color: var(--danger);  border-color: rgba(255,107,107,0.4); background: rgba(255,107,107,0.08); }
+.ej-pill-curso.active  { color: var(--warning); border-color: rgba(255,165,2,0.4); background: rgba(255,165,2,0.08); }
+.ej-pill-listo.active  { color: var(--accent);  border-color: var(--accent-dim); background: var(--accent-bg); }
+
+.ej-progress-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  margin-bottom: 10px;
+  font-family: var(--font-code);
+  font-size: 10.5px;
+  position: relative;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.ej-progress-summary::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 0;
+  top: calc(100% + 6px);
+  z-index: 20;
+  width: max-content;
+  max-width: 260px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.32);
+  font-size: 10px;
+  line-height: 1.4;
+  white-space: pre;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-2px);
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.ej-progress-summary:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ej-progress-label {
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.ej-progress-modern-bar {
+  display: flex;
+  width: 100%;
+  height: 18px;
+  overflow: hidden;
+  border-radius: 0;
+  border: 0;
+  background: rgba(255,255,255,0.035);
+  box-shadow: none;
+}
+
+.ej-progress-segment {
+  flex: 0 1 var(--seg-width);
+  min-width: max-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bg-deep);
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+}
+
+.ej-progress-segment span {
+  min-width: max-content;
+  padding: 0 8px;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.25);
+}
+
+.ej-progress-segment.pending {
+  flex-shrink: 3;
+  color: var(--text-primary);
+  background: var(--text-muted);
+}
+.ej-progress-segment.running {
+  flex-shrink: 2;
+  color: var(--bg-deep);
+  background: var(--warning);
+}
+.ej-progress-segment.done {
+  flex-shrink: 1;
+  color: var(--bg-deep);
+  background: var(--accent);
 }
 
 .ej-list {
@@ -1005,6 +1408,11 @@ body::before {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
 .ej-empty {
@@ -1029,17 +1437,26 @@ body::before {
 }
 
 .ej-item.selected {
-  border-color: var(--accent);
-  background: var(--accent-bg);
-  box-shadow: 0 0 12px rgba(0,255,136,0.12);
+  border-color: var(--selected);
+  background: var(--selected-bg);
+  box-shadow: 0 0 12px var(--selected-shadow);
 }
 
 .ej-item.estado-completado {
-  border-left: 3px solid var(--accent);
+  border-left: 4px solid var(--accent);
 }
 
 .ej-item.estado-en-curso {
-  border-left: 3px solid var(--warning);
+  border-left: 4px solid var(--warning);
+}
+
+.ej-item.estado-pendiente {
+  border-left: 4px solid var(--border-color);
+}
+
+.ej-item.selected {
+  border-color: var(--selected);
+  border-left-color: var(--selected);
 }
 
 .ej-item-head {
@@ -1050,7 +1467,13 @@ body::before {
   margin-bottom: 3px;
 }
 
+.ej-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
 .ej-item-nivel,
+.ej-item-numero,
 .ej-item-dif,
 .ej-item-estado {
   font-size: 9px;
@@ -1064,6 +1487,10 @@ body::before {
 }
 
 .ej-item-nivel {
+  display: none;
+}
+
+.ej-item-numero {
   color: var(--accent);
   border-color: var(--accent-dim);
 }
@@ -1384,12 +1811,22 @@ body::before {
     width: 100%;
     flex: none;
     max-height: 38vh;
-    border-left: none;
+    border-right: none;
     border-top: 1px solid var(--border-color);
   }
 
   .learning-panel-body {
     overflow-y: auto;
+  }
+
+  .learning-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .learning-view,
+  .learning-view[data-learning-panel-view="ejercicios"].active {
+    height: auto;
+    overflow: visible;
   }
 
   .ej-workspace {
@@ -1540,4 +1977,88 @@ body::before {
   pointer-events: none;
   z-index: 1;
   transition: opacity 0.15s ease;
+}
+
+/* ========================================
+    THEMES
+    ======================================== */
+
+/* Theme: Ocean — dark navy with cyan accent */
+[data-theme="ocean"] {
+  --bg-deep: #040d1a;
+  --bg-panel: #071525;
+  --bg-editor: #081928;
+  --bg-console: #030c18;
+  --border-color: #0d2040;
+  --scrollbar-track: rgba(13,32,64,0.28);
+  --scrollbar-thumb: rgba(0,100,160,0.55);
+  --scrollbar-thumb-hover: rgba(0,200,255,0.55);
+  --accent: #00c8ff;
+  --accent-dim: #009ac8;
+  --accent-bg: rgba(0,200,255,0.08);
+  --selected: #7c84ff;
+  --selected-dim: #6269d8;
+  --selected-bg: rgba(124,132,255,0.10);
+  --selected-shadow: rgba(124,132,255,0.16);
+  --text-primary: #b8d4e8;
+  --text-secondary: #3a6880;
+  --text-muted: #1a3550;
+  --line-number: #1a3a60;
+  --error: #ff4757;
+  --danger: #ff6b6b;
+  --danger-dim: #ee5a5a;
+  --warning: #ffa502;
+  --info: #00c8ff;
+  --exec-highlight: #a0d8f0;
+  --exec-highlight-bg: rgba(0,200,255,0.10);
+  --error-highlight-bg: rgba(255,71,87,0.14);
+  --syntax-keyword: #7c84ff;
+  --syntax-string: #56e39f;
+  --syntax-variable: #00c8ff;
+  --syntax-comment: #3a6880;
+  --syntax-number: #9be8d8;
+  --syntax-assign: #b8d4e8;
+  --bracket-0: #ffd700;
+  --bracket-1: #00c8ff;
+  --bracket-2: #c99be8;
+}
+
+/* Theme: Sunset — deep charcoal with amber accent */
+[data-theme="sunset"] {
+  --bg-deep: #0d0806;
+  --bg-panel: #180e08;
+  --bg-editor: #1c1008;
+  --bg-console: #0e0804;
+  --border-color: #2e1c0c;
+  --scrollbar-track: rgba(46,28,12,0.28);
+  --scrollbar-thumb: rgba(120,80,40,0.55);
+  --scrollbar-thumb-hover: rgba(255,149,0,0.55);
+  --accent: #ff9500;
+  --accent-dim: #cc7800;
+  --accent-bg: rgba(255,149,0,0.08);
+  --selected: #ff6b6b;
+  --selected-dim: #d95757;
+  --selected-bg: rgba(255,107,107,0.10);
+  --selected-shadow: rgba(255,107,107,0.16);
+  --text-primary: #e8d0b4;
+  --text-secondary: #7a5038;
+  --text-muted: #4a3020;
+  --line-number: #453525;
+  --error: #ff4757;
+  --danger: #ff6b6b;
+  --danger-dim: #ee5a5a;
+  --warning: #ffd166;
+  --info: #f4a261;
+  --exec-highlight: #f0c890;
+  --exec-highlight-bg: rgba(255,149,0,0.10);
+  --error-highlight-bg: rgba(255,71,87,0.14);
+  --syntax-keyword: #ff6b6b;
+  --syntax-string: #ffd166;
+  --syntax-variable: #ff9500;
+  --syntax-comment: #7a5038;
+  --syntax-number: #f4a261;
+  --syntax-assign: #e8d0b4;
+  --bracket-0: #ffd700;
+  --bracket-1: #f4a261;
+  --bracket-2: #c099e8;
 }

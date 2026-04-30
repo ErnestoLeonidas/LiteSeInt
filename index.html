@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body>
+<body data-theme="hacker">
 
   <div class="app-shell">
 
@@ -17,6 +17,15 @@
       <div class="app-logo">
         <div class="app-logo-icon">L</div>
         <div class="app-logo-text">Lite<span>SeInt</span></div>
+      </div>
+      <div class="header-right">
+        <button class="btn-theme" id="btnTheme" aria-label="Cambiar tema" title="Cambiar tema">
+          <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+          </svg>
+          <span class="theme-name" id="themeName">Hacker</span>
+        </button>
       </div>
     </header>
 
@@ -36,11 +45,79 @@
 
     <!-- ========== MAIN ========== -->
     <div class="main-container">
-      <!-- Workspace: editor + console stacked -->
-      <div class="workspace-column">
+      <!-- Learning panel (LEFT) -->
+      <aside class="learning-panel" id="learningPanel" data-draggable="learning" aria-label="Ejercicios y ruta de aprendizaje">
+        <div class="learning-panel-header">
+          <button class="panel-drag-handle" aria-label="Arrastrar panel" title="Arrastrar para mover panel">
+            <svg viewBox="0 0 10 16" fill="currentColor" aria-hidden="true">
+              <circle cx="2.5" cy="2.5" r="1.5"/><circle cx="7.5" cy="2.5" r="1.5"/>
+              <circle cx="2.5" cy="8" r="1.5"/><circle cx="7.5" cy="8" r="1.5"/>
+              <circle cx="2.5" cy="13.5" r="1.5"/><circle cx="7.5" cy="13.5" r="1.5"/>
+            </svg>
+          </button>
+          <div class="panel-header-dot" style="background: var(--warning);"></div>
+          Aprendizaje
+          <div class="lph-actions">
+            <button class="btn-toggle-ej-lista" id="btnToggleEjLista" title="Ocultar lista de ejercicios">◀</button>
+            <button class="learning-panel-toggle" id="learningPanelToggle" aria-label="Mostrar u ocultar panel de ejercicios">▾</button>
+          </div>
+        </div>
+        <div class="learning-panel-body" id="learningPanelBody">
+          <nav class="learning-tabs" aria-label="Vistas de aprendizaje">
+            <button class="learning-tab active" data-learning-view="ejercicios">Ejercicios</button>
+            <button class="learning-tab" data-learning-view="comandos">Comandos</button>
+            <button class="learning-tab" data-learning-view="ruta">Ruta</button>
+            <button class="learning-tab" data-learning-view="errores">Errores</button>
+          </nav>
+          <div class="learning-view active" id="learningViewEjercicios" data-learning-panel-view="ejercicios">
+            <div class="ej-workspace">
+              <div class="ej-list-column">
+                <div class="ej-filters" id="ejFilters">
+                  <div class="ej-filter-group" id="ejFiltroNivelGroup">
+                    <!-- populated by JS -->
+                  </div>
+                  <div class="ej-filter-group" id="ejFiltroDifGroup">
+                    <button class="ej-pill active" data-filter="dif" data-val="">Todo</button>
+                    <button class="ej-pill ej-pill-basico" data-filter="dif" data-val="basico">Básico</button>
+                    <button class="ej-pill ej-pill-inter" data-filter="dif" data-val="intermedio">Inter</button>
+                    <button class="ej-pill ej-pill-avanz" data-filter="dif" data-val="avanzado">Avanz</button>
+                  </div>
+                  <div class="ej-filter-group" id="ejFiltroEstadoGroup">
+                    <button class="ej-pill active" data-filter="estado" data-val="">Todo</button>
+                    <button class="ej-pill" data-filter="estado" data-val="pendiente">Pend</button>
+                    <button class="ej-pill ej-pill-curso" data-filter="estado" data-val="en-curso">Curso</button>
+                    <button class="ej-pill ej-pill-listo" data-filter="estado" data-val="completado">Listo</button>
+                  </div>
+                </div>
+                <div class="ej-progress-summary" id="ejProgresoResumen"></div>
+                <ul class="ej-list" id="ejList"></ul>
+              </div>
+              <div class="ej-detail-column">
+                <div class="ej-detail" id="ejDetail">
+                  <p class="ej-detail-empty">
+                    Selecciona un ejercicio para ver su enunciado.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="learning-view" id="learningViewComandos" data-learning-panel-view="comandos"></div>
+          <div class="learning-view" id="learningViewRuta" data-learning-panel-view="ruta"></div>
+          <div class="learning-view" id="learningViewErrores" data-learning-panel-view="errores"></div>
+        </div>
+      </aside>
+      <!-- Workspace: editor + console stacked (RIGHT) -->
+      <div class="workspace-column" data-draggable="workspace">
         <!-- Editor -->
         <div class="editor-panel">
           <div class="panel-header">
+            <button class="panel-drag-handle" aria-label="Arrastrar panel" title="Arrastrar para mover panel">
+              <svg viewBox="0 0 10 16" fill="currentColor" aria-hidden="true">
+                <circle cx="2.5" cy="2.5" r="1.5"/><circle cx="7.5" cy="2.5" r="1.5"/>
+                <circle cx="2.5" cy="8" r="1.5"/><circle cx="7.5" cy="8" r="1.5"/>
+                <circle cx="2.5" cy="13.5" r="1.5"/><circle cx="7.5" cy="13.5" r="1.5"/>
+              </svg>
+            </button>
             <div class="panel-header-dot"></div>
               Editor
             <div class="console-header-actions">
@@ -106,63 +183,13 @@
           <div id="consola"></div>
         </div>
       </div>
-
-      <!-- Learning panel (right) -->
-      <aside class="learning-panel" id="learningPanel" aria-label="Ejercicios y ruta de aprendizaje">
-        <div class="learning-panel-header">
-          <div class="panel-header-dot" style="background: var(--warning);"></div>
-          Ejercicios
-          <button class="learning-panel-toggle" id="learningPanelToggle" aria-label="Mostrar u ocultar panel de ejercicios">▾</button>
-        </div>
-        <div class="learning-panel-body" id="learningPanelBody">
-          <div class="ej-workspace">
-            <div class="ej-list-column">
-              <div class="ej-filters" id="ejFilters">
-            <label class="ej-filter">
-              <span>Nivel</span>
-              <select id="ejFiltroNivel">
-                <option value="">Todos</option>
-              </select>
-            </label>
-            <label class="ej-filter">
-              <span>Dificultad</span>
-              <select id="ejFiltroDificultad">
-                <option value="">Todas</option>
-                <option value="basico">Básico</option>
-                <option value="intermedio">Intermedio</option>
-                <option value="avanzado">Avanzado</option>
-              </select>
-            </label>
-            <label class="ej-filter">
-              <span>Estado</span>
-              <select id="ejFiltroEstado">
-                <option value="">Todos</option>
-                <option value="pendiente">Pendiente</option>
-                <option value="en-curso">En curso</option>
-                <option value="completado">Completado</option>
-              </select>
-            </label>
-          </div>
-              <div class="ej-progress-summary" id="ejProgresoResumen"></div>
-              <ul class="ej-list" id="ejList"></ul>
-            </div>
-            <div class="ej-detail-column">
-              <div class="ej-detail" id="ejDetail">
-            <p class="ej-detail-empty">
-              Selecciona un ejercicio para ver su enunciado.
-            </p>
-          </div>
-            </div>
-          </div>
-        </div>
-      </aside>
     </div>
 
     <!-- ========== FOOTER ========== -->
     <footer class="app-footer">
       Desarrollado con<span class="heart">♥</span>por
       <a href="https://github.com/ernestoleonidas" target="_blank" rel="noopener noreferrer" class="ps-1"> Ernesto Velásquez</a>
-      <div class="app-version">v.0.8.4</div>
+      <div class="app-version">v.0.8.5</div>
     </footer>
 
   </div>
