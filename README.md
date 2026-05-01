@@ -334,12 +334,12 @@ Cada entrada de la guía responde cuatro preguntas: qué hace el comando, cuánd
 
 ## Ruta de desarrollo hacia v1.0.0
 
-El proyecto ya cuenta con editor, consola inferior, validación estática, banco de 245 ejercicios adaptados, progreso local y documentación integrada. El cierre hacia `v1.0.0` se concentra en calidad y consistencia:
+El proyecto ya cuenta con editor, consola inferior, validación estática, banco de 245 ejercicios adaptados, progreso local y documentación integrada. La versión 1.0 es este producto; el cierre hacia `v1.0.0` solo necesita pulir tres frentes:
 
-- revisar enunciados, pistas y salidas esperadas para que todos mantengan el mismo tono pedagógico;
-- reforzar ejemplos de comandos con casos pequeños y verificables;
+- mejorar la guía de comandos con explicaciones, ejemplos y errores típicos más claros;
+- mejorar la ruta N1-N7 para que indique qué estudiar, cuándo avanzar y qué ejercicios seguir;
+- mejorar la guía de errores con síntoma, causa, corrección y ejemplos reproducibles;
 - mantener los ejercicios visibles pasando `npm test`;
-- revisar N6 y N7 para reducir repetición y mejorar progresión;
 - actualizar `README.md`, `CHANGELOG.md` y versión visible cuando el recorrido esté estable.
 
 ## Pruebas
@@ -380,7 +380,7 @@ La ruta hacia 1.0 prioriza la experiencia educativa:
 - Consolidar los 245 ejercicios adaptados al dialecto LiteSeInt.
 - Mejorar la documentación de comandos, ruta y errores dentro de la app.
 - Mostrar progreso claro por nivel y ejercicio.
-- Dejar el puente conceptual a Python como mejora posterior si no bloquea el cierre estable.
+- Mantener el cierre de 1.0 enfocado en LiteSeInt: comandos, rutas, errores y ejercicios.
 
 El detalle está en [ROADMAP.md](ROADMAP.md) y [EJERCICIOS.md](EJERCICIOS.md).
 

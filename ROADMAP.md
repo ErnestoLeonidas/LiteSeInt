@@ -1,6 +1,6 @@
 # Roadmap LiteSeInt 1.0
 
-LiteSeInt debe llegar a la versión 1.0 como una plataforma minimalista para aprender pseudolenguaje desde cero, practicar comandos mediante ejercicios graduados y construir una base sólida para aprender Python.
+LiteSeInt debe llegar a la versión 1.0 como una plataforma minimalista para aprender pseudolenguaje desde cero, practicar comandos mediante ejercicios graduados y consolidar una experiencia educativa clara dentro del propio pseudolenguaje.
 
 La promesa del proyecto es simple:
 
@@ -81,7 +81,7 @@ LiteSeInt 1.0 debe tener tres áreas principales:
 
 3. Área de aprendizaje
 
-   Documentación de comandos, ejemplos mínimos, explicación del roadmap del estudiante y relación entre pseudolenguaje y Python.
+   Documentación de comandos, ejemplos mínimos, explicación del roadmap del estudiante y guía de errores comunes.
 
 El estudiante debe poder iniciar sin saber programar:
 
@@ -362,28 +362,6 @@ Ejercicios sugeridos:
 
 Resultado esperado: el estudiante puede resolver problemas largos con varias opciones y acumulación de datos.
 
-### Nivel 9: Puente Hacia Python
-
-Objetivo: conectar lo aprendido en pseudolenguaje con Python.
-
-Equivalencias:
-
-- `Escribir` -> `print`;
-- `Leer` -> `input`;
-- `Si` -> `if`;
-- `Sino` -> `else`;
-- `Mientras` -> `while`;
-- `Para` -> `for`;
-- variables y tipos;
-- operadores;
-- indentación como bloque.
-
-Ejercicios sugeridos:
-
-- ejercicios ya resueltos en LiteSeInt, reanalizados conceptualmente para mostrar cómo se escribirían en Python.
-
-Resultado esperado: el estudiante entiende que LiteSeInt es una etapa de preparación, no un destino final.
-
 ## Organización por Autonomía
 
 Cada nivel debe tener ejercicios con cuatro grados de ayuda:
@@ -507,89 +485,158 @@ Criterios de aceptación:
 - Cada módulo de aprendizaje apunta a ejercicios concretos.
 - La documentación no depende de internet.
 
-### 0.9.0 - Progreso y Experiencia de Estudiante
+### 0.8.6 - Pulido de Interfaz de Aprendizaje
 
-Objetivo: transformar LiteSeInt en una plataforma de práctica continua.
+Objetivo: compactar la experiencia de práctica y dejar las acciones principales más claras.
+
+Estado: completado el 2026-05-01.
+
+Cambios cerrados:
+
+- Controles de ejecución movidos al header de consola.
+- Acciones de limpiar, trazas y descarga convertidas a botones con iconos.
+- Toggle de trazas para ocultar o mostrar mensajes internos de consola.
+- Pestañas `Ejercicios`, `Comandos`, `Rutas` y `Errores` movidas al header del panel de aprendizaje.
+- Filtros de nivel, dificultad y estado reorganizados en la parte superior del banco.
+- Detalle de ejercicio reorganizado con tags, conceptos, enunciado, pista y E/P/S.
+- Acceso al código de referencia concentrado en el botón de ojo, con confirmación previa.
+- README actualizado con estado `v0.8.6` y enlace a GitHub Pages.
+
+Criterios cumplidos:
+
+- La interfaz queda más compacta para practicar.
+- Las acciones destructivas o de reemplazo de editor requieren confirmación.
+- La consola permite ocultar ruido interno sin perder la posibilidad de depurar.
+
+### 0.8.7 - Documentación Pedagógica y Ruta 1.0
+
+Objetivo: mejorar la calidad de las guías internas y dejar más explícito el camino restante hacia `v1.0.0`.
+
+Estado: completado el 2026-05-01.
+
+Cambios cerrados:
+
+- Vista `Comandos` ampliada con explicación de uso, ejemplo mínimo, errores típicos y ejercicios asociados.
+- Vista `Errores` ampliada con síntoma, causa, corrección y ejemplo compatible con LiteSeInt.
+- Nuevos errores documentados: ciclo infinito, texto sin cerrar y paréntesis o argumentos incompletos.
+- Vista `Ruta` ampliada con objetivo, foco y siguiente paso para cada nivel N1-N7.
+- Bloque "Lo que falta para v1.0.0" agregado dentro de la ruta de la app.
+- Detalle de ejercicios mejorado: `ej-enunciado` aparece como sección propia y agrega orientación según grado de ayuda.
+- Textos de `.learning-tab` aumentados de tamaño y peso visual para mejorar legibilidad.
+- README y CHANGELOG actualizados a `v0.8.7`.
+- Versión visible actualizada a `v0.8.7`.
+
+Criterios cumplidos:
+
+- Un estudiante puede consultar comandos con contexto, no solo sintaxis.
+- La documentación de errores ayuda a reconocer el problema antes de corregirlo.
+- La ruta hacia `v1.0.0` distingue estado actual, pendientes bloqueantes y mejoras posteriores.
+- La app mantiene 245 ejercicios adaptados y las pruebas siguen pasando.
+
+### 0.8.8 - Mejora de Comandos
+
+Objetivo: convertir la vista `Comandos` en una guía pedagógica suficiente para llegar a 1.0.
+
+La versión 1.0 no requiere nuevos comandos ni conexiones externas. El lenguaje ya está definido; lo que falta es explicar mejor cada construcción soportada.
 
 Tareas:
 
-- Agregar progreso por ejercicio.
-- Mostrar avance por módulo.
-- Mostrar próximos ejercicios sugeridos.
-- Agregar filtros por pendiente/completado.
-- Agregar indicadores de dificultad.
-- Permitir reiniciar progreso.
-- Diseñar una experiencia simple para "continuar donde quedé".
+- Revisar todos los comandos existentes en `DOC_COMANDOS`.
+- Mejorar la explicación de cada comando con lenguaje directo para principiantes.
+- Separar claramente:
+  - qué hace;
+  - cuándo usarlo;
+  - sintaxis canónica;
+  - ejemplo mínimo;
+  - errores típicos;
+  - ejercicios recomendados.
+- Agregar ejemplos más representativos para estructuras de control y funciones nativas.
+- Verificar que todos los ejemplos de comandos pasen el dialecto LiteSeInt vigente.
+- Mantener el alcance cerrado: no se agregan alias ni sintaxis nueva.
 
 Criterios de aceptación:
 
-- El estudiante puede ver qué ha completado y qué sigue.
-- El avance está conectado al roadmap de aprendizaje.
-- La interfaz sigue siendo minimalista.
+- Cada comando soportado puede aprenderse desde la app sin abrir documentación externa.
+- Cada entrada evita ambigüedades con PSeInt clásico.
+- Los ejemplos son cortos, ejecutables y compatibles con el validador.
 
-### 0.9.5 - Puente a Python
+### 0.8.9 - Mejora de Rutas
 
-Objetivo: conectar pseudolenguaje con los conceptos básicos de Python.
+Objetivo: convertir la vista `Ruta` en una guía clara de avance por niveles N1-N7.
+
+La ruta de 1.0 es lo que LiteSeInt ya tiene: ejercicios adaptados, progreso local, niveles visibles y práctica dentro de la app. No se agrega un nivel nuevo ni una etapa externa.
 
 Tareas:
 
-- Agregar una sección "Esto en Python sería...".
-- Cubrir equivalencias para:
-  - salida;
-  - entrada;
-  - variables;
-  - condicionales;
-  - ciclos;
-  - operadores.
-- Mostrar ejemplos comparativos pequeños.
-- Evitar convertir LiteSeInt en un traductor automático completo.
+- Revisar los nombres y objetivos de N1-N7.
+- Mejorar la descripción del foco de cada nivel.
+- Indicar qué debe dominar el estudiante antes de avanzar.
+- Asociar mejores ejercicios iniciales, de práctica y de desafío por nivel.
+- Mostrar el avance local con una lectura pedagógica simple.
+- Alinear la ruta visible con el banco real de 245 ejercicios adaptados.
+- Eliminar toda referencia a niveles o etapas que no pertenecen al recorrido real de LiteSeInt.
 
 Criterios de aceptación:
 
-- El estudiante puede ver la relación conceptual entre pseudolenguaje y Python.
-- La sección ayuda a aprender Python sin distraer del objetivo principal.
+- El estudiante entiende qué estudiar ahora, qué viene después y cuándo avanzar.
+- La ruta describe el producto real, no una expansión futura.
+- La progresión se mantiene dentro de LiteSeInt y su banco de ejercicios.
+
+### 0.9.0 - Mejora de Errores
+
+Objetivo: convertir la vista `Errores` en una guía práctica para diagnosticar y corregir problemas frecuentes.
+
+El validador y el runtime ya entregan mensajes pedagógicos. Esta fase no cambia el lenguaje; mejora cómo se documentan, agrupan y explican los errores.
+
+Tareas:
+
+- Revisar `DOC_ERRORES_COMUNES` y cubrir los errores más frecuentes del estudiante inicial.
+- Mantener para cada error:
+  - síntoma;
+  - causa;
+  - corrección;
+  - ejemplo incorrecto cuando aporte claridad;
+  - ejemplo corregido.
+- Incluir errores de estructura: `Proceso`, `FinProceso`, cierres cruzados y bloques sin cerrar.
+- Incluir errores de expresiones: `= / ==`, paréntesis, argumentos vacíos y operadores incompletos.
+- Incluir errores de variables: no definida, no inicializada, tipo incompatible y palabra reservada.
+- Incluir errores de ciclos: condición que no cambia, `HastaQue` faltante y paso cero.
+- Revisar que la guía de errores coincida con mensajes reales de `doc_errores.js` y `LiteSeInt.js`.
+
+Criterios de aceptación:
+
+- El estudiante puede pasar de un mensaje de error a una corrección concreta.
+- Los ejemplos de error son breves y reproducibles.
+- La documentación no promete errores que la app no detecta.
 
 ### 1.0.0 - Plataforma Minimalista de Aprendizaje
 
-Objetivo: publicar una versión estable para aprender pseudolenguaje desde cero.
+Objetivo: publicar como estable lo que LiteSeInt ya es: una plataforma minimalista para aprender pseudolenguaje con editor, consola, ejercicios, comandos, rutas y errores integrados.
 
-Estado actual de la ruta:
+Estado esperado al cerrar 1.0:
 
-- Lenguaje base congelado y documentado en la matriz de compatibilidad.
+- Lenguaje base congelado y documentado.
 - Editor, validación, ejecución y consola inferior implementados.
 - Panel de aprendizaje integrado con ejercicios, comandos, ruta y errores.
 - Banco de 245 ejercicios adaptados desde `guia.html` y cargado desde `json/N1.json` a `json/N7.json`.
 - Progreso local por ejercicio disponible en la interfaz.
+- Guía de comandos mejorada.
+- Ruta N1-N7 mejorada.
+- Guía de errores mejorada.
 
-Tareas:
+Tareas finales:
 
-- Mantener congelado el alcance de comandos soportados.
-- Revisar textos visibles del panel de aprendizaje: comandos, errores, ruta y enunciados.
-- Completar la revisión pedagógica de N6 y N7 para reducir repetición y mejorar progresión.
-- Validar que todos los ejercicios visibles mantengan sintaxis LiteSeInt y pasen `npm test`.
-- Revisar ejemplos de comandos para que cada uno tenga explicación, caso mínimo y error típico.
-- Confirmar que la ruta N1-N7 indique objetivo, foco, avance y siguiente paso.
-- Actualizar README y CHANGELOG.
+- Validar que `npm test` pase.
+- Revisar README, CHANGELOG, EJERCICIOS y ROADMAP para que describan el alcance real.
+- Confirmar que no queden referencias a conexiones externas como objetivo de producto.
 - Actualizar versión visible a `v1.0.0`.
-
-Pendientes no bloqueantes para después de 1.0:
-
-- Puente comparativo con Python más extenso.
-- Persistencia de proyectos.
-- Exportación o importación de soluciones del estudiante.
-- Analíticas de progreso más detalladas.
 
 Criterios de aceptación:
 
-- Una persona puede abrir LiteSeInt sin experiencia previa y comenzar desde el primer módulo.
-- Puede aprender comandos, ver ejemplos, elegir ejercicios, programar, ejecutar y avanzar.
-- La consola está debajo del editor y es redimensionable.
-- El lado derecho muestra ejercicios y progreso.
-- Los ejemplos están en un menú desplegable arriba del editor.
-- La documentación está disponible dentro de la app.
-- El roadmap de aprendizaje usa la secuencia de ejercicios de `guia.html`.
-- Los errores frecuentes explican síntoma, causa, corrección y ejemplo compatible.
-- Cada enunciado visible tiene una orientación de trabajo según su grado de ayuda.
+- Una persona puede abrir LiteSeInt sin experiencia previa y comenzar desde el primer nivel.
+- Puede aprender comandos, elegir ejercicios, programar, ejecutar, corregir errores y avanzar.
+- La app no promete integraciones ni puentes externos.
+- La documentación interna cubre comandos, rutas y errores con calidad suficiente para 1.0.
 
 ## Plan de Pruebas de Ejercicios
 
@@ -711,7 +758,7 @@ Fuera de alcance para 1.0:
 - `SubProceso`;
 - funciones definidas por usuario;
 - proyectos multiarchivo;
-- traducción automática completa a Python;
+- traducción automática a otros lenguajes;
 - corrección automática avanzada de ejercicios.
 
 ## Checklist de Salida 1.0
@@ -728,7 +775,6 @@ Fuera de alcance para 1.0:
 - [ ] Documentación integrada de comandos.
 - [ ] Progreso local por ejercicio.
 - [ ] Filtros por módulo, dificultad y estado.
-- [ ] Sección puente hacia Python.
 - [ ] README actualizado.
 - [ ] CHANGELOG actualizado.
 - [ ] Versión visible `v1.0.0`.

@@ -6,6 +6,14 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.8.7.1]
+
+### Cambiado
+- **ROADMAP**: desde `0.8.8` en adelante el cierre hacia `v1.0.0` se reformula como pulido de comandos, rutas y errores; se elimina el puente con Python como objetivo futuro.
+- **README**: la hoja de ruta queda alineada con el nuevo alcance, centrado en LiteSeInt.
+
+---
+
 ## [0.8.7] — 2026-05-01
 
 Versión de documentación pedagógica: mejora la ruta hacia `v1.0.0`, amplía la guía de comandos, refuerza la guía de errores y hace más legibles las pestañas del panel de aprendizaje.
