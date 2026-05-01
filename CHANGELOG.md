@@ -6,6 +6,24 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.8.7] — 2026-05-01
+
+Versión de documentación pedagógica: mejora la ruta hacia `v1.0.0`, amplía la guía de comandos, refuerza la guía de errores y hace más legibles las pestañas del panel de aprendizaje.
+
+### Cambiado
+- **Ruta hacia v1.0.0**: `ROADMAP.md` y la vista `Ruta` distinguen estado actual, pendientes bloqueantes y pendientes posteriores a 1.0.
+- **Guía de comandos**: la vista `Comandos` agrega explicación de uso, errores típicos y ejemplos más contextualizados para cada construcción soportada.
+- **Documentación de errores**: la vista `Errores` incorpora síntoma, causa, corrección y ejemplo, además de nuevos casos frecuentes como ciclo infinito, texto sin cerrar y paréntesis incompletos.
+- **Detalle de ejercicios**: el bloque `ej-enunciado` ahora se presenta como sección propia e incluye una orientación según el grado de ayuda del ejercicio.
+- **Panel de aprendizaje**: los textos de `.learning-tab` aumentan de tamaño y peso visual para mejorar legibilidad.
+- **README**: se amplían la guía de comandos y la ruta de desarrollo hacia `v1.0.0`.
+- **Versión visible**: `v0.8.7`.
+
+### Validado
+- **Pruebas**: `npm test` pasa con 11 pruebas.
+
+---
+
 ## [0.8.6] — 2026-05-01
 
 Pulido de la experiencia de aprendizaje y consola: esta versión reorganiza controles, filtros y acciones para dejar la interfaz más compacta y orientada a práctica.

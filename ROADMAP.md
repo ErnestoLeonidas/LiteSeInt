@@ -553,16 +553,31 @@ Criterios de aceptación:
 
 Objetivo: publicar una versión estable para aprender pseudolenguaje desde cero.
 
+Estado actual de la ruta:
+
+- Lenguaje base congelado y documentado en la matriz de compatibilidad.
+- Editor, validación, ejecución y consola inferior implementados.
+- Panel de aprendizaje integrado con ejercicios, comandos, ruta y errores.
+- Banco de 245 ejercicios adaptados desde `guia.html` y cargado desde `json/N1.json` a `json/N7.json`.
+- Progreso local por ejercicio disponible en la interfaz.
+
 Tareas:
 
-- Congelar el alcance de comandos soportados.
-- Completar layout educativo.
-- Completar documentación de comandos.
-- Completar roadmap del estudiante.
-- Integrar banco de ejercicios adaptado.
-- Validar ejercicios principales del recorrido.
+- Mantener congelado el alcance de comandos soportados.
+- Revisar textos visibles del panel de aprendizaje: comandos, errores, ruta y enunciados.
+- Completar la revisión pedagógica de N6 y N7 para reducir repetición y mejorar progresión.
+- Validar que todos los ejercicios visibles mantengan sintaxis LiteSeInt y pasen `npm test`.
+- Revisar ejemplos de comandos para que cada uno tenga explicación, caso mínimo y error típico.
+- Confirmar que la ruta N1-N7 indique objetivo, foco, avance y siguiente paso.
 - Actualizar README y CHANGELOG.
 - Actualizar versión visible a `v1.0.0`.
+
+Pendientes no bloqueantes para después de 1.0:
+
+- Puente comparativo con Python más extenso.
+- Persistencia de proyectos.
+- Exportación o importación de soluciones del estudiante.
+- Analíticas de progreso más detalladas.
 
 Criterios de aceptación:
 
@@ -573,6 +588,8 @@ Criterios de aceptación:
 - Los ejemplos están en un menú desplegable arriba del editor.
 - La documentación está disponible dentro de la app.
 - El roadmap de aprendizaje usa la secuencia de ejercicios de `guia.html`.
+- Los errores frecuentes explican síntoma, causa, corrección y ejemplo compatible.
+- Cada enunciado visible tiene una orientación de trabajo según su grado de ayuda.
 
 ## Plan de Pruebas de Ejercicios
 

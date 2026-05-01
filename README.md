@@ -6,7 +6,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v0.8.6`
+- Versión visible en la app: `v0.8.7`
 - Demo en GitHub Pages: <https://ernestoleonidas.github.io/LiteSeInt/>
 - Layout educativo: editor arriba, **consola debajo del editor** (redimensionable verticalmente) y **panel de aprendizaje integrado** con ejercicios, documentación de comandos, ruta del estudiante y errores comunes.
 - **245 ejercicios adaptados** desde `ejercicios/guia.html` al dialecto LiteSeInt, cargados desde archivos JSON normalizados `N1`–`N7`, con validación estática automática y formato de código de referencia consistente.
@@ -308,17 +308,39 @@ El panel de aprendizaje muestra el banco de ejercicios adaptados desde `ejercici
 - **Ver el código de referencia** adaptado desde el detalle del ejercicio, con confirmación previa para no sobrescribir el editor.
 - **Marcar progreso** manualmente como `pendiente`, `en curso` o `completado`. El estado se guarda en `localStorage` (`liteseint:exerciseProgress`) y persiste al recargar la página.
 
-A la fecha v0.8.6, el banco contiene 245 ejercicios adaptados, cargados desde `json/N1.json` a `json/N7.json` mediante `js/ejercicios-data.js`. En la app quedan visibles N1–N7. La regla de calidad se mantiene: **todo ejercicio visible debe estar adaptado** al dialecto LiteSeInt, pasar la validación estática y mantener un formato de referencia legible. Detalles en [`EJERCICIOS.md`](EJERCICIOS.md).
+A la fecha v0.8.7, el banco contiene 245 ejercicios adaptados, cargados desde `json/N1.json` a `json/N7.json` mediante `js/ejercicios-data.js`. En la app quedan visibles N1–N7. La regla de calidad se mantiene: **todo ejercicio visible debe estar adaptado** al dialecto LiteSeInt, pasar la validación estática y mantener un formato de referencia legible. Detalles en [`EJERCICIOS.md`](EJERCICIOS.md).
 
 ## Documentación integrada
 
 Desde `v0.8.5`, el panel de aprendizaje incluye vistas internas para:
 
-- **Comandos**: referencia rápida de la sintaxis soportada, ejemplos mínimos y ejercicios recomendados por comando.
-- **Ruta**: recorrido N1–N7 con avance local y ejercicios iniciales sugeridos para cada nivel.
-- **Errores**: explicación de errores comunes como variable no definida, variable no inicializada, cierres faltantes, sintaxis PSeInt no soportada y diferencia entre `=` y `==`.
+- **Comandos**: guía de la sintaxis soportada, explicación de uso, ejemplo mínimo, errores típicos y ejercicios recomendados por comando.
+- **Ruta**: recorrido N1–N7 con objetivo pedagógico, foco de trabajo, avance local, primeros ejercicios sugeridos y pendientes explícitos hacia `v1.0.0`.
+- **Errores**: explicación por síntoma, causa, corrección y ejemplo para errores comunes como variable no definida, variable no inicializada, cierres faltantes, ciclos infinitos, sintaxis PSeInt no soportada, cadenas sin cerrar y diferencia entre `=` y `==`.
 
 La documentación está embebida en la app y no requiere conexión a internet.
+
+## Guía de comandos
+
+La referencia de comandos cubre el subconjunto congelado para 1.0:
+
+- estructura de programa: `Proceso`, `FinProceso` y comentarios `//`;
+- datos: `Definir`, asignación con `=`, `Leer` y `Escribir`;
+- decisiones: `Si`, `Sino`, `FinSi`, `Segun`, casos y `De Otro Modo`;
+- repetición: `Mientras`, `Repetir`, `HastaQue`, `Para`;
+- expresiones: operadores aritméticos, relacionales, lógicos y funciones nativas.
+
+Cada entrada de la guía responde cuatro preguntas: qué hace el comando, cuándo conviene usarlo, cuál es su sintaxis canónica y qué errores debe evitar el estudiante.
+
+## Ruta de desarrollo hacia v1.0.0
+
+El proyecto ya cuenta con editor, consola inferior, validación estática, banco de 245 ejercicios adaptados, progreso local y documentación integrada. El cierre hacia `v1.0.0` se concentra en calidad y consistencia:
+
+- revisar enunciados, pistas y salidas esperadas para que todos mantengan el mismo tono pedagógico;
+- reforzar ejemplos de comandos con casos pequeños y verificables;
+- mantener los ejercicios visibles pasando `npm test`;
+- revisar N6 y N7 para reducir repetición y mejorar progresión;
+- actualizar `README.md`, `CHANGELOG.md` y versión visible cuando el recorrido esté estable.
 
 ## Pruebas
 
@@ -354,11 +376,11 @@ index.html
 
 La ruta hacia 1.0 prioriza la experiencia educativa:
 
-- Reorganizar la interfaz para usar editor + consola inferior + panel de aprendizaje.
-- Integrar ejercicios adaptados al dialecto LiteSeInt.
-- Agregar documentación de comandos dentro de la app.
-- Mostrar progreso del estudiante por nivel y ejercicio.
-- Conectar los conceptos de pseudolenguaje con Python.
+- Mantener la interfaz educativa actual: editor, consola inferior y panel de aprendizaje.
+- Consolidar los 245 ejercicios adaptados al dialecto LiteSeInt.
+- Mejorar la documentación de comandos, ruta y errores dentro de la app.
+- Mostrar progreso claro por nivel y ejercicio.
+- Dejar el puente conceptual a Python como mejora posterior si no bloquea el cierre estable.
 
 El detalle está en [ROADMAP.md](ROADMAP.md) y [EJERCICIOS.md](EJERCICIOS.md).
 
