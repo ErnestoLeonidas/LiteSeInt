@@ -6,7 +6,8 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v.0.8.5`
+- Versión visible en la app: `v0.8.6`
+- Demo en GitHub Pages: <https://ernestoleonidas.github.io/LiteSeInt/>
 - Layout educativo: editor arriba, **consola debajo del editor** (redimensionable verticalmente) y **panel de aprendizaje integrado** con ejercicios, documentación de comandos, ruta del estudiante y errores comunes.
 - **245 ejercicios adaptados** desde `ejercicios/guia.html` al dialecto LiteSeInt, cargados desde archivos JSON normalizados `N1`–`N7`, con validación estática automática y formato de código de referencia consistente.
 - Ejemplos accesibles desde un menú desplegable en la cabecera del editor, agrupados por concepto.
@@ -22,7 +23,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 - Editor de pseudocódigo con numeración de líneas.
 - Consola **debajo del editor**, redimensionable verticalmente (la altura se persiste en `localStorage`).
 - **Panel de aprendizaje** con banco de ejercicios, documentación de comandos, ruta del estudiante y guía de errores comunes sin depender de internet.
-- **Banco de ejercicios** con filtros por nivel/dificultad/estado, detalle con enunciado, E·P·S, salida esperada y pista, acciones para cargar plantilla o código de referencia, y **progreso local** persistente (`pendiente` / `en curso` / `completado`).
+- **Banco de ejercicios** con filtros por nivel/dificultad/estado, detalle con enunciado, E·P·S dentro de la pista, salida esperada, acceso al código de referencia con confirmación previa y **progreso local** persistente (`pendiente` / `en curso` / `completado`).
 - Selector de **ejemplos en menú desplegable**, agrupados por concepto (primeros programas, variables, expresiones, condicionales, ciclos, `Segun`).
 - Resaltado de sintaxis y guías visuales de indentación.
 - Validación estática con errores por línea, badge visual y tooltip descriptivo.
@@ -293,7 +294,7 @@ tests/
 ## Uso rápido
 
 1. Clona o descarga este repositorio.
-2. Abre [index.html](index.html) en un navegador moderno.
+2. Abre [index.html](index.html) en un navegador moderno, o usa la demo publicada en <https://ernestoleonidas.github.io/LiteSeInt/>.
 3. Escribe pseudocódigo o carga uno de los ejemplos.
 4. Presiona `Ejecutar`.
 5. Si el programa usa `Leer`, responde desde la consola integrada.
@@ -304,14 +305,14 @@ El panel de aprendizaje muestra el banco de ejercicios adaptados desde `ejercici
 
 - **Filtrar** por nivel LiteSeInt visible (N1–N7), dificultad (`básico`/`intermedio`/`avanzado`) y estado de progreso (`pendiente`/`en curso`/`completado`).
 - **Ver el detalle** de un ejercicio: enunciado, conceptos, entrada/proceso/salida, salida esperada y pista colapsable.
-- **Cargar una plantilla** vacía (`Proceso ... FinProceso`) o el **código de referencia** adaptado, con confirmación previa para no sobrescribir el editor.
+- **Ver el código de referencia** adaptado desde el detalle del ejercicio, con confirmación previa para no sobrescribir el editor.
 - **Marcar progreso** manualmente como `pendiente`, `en curso` o `completado`. El estado se guarda en `localStorage` (`liteseint:exerciseProgress`) y persiste al recargar la página.
 
-A la fecha v.0.8.5, el banco contiene 245 ejercicios adaptados, cargados desde `json/N1.json` a `json/N7.json` mediante `js/ejercicios-data.js`. En la app quedan visibles N1–N7. La regla de calidad se mantiene: **todo ejercicio visible debe estar adaptado** al dialecto LiteSeInt, pasar la validación estática y mantener un formato de referencia legible. Detalles en [`EJERCICIOS.md`](EJERCICIOS.md).
+A la fecha v0.8.6, el banco contiene 245 ejercicios adaptados, cargados desde `json/N1.json` a `json/N7.json` mediante `js/ejercicios-data.js`. En la app quedan visibles N1–N7. La regla de calidad se mantiene: **todo ejercicio visible debe estar adaptado** al dialecto LiteSeInt, pasar la validación estática y mantener un formato de referencia legible. Detalles en [`EJERCICIOS.md`](EJERCICIOS.md).
 
 ## Documentación integrada
 
-Desde `v.0.8.5`, el panel de aprendizaje incluye vistas internas para:
+Desde `v0.8.5`, el panel de aprendizaje incluye vistas internas para:
 
 - **Comandos**: referencia rápida de la sintaxis soportada, ejemplos mínimos y ejercicios recomendados por comando.
 - **Ruta**: recorrido N1–N7 con avance local y ejercicios iniciales sugeridos para cada nivel.

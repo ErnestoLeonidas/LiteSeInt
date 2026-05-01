@@ -29,20 +29,6 @@
       </div>
     </header>
 
-    <!-- ========== TOOLBAR ========== -->
-    <div class="toolbar">
-      <div class="toolbar-center">
-        <button class="btn-exec" id="btnEjecutar">▶ Ejecutar</button>
-        <button class="btn-stop" id="btnDetener" style="display:none;">◼ Detener</button>
-      </div>
-      <div class="toolbar-right">
-        <div class="status-indicator">
-          <div class="status-dot" id="statusDot"></div>
-          <span id="statusText">Listo</span>
-        </div>
-      </div>
-    </div>
-
     <!-- ========== MAIN ========== -->
     <div class="main-container">
       <!-- Learning panel (LEFT) -->
@@ -55,40 +41,40 @@
               <circle cx="2.5" cy="13.5" r="1.5"/><circle cx="7.5" cy="13.5" r="1.5"/>
             </svg>
           </button>
-          <div class="panel-header-dot" style="background: var(--warning);"></div>
-          Aprendizaje
+          <nav class="learning-tabs" aria-label="Vistas de aprendizaje">
+            <button class="learning-tab active" data-learning-view="ejercicios">Ejercicios</button>
+            <button class="learning-tab" data-learning-view="comandos">Comandos</button>
+            <button class="learning-tab" data-learning-view="ruta">Rutas</button>
+            <button class="learning-tab" data-learning-view="errores">Errores</button>
+          </nav>
           <div class="lph-actions">
             <button class="btn-toggle-ej-lista" id="btnToggleEjLista" title="Ocultar lista de ejercicios">◀</button>
             <button class="learning-panel-toggle" id="learningPanelToggle" aria-label="Mostrar u ocultar panel de ejercicios">▾</button>
           </div>
         </div>
         <div class="learning-panel-body" id="learningPanelBody">
-          <nav class="learning-tabs" aria-label="Vistas de aprendizaje">
-            <button class="learning-tab active" data-learning-view="ejercicios">Ejercicios</button>
-            <button class="learning-tab" data-learning-view="comandos">Comandos</button>
-            <button class="learning-tab" data-learning-view="ruta">Ruta</button>
-            <button class="learning-tab" data-learning-view="errores">Errores</button>
-          </nav>
           <div class="learning-view active" id="learningViewEjercicios" data-learning-panel-view="ejercicios">
             <div class="ej-workspace">
-              <div class="ej-list-column">
-                <div class="ej-filters" id="ejFilters">
-                  <div class="ej-filter-group" id="ejFiltroNivelGroup">
-                    <!-- populated by JS -->
-                  </div>
-                  <div class="ej-filter-group" id="ejFiltroDifGroup">
-                    <button class="ej-pill active" data-filter="dif" data-val="">Todo</button>
-                    <button class="ej-pill ej-pill-basico" data-filter="dif" data-val="basico">Básico</button>
-                    <button class="ej-pill ej-pill-inter" data-filter="dif" data-val="intermedio">Inter</button>
-                    <button class="ej-pill ej-pill-avanz" data-filter="dif" data-val="avanzado">Avanz</button>
-                  </div>
-                  <div class="ej-filter-group" id="ejFiltroEstadoGroup">
-                    <button class="ej-pill active" data-filter="estado" data-val="">Todo</button>
-                    <button class="ej-pill" data-filter="estado" data-val="pendiente">Pend</button>
-                    <button class="ej-pill ej-pill-curso" data-filter="estado" data-val="en-curso">Curso</button>
-                    <button class="ej-pill ej-pill-listo" data-filter="estado" data-val="completado">Listo</button>
-                  </div>
+              <div class="ej-filters" id="ejFilters">
+                <div class="ej-filter-group" id="ejFiltroNivelGroup">
+                  <!-- populated by JS -->
                 </div>
+                <div class="ej-filter-group" id="ejFiltroDifGroup">
+                  <span class="ej-filter-label">Dificultad:</span>
+                  <button class="ej-pill active" data-filter="dif" data-val="">Todo</button>
+                  <button class="ej-pill ej-pill-basico" data-filter="dif" data-val="basico">Básico</button>
+                  <button class="ej-pill ej-pill-inter" data-filter="dif" data-val="intermedio">Intermedio</button>
+                  <button class="ej-pill ej-pill-avanz" data-filter="dif" data-val="avanzado">Avanzado</button>
+                </div>
+                <div class="ej-filter-group" id="ejFiltroEstadoGroup">
+                  <span class="ej-filter-label">Estado:</span>
+                  <button class="ej-pill active" data-filter="estado" data-val="">Todo</button>
+                  <button class="ej-pill" data-filter="estado" data-val="pendiente">Pendiente</button>
+                  <button class="ej-pill ej-pill-curso" data-filter="estado" data-val="en-curso">En curso</button>
+                  <button class="ej-pill ej-pill-listo" data-filter="estado" data-val="completado">Completado</button>
+                </div>
+              </div>
+              <div class="ej-list-column">
                 <div class="ej-progress-summary" id="ejProgresoResumen"></div>
                 <ul class="ej-list" id="ejList"></ul>
               </div>
@@ -118,7 +104,6 @@
                 <circle cx="2.5" cy="13.5" r="1.5"/><circle cx="7.5" cy="13.5" r="1.5"/>
               </svg>
             </button>
-            <div class="panel-header-dot"></div>
               Editor
             <div class="console-header-actions">
               <select class="ejemplos-select" id="ejemplosSelect" aria-label="Cargar ejemplo">
@@ -147,8 +132,22 @@
                   <option value="diasemana">Día de semana</option>
                 </optgroup>
               </select>
-              <button class="btn-console-clear" id="btnDescargar">↓ Descargar</button>
-              <button class="btn-console-clear" id="btnLimpiarTodo">✕ Borrar</button>
+              <button class="btn-console-clear btn-icon-action" id="btnDescargar" aria-label="Descargar" title="Descargar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <path d="M7 10l5 5 5-5"/>
+                  <path d="M12 15V3"/>
+                </svg>
+              </button>
+              <button class="btn-console-clear btn-icon-action" id="btnLimpiarTodo" aria-label="Borrar editor" title="Borrar editor">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 6h18"/>
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                  <path d="M10 11v6"/>
+                  <path d="M14 11v6"/>
+                </svg>
+              </button>
             </div>
           </div>
           <div class="editor-wrapper">
@@ -174,10 +173,39 @@
         <!-- Consola -->
         <div class="console-panel" id="consolePanel">
           <div class="console-header">
-            <div class="panel-header-dot" style="background: var(--info);"></div>
-            Consola
-            <div class="console-header-actions">
-              <button class="btn-console-clear" id="btnLimpiarConsola">✕ Borrar</button>
+            <div class="console-header-actions console-header-actions-left">
+              <button class="btn-console-clear btn-icon-action" id="btnToggleConsoleEcho" aria-label="Ocultar trazas de consola" title="Ocultar trazas de consola">
+                <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+                  <path d="M6.61 6.61C3.98 8.27 2 12 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
+                  <path d="M14.12 14.12A3 3 0 0 1 9.88 9.88"/>
+                  <path d="M3 3l18 18"/>
+                </svg>
+              </button>
+              <button class="btn-console-clear btn-icon-action" id="btnLimpiarConsola" aria-label="Borrar consola" title="Borrar consola">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 6h18"/>
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                  <path d="M10 11v6"/>
+                  <path d="M14 11v6"/>
+                </svg>
+              </button>
+            </div>
+            <div class="console-header-title">
+              <div class="status-indicator console-status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText" class="visually-hidden">Listo</span>
+              </div>
+              <span class="console-title">Consola</span>
+            </div>
+            <div class="console-header-run-actions">
+              <button class="btn-exec" id="btnEjecutar">▶ Ejecutar</button>
+              <button class="btn-stop" id="btnDetener" style="display:none;">◼ Detener</button>
             </div>
           </div>
           <div id="consola"></div>
@@ -189,7 +217,7 @@
     <footer class="app-footer">
       Desarrollado con<span class="heart">♥</span>por
       <a href="https://github.com/ernestoleonidas" target="_blank" rel="noopener noreferrer" class="ps-1"> Ernesto Velásquez</a>
-      <div class="app-version">v.0.8.5</div>
+      <div class="app-version">v0.8.6</div>
     </footer>
 
   </div>

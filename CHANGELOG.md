@@ -6,6 +6,21 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.8.6] — 2026-05-01
+
+Pulido de la experiencia de aprendizaje y consola: esta versión reorganiza controles, filtros y acciones para dejar la interfaz más compacta y orientada a práctica.
+
+### Cambiado
+- **Consola**: los controles de ejecutar/detener pasan al header de consola; limpiar, trazas y descarga usan botones con iconos.
+- **Consola**: nuevo toggle de trazas para ocultar/mostrar mensajes internos como `entrada` y asignaciones; por defecto quedan ocultos.
+- **Panel de aprendizaje**: las vistas `Ejercicios`, `Comandos`, `Rutas` y `Errores` pasan al header como pestañas.
+- **Banco de ejercicios**: filtros de nivel, dificultad y estado ocupan el ancho superior del sector; el detalle reorganiza tags, conceptos, enunciado, pista y E·P·S.
+- **Código de referencia**: se elimina el botón de cargar plantilla; el acceso al código de referencia queda como botón de ojo en `ej-detail-tags`, con tooltip y confirmación previa.
+- **Temas visuales**: se separan paletas para dificultad, estado y acciones de referencia en los tres temas.
+- **Documentación**: `README.md` actualizado a `v0.8.6` e incluye enlace a GitHub Pages.
+
+---
+
 ## [0.8.5] — 2026-04-30
 
 Cierre de la fase "Documentación Integrada": el panel de aprendizaje ahora combina banco de ejercicios, referencia de comandos, ruta del estudiante y guía de errores comunes dentro de la app.
@@ -20,7 +35,7 @@ Cierre de la fase "Documentación Integrada": el panel de aprendizaje ahora comb
 - **Panel de aprendizaje**: el banco pasa a una navegación por pestañas y puede moverse entre izquierda/derecha con asa de arrastre persistente.
 - **Banco de ejercicios**: filtros convertidos a píldoras, barra de progreso compacta, lista colapsable y numeración visible `N#-##` en cada ejercicio.
 - **`json/N1.json`–`json/N7.json`**: cada ejercicio incorpora el campo `numero`, validado por pruebas.
-- **Documentación**: `README.md`, `EJERCICIOS.md`, comentarios de banco y versión visible actualizados a `v.0.8.5`.
+- **Documentación**: `README.md`, `EJERCICIOS.md`, comentarios de banco y versión visible actualizados a `v0.8.5`.
 
 ### Validado
 - **Pruebas**: `npm test` pasa con 11 pruebas.
@@ -38,7 +53,7 @@ Corrección visual del editor y normalización del estilo de los códigos de ref
 ### Cambiado
 - **`codigoReferencia` en `json/EA 1.1.json`–`json/EA 1.7.json` y `json/N1.json`–`json/N7.json`**: formato consistente con 2 espacios por nivel, comas con espacio en `Definir`, separación entre declaraciones, entrada/salida y operaciones, y asignaciones consecutivas alineadas.
 - **Ejercicios visibles**: N1–N7 quedan visibles en la app.
-- **Documentación**: `README.md`, `EJERCICIOS.md`, comentarios de banco y versión visible actualizados a `v.0.8.4`.
+- **Documentación**: `README.md`, `EJERCICIOS.md`, comentarios de banco y versión visible actualizados a `v0.8.4`.
 
 ### Validado
 - **490 `codigoReferencia` adaptados** pasan validación estática.
@@ -55,7 +70,7 @@ Refactorización del banco de ejercicios: los archivos `json/EA 1.x.json` fueron
 - **`js/ejercicios-data.js`**: `EJERCICIOS_JSON_PATHS` apunta a los nuevos archivos N1–N7.
 - **`js/app.js`**: agrega `NIVELES_VISIBLES = [1, 2, 3, 4, 5]`; `ejerciciosVisibles()` filtra por ese array; `NIVELES_LITESEINT` actualizado a N1–N7.
 - **`EJERCICIOS.md`**: tabla de estructura actualizada a N1–N7.
-- **Versión visible**: `v.0.8.3`.
+- **Versión visible**: `v0.8.3`.
 
 ---
 
@@ -72,7 +87,7 @@ Consolidación del banco de ejercicios. Esta versión mueve la fuente real de ej
 - **`js/app.js`**: deja de conocer las rutas JSON y delega la carga en `EjerciciosLiteSeInt.cargarDesdeJson()`.
 - **`tests/run-tests.js`**: las pruebas instalan el banco desde los JSON, alineadas con el flujo de la app.
 - **Documentación**: `README.md` y `EJERCICIOS.md` reflejan que el banco visible contiene 245 ejercicios adaptados.
-- **Versión visible**: `v.0.8.2`.
+- **Versión visible**: `v0.8.2`.
 
 ### Pendiente
 - Optimizar los JSON de **EA 1.6** y **EA 1.7**: aunque están normalizados y pasan validación estática, todavía requieren revisión pedagógica para reducir repetición, mejorar enunciados/pistas y ajustar progresión.

@@ -39,6 +39,7 @@ const THEMES = [
   { id: 'hacker', label: 'Hacker' },
   { id: 'ocean',  label: 'Ocean'  },
   { id: 'sunset', label: 'Sunset' },
+  { id: 'papel',  label: 'Papel'  },
 ];
 
 function initTheme() {
@@ -66,6 +67,7 @@ function cycleTheme() {
 // =========================================
 
 const PANEL_ORDER_KEY = 'liteseint_panel_order';
+const CONSOLE_ECHO_KEY = 'liteseint_console_echo';
 
 function initPanelDrag() {
   const container = document.querySelector('.main-container');
@@ -238,6 +240,30 @@ function consolaImprimir(texto, tipo = "output") {
 function scrollConsola() {
   const el = document.getElementById("consola");
   el.scrollTop = el.scrollHeight;
+}
+
+function setConsoleEchoVisible(visible) {
+  const consola = document.getElementById("consola");
+  const btn = document.getElementById("btnToggleConsoleEcho");
+  if (!consola) return;
+  consola.classList.toggle("hide-input-echo", !visible);
+  if (btn) {
+    btn.classList.toggle("btn-toggle-console-echo-hidden", !visible);
+    btn.setAttribute("aria-label", visible ? "Ocultar trazas de consola" : "Mostrar trazas de consola");
+    btn.title = visible ? "Ocultar trazas de consola" : "Mostrar trazas de consola";
+  }
+  try { localStorage.setItem(CONSOLE_ECHO_KEY, visible ? "visible" : "hidden"); } catch(e) {}
+}
+
+function initConsoleEchoToggle() {
+  const btn = document.getElementById("btnToggleConsoleEcho");
+  const saved = localStorage.getItem(CONSOLE_ECHO_KEY);
+  setConsoleEchoVisible(saved === "visible");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    const hidden = document.getElementById("consola")?.classList.contains("hide-input-echo");
+    setConsoleEchoVisible(Boolean(hidden));
+  });
 }
 
 function setMobileConsoleCollapsed(collapsed) {
@@ -1992,6 +2018,11 @@ function poblarFiltroNivel() {
   const activeVal = group.querySelector('.ej-pill.active')?.dataset.val ?? '';
   group.innerHTML = '';
 
+  const label = document.createElement('span');
+  label.className = 'ej-filter-label';
+  label.textContent = 'Nivel:';
+  group.appendChild(label);
+
   const allBtn = document.createElement('button');
   allBtn.className = 'ej-pill' + (activeVal === '' ? ' active' : '');
   allBtn.dataset.filter = 'nivel';
@@ -2128,17 +2159,25 @@ function mostrarDetalleEjercicio(id) {
 
   $det.empty();
   const $tags = $("<div>").addClass("ej-detail-tags");
-  $tags.append($("<span>").addClass("ej-tag").text(`Nivel ${e.nivelLiteSeInt}`));
+  $tags.append($("<span>").addClass("ej-tag ej-tag-numero").text(e.numero));
   $tags.append($("<span>").addClass(`ej-tag ej-tag-dif dif-${e.dificultad}`).text(e.dificultad));
-  $tags.append($("<span>").addClass("ej-tag").text(e.modulo));
   $tags.append($("<span>").addClass(`ej-tag est-${estado}`).text(ESTADO_LABEL[estado]));
+  if (e.codigoReferencia) {
+    const $btnRef = $("<button>")
+      .addClass("ej-ref-code-btn")
+      .attr("type", "button")
+      .attr("aria-label", "Ver código de referencia y reemplazar el editor")
+      .attr("data-tooltip", "Ver código de referencia:\nReemplaza el contenido del editor previa confirmación")
+      .html(`
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      `)
+      .on("click", () => cargarCodigoReferencia(e));
+    $tags.append($btnRef);
+  }
   $det.append($tags);
-
-  $det.append($("<h4>").text(e.panelTitulo || e.titulo));
-  const $enunciado = $("<p>").addClass("ej-enunciado");
-  if (e.enunciadoHtml) $enunciado.html(e.enunciadoHtml);
-  else $enunciado.text(e.enunciado);
-  $det.append($enunciado);
 
   if (e.conceptos && e.conceptos.length) {
     const $cs = $("<p>").addClass("ej-conceptos-list");
@@ -2147,24 +2186,38 @@ function mostrarDetalleEjercicio(id) {
     $det.append($cs);
   }
 
-  if (e.entradaProcesoSalida) {
+  $det.append($("<h4>").text(e.panelTitulo || e.titulo));
+
+  const $enunciado = $("<p>").addClass("ej-enunciado");
+  if (e.enunciadoHtml) $enunciado.html(e.enunciadoHtml);
+  else $enunciado.text(e.enunciado);
+  $det.append($enunciado);
+
+  const crearEps = () => {
+    if (!e.entradaProcesoSalida) return null;
     const eps = e.entradaProcesoSalida;
     const $eps = $("<div>").addClass("ej-eps");
     $eps.append($("<p>").addClass("ej-section-label").text("Entrada · Proceso · Salida"));
     if (eps.entrada) $eps.append($("<div>").addClass("ej-eps-row").html('<b>E:</b> ').append(document.createTextNode(eps.entrada)));
     if (eps.proceso) $eps.append($("<div>").addClass("ej-eps-row").html('<b>P:</b> ').append(document.createTextNode(eps.proceso)));
     if (eps.salida) $eps.append($("<div>").addClass("ej-eps-row").html('<b>S:</b> ').append(document.createTextNode(eps.salida)));
-    $det.append($eps);
-  }
+    return $eps;
+  };
 
-  if (e.salidaEsperada) {
-    const $se = $("<div>").addClass("ej-salida");
-    $se.append($("<p>").addClass("ej-section-label").text("Salida esperada"));
-    $se.append($("<pre>").text(e.salidaEsperada));
-    $det.append($se);
-  }
-
-  if (e.pista) {
+  if (e.entradaProcesoSalida) {
+    if (e.pista) {
+      const $pista = $("<details>").addClass("ej-pista");
+      $pista.append($("<summary>").text("Ver pista"));
+      const $pistaTexto = $("<p>");
+      if (e.pistaHtml) $pistaTexto.html(e.pistaHtml);
+      else $pistaTexto.text(e.pista);
+      $pista.append($pistaTexto);
+      $pista.append(crearEps());
+      $det.append($pista);
+    } else {
+      $det.append(crearEps());
+    }
+  } else if (e.pista) {
     const $pista = $("<details>").addClass("ej-pista");
     $pista.append($("<summary>").text("Ver pista"));
     const $pistaTexto = $("<p>");
@@ -2174,24 +2227,12 @@ function mostrarDetalleEjercicio(id) {
     $det.append($pista);
   }
 
-  // Acciones
-  const $actions = $("<div>").addClass("ej-actions");
-
-  const $btnPlantilla = $("<button>")
-    .addClass("ej-btn ej-btn-primary")
-    .text("Cargar plantilla")
-    .on("click", () => cargarPlantillaEjercicio(e));
-  $actions.append($btnPlantilla);
-
-  if (e.codigoReferencia) {
-    const $btnRef = $("<button>")
-      .addClass("ej-btn")
-      .text("Ver código de referencia")
-      .on("click", () => cargarCodigoReferencia(e));
-    $actions.append($btnRef);
+  if (e.salidaEsperada) {
+    const $se = $("<div>").addClass("ej-salida");
+    $se.append($("<p>").addClass("ej-section-label").text("Salida esperada"));
+    $se.append($("<pre>").text(e.salidaEsperada));
+    $det.append($se);
   }
-
-  $det.append($actions);
 
   // Estado del ejercicio
   const $estado = $("<div>").addClass("ej-estado-control");
@@ -2223,7 +2264,7 @@ function plantillaInicial(ejercicio) {
   return `Proceso ${nombre}\n  // ${ejercicio.titulo}\n  // Enunciado: revisa el panel de aprendizaje.\n\n\nFinProceso`;
 }
 
-function reemplazarEditorConfirmando(nuevoCodigo, mensaje) {
+function reemplazarEditorConfirmando(nuevoCodigo, mensaje, siempreConfirmar = false) {
   const editor = document.getElementById("editor");
   if (!editor) return;
   const actual = editor.value;
@@ -2238,7 +2279,7 @@ function reemplazarEditorConfirmando(nuevoCodigo, mensaje) {
     editor.focus();
   };
 
-  if (limpio === "" || limpio === placeholder) {
+  if (!siempreConfirmar && (limpio === "" || limpio === placeholder)) {
     reemplazar();
     return;
   }
@@ -2274,6 +2315,7 @@ function cargarCodigoReferencia(ejercicio) {
   reemplazarEditorConfirmando(
     ejercicio.codigoReferencia,
     "Esto reemplazará el contenido del editor por el código de referencia. Se recomienda intentar resolver el ejercicio antes de mirar la solución.",
+    true,
   );
 }
 
@@ -2491,6 +2533,7 @@ $(document).ready(function () {
   $("#btnLimpiarTodo").on("click", limpiarTodo);
   $("#btnDescargar").on("click", descargar);
   $("#btnTheme").on("click", cycleTheme);
+  initConsoleEchoToggle();
   $(".console-header").on("click", function (e) {
     if ($(e.target).closest(".console-header-actions, button").length) return;
     toggleMobileConsoleCollapsed();
