@@ -1085,6 +1085,17 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
+function resaltarCodigo(codigo) {
+  const vars = DocErrores.extraerVariablesDelCodigo(codigo);
+  const userVarsSet = new Set(vars.map(v => v.toLowerCase()));
+  let depth = 0;
+  return codigo.split("\n").map(linea => {
+    const { html, depth: d } = resaltarLinea_syntax(linea, userVarsSet, depth);
+    depth = d;
+    return html;
+  }).join("\n");
+}
+
 // =========================================
 // 9. AUTOCOMPLETE
 // =========================================
@@ -1759,109 +1770,157 @@ const DOC_COMANDOS = [
   {
     nombre: "Proceso / FinProceso",
     sintaxis: "Proceso nombre\n  instrucciones\nFinProceso",
-    ejemplo: "Proceso saludo\n  Escribir \"Hola\"\nFinProceso",
-    descripcion: "Define el inicio y el cierre del programa. LiteSeInt valida el documento completo, así que estas dos líneas son obligatorias incluso en ejercicios pequeños.",
-    detalle: "Usa un nombre corto, sin espacios y descriptivo. Dentro del bloque van declaraciones, lecturas, cálculos, decisiones, ciclos y salidas.",
-    errores: "Olvidar `FinProceso`, escribir instrucciones antes de `Proceso` o usar un nombre con espacios.",
+    ejemplo: "Proceso saludar\n  Escribir \"Hola, mundo\"\nFinProceso",
+    descripcion: "Marca el inicio y el fin del programa. Todo el código que escribas va dentro de este bloque; sin él LiteSeInt no puede validar ni ejecutar nada.",
+    detalle: "Usa siempre este bloque, incluso en programas de dos líneas. El nombre no puede tener espacios. Las instrucciones van indentadas adentro para mejorar la legibilidad.",
+    errores: "Olvidar `FinProceso`, escribir instrucciones antes de `Proceso`, o usar un nombre con espacios como `Mi Programa`.",
     ejercicios: ["n1-001", "n1-002"],
   },
   {
     nombre: "Definir",
-    sintaxis: "Definir variable[, otra] Como Entero|Real|Caracter|Logico",
-    ejemplo: "Definir edad Como Entero\nDefinir nombre Como Caracter",
-    descripcion: "Reserva una variable y declara qué tipo de dato podrá guardar. Es el primer paso antes de leer, asignar o calcular.",
-    detalle: "`Entero` sirve para números sin decimales, `Real` para decimales, `Caracter` para texto y `Logico` para `Verdadero` o `Falso`.",
-    errores: "Usar `Cadena` en vez de `Caracter`, declarar dos veces la misma variable o usar una palabra reservada como nombre.",
+    sintaxis: "Definir variable Como Entero|Real|Caracter|Logico\nDefinir a, b, c Como Entero",
+    ejemplo: "Definir edad Como Entero\nDefinir promedio Como Real\nDefinir nombre Como Caracter\nDefinir activo Como Logico",
+    descripcion: "Crea una variable con un nombre y un tipo. Hasta que no la declares, LiteSeInt no sabe que existe y cualquier uso genera error.",
+    detalle: "Puedes declarar varias variables del mismo tipo en una línea separándolas con comas: `Definir a, b Como Entero`. No es posible cambiar el tipo después de declarar.",
+    errores: "Usar `Cadena` en lugar de `Caracter`, declarar la misma variable dos veces, o usar una palabra reservada como nombre.",
     ejercicios: ["n1-003", "n1-004"],
+  },
+  {
+    nombre: "Tipos de dato",
+    sintaxis: "Entero   // número sin decimales\nReal     // número con decimales\nCaracter // texto entre comillas dobles\nLogico   // Verdadero o Falso",
+    ejemplo: "Definir cantidad Como Entero\nDefinir precio Como Real\nDefinir ciudad Como Caracter\nDefinir aprobado Como Logico\n\ncantidad = 5\nprecio = 19.99\nciudad = \"Santiago\"\naprobado = Verdadero",
+    descripcion: "Cada variable guarda exactamente un tipo de dato. Elegir el tipo correcto desde el principio evita errores al calcular, comparar o mostrar valores.",
+    detalle: "Usa `Entero` para contadores, edades y cantidades sin parte decimal. Usa `Real` para precios, promedios y medidas con decimales. Usa `Caracter` para nombres, palabras o cualquier texto. Usa `Logico` para banderas de sí/no o estados booleanos.",
+    errores: "Guardar texto en una variable `Entero`, usar `Cadena` (no existe en LiteSeInt), o intentar asignar `Verdadero` a una variable `Real`.",
+    ejercicios: ["n1-003", "n1-004", "n1-005"],
   },
   {
     nombre: "Asignación",
     sintaxis: "variable = expresion",
-    ejemplo: "total = precio * cantidad",
-    descripcion: "Calcula una expresión y guarda el resultado en una variable ya definida.",
-    detalle: "En LiteSeInt la asignación es `=`. Para comparar igualdad dentro de una condición se usa `==`.",
-    errores: "Usar `<-`, asignar a una variable no definida o guardar texto en una variable numérica.",
+    ejemplo: "Definir precio, cantidad, total, descuento Como Real\nprecio = 1500\ncantidad = 3\ntotal = precio * cantidad\ndescuento = total * 0.10\ntotal = total - descuento\nEscribir \"Total con descuento: \", total",
+    descripcion: "Calcula la expresión del lado derecho y guarda el resultado en la variable. La variable debe existir (declarada con `Definir`) antes de asignarle valor.",
+    detalle: "El signo `=` asigna; el doble `==` compara. No son intercambiables: `x = 5` guarda 5 en x, mientras que `x == 5` pregunta si x vale 5. Confundirlos es el error más frecuente al empezar.",
+    errores: "Usar `<-` (sintaxis de PSeInt clásico, no válida aquí), asignar a una variable no declarada, o guardar texto en una variable numérica.",
     ejercicios: ["n1-006", "n1-007"],
   },
   {
     nombre: "Leer",
     sintaxis: "Leer variable",
-    ejemplo: "Escribir \"Ingresa tu edad:\"\nLeer edad",
-    descripcion: "Pide un dato por consola y lo convierte al tipo de la variable indicada.",
-    detalle: "Conviene mostrar antes un `Escribir` que explique qué dato debe ingresar la persona.",
-    errores: "Leer una variable no definida, ingresar texto donde se espera un número o intentar leer varias variables en una sola línea.",
+    ejemplo: "Definir edad Como Entero\nDefinir nombre Como Caracter\nEscribir \"Ingresa tu nombre:\"\nLeer nombre\nEscribir \"Ingresa tu edad:\"\nLeer edad\nEscribir \"Hola \", nombre, \", tienes \", edad, \" años.\"",
+    descripcion: "Detiene el programa, muestra un cursor de entrada en la consola y guarda lo que el usuario escribe en la variable indicada.",
+    detalle: "Pon siempre un `Escribir` descriptivo antes de cada `Leer` para que el usuario sepa qué ingresar. Si el dato no coincide con el tipo de la variable (texto donde se espera número), LiteSeInt reporta el error en tiempo de ejecución.",
+    errores: "Leer una variable no declarada, ingresar texto donde se espera un número, o intentar leer varias variables en una sola línea.",
     ejercicios: ["n1-005", "n2-001"],
   },
   {
     nombre: "Escribir",
-    sintaxis: "Escribir expresion[, expresion...]",
-    ejemplo: "Escribir \"Resultado: \", total",
-    descripcion: "Muestra texto, valores de variables o resultados de expresiones en la consola.",
-    detalle: "Puedes combinar fragmentos separándolos con comas. Cada instrucción `Escribir` produce una nueva línea.",
-    errores: "Olvidar comillas en textos fijos, dejar una coma al final o escribir variables todavía no inicializadas.",
+    sintaxis: "Escribir expresion\nEscribir expresion, expresion, ...",
+    ejemplo: "Escribir \"Resultado:\"\nEscribir \"Total: \", total\nEscribir \"Nombre: \", nombre, \" — Edad: \", edad\nEscribir \"Área: \", base * altura / 2",
+    descripcion: "Imprime uno o varios valores en la consola y salta a la siguiente línea automáticamente.",
+    detalle: "Separa texto fijo, variables y expresiones con comas. El texto literal va entre comillas dobles. No uses `+` para combinar texto con variables; usa comas. Cada `Escribir` es una línea nueva en la consola.",
+    errores: "Olvidar las comillas en el texto fijo, dejar una coma al final sin nada después, o imprimir una variable que todavía no recibió ningún valor.",
     ejercicios: ["n1-001", "n1-002"],
+  },
+  {
+    nombre: "Operadores aritméticos",
+    sintaxis: "a + b   // suma\na - b   // resta\na * b   // multiplicación\na / b   // división real\na mod b // resto de la división entera\na ^ b   // potencia",
+    ejemplo: "Definir a, b Como Real\nLeer a\nLeer b\nEscribir \"Suma: \", a + b\nEscribir \"Producto: \", a * b\nEscribir \"División: \", a / b\nEscribir \"Módulo: \", a mod b\nEscribir \"Potencia: \", a ^ 2",
+    descripcion: "Realizan los cálculos matemáticos básicos. Se combinan en expresiones y se puede usar paréntesis para forzar el orden de evaluación.",
+    detalle: "Precedencia de mayor a menor: `^` → menos unario → `*`, `/`, `mod` → `+`, `-`. Usa paréntesis cuando tengas dudas. `mod` devuelve el resto de la división entera y solo funciona escrito en minúsculas.",
+    errores: "Dividir por cero, escribir `MOD` en mayúsculas, omitir un operando, o intentar operar texto con números.",
+    ejercicios: ["n1-006", "n1-008", "n1-018"],
+  },
+  {
+    nombre: "Operadores relacionales",
+    sintaxis: "a == b   // igual a\na != b   // distinto de (también <>)\na < b    // menor que\na > b    // mayor que\na <= b   // menor o igual que\na >= b   // mayor o igual que",
+    ejemplo: "Si edad >= 18 Entonces\n  Escribir \"Mayor de edad\"\nFinSi\n\nSi nota != 0 Y nota < 4.0 Entonces\n  Escribir \"Reprobado\"\nFinSi",
+    descripcion: "Comparan dos valores y producen `Verdadero` o `Falso`. Son la base de toda condición: sin ellos no hay decisiones ni ciclos.",
+    detalle: "Usa siempre `==` para comparar igualdad, nunca `=` dentro de una condición. `!=` y `<>` hacen lo mismo; elige uno y sé consistente en todo el programa.",
+    errores: "Usar `=` para comparar dentro de una condición, comparar un número con texto, o dejar la condición vacía.",
+    ejercicios: ["n3-001", "n3-006", "n3-014"],
+  },
+  {
+    nombre: "Operadores lógicos",
+    sintaxis: "condicion1 Y condicion2  // ambas verdaderas\ncondicion1 O condicion2  // al menos una verdadera\nNo condicion             // invierte el resultado",
+    ejemplo: "// Rango: ambas condiciones deben cumplirse\nSi edad >= 18 Y edad <= 65 Entonces\n  Escribir \"En edad de trabajar\"\nFinSi\n\n// Alternativa: basta con una\nSi nota < 4.0 O faltas > 10 Entonces\n  Escribir \"Reprobado\"\nFinSi\n\n// Negación de una variable lógica\nSi No aprobado Entonces\n  Escribir \"Debe rendir el examen\"\nFinSi",
+    descripcion: "Conectan condiciones para formar reglas más complejas. Con ellos puedes verificar rangos, alternativas y negaciones en una sola condición.",
+    detalle: "Usa `Y` para verificar que todo se cumpla (rangos, combinaciones). Usa `O` cuando basta con que una condición sea verdadera. Usa `No` para invertir el valor lógico de una variable o una condición. Nunca escribas `&&` ni `||`; no son válidos en LiteSeInt.",
+    errores: "Escribir `&&` o `||` en lugar de `Y` y `O`, omitir los operandos de comparación en cada lado, o aplicar `No` a una expresión compleja sin paréntesis.",
+    ejercicios: ["n3-023", "n3-024", "n3-026"],
   },
   {
     nombre: "Si / Sino / FinSi",
     sintaxis: "Si condicion Entonces\n  instrucciones\nSino\n  instrucciones\nFinSi",
-    ejemplo: "Si edad >= 18 Entonces\n  Escribir \"Mayor\"\nSino\n  Escribir \"Menor\"\nFinSi",
-    descripcion: "Permite que el programa tome una decisión según una condición lógica.",
-    detalle: "`Sino` es opcional. La condición debe producir un valor lógico usando comparadores como `==`, `<`, `>=` o combinaciones con `Y`, `O`, `No`.",
-    errores: "Usar `=` para comparar, olvidar `Entonces`, cerrar con un `FinSi` cruzado o escribir `SiNo`.",
-    ejercicios: ["n3-001", "n3-002"],
+    ejemplo: "Si nota >= 4.0 Entonces\n  Escribir \"Aprobado\"\nSino\n  Escribir \"Reprobado\"\nFinSi",
+    ejemplo2: "// Si anidado: tres categorías distintas\nSi nota >= 6.0 Entonces\n  Escribir \"Sobresaliente\"\nSino\n  Si nota >= 4.0 Entonces\n    Escribir \"Aprobado\"\n  Sino\n    Escribir \"Reprobado\"\n  FinSi\nFinSi",
+    descripcion: "Permite que el programa tome un camino u otro según si una condición es verdadera o falsa.",
+    detalle: "`Sino` es opcional: úsalo solo cuando hay dos caminos. Para tres o más categorías, anida un `Si` dentro del `Sino`, o bien usa `Segun` si los casos son valores fijos de una misma variable. Cada `Si` necesita su propio `FinSi` al mismo nivel de indentación.",
+    errores: "Usar `=` en lugar de `==` para comparar, olvidar la palabra `Entonces`, escribir `SiNo` junto (no válido), o cruzar cierres de bloques anidados.",
+    ejercicios: ["n3-001", "n3-002", "n3-016"],
   },
   {
     nombre: "Mientras / FinMientras",
     sintaxis: "Mientras condicion Hacer\n  instrucciones\nFinMientras",
-    ejemplo: "Mientras i <= 10 Hacer\n  Escribir i\n  i = i + 1\nFinMientras",
-    descripcion: "Repite un bloque mientras la condición siga siendo verdadera.",
-    detalle: "Úsalo cuando no sabes de antemano cuántas repeticiones habrá. Actualiza dentro del ciclo la variable que permite terminar.",
-    errores: "No modificar la variable de control, olvidar `Hacer` o dejar el ciclo sin `FinMientras`.",
-    ejercicios: ["n4-001", "n4-002"],
+    ejemplo: "Definir i Como Entero\ni = 1\nMientras i <= 10 Hacer\n  Escribir i\n  i = i + 1\nFinMientras",
+    ejemplo2: "// Menú que repite hasta que el usuario elige Salir\nDefinir opcion Como Entero\nopcion = 0\nMientras opcion != 3 Hacer\n  Escribir \"1. Sumar  2. Restar  3. Salir\"\n  Leer opcion\nFinMientras",
+    descripcion: "Repite un bloque mientras una condición sea verdadera. Si la condición es falsa desde el primer momento, el bloque no se ejecuta ni una vez.",
+    detalle: "Úsalo cuando no sabes cuántas repeticiones habrá antes de empezar. Dentro del ciclo, actualiza siempre la variable que controla la condición; si no cambia, el ciclo nunca termina. Cuando necesitas ejecutar el cuerpo al menos una vez, prefiere `Repetir/HastaQue`.",
+    errores: "No actualizar la variable de control dentro del ciclo (ciclo infinito), olvidar `Hacer`, o cerrar con `FinMientras` en el nivel equivocado.",
+    ejercicios: ["n4-001", "n4-002", "n4-007"],
   },
   {
     nombre: "Repetir / HastaQue",
     sintaxis: "Repetir\n  instrucciones\nHastaQue condicion",
-    ejemplo: "Repetir\n  Leer clave\nHastaQue clave == \"ok\"",
-    descripcion: "Ejecuta el bloque al menos una vez y luego revisa la condición de salida.",
-    detalle: "Es útil para validar entradas: primero se pide el dato y después se decide si se repite.",
-    errores: "Pensar la condición al revés, olvidar `HastaQue` o dejar la condición vacía.",
-    ejercicios: ["n4-007", "n4-021"],
+    ejemplo: "Definir clave Como Caracter\nRepetir\n  Escribir \"Ingresa la clave:\"\n  Leer clave\nHastaQue clave == \"ok\"",
+    descripcion: "Ejecuta un bloque al menos una vez y luego decide si debe repetirse. Se detiene cuando la condición pasa a ser verdadera.",
+    detalle: "Es la opción natural para validar entradas: el cuerpo siempre corre antes de evaluar. La condición funciona al revés que en `Mientras`: aquí significa \"terminar cuando sea verdadero\", no \"continuar mientras sea verdadero\". Ese contraste es fácil de confundir al principio.",
+    errores: "Invertir la lógica de la condición respecto a `Mientras`, olvidar `HastaQue`, o dejar el cuerpo del ciclo sin ninguna instrucción.",
+    ejercicios: ["n4-021", "n4-022"],
   },
   {
     nombre: "Para / FinPara",
     sintaxis: "Para i = inicio Hasta fin [Con Paso paso] Hacer\n  instrucciones\nFinPara",
-    ejemplo: "Para i = 1 Hasta 5 Hacer\n  Escribir i\nFinPara",
-    descripcion: "Repite un bloque con un contador que avanza automáticamente desde un inicio hasta un fin.",
-    detalle: "Úsalo cuando conoces la cantidad de repeticiones. `Con Paso` permite avanzar de dos en dos o retroceder.",
-    errores: "Usar paso cero, cambiar innecesariamente el contador dentro del ciclo u olvidar `FinPara`.",
-    ejercicios: ["n4-005", "n4-006"],
+    ejemplo: "// Contar del 1 al 5\nPara i = 1 Hasta 5 Hacer\n  Escribir i\nFinPara",
+    ejemplo2: "// Cuenta regresiva con paso negativo\nPara i = 10 Hasta 1 Con Paso -1 Hacer\n  Escribir i\nFinPara\n\n// Múltiplos de 3\nPara i = 3 Hasta 30 Con Paso 3 Hacer\n  Escribir i\nFinPara",
+    descripcion: "Repite un bloque con un contador que avanza automáticamente. Es el ciclo indicado cuando sabes exactamente cuántas repeticiones habrá antes de ejecutar.",
+    detalle: "Sin `Con Paso`, el contador avanza de 1 en 1. Para contar hacia atrás, usa un paso negativo. Evita modificar el contador dentro del ciclo: el `Para` lo maneja solo y cambiarlo manualmente produce comportamiento inesperado.",
+    errores: "Usar paso cero, modificar el contador manualmente dentro del ciclo, olvidar `Hacer`, u olvidar `FinPara`.",
+    ejercicios: ["n4-041", "n4-042", "n4-047"],
   },
   {
     nombre: "Segun / FinSegun",
-    sintaxis: "Segun expresion Hacer\n  valor: instrucciones\n  De Otro Modo: instrucciones\nFinSegun",
-    ejemplo: "Segun dia Hacer\n  1: Escribir \"Lunes\"\n  De Otro Modo: Escribir \"Otro\"\nFinSegun",
-    descripcion: "Selecciona una alternativa entre varios casos posibles de una misma expresión.",
-    detalle: "Cada caso termina con `:`. Puedes poner la instrucción en la misma línea o debajo, y usar `De Otro Modo:` como respaldo.",
-    errores: "Olvidar los dos puntos, repetir casos, mezclar tipos de caso o dejar un `Segun` sin `FinSegun`.",
-    ejercicios: ["n3-031", "n3-032"],
+    sintaxis: "Segun expresion Hacer\n  valor: instruccion\n  valor1, valor2: instruccion\n  De Otro Modo:\n    instruccion\nFinSegun",
+    ejemplo: "Definir dia Como Entero\nLeer dia\nSegun dia Hacer\n  1: Escribir \"Lunes\"\n  2: Escribir \"Martes\"\n  3: Escribir \"Miércoles\"\n  6, 7: Escribir \"Fin de semana\"\n  De Otro Modo:\n    Escribir \"Día desconocido\"\nFinSegun",
+    descripcion: "Elige entre múltiples caminos según el valor de una expresión. Es más legible que varios `Si` anidados cuando los casos son valores concretos de una misma variable.",
+    detalle: "Cada caso lleva `:` al final de su valor. Puedes agrupar varios valores en un caso separándolos con coma: `6, 7: Escribir \"Fin de semana\"`. `De Otro Modo:` captura cualquier valor que no coincida con los demás y su cuerpo va en la línea siguiente.",
+    errores: "Olvidar los dos puntos `:` después de cada valor, repetir el mismo valor en dos casos, o cerrar con `FinSegun` en el nivel equivocado.",
+    ejercicios: ["n3-031", "n3-032", "n3-033"],
   },
   {
-    nombre: "Funciones nativas",
-    sintaxis: "Abs(x), Redon(x), Trunc(x), Longitud(texto), Mayusculas(texto), Minusculas(texto)",
-    ejemplo: "Escribir Mayusculas(nombre)\nEscribir Redon(promedio)",
-    descripcion: "Resuelven operaciones comunes de texto y números dentro de expresiones.",
-    detalle: "`Abs`, `Redon` y `Trunc` trabajan con números. `Longitud`, `Mayusculas` y `Minusculas` trabajan con texto.",
-    errores: "Llamar una función sin paréntesis, dejar argumentos vacíos o usar una función de texto con un número.",
-    ejercicios: ["n2-010", "n2-011"],
+    nombre: "Funciones numéricas",
+    sintaxis: "Abs(x)    // valor absoluto\nRedon(x)  // redondeo al entero más cercano\nTrunc(x)  // parte entera, sin redondear",
+    ejemplo: "Definir n Como Real\nLeer n\nEscribir \"Absoluto: \",   Abs(n)\nEscribir \"Redondeado: \", Redon(n)\nEscribir \"Truncado: \",   Trunc(n)",
+    descripcion: "Transforman valores numéricos dentro de una expresión. Se pueden usar directamente en `Escribir`, en asignaciones o anidadas con otras funciones.",
+    detalle: "`Abs(x)` devuelve x sin signo: Abs(-5) = 5. `Redon(x)` redondea al entero más cercano: Redon(2.5) = 3. `Trunc(x)` elimina los decimales sin redondear: Trunc(2.9) = 2. Úsalas cuando una fórmula exija esos ajustes.",
+    errores: "Llamar la función sin paréntesis, pasar texto donde se espera un número, o dejar el argumento vacío: `Abs()`.",
+    ejercicios: ["n2-017", "n2-010", "n2-006"],
+  },
+  {
+    nombre: "Funciones de texto",
+    sintaxis: "Longitud(texto)    // número de caracteres\nMayusculas(texto)  // todo en mayúsculas\nMinusculas(texto)  // todo en minúsculas",
+    ejemplo: "Definir nombre Como Caracter\nLeer nombre\nEscribir \"Caracteres: \", Longitud(nombre)\nEscribir \"Mayúsculas: \", Mayusculas(nombre)\nEscribir \"Minúsculas: \", Minusculas(nombre)",
+    descripcion: "Transforman o analizan cadenas de texto (variables de tipo `Caracter`). Permiten contar caracteres, normalizar capitalización y preparar el texto para comparaciones.",
+    detalle: "`Longitud` es útil para validar que el usuario ingresó algo. `Mayusculas` y `Minusculas` son clave al comparar entradas: `\"ok\"` y `\"OK\"` son distintas en LiteSeInt, así que normalizar antes de comparar evita falsos negativos.",
+    errores: "Aplicar estas funciones a una variable numérica, llamarlas sin paréntesis, o dejar el argumento vacío.",
+    ejercicios: ["n1-005", "n2-002"],
   },
   {
     nombre: "Comentarios",
-    sintaxis: "// texto",
-    ejemplo: "// Calcula el promedio\npromedio = suma / 3",
-    descripcion: "Documentan la intención del programa y no se ejecutan.",
-    detalle: "Úsalos para aclarar pasos importantes, no para repetir literalmente lo que ya dice una línea simple.",
-    errores: "Confiar en comentarios para corregir código: si la instrucción está mal, el comentario no cambia la ejecución.",
+    sintaxis: "// texto explicativo",
+    ejemplo: "// Calcula el promedio de tres notas\nDefinir n1, n2, n3, promedio Como Real\nLeer n1\nLeer n2\nLeer n3\npromedio = (n1 + n2 + n3) / 3  // resultado final\nEscribir \"Promedio: \", promedio",
+    descripcion: "Anotaciones para el programador que LiteSeInt ignora completamente. No afectan la ejecución ni generan errores.",
+    detalle: "Escríbelos para explicar el *por qué* de una decisión no obvia, no para repetir lo que ya expresa el código. Un comentario como `// suma los valores` agrega poco si ya está `total = a + b + c`; uno como `// usamos Trunc para evitar redondeo acumulado` sí aporta.",
+    errores: "Creer que un comentario corrige un error: si la instrucción es incorrecta, el comentario no cambia nada. El programa ignora todo lo que va después de `//` en esa línea.",
     ejercicios: ["n1-006", "n1-008"],
   },
 ];
@@ -2039,28 +2098,42 @@ function renderizarDocsComandos() {
 
   DOC_COMANDOS.forEach((doc) => {
     const $card = $("<article>").addClass("learning-doc-card");
-    $card.append($("<h4>").text(doc.nombre));
-    $card.append($("<p>").text(doc.descripcion));
-    if (doc.detalle) {
-      $card.append($("<div>").addClass("learning-doc-label").text("Cuándo usarlo"));
-      $card.append($("<p>").text(doc.detalle));
-    }
-    $card.append($("<div>").addClass("learning-doc-label").text("Sintaxis"));
-    $card.append($("<pre>").text(doc.sintaxis));
-    $card.append($("<div>").addClass("learning-doc-label").text("Ejemplo"));
-    $card.append($("<pre>").text(doc.ejemplo));
-    if (doc.errores) {
-      $card.append($("<div>").addClass("learning-doc-label").text("Errores típicos"));
-      $card.append($("<p>").addClass("learning-doc-note").text(doc.errores));
-    }
 
+    const $trigger = $("<button>")
+      .addClass("learning-doc-trigger")
+      .attr("type", "button");
+    $trigger.append($("<span>").text(doc.nombre));
+    $trigger.append($("<span>").addClass("doc-chevron").text("▾"));
+    $trigger.on("click", () => $card.toggleClass("is-open"));
+
+    const $body = $("<div>").addClass("learning-doc-body");
+    $body.append($("<p>").text(doc.descripcion));
+    if (doc.detalle) {
+      $body.append($("<div>").addClass("learning-doc-label").text("Cuándo usarlo"));
+      $body.append($("<p>").text(doc.detalle));
+    }
+    $body.append($("<div>").addClass("learning-doc-label").text("Sintaxis"));
+    $body.append($("<pre>").addClass("doc-pre-highlighted").html(resaltarCodigo(doc.sintaxis)));
+    $body.append($("<div>").addClass("learning-doc-label").text("Ejemplo"));
+    $body.append($("<pre>").addClass("doc-pre-highlighted").html(resaltarCodigo(doc.ejemplo)));
+    if (doc.ejemplo2) {
+      $body.append($("<div>").addClass("learning-doc-label").text("Otro ejemplo"));
+      $body.append($("<pre>").addClass("doc-pre-highlighted").html(resaltarCodigo(doc.ejemplo2)));
+    }
+    if (doc.errores) {
+      $body.append($("<div>").addClass("learning-doc-label").text("Errores típicos"));
+      $body.append($("<p>").addClass("learning-doc-note").text(doc.errores));
+    }
     const ejercicios = ejerciciosPorIds(doc.ejercicios);
     if (ejercicios.length) {
       const $recs = $("<div>").addClass("learning-doc-recs");
       $recs.append($("<div>").addClass("learning-doc-label").text("Practicar con"));
       ejercicios.forEach((e) => $recs.append(crearLinkEjercicio(e)));
-      $card.append($recs);
+      $body.append($recs);
     }
+
+    $card.append($trigger);
+    $card.append($body);
     $cont.append($card);
   });
 }

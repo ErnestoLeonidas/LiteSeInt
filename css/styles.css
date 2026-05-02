@@ -1318,13 +1318,68 @@ body::before {
   margin-bottom: 8px;
 }
 
-.learning-doc-card h4,
 .learning-route-card h4 {
   margin: 0 0 5px 0;
   color: var(--text-primary);
   font-size: 12px;
   line-height: 1.3;
 }
+
+.learning-doc-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-code);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-primary);
+  gap: 6px;
+}
+
+.learning-doc-trigger:hover {
+  color: var(--accent);
+}
+
+.doc-chevron {
+  display: inline-block;
+  font-size: 11px;
+  color: var(--text-secondary);
+  transition: transform 0.15s ease;
+  transform: rotate(-90deg);
+  flex-shrink: 0;
+}
+
+.learning-doc-card.is-open .doc-chevron {
+  transform: rotate(0deg);
+}
+
+.learning-doc-body {
+  display: none;
+  padding-top: 8px;
+}
+
+.learning-doc-card.is-open .learning-doc-body {
+  display: block;
+}
+
+.doc-pre-highlighted .sh-keyword  { color: var(--syntax-keyword); }
+.doc-pre-highlighted .sh-string   { color: var(--syntax-string); }
+.doc-pre-highlighted .sh-variable { color: var(--syntax-variable); }
+.doc-pre-highlighted .sh-comment  { color: var(--syntax-comment); opacity: 0.8; }
+.doc-pre-highlighted .sh-number   { color: var(--syntax-number); }
+.doc-pre-highlighted .sh-operator { color: var(--text-secondary); }
+.doc-pre-highlighted .sh-assign   { color: var(--syntax-assign); }
+.doc-pre-highlighted .sh-plain    { color: var(--text-primary); }
+.doc-pre-highlighted .sh-bracket-0 { color: var(--bracket-0); font-weight: 500; }
+.doc-pre-highlighted .sh-bracket-1 { color: var(--bracket-1); font-weight: 500; }
+.doc-pre-highlighted .sh-bracket-2 { color: var(--bracket-2); font-weight: 500; }
 
 .learning-doc-card p,
 .learning-route-card p {

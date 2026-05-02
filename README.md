@@ -6,7 +6,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v0.8.7`
+- Versión visible en la app: `v0.8.8`
 - Demo en GitHub Pages: <https://ernestoleonidas.github.io/LiteSeInt/>
 - Layout educativo: editor arriba, **consola debajo del editor** (redimensionable verticalmente) y **panel de aprendizaje integrado** con ejercicios, documentación de comandos, ruta del estudiante y errores comunes.
 - **245 ejercicios adaptados** desde `ejercicios/guia.html` al dialecto LiteSeInt, cargados desde archivos JSON normalizados `N1`–`N7`, con validación estática automática y formato de código de referencia consistente.
@@ -22,7 +22,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 - Editor de pseudocódigo con numeración de líneas.
 - Consola **debajo del editor**, redimensionable verticalmente (la altura se persiste en `localStorage`).
-- **Panel de aprendizaje** con banco de ejercicios, documentación de comandos, ruta del estudiante y guía de errores comunes sin depender de internet.
+- **Panel de aprendizaje** con banco de ejercicios, documentación de comandos (17 entradas: instrucciones, tipos, operadores, estructuras de control y funciones), ruta del estudiante y guía de errores comunes sin depender de internet.
 - **Banco de ejercicios** con filtros por nivel/dificultad/estado, detalle con enunciado, E·P·S dentro de la pista, salida esperada, acceso al código de referencia con confirmación previa y **progreso local** persistente (`pendiente` / `en curso` / `completado`).
 - Selector de **ejemplos en menú desplegable**, agrupados por concepto (primeros programas, variables, expresiones, condicionales, ciclos, `Segun`).
 - Resaltado de sintaxis y guías visuales de indentación.

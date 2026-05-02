@@ -6,6 +6,25 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.8.8] — 2026-05-02
+
+Mejora de la guía de comandos: `DOC_COMANDOS` pasa de 12 a 17 entradas, con contenido más directo para principiantes, ejemplos adicionales para comandos complejos y cobertura de operadores y tipos como documentación independiente.
+
+### Cambiado
+- **Guía de comandos**: se amplía con cinco entradas nuevas (`Tipos de dato`, `Operadores aritméticos`, `Operadores relacionales`, `Operadores lógicos`, `Funciones de texto`) y se separa la entrada anterior de `Funciones nativas` en `Funciones numéricas` y `Funciones de texto`.
+- **Contenido de cada entrada**: se mejoran las descripciones con lenguaje más directo, se refuerzan los campos `detalle` (cuándo usarlo) distinguiendo alternativas (`Mientras` vs `Para` vs `Repetir`), y se actualizan las referencias de ejercicios.
+- **Ejemplos adicionales**: `Si / Sino / FinSi` agrega un Si anidado; `Mientras / FinMientras` agrega un patrón de menú; `Para / FinPara` agrega conteo descendente y múltiplos con `Con Paso`; `Segun / FinSegun` agrega caso con múltiples valores separados por coma.
+- **Render de comandos**: el bloque de comandos soporta un campo `ejemplo2` opcional que se muestra bajo la etiqueta `Otro ejemplo`, sin cambiar la estructura visual de los comandos que no lo usan.
+- **Referencias de ejercicios**: se actualizan los IDs para `Para` (`n4-041`, `n4-042`, `n4-047`) y `Segun` (`n3-031`, `n3-032`, `n3-033`); todos los IDs nuevos y existentes verificados contra los JSON `N1`–`N7`.
+- **README**: versión visible y descripción de la guía de comandos actualizadas.
+- **Versión visible**: `v0.8.8`.
+
+### Validado
+- **Pruebas**: `npm test` pasa con 11 pruebas.
+- **Ejemplos nuevos**: los 17 ejemplos (incluyendo `ejemplo2`) pasan la validación estática de `DocErrores.validarDocumento`.
+
+---
+
 ## [0.8.7.1]
 
 ### Cambiado
