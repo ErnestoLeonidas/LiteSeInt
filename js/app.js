@@ -1715,52 +1715,66 @@ function cargarEjemplo(nombre) {
 const NIVELES_LITESEINT = [
   {
     id: 1,
-    titulo: "Introducción a los Algoritmos",
-    objetivo: "Reconocer la forma mínima de un programa, ejecutar salidas simples y leer errores básicos.",
-    foco: "Proceso, FinProceso, Escribir, Definir, Leer y asignación.",
-    siguiente: "Cuando puedas explicar qué hace cada línea de un programa corto, pasa a N2.",
+    titulo: "Primeros programas",
+    objetivo: "Escribir programas lineales que declaran variables, leen datos y muestran resultados paso a paso.",
+    foco: "Las instrucciones corren de arriba a abajo. No hay decisiones ni ciclos: solo declarar, leer, calcular y escribir.",
+    antes: null,
+    comandosClave: ["Proceso", "FinProceso", "Definir", "Leer", "Escribir", "="],
+    siguiente: "Avanza cuando puedas escribir un programa que pida dos datos, haga un cálculo con ellos y muestre el resultado.",
   },
   {
     id: 2,
-    titulo: "Diagramas de Flujo y Pseudocódigo",
-    objetivo: "Transformar enunciados en entrada, proceso y salida antes de escribir el código.",
-    foco: "E·P·S, expresiones, fórmulas, operadores y conversión de datos.",
-    siguiente: "Avanza cuando puedas separar datos de entrada, cálculo y resultado esperado.",
+    titulo: "Expresiones y fórmulas",
+    objetivo: "Traducir enunciados a fórmulas y separar con claridad la entrada, el proceso y la salida antes de codificar.",
+    foco: "El desafío no es la sintaxis sino identificar qué datos se necesitan, qué se calcula y qué se muestra.",
+    antes: "Dominar N1: declarar variables, leer datos del usuario y mostrar resultados.",
+    comandosClave: ["+", "-", "*", "/", "mod", "^", "Abs", "Redon", "Trunc"],
+    siguiente: "Avanza cuando puedas leer un enunciado, identificar entrada/proceso/salida y traducirlo a código sin ayuda.",
   },
   {
     id: 3,
-    titulo: "Estructuras de Decisión",
-    objetivo: "Resolver problemas donde el programa elige entre dos o más caminos.",
-    foco: "Si, Sino, FinSi, Segun, comparaciones y operadores lógicos.",
-    siguiente: "Sigue a N4 cuando puedas justificar cada condición con ejemplos de prueba.",
+    titulo: "Decisiones",
+    objetivo: "Hacer que el programa elija entre dos o más caminos según condiciones lógicas.",
+    foco: "Comparar valores, combinar condiciones con Y/O/No, y usar Segun cuando los casos son valores fijos.",
+    antes: "Dominar N2: operadores y fórmulas.",
+    comandosClave: ["Si", "Entonces", "Sino", "FinSi", "Segun", "FinSegun", "Y", "O", "No"],
+    siguiente: "Avanza cuando puedas probar tus condiciones con dos valores distintos y predecir el camino que tomará el programa.",
   },
   {
     id: 4,
-    titulo: "Estructuras de Repetición",
-    objetivo: "Automatizar tareas que se repiten y controlar cuándo termina un ciclo.",
-    foco: "Mientras, Repetir, HastaQue, Para, contadores y acumuladores.",
-    siguiente: "Pasa a N5 cuando puedas evitar ciclos infinitos y actualizar variables de control.",
+    titulo: "Repetición",
+    objetivo: "Automatizar tareas que se repiten y controlar con precisión cuándo termina un ciclo.",
+    foco: "Cada ciclo tiene su caso ideal: Para cuando sabes cuántas veces, Mientras cuando no sabes, Repetir cuando necesitas ejecutar al menos una vez.",
+    antes: "Dominar N3: condiciones y decisiones.",
+    comandosClave: ["Mientras", "FinMientras", "Repetir", "HastaQue", "Para", "FinPara"],
+    siguiente: "Avanza cuando puedas elegir el ciclo correcto para cada tipo de problema y detectar un ciclo infinito antes de ejecutar.",
   },
   {
     id: 5,
     titulo: "Desafíos",
-    objetivo: "Combinar entrada, cálculo, decisiones y ciclos en problemas menos guiados.",
-    foco: "Descomposición, validación de entrada, máximos, mínimos, promedios y casos borde.",
-    siguiente: "Usa este nivel para practicar autonomía antes de los ejercicios tipo prueba.",
+    objetivo: "Resolver problemas completos con menor guía, combinando ciclos, decisiones y patrones de conteo y acumulación.",
+    foco: "Aplicar lo aprendido sin plantilla: leer el enunciado, diseñar la solución y probarla con distintos datos.",
+    antes: "Dominar N4: ciclos y sus patrones básicos.",
+    comandosClave: ["Si", "Mientras", "Para", "Repetir", "Definir", "Leer", "Escribir"],
+    siguiente: "Avanza cuando puedas resolver un desafío sin consultar el código de referencia.",
   },
   {
     id: 6,
-    titulo: "Tipo Prueba Parte 1",
-    objetivo: "Practicar decisiones anidadas y lectura cuidadosa de condiciones.",
-    foco: "Si anidado, rangos, clasificación y mensajes precisos.",
-    siguiente: "Revisa tus condiciones con valores límite antes de avanzar a menús y ciclos.",
+    titulo: "Decisiones anidadas",
+    objetivo: "Escribir condiciones anidadas correctas para clasificar datos con múltiples rangos y categorías.",
+    foco: "Si dentro de Sino, combinaciones de Y y O, y verificar siempre los valores límite de cada rango.",
+    antes: "Dominar N3 y N4: decisiones y ciclos.",
+    comandosClave: ["Si", "Sino", "FinSi", "Y", "O", "==", "!=", ">=", "<="],
+    siguiente: "Avanza cuando puedas identificar todos los casos posibles de un enunciado y escribir una condición para cada uno.",
   },
   {
     id: 7,
-    titulo: "Tipo Prueba Parte 2",
-    objetivo: "Construir programas con menú, repetición, conteo y acumulación.",
-    foco: "Mientras, Segun, opciones de menú, contador, acumulador y salida resumen.",
-    siguiente: "Este es el cierre práctico del camino a v1.0.0: resolver, probar y explicar.",
+    titulo: "Menú y acumulación",
+    objetivo: "Construir programas completos con menú de opciones, acumulación de datos por categoría y resumen al final.",
+    foco: "Ciclo persistente con Mientras, selección de opción con Segun y variables de conteo y suma separadas por caso.",
+    antes: "Dominar N4 y N6: ciclos y decisiones anidadas.",
+    comandosClave: ["Mientras", "FinMientras", "Segun", "FinSegun", "De Otro Modo"],
+    siguiente: "Este es el nivel final. Resolver todos los ejercicios implica dominar el lenguaje completo de LiteSeInt.",
   },
 ];
 
@@ -2143,31 +2157,83 @@ function renderizarRutaEstudiante() {
   if (!$cont.length) return;
   $cont.empty();
   $cont.append($("<p>").addClass("learning-doc-intro").text(
-    "Ruta sugerida para avanzar desde programas lineales hasta patrones de procesamiento.",
+    "Ruta de N1 a N7. Cada nivel describe qué aprender, qué comandos usar y cuándo es momento de avanzar.",
   ));
 
   NIVELES_LITESEINT.forEach((nivel) => {
     const ejercicios = ejerciciosVisibles().filter((e) => e.nivelLiteSeInt === nivel.id);
     const completados = ejercicios.filter((e) => estadoEjercicio(e.id) === "completado").length;
-    const recomendados = ejercicios.slice(0, 3);
+    const pct = ejercicios.length > 0 ? Math.round((completados / ejercicios.length) * 100) : 0;
+
+    const comenzar = ejercicios
+      .filter((e) => e.gradoAyuda === "guiado" || e.gradoAyuda === "con-pista")
+      .filter((e) => e.dificultad === "basico")
+      .slice(0, 2);
+    const practicar = ejercicios
+      .filter((e) => e.gradoAyuda === "practica")
+      .slice(0, 2);
+    const desafiar = ejercicios
+      .filter((e) => e.gradoAyuda === "desafio")
+      .slice(0, 1);
+
     const $card = $("<article>").addClass("learning-route-card");
     $card.append($("<div>").addClass("learning-route-num").text(`N${nivel.id}`));
+
+    const $right = $("<div>").addClass("learning-route-right");
+    const $trigger = $("<button>").addClass("learning-route-trigger").attr("type", "button");
+    $trigger.append($("<span>").text(nivel.titulo));
+    $trigger.append($("<span>").addClass("doc-chevron").text("▾"));
+    $trigger.on("click", () => $card.toggleClass("is-open"));
+    $right.append($trigger);
+
     const $body = $("<div>").addClass("learning-route-body");
-    $body.append($("<h4>").text(nivel.titulo));
+
+    if (nivel.antes) {
+      $body.append($("<p>").addClass("route-antes").text(`Antes: ${nivel.antes}`));
+    }
+
     if (nivel.objetivo) $body.append($("<p>").text(nivel.objetivo));
+
     if (nivel.foco) {
       $body.append($("<div>").addClass("learning-doc-label").text("Foco"));
       $body.append($("<p>").text(nivel.foco));
     }
-    $body.append($("<p>").text(`${completados}/${ejercicios.length} ejercicios completados`));
-    if (nivel.siguiente) $body.append($("<p>").addClass("learning-doc-note").text(nivel.siguiente));
-    if (recomendados.length) {
-      const $recs = $("<div>").addClass("learning-doc-recs");
-      $recs.append($("<div>").addClass("learning-doc-label").text("Primeros ejercicios"));
-      recomendados.forEach((e) => $recs.append(crearLinkEjercicio(e)));
-      $body.append($recs);
+
+    if (nivel.comandosClave && nivel.comandosClave.length) {
+      const $cmds = $("<div>").addClass("route-commands");
+      nivel.comandosClave.forEach((cmd) => {
+        $cmds.append($("<span>").addClass("route-cmd-badge").text(cmd));
+      });
+      $body.append($cmds);
     }
-    $card.append($body);
+
+    const $prog = $("<div>").addClass("route-progress-wrap");
+    $prog.append($("<div>").addClass("route-progress-text").text(
+      `${completados} / ${ejercicios.length} completados`,
+    ));
+    const $bar = $("<div>").addClass("route-progress-bar");
+    $bar.append($("<div>").addClass("route-progress-fill").css("width", `${pct}%`));
+    $prog.append($bar);
+    $body.append($prog);
+
+    const agregarGrupo = (label, lista) => {
+      if (!lista.length) return;
+      const $recs = $("<div>").addClass("learning-doc-recs");
+      $recs.append($("<div>").addClass("learning-doc-label").text(label));
+      lista.forEach((e) => $recs.append(crearLinkEjercicio(e)));
+      $body.append($recs);
+    };
+    agregarGrupo("Para comenzar", comenzar);
+    agregarGrupo("Para practicar", practicar);
+    agregarGrupo("Para desafiar", desafiar);
+
+    if (nivel.siguiente) {
+      $body.append($("<div>").addClass("learning-doc-label").text("Cuándo avanzar"));
+      $body.append($("<p>").addClass("learning-doc-note").text(nivel.siguiente));
+    }
+
+    $right.append($body);
+    $card.append($right);
     $cont.append($card);
   });
 }

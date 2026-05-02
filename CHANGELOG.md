@@ -6,6 +6,22 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.8.9] — 2026-05-02
+
+Mejora de la vista `Ruta`: los datos de `NIVELES_LITESEINT` quedan alineados con el banco real de 245 ejercicios y la vista muestra progreso, requisitos y ejercicios agrupados por grado de ayuda.
+
+### Cambiado
+- **`NIVELES_LITESEINT`**: los siete niveles se reescriben con nombres propios de LiteSeInt (`Primeros programas`, `Expresiones y fórmulas`, `Decisiones`, `Repetición`, `Desafíos`, `Decisiones anidadas`, `Menú y acumulación`), eliminando los nombres de EA originales (`Introducción a los Algoritmos`, `Diagramas de Flujo`, `Tipo Prueba Parte 1/2`). Cada nivel agrega campos `antes` (requisito previo) y `comandosClave` (array de comandos del nivel).
+- **Vista `Ruta`**: el render muestra requisito previo (`Antes:`), comandos clave como badges, barra de progreso con porcentaje, ejercicios agrupados en `Para comenzar` (guiado/con-pista básico), `Para practicar` (práctica) y `Para desafiar` (desafío), y la sección `Cuándo avanzar` diferenciada visualmente.
+- **CSS**: nuevas reglas `.route-antes`, `.route-commands`, `.route-cmd-badge`, `.route-progress-wrap`, `.route-progress-bar`, `.route-progress-fill` para los elementos nuevos de la tarjeta de nivel.
+- **README**: versión visible actualizada.
+- **Versión visible**: `v0.8.9`.
+
+### Validado
+- **Pruebas**: `npm test` pasa con 11 pruebas.
+
+---
+
 ## [0.8.8] — 2026-05-02
 
 Mejora de la guía de comandos: `DOC_COMANDOS` pasa de 12 a 17 entradas, con contenido más directo para principiantes, ejemplos adicionales para comandos complejos y cobertura de operadores y tipos como documentación independiente.
