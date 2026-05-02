@@ -6,6 +6,25 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.9.0] — 2026-05-02
+
+Mejora de la vista `Errores`: `DOC_ERRORES_COMUNES` pasa de 9 a 16 entradas, agrupadas por categoría, con ejemplo incorrecto + corrección y resaltado de sintaxis. Las tarjetas son colapsables como las vistas de comandos y rutas. Cada error documentado coincide con un mensaje real del validador o del runtime.
+
+### Cambiado
+- **Guía de errores**: cuatro categorías (`Estructura`, `Variables`, `Expresiones`, `Ciclos`) cubren los errores típicos del estudiante inicial: `Falta Proceso o FinProceso`, `Bloque sin cerrar`, `Cierre cruzado de bloques`, `Falta HastaQue`, `Variable no definida`, `Variable no inicializada`, `Palabra reservada como variable`, `Variable ya definida`, `Tipo incompatible al Leer`, `Texto sin cerrar`, `Paréntesis o argumentos incompletos`, `Operador incompleto`, `Confusión entre = y ==`, `Sintaxis PSeInt no soportada`, `Ciclo infinito` y `Paso cero en Para`.
+- **Estructura por entrada**: cada error mantiene síntoma, causa, corrección, ejemplo incorrecto (cuando aporta claridad) y ejemplo corregido. Los síntomas citan los mensajes reales que produce `js/doc_errores.js` y `js/LiteSeInt.js`.
+- **Vista `Errores`**: las tarjetas adoptan el patrón colapsable usado en `Comandos` y `Rutas` (botón con título y chevron, cuerpo oculto hasta abrir). Los ejemplos ahora se renderizan con resaltado de sintaxis idéntico al editor.
+- **CSS**: nuevas reglas `.learning-doc-label-bad`, `.learning-doc-label-good`, `.learning-doc-cat-label`, `.doc-pre-bad` reutilizando `--error` y `--accent` del sistema de temas.
+- **README**: versión visible actualizada.
+- **Versión visible**: `v0.9.0`.
+
+### Validado
+- **Pruebas**: `npm test` pasa con 11 pruebas.
+- **Ejemplos corregidos**: los 16 ejemplos `ejemplo` se pasaron por `DocErrores.validarDocumento` y validan sin errores.
+- **Ejemplos incorrectos**: los `ejemploMal` con error de validación estática se verificaron contra el mensaje real del validador. Los casos atrapados solo en runtime (variable no inicializada, paréntesis y operadores incompletos) están marcados con "Al ejecutar..." en el síntoma.
+
+---
+
 ## [0.8.9] — 2026-05-02
 
 Mejora de la vista `Ruta`: los datos de `NIVELES_LITESEINT` quedan alineados con el banco real de 245 ejercicios y la vista muestra progreso, requisitos y ejercicios agrupados por grado de ayuda.

@@ -1431,6 +1431,35 @@ body::before {
   text-transform: uppercase;
 }
 
+.learning-doc-label-bad {
+  color: var(--error);
+}
+
+.learning-doc-label-good {
+  color: var(--accent);
+}
+
+.learning-doc-cat-label {
+  margin: 12px 0 6px 0;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-family: var(--font-code);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.learning-doc-cat-label:first-child {
+  margin-top: 4px;
+}
+
+.doc-pre-bad {
+  border-color: var(--error) !important;
+  opacity: 0.92;
+}
+
 .learning-doc-card pre {
   margin: 0;
   padding: 7px 8px;

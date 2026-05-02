@@ -1941,67 +1941,147 @@ const DOC_COMANDOS = [
 
 const DOC_ERRORES_COMUNES = [
   {
+    titulo: "Falta Proceso o FinProceso",
+    categoria: "Estructura",
+    sintoma: "El validador dice: 'El documento debe comenzar con \"Proceso nombre_proceso\".' o 'El documento debe terminar con \"FinProceso\".'",
+    causa: "Escribir instrucciones sueltas sin envolverlas en un bloque `Proceso ... FinProceso`.",
+    arreglo: "Todo programa debe abrir con `Proceso nombre` y cerrar con `FinProceso`. El nombre identifica al programa y no puede quedar vacío.",
+    ejemploMal: "Escribir \"Hola\"",
+    ejemplo: "Proceso miPrograma\n  Escribir \"Hola\"\nFinProceso",
+  },
+  {
+    titulo: "Bloque sin cerrar",
+    categoria: "Estructura",
+    sintoma: "El validador dice: 'Bloque \"Si\" sin cierre (falta FinSi).' o lo equivalente para `Mientras`, `Para` o `Segun`.",
+    causa: "Abrir una estructura de control y olvidar su cierre correspondiente.",
+    arreglo: "Cierra cada estructura con la palabra exacta: `FinSi`, `FinMientras`, `FinPara` o `FinSegun`. La indentación ayuda a verlo.",
+    ejemploMal: "Proceso p\n  Definir edad Como Entero\n  edad = 20\n  Si edad >= 18 Entonces\n    Escribir \"Mayor\"\nFinProceso",
+    ejemplo: "Proceso p\n  Definir edad Como Entero\n  edad = 20\n  Si edad >= 18 Entonces\n    Escribir \"Mayor\"\n  FinSi\nFinProceso",
+  },
+  {
+    titulo: "Cierre cruzado de bloques",
+    categoria: "Estructura",
+    sintoma: "El validador dice: '\"FinX\" intenta cerrar un bloque, pero primero debe cerrarse \"Y\" con FinY.'",
+    causa: "Cerrar el bloque externo antes que el interno, mezclando los `FinX`.",
+    arreglo: "Cierra siempre primero el bloque más interno. La indentación debe coincidir entre apertura y cierre.",
+    ejemploMal: "Proceso p\n  Definir a Como Entero\n  a = 1\n  Si a > 0 Entonces\n    Mientras a < 10 Hacer\n      a = a + 1\n    FinSi\n  FinMientras\nFinProceso",
+    ejemplo: "Proceso p\n  Definir a Como Entero\n  a = 1\n  Si a > 0 Entonces\n    Mientras a < 10 Hacer\n      a = a + 1\n    FinMientras\n  FinSi\nFinProceso",
+  },
+  {
+    titulo: "Falta HastaQue",
+    categoria: "Estructura",
+    sintoma: "El validador dice: 'Bloque \"Repetir\" sin cierre (falta HastaQue).'",
+    causa: "Abrir un `Repetir` sin escribir la condición de salida con `Hasta Que`.",
+    arreglo: "Cierra siempre con `Hasta Que <condicion>`. La condición indica cuándo dejar de repetir.",
+    ejemploMal: "Proceso p\n  Definir x Como Entero\n  Repetir\n    Leer x\nFinProceso",
+    ejemplo: "Proceso p\n  Definir x Como Entero\n  Repetir\n    Leer x\n  Hasta Que x > 0\nFinProceso",
+  },
+  {
     titulo: "Variable no definida",
-    sintoma: "El editor subraya el nombre de la variable o la consola muestra que no existe.",
-    causa: "Usar una variable que nunca fue declarada con `Definir`.",
-    arreglo: "Declara la variable antes de leerla, asignarla o escribirla.",
-    ejemplo: "Definir edad Como Entero\nLeer edad\nEscribir edad",
+    categoria: "Variables",
+    sintoma: "Mensaje: `Variable \"X\" no definida.`",
+    causa: "Usar una variable sin haberla declarado antes con `Definir`.",
+    arreglo: "Declara la variable con `Definir <nombre> Como <Tipo>` antes de leerla, asignarle valor o escribirla.",
+    ejemploMal: "Proceso p\n  Leer edad\n  Escribir edad\nFinProceso",
+    ejemplo: "Proceso p\n  Definir edad Como Entero\n  Leer edad\n  Escribir edad\nFinProceso",
   },
   {
     titulo: "Variable no inicializada",
-    sintoma: "El programa intenta usar una variable que todavía no recibió un valor útil.",
-    causa: "Declarar una variable y luego usarla en una expresión antes de asignarle valor o leerla.",
-    arreglo: "Asigna un valor inicial, especialmente en contadores y acumuladores, o usa `Leer` antes de operar.",
-    ejemplo: "Definir suma Como Entero\nsuma = 0\nsuma = suma + 1",
+    categoria: "Variables",
+    sintoma: "Al ejecutar, mensaje: `Variable \"X\" no inicializada.`",
+    causa: "Declarar una variable y usarla en una expresión antes de asignarle un valor.",
+    arreglo: "Asigna un valor inicial antes de operar. Los contadores y acumuladores parten en cero.",
+    ejemploMal: "Proceso p\n  Definir suma Como Entero\n  suma = suma + 1\nFinProceso",
+    ejemplo: "Proceso p\n  Definir suma Como Entero\n  suma = 0\n  suma = suma + 1\nFinProceso",
   },
   {
-    titulo: "Falta FinSi",
-    sintoma: "La validación marca un bloque abierto o un cierre cruzado cerca de `FinProceso`.",
-    causa: "Abrir un `Si` y cerrar el programa o un bloque externo antes de cerrar la condición.",
-    arreglo: "Cierra cada `Si` con `FinSi` en el mismo nivel de indentación.",
-    ejemplo: "Si edad >= 18 Entonces\n  Escribir \"Mayor\"\nFinSi",
+    titulo: "Palabra reservada como variable",
+    categoria: "Variables",
+    sintoma: "Mensaje: `\"X\" es una palabra reservada y no puede usarse como variable.`",
+    causa: "Usar como nombre de variable una palabra del lenguaje (`Si`, `Para`, `Definir`, `Mientras`, etc.).",
+    arreglo: "Cambia el nombre por uno descriptivo y distinto a las palabras clave del lenguaje.",
+    ejemploMal: "Proceso p\n  Definir Para Como Entero\nFinProceso",
+    ejemplo: "Proceso p\n  Definir cantidad Como Entero\n  cantidad = 5\nFinProceso",
   },
   {
-    titulo: "Falta FinMientras",
-    sintoma: "El ciclo queda abierto y el validador no encuentra su cierre correspondiente.",
-    causa: "Abrir un `Mientras` sin cerrar su bloque.",
-    arreglo: "Agrega `FinMientras` después de las instrucciones repetidas.",
-    ejemplo: "Mientras i <= 5 Hacer\n  i = i + 1\nFinMientras",
+    titulo: "Variable ya definida",
+    categoria: "Variables",
+    sintoma: "Mensaje: `Variable \"X\" ya se encuentra definida.`",
+    causa: "Declarar dos veces la misma variable con `Definir`.",
+    arreglo: "Define cada variable una sola vez. Si necesitas reiniciar su valor, usa una asignación con `=`.",
+    ejemploMal: "Proceso p\n  Definir edad Como Entero\n  Definir edad Como Entero\nFinProceso",
+    ejemplo: "Proceso p\n  Definir edad Como Entero\n  edad = 0\nFinProceso",
   },
   {
-    titulo: "Ciclo infinito",
-    sintoma: "El programa se queda repitiendo o LiteSeInt lo detiene por superar el máximo de iteraciones.",
-    causa: "La condición del ciclo nunca cambia a falso.",
-    arreglo: "Actualiza dentro del ciclo la variable que controla la condición.",
-    ejemplo: "Mientras i <= 5 Hacer\n  Escribir i\n  i = i + 1\nFinMientras",
-  },
-  {
-    titulo: "Sintaxis PSeInt no soportada",
-    sintoma: "Aparece un error aunque el código se parezca a ejemplos clásicos de PSeInt.",
-    causa: "Usar alias fuera del dialecto LiteSeInt, como `<-`, `Cadena`, `SiNo`, `MOD` o `DIV`.",
-    arreglo: "Usa `=`, `Caracter`, `Sino` y `mod`. Para división entera, usa `Trunc(a / b)` cuando corresponda.",
-    ejemplo: "nombre = \"Ana\"\nresto = numero mod 2",
-  },
-  {
-    titulo: "Confusión entre = y ==",
-    sintoma: "La condición aparece marcada como inválida.",
-    causa: "Usar `=` para comparar dentro de una condición.",
-    arreglo: "Usa `=` para asignar y `==` para comparar igualdad.",
-    ejemplo: "Si clave == \"ok\" Entonces",
+    titulo: "Tipo incompatible al Leer",
+    categoria: "Variables",
+    sintoma: "Al ejecutar, mensaje: `El valor ingresado para \"X\" no corresponde al tipo Entero/Real/Logico.`",
+    causa: "Ingresar texto donde se esperaba un número, o un valor distinto a `Verdadero`/`Falso` para tipos `Logico`.",
+    arreglo: "Ingresa un valor del tipo declarado: enteros sin decimales, reales con punto y lógicos como `Verdadero` o `Falso`.",
+    ejemplo: "Proceso p\n  Definir edad Como Entero\n  Leer edad\n  Escribir \"Edad: \", edad\nFinProceso",
   },
   {
     titulo: "Texto sin cerrar",
-    sintoma: "El error aparece desde una comilla hasta el final de la línea.",
-    causa: "Abrir una cadena con comillas dobles y no cerrarla.",
-    arreglo: "Cierra el texto con otra comilla doble en la misma línea.",
-    ejemplo: "Escribir \"Resultado: \", total",
+    categoria: "Expresiones",
+    sintoma: "Subrayado desde la comilla de apertura hasta el final de la línea. Mensaje: `Texto sin cerrar con comillas dobles.`",
+    causa: "Abrir un texto con `\"` y olvidar cerrarlo en la misma línea.",
+    arreglo: "Cierra siempre con otra comilla doble dentro de la misma línea.",
+    ejemploMal: "Proceso p\n  Escribir \"Hola mundo\nFinProceso",
+    ejemplo: "Proceso p\n  Escribir \"Hola mundo\"\nFinProceso",
   },
   {
     titulo: "Paréntesis o argumentos incompletos",
-    sintoma: "El error menciona operandos faltantes, llamada sin cerrar o argumento vacío.",
-    causa: "Dejar una expresión como `Abs(-)`, `Redon(,)` o `(a + b`.",
-    arreglo: "Completa cada operando, cada argumento y cada paréntesis de cierre.",
-    ejemplo: "distancia = Abs(-5)\npromedio = Redon(suma / cantidad)",
+    categoria: "Expresiones",
+    sintoma: "Al ejecutar: `Paréntesis desbalanceados`, `Llamada a \"X\" sin cerrar con \")\"` o `Argumento vacío antes de \")\".`",
+    causa: "Olvidar cerrar un paréntesis, dejar una función sin argumentos o usar `Redon(, 2)`.",
+    arreglo: "Cierra cada `(` con su `)`. Cada función necesita los argumentos completos.",
+    ejemploMal: "Proceso p\n  Definir x Como Entero\n  x = Abs(-5\nFinProceso",
+    ejemplo: "Proceso p\n  Definir x Como Entero\n  x = Abs(-5)\nFinProceso",
+  },
+  {
+    titulo: "Operador incompleto",
+    categoria: "Expresiones",
+    sintoma: "Al ejecutar: `Falta operando después de \"+\"` o `Falta operando antes de \")\"`.",
+    causa: "Dejar un operador (`+`, `-`, `*`, `/`, `mod`, `^`) sin uno de sus operandos.",
+    arreglo: "Cada operador binario necesita un valor a la izquierda y otro a la derecha.",
+    ejemploMal: "Proceso p\n  Definir total Como Entero\n  total = 1 +\nFinProceso",
+    ejemplo: "Proceso p\n  Definir total Como Entero\n  total = 1 + 2\nFinProceso",
+  },
+  {
+    titulo: "Confusión entre = y ==",
+    categoria: "Expresiones",
+    sintoma: "El validador dice: `Operador de comparación no válido en la condición del \"Si\".`",
+    causa: "Usar `=` (asignación) dentro de una condición, donde se necesita el comparador `==`.",
+    arreglo: "Usa `=` para asignar valores y `==` para comparar igualdad. Para 'distinto' usa `!=` o `<>`.",
+    ejemploMal: "Proceso p\n  Definir edad Como Entero\n  edad = 18\n  Si edad = 18 Entonces\n    Escribir \"Mayor\"\n  FinSi\nFinProceso",
+    ejemplo: "Proceso p\n  Definir edad Como Entero\n  edad = 18\n  Si edad == 18 Entonces\n    Escribir \"Mayor\"\n  FinSi\nFinProceso",
+  },
+  {
+    titulo: "Sintaxis PSeInt no soportada",
+    categoria: "Expresiones",
+    sintoma: "Errores en código que se parece a PSeInt clásico: tipo no reconocido, operador inválido, palabra desconocida.",
+    causa: "Usar `<-`, `Cadena`, `SiNo`, `MOD` o `DIV`, que no pertenecen al dialecto LiteSeInt.",
+    arreglo: "Usa `=` para asignar, `Caracter` para texto, `Sino` para la rama alternativa y `mod` en minúscula. Para división entera usa `Trunc(a / b)`.",
+    ejemploMal: "Proceso p\n  Definir nombre Como Cadena\n  nombre <- \"Ana\"\nFinProceso",
+    ejemplo: "Proceso p\n  Definir nombre Como Caracter\n  nombre = \"Ana\"\nFinProceso",
+  },
+  {
+    titulo: "Ciclo infinito",
+    categoria: "Ciclos",
+    sintoma: "Al ejecutar: `Bucle infinito: más de N iteraciones.` La ejecución se detiene.",
+    causa: "La variable que controla la condición no se actualiza dentro del cuerpo del ciclo.",
+    arreglo: "Actualiza dentro del ciclo la variable que controla la condición. Para `Mientras`, suma o resta; para `Repetir`, modifica antes del `Hasta Que`.",
+    ejemploMal: "Proceso p\n  Definir i Como Entero\n  i = 0\n  Mientras i < 5 Hacer\n    Escribir i\n  FinMientras\nFinProceso",
+    ejemplo: "Proceso p\n  Definir i Como Entero\n  i = 0\n  Mientras i < 5 Hacer\n    Escribir i\n    i = i + 1\n  FinMientras\nFinProceso",
+  },
+  {
+    titulo: "Paso cero en Para",
+    categoria: "Ciclos",
+    sintoma: "El validador dice: `El valor de \"Paso\" no puede ser cero.`",
+    causa: "Indicar `Con Paso 0`, lo que dejaría al ciclo sin avanzar.",
+    arreglo: "Usa un paso distinto de cero. Positivo para subir, negativo para bajar. Sin `Con Paso`, avanza de uno en uno.",
+    ejemploMal: "Proceso p\n  Definir i Como Entero\n  Para i = 1 Hasta 10 Con Paso 0 Hacer\n    Escribir i\n  FinPara\nFinProceso",
+    ejemplo: "Proceso p\n  Definir i Como Entero\n  Para i = 1 Hasta 10 Con Paso 1 Hacer\n    Escribir i\n  FinPara\nFinProceso",
   },
 ];
 
@@ -2246,15 +2326,35 @@ function renderizarErroresComunes() {
     "Guía de errores frecuentes: cómo reconocer el síntoma, por qué ocurre y cuál es la corrección más directa en el dialecto LiteSeInt.",
   ));
 
-  DOC_ERRORES_COMUNES.forEach((err) => {
-    const $card = $("<article>").addClass("learning-doc-card");
-    $card.append($("<h4>").text(err.titulo));
-    if (err.sintoma) $card.append($("<p>").append($("<b>").text("Síntoma: ")).append(document.createTextNode(err.sintoma)));
-    $card.append($("<p>").append($("<b>").text("Causa: ")).append(document.createTextNode(err.causa)));
-    $card.append($("<p>").append($("<b>").text("Corrección: ")).append(document.createTextNode(err.arreglo)));
-    $card.append($("<div>").addClass("learning-doc-label").text("Ejemplo"));
-    $card.append($("<pre>").text(err.ejemplo));
-    $cont.append($card);
+  const categorias = ["Estructura", "Variables", "Expresiones", "Ciclos"];
+  categorias.forEach((cat) => {
+    const items = DOC_ERRORES_COMUNES.filter((e) => e.categoria === cat);
+    if (!items.length) return;
+    $cont.append($("<div>").addClass("learning-doc-cat-label").text(cat));
+
+    items.forEach((err) => {
+      const $card = $("<article>").addClass("learning-doc-card");
+      const $trigger = $("<button>").addClass("learning-doc-trigger").attr("type", "button");
+      $trigger.append($("<span>").text(err.titulo));
+      $trigger.append($("<span>").addClass("doc-chevron").text("▾"));
+      $trigger.on("click", () => $card.toggleClass("is-open"));
+
+      const $body = $("<div>").addClass("learning-doc-body");
+      if (err.sintoma) $body.append($("<p>").append($("<b>").text("Síntoma: ")).append(document.createTextNode(err.sintoma)));
+      $body.append($("<p>").append($("<b>").text("Causa: ")).append(document.createTextNode(err.causa)));
+      $body.append($("<p>").append($("<b>").text("Corrección: ")).append(document.createTextNode(err.arreglo)));
+
+      if (err.ejemploMal) {
+        $body.append($("<div>").addClass("learning-doc-label learning-doc-label-bad").text("Ejemplo incorrecto"));
+        $body.append($("<pre>").addClass("doc-pre-highlighted doc-pre-bad").html(resaltarCodigo(err.ejemploMal)));
+      }
+      $body.append($("<div>").addClass("learning-doc-label learning-doc-label-good").text(err.ejemploMal ? "Corrección" : "Ejemplo"));
+      $body.append($("<pre>").addClass("doc-pre-highlighted").html(resaltarCodigo(err.ejemplo)));
+
+      $card.append($trigger);
+      $card.append($body);
+      $cont.append($card);
+    });
   });
 }
 
