@@ -1,12 +1,12 @@
 # Ejercicios — Adaptación al dialecto LiteSeInt
 
-Este documento define cómo se adaptan los ejercicios de `ejercicios/guia.html` al lenguaje LiteSeInt para llegar a la versión 1.0. Se introdujo en **v0.6.5** y debe mantenerse junto al `ROADMAP.md`.
+Este documento define cómo se adaptaron y mantienen los ejercicios de `ejercicios/guia.html` en el lenguaje LiteSeInt para llegar a la versión 1.0.
 
-`ejercicios/guia.html` es la fuente pedagógica del proyecto: sus ejercicios, su secuencia y sus niveles guían la integración futura. Su sintaxis no es la fuente de verdad del lenguaje. La fuente de verdad del lenguaje es `README.md` (matriz de compatibilidad de v0.6.0).
+`ejercicios/guia.html` es la fuente pedagógica del proyecto: sus ejercicios, su secuencia y sus niveles guiaron la integración del banco. Su sintaxis no es la fuente de verdad del lenguaje. La fuente de verdad del lenguaje es `README.md` (matriz de compatibilidad de v0.6.0).
 
 ## Decisión de producto
 
-Para 1.0, **los ejercicios se adaptan a LiteSeInt**. LiteSeInt no debe crecer sin control para aceptar todo lo que aparezca en la guía. Si un ejercicio requiere algo fuera de alcance, queda marcado como "requiere adaptación" o "excluido temporalmente", no visible como ejercicio listo.
+Para 1.0, **los ejercicios se adaptan a LiteSeInt**. LiteSeInt no debe crecer sin control para aceptar todo lo que aparezca en la guía. Si en el futuro un ejercicio requiere algo fuera de alcance, debe quedar marcado como "requiere adaptación" o "excluido temporalmente", no visible como ejercicio listo.
 
 ## Estructura del banco de ejercicios LiteSeInt
 
@@ -19,16 +19,16 @@ El banco contiene **245 ejercicios** distribuidos en 7 niveles (N1–N7). Cada n
 | N3 | `json/N3.json` | EA 1.3 | Estructuras de Decisión | 40 | Sí |
 | N4 | `json/N4.json` | EA 1.4 | Estructuras de Repetición | 60 | Sí |
 | N5 | `json/N5.json` | EA 1.5 | Desafíos | 15 | Sí |
-| N6 | `json/N6.json` | EA 1.6 | Tipo Prueba Parte 1 | 40 | No (evaluación futura) |
-| N7 | `json/N7.json` | EA 1.7 | Tipo Prueba Parte 2 | 30 | No (evaluación futura) |
+| N6 | `json/N6.json` | EA 1.6 | Tipo Prueba Parte 1 | 40 | Sí |
+| N7 | `json/N7.json` | EA 1.7 | Tipo Prueba Parte 2 | 30 | Sí |
 
-N6 y N7 se cargan pero no aparecen en el banco visible de la app (`NIVELES_VISIBLES = [1, 2, 3, 4, 5]` en `js/app.js`).
+N1–N7 se cargan y aparecen en el banco visible de la app (`NIVELES_VISIBLES = [1, 2, 3, 4, 5, 6, 7]` en `js/app.js`).
 
 Distribución por dificultad: 91 básicos, 84 intermedios, 70 avanzados.
 
 ## Nueva estructura de aprendizaje LiteSeInt
 
-La ruta de aprendizaje de LiteSeInt **no copia de forma literal** la estructura de EA de `guia.html`. La guía funciona como banco de ejercicios y referencia de complejidad, pero LiteSeInt organiza el avance por conceptos, autonomía y transferencia hacia Python.
+La ruta de aprendizaje de LiteSeInt **no copia de forma literal** la estructura de EA de `guia.html`. La guía funciona como banco de ejercicios y referencia de complejidad, pero LiteSeInt organiza el avance por conceptos, autonomía y práctica progresiva dentro del propio pseudolenguaje.
 
 La estructura se basa en dos decisiones pedagógicas:
 
@@ -76,7 +76,7 @@ Esta clasificación permite que dos ejercicios del mismo tema tengan dificultad 
 
 ### Campos mínimos para cada ejercicio adaptado
 
-Cuando se extraigan ejercicios desde `guia.html`, cada ejercicio adaptado debe guardar al menos:
+Cada ejercicio adaptado debe guardar al menos:
 
 | Campo | Descripción |
 |---|---|
@@ -93,14 +93,14 @@ Cuando se extraigan ejercicios desde `guia.html`, cada ejercicio adaptado debe g
 | `estadoAdaptacion` | Pendiente, adaptado, requiere decisión o excluido temporalmente. |
 | `motivoExclusion` | Obligatorio si el ejercicio queda excluido. |
 
-### Regla de selección para 1.0
+### Regla de publicación para 1.0
 
-Aunque `guia.html` contenga 245 ejercicios, la versión 1.0 no necesita mostrar todos desde el primer día si eso debilita la calidad. La regla es:
+El banco completo ya está integrado. Para 1.0, la regla de publicación es:
 
 - todo ejercicio visible debe estar adaptado y probado;
-- todo ejercicio no adaptado debe permanecer oculto;
-- los ejercicios ocultos deben quedar registrados como pendientes, requieren decisión o excluidos temporalmente;
-- cada nivel de aprendizaje debe tener al menos ejercicios guiados, de práctica y de desafío antes de considerarse completo.
+- todo ejercicio no adaptado debe permanecer oculto o quedar excluido explícitamente;
+- los 245 ejercicios visibles deben conservar enunciado, E/P/S, salida esperada, pista y código de referencia compatible;
+- cada nivel N1–N7 debe mantener ejercicios guiados, de práctica y de desafío cuando existan en el banco.
 
 ## Reglas obligatorias de adaptación
 
@@ -121,11 +121,11 @@ Las siguientes reglas son **obligatorias** al integrar cualquier ejercicio al di
 
 | Construcción de PSeInt | Acción en LiteSeInt |
 |---|---|
-| `DIV` (división entera) | Reescribir usando `/` y `Trunc(...)`. Ej.: `c = a DIV b` ⟶ `c = Trunc(a / b)`. Si la reescritura altera el objetivo pedagógico, marcar el ejercicio como **excluido temporalmente** hasta decidir si se introduce `DIV` en una versión futura. |
+| `DIV` (división entera) | Reescribir usando `/` y `Trunc(...)`. Ej.: `c = a DIV b` ⟶ `c = Trunc(a / b)`. Si la reescritura altera el objetivo pedagógico, marcar el ejercicio como **excluido temporalmente**. |
 | `Escribir Sin Saltar` | LiteSeInt no soporta salida sin salto. Concatenar la línea con comas o marcar como **excluido temporalmente**. |
 | `Leer x, y` (varias variables en una línea) | Convertir a `Leer x` + `Leer y` (una variable por línea). |
 
-### Construcciones fuera de alcance en v0.6.x
+### Construcciones fuera de alcance para 1.0
 
 Los ejercicios que requieran cualquiera de estas construcciones deben marcarse como **excluidos temporalmente**:
 
@@ -136,13 +136,13 @@ Los ejercicios que requieran cualquiera de estas construcciones deben marcarse c
 
 Si una versión posterior incorpora alguna de estas, los ejercicios bloqueados deben revisarse y reactivarse.
 
-### Lo que **no** se hace en v0.6.5
+### Decisiones cerradas para 1.0
 
 - No se introduce ningún alias en LiteSeInt para `Cadena`, `<-`, `SiNo`, `MOD` o `DIV`. Esas formas se convierten en el código del ejercicio o el ejercicio queda excluido.
 - No se cambia la estructura visual de `ejercicios/guia.html`.
-- No se mueve la consola debajo del editor (eso pertenece a 0.7.0).
-- No se implementa el panel derecho de ejercicios.
-- No se convierten los 245 ejercicios completos en esta fase.
+- No se agregan arreglos, matrices, `SubProceso`, funciones de usuario ni proyectos multiarchivo.
+- No se implementa corrección automática avanzada de soluciones.
+- No se agrega backend ni sincronización externa de progreso.
 
 ## Plan de pruebas para ejercicios adaptados
 
@@ -155,11 +155,11 @@ La adaptación de ejercicios es parte del plan de pruebas, **no** una tarea info
 5. **Cobertura pedagógica por comando**: cada comando o concepto que el ejercicio pretende enseñar debe aparecer en el código adaptado. Si la conversión obliga a eliminarlo (ej. ejercicios que enseñan `DIV`), el ejercicio se excluye en lugar de degradarse silenciosamente.
 6. **Criterio de exclusión documentada**: si el ejercicio no puede adaptarse, queda registrado en la tabla de seguimiento con motivo y enlace al concepto bloqueante.
 
-Estos criterios deben quedar reflejados en `tests/run-tests.js` en una suite dedicada cuando se integren los primeros ejercicios. v0.6.5 deja el contrato definido pero no agrega los tests masivos: los irá sumando 0.7.0 y siguientes a medida que cada lote se adapte.
+Estos criterios están reflejados en `tests/run-tests.js` mediante pruebas del banco de ejercicios, validación de campos obligatorios, sintaxis prohibida y validación estática de los códigos de referencia adaptados.
 
 ## Seguimiento
 
-Toda integración futura de ejercicios debe alimentar la tabla siguiente. La invariante es: **el 100% de los ejercicios visibles en la app deben estar adaptados o explícitamente excluidos**. No puede haber ejercicios visibles en estado intermedio.
+Toda integración o cambio futuro en ejercicios debe alimentar la tabla siguiente. La invariante es: **el 100% de los ejercicios visibles en la app deben estar adaptados o explícitamente excluidos**. No puede haber ejercicios visibles en estado intermedio.
 
 | EA | Total | Adaptados | Requieren decisión | Excluidos temporales |
 |---|---|---|---|---|
@@ -177,46 +177,44 @@ Notas de adaptación:
 - EA 1.1 #18 (Segundos a h:m:s): también existe como `ea1-2-015`. El `ea1-1-018` usa el origen correcto (EA 1.1). DIV/MOD adaptados a `Trunc`/`mod`.
 - EA 1.1 #20: la variable `paso` es reservada en LiteSeInt (por `Con Paso` de `Para`); se renombra a `numPaso` en el código de referencia.
 
-A **v0.8.5** el banco mantiene **245 ejercicios adaptados** desde `ejercicios/guia.html`, reorganizados en `json/N1.json` a `json/N7.json`. `js/ejercicios-data.js` es el punto único de carga del banco y consume esos JSON normalizados para exponer `EjerciciosLiteSeInt` al panel de aprendizaje. Los `codigoReferencia` mantienen formato consistente: 2 espacios por nivel, comas con espacio en declaraciones, bloques de declaraciones separados del cuerpo y cálculos separados de entrada/salida.
+A **v0.9.1** el banco mantiene **245 ejercicios adaptados** desde `ejercicios/guia.html`, reorganizados en `json/N1.json` a `json/N7.json`. `js/ejercicios-data.js` es el punto único de carga del banco y consume esos JSON normalizados para exponer `EjerciciosLiteSeInt` al panel de aprendizaje. Los `codigoReferencia` mantienen formato consistente: 2 espacios por nivel, comas con espacio en declaraciones, bloques de declaraciones separados del cuerpo y cálculos separados de entrada/salida.
 
-Pendiente: optimizar los JSON de **EA 1.6** y **EA 1.7**. Aunque sus ejercicios ya están normalizados y pasan validación estática, requieren una revisión de calidad pedagógica para reducir repetición, mejorar enunciados/pistas y ajustar progresión.
+Mejora posterior sugerida: revisar pedagógicamente **EA 1.6** y **EA 1.7** para reducir repetición, mejorar enunciados/pistas y ajustar progresión. No bloquea 1.0 porque sus ejercicios ya están normalizados, visibles y pasan validación estática.
 
-Distribución actual por nivel LiteSeInt:
+Distribución actual por nivel visible:
 
 | Nivel | Tema | Adaptados |
 |---|---|---:|
-| 0 | Orientación | 2 |
-| 1 | Secuencia y salida | 1 |
-| 2 | Variables, tipos y entrada | 7 |
-| 3 | Expresiones y E·P·S | 50 |
-| 4 | Decisiones simples | 33 |
-| 5 | Decisiones múltiples | 7 |
-| 6 | Repetición controlada | 21 |
-| 7 | Patrones de procesamiento | 39 |
-| 8 | Programas integradores | 85 |
-| 9 | Puente Python | 0 |
+| N1 | Primeros programas | 20 |
+| N2 | Expresiones y fórmulas | 40 |
+| N3 | Decisiones | 40 |
+| N4 | Repetición | 60 |
+| N5 | Desafíos | 15 |
+| N6 | Decisiones anidadas | 40 |
+| N7 | Menú y acumulación | 30 |
+| **Total** |  | **245** |
 
 Criterio de publicación: todo ejercicio visible debe pasar la validación estática; cada ejercicio conserva enunciado, E·P·S, salida esperada, pista y código de referencia adaptado al dialecto LiteSeInt.
 
 ### Cobertura pedagógica por comando
 
-Esta tabla rastrea qué módulos del lenguaje LiteSeInt cubre la guía. Se completa a medida que los ejercicios se adaptan.
+Esta tabla rastrea qué módulos del lenguaje LiteSeInt cubre la guía. A `v0.9.1`, todos los conceptos principales tienen ejercicios adaptados y visibles.
 
 | Comando / concepto | EA donde aparece | Estado de cobertura |
 |---|---|---|
-| `Escribir` | 1.1 – 1.7 | pendiente |
-| `Definir`, tipos, asignación `=` | 1.1 – 1.7 | pendiente |
-| `Leer` | 1.1 – 1.7 | pendiente |
-| Operadores `+ - * / mod ^` | 1.2 – 1.7 | pendiente |
-| `Si` / `Sino` / `FinSi` | 1.3, 1.6 | pendiente |
-| `Segun` | 1.3 | pendiente |
-| `Mientras` | 1.4, 1.7 | pendiente |
-| `Para` | 1.4 | pendiente |
-| `Repetir` / `HastaQue` | 1.4 | pendiente |
-| Operadores lógicos `Y O No` | 1.3, 1.6 | pendiente |
-| Funciones nativas `Abs Redon Trunc Longitud Mayusculas Minusculas` | 1.2, 1.5 | pendiente |
-| `DIV` (no soportado) | 1.2, 1.5 | excluido — reescribir con `Trunc(a / b)` o excluir ejercicio |
+| `Escribir` | 1.1 – 1.7 | cubierto |
+| `Definir`, tipos, asignación `=` | 1.1 – 1.7 | cubierto |
+| `Leer` | 1.1 – 1.7 | cubierto |
+| Operadores `+ - * / mod ^` | 1.2 – 1.7 | cubierto |
+| `Si` / `Sino` / `FinSi` | 1.3, 1.6 | cubierto |
+| `Segun` | 1.3, 1.7 | cubierto |
+| `Mientras` | 1.4, 1.7 | cubierto |
+| `Para` | 1.4 | cubierto |
+| `Repetir` / `HastaQue` | 1.4 | cubierto |
+| Operadores lógicos `Y O No` | 1.3, 1.6 | cubierto |
+| Funciones nativas `Abs Redon Trunc Longitud Mayusculas Minusculas` | 1.2, 1.5 | cubierto |
+| `DIV` (no soportado) | 1.2, 1.5 | reescrito con `Trunc(a / b)` cuando corresponde |
 
-## Cómo registrar un ejercicio adaptado
+## Cómo registrar cambios futuros
 
-Cuando un ejercicio se integre, agregar una fila a la tabla "Seguimiento" sumando `1` en la columna correspondiente y, si el ejercicio fue excluido, anotar el motivo en una nota al pie referenciando el `id` del ejercicio (ej. `EA 1.2 #19 — usa DIV, excluido temporalmente`).
+Si en una versión posterior se agrega, corrige o excluye un ejercicio, actualizar la tabla de seguimiento, conservar el `id` estable y anotar el motivo del cambio en `CHANGELOG.md`.

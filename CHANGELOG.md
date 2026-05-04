@@ -6,6 +6,21 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.9.1] — 2026-05-03
+
+Revisión de consistencia documental para alinear el proyecto con el estado real posterior a `v0.9.0`.
+
+### Cambiado
+- **ROADMAP**: se reemplaza la hoja histórica desde `v0.6.5` por un plan enfocado desde `v0.9.0` hacia `v1.0.0`, con hitos `v0.9.1`–`v0.9.4`, checklist de salida, riesgos y alcance post-1.0.
+- **README**: se actualiza la versión visible a `v0.9.1`, se corrigen referencias antiguas a `v0.8.x` y se reformula la ruta hacia 1.0 como estabilización, pruebas de material pedagógico, revisión UX y preparación de release.
+- **EJERCICIOS**: se corrige la visibilidad real de N1–N7, se elimina la referencia obsoleta a N6/N7 como evaluación futura no visible, se reemplaza la distribución antigua N0–N9 por N1–N7 y se marca la cobertura pedagógica principal como cubierta.
+- **Versión visible**: `v0.9.1`.
+
+### Validado
+- **Pruebas**: `npm test` pasa con 11 pruebas.
+
+---
+
 ## [0.9.0] — 2026-05-02
 
 Mejora de la vista `Errores`: `DOC_ERRORES_COMUNES` pasa de 9 a 16 entradas, agrupadas por categoría, con ejemplo incorrecto + corrección y resaltado de sintaxis. Las tarjetas son colapsables como las vistas de comandos y rutas. Cada error documentado coincide con un mensaje real del validador o del runtime.

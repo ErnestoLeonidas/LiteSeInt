@@ -6,7 +6,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v0.9.0`
+- Versión visible en la app: `v0.9.1`
 - Demo en GitHub Pages: <https://ernestoleonidas.github.io/LiteSeInt/>
 - Layout educativo: editor arriba, **consola debajo del editor** (redimensionable verticalmente) y **panel de aprendizaje integrado** con ejercicios, documentación de comandos, ruta del estudiante y errores comunes.
 - **245 ejercicios adaptados** desde `ejercicios/guia.html` al dialecto LiteSeInt, cargados desde archivos JSON normalizados `N1`–`N7`, con validación estática automática y formato de código de referencia consistente.
@@ -308,14 +308,14 @@ El panel de aprendizaje muestra el banco de ejercicios adaptados desde `ejercici
 - **Ver el código de referencia** adaptado desde el detalle del ejercicio, con confirmación previa para no sobrescribir el editor.
 - **Marcar progreso** manualmente como `pendiente`, `en curso` o `completado`. El estado se guarda en `localStorage` (`liteseint:exerciseProgress`) y persiste al recargar la página.
 
-A la fecha v0.8.7, el banco contiene 245 ejercicios adaptados, cargados desde `json/N1.json` a `json/N7.json` mediante `js/ejercicios-data.js`. En la app quedan visibles N1–N7. La regla de calidad se mantiene: **todo ejercicio visible debe estar adaptado** al dialecto LiteSeInt, pasar la validación estática y mantener un formato de referencia legible. Detalles en [`EJERCICIOS.md`](EJERCICIOS.md).
+A la fecha `v0.9.1`, el banco contiene 245 ejercicios adaptados, cargados desde `json/N1.json` a `json/N7.json` mediante `js/ejercicios-data.js`. En la app quedan visibles N1–N7. La regla de calidad se mantiene: **todo ejercicio visible debe estar adaptado** al dialecto LiteSeInt, pasar la validación estática y mantener un formato de referencia legible. Detalles en [`EJERCICIOS.md`](EJERCICIOS.md).
 
 ## Documentación integrada
 
-Desde `v0.8.5`, el panel de aprendizaje incluye vistas internas para:
+El panel de aprendizaje incluye vistas internas para:
 
 - **Comandos**: guía de la sintaxis soportada, explicación de uso, ejemplo mínimo, errores típicos y ejercicios recomendados por comando.
-- **Ruta**: recorrido N1–N7 con objetivo pedagógico, foco de trabajo, avance local, primeros ejercicios sugeridos y pendientes explícitos hacia `v1.0.0`.
+- **Ruta**: recorrido N1–N7 con objetivo pedagógico, foco de trabajo, avance local, ejercicios sugeridos y criterios para saber cuándo avanzar.
 - **Errores**: explicación por síntoma, causa, corrección y ejemplo para errores comunes como variable no definida, variable no inicializada, cierres faltantes, ciclos infinitos, sintaxis PSeInt no soportada, cadenas sin cerrar y diferencia entre `=` y `==`.
 
 La documentación está embebida en la app y no requiere conexión a internet.
@@ -334,13 +334,13 @@ Cada entrada de la guía responde cuatro preguntas: qué hace el comando, cuánd
 
 ## Ruta de desarrollo hacia v1.0.0
 
-El proyecto ya cuenta con editor, consola inferior, validación estática, banco de 245 ejercicios adaptados, progreso local y documentación integrada. La versión 1.0 es este producto; el cierre hacia `v1.0.0` solo necesita pulir tres frentes:
+El proyecto ya cuenta con editor, consola inferior, validación estática, banco de 245 ejercicios adaptados, progreso local y documentación integrada. La versión 1.0 es este producto; el cierre hacia `v1.0.0` se concentra en estabilización y preparación de release:
 
-- mejorar la guía de comandos con explicaciones, ejemplos y errores típicos más claros;
-- mejorar la ruta N1-N7 para que indique qué estudiar, cuándo avanzar y qué ejercicios seguir;
-- mejorar la guía de errores con síntoma, causa, corrección y ejemplos reproducibles;
+- mantener README, CHANGELOG, EJERCICIOS y ROADMAP alineados con el estado real;
+- probar el material pedagógico integrado: ejercicios, comandos, ruta y errores;
+- revisar el flujo completo de estudiante en escritorio y móvil;
 - mantener los ejercicios visibles pasando `npm test`;
-- actualizar `README.md`, `CHANGELOG.md` y versión visible cuando el recorrido esté estable.
+- actualizar `README.md`, `CHANGELOG.md` y versión visible al cerrar cada revisión.
 
 ## Pruebas
 
