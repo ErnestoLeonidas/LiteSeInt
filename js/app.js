@@ -297,18 +297,19 @@ function limpiarConsola() {
 }
 
 function limpiarTodo() {
-  detener();
   const nombre = obtenerNombreProceso();
   const estructura = `Proceso ${nombre}\n\n\n\n\n\n\n\n\nFinProceso`;
-  registrarHistorialEditor();
-  $("#editor").val(estructura);
-  $("#consola").empty();
-  invalidarErroresVisuales();
-  actualizarLineas();
-  const editor = document.getElementById("editor");
-  const pos = estructura.indexOf("\n") + 1;
-  editor.setSelectionRange(pos, pos);
-  editor.focus();
+  reemplazarEditorConfirmando(
+    estructura,
+    "Esto borrará el contenido actual y dejará solo la estructura base del proceso.",
+    true,
+    {
+      afterReplace(editor) {
+        const pos = estructura.indexOf("\n") + 1;
+        editor.setSelectionRange(pos, pos);
+      },
+    },
+  );
 }
 
 function getEditorHistorySnapshot(editor = document.getElementById("editor")) {
@@ -1699,13 +1700,13 @@ const EJEMPLOS = {
 function cargarEjemplo(nombre) {
   if (EJEMPLOS[nombre]) {
     const nombreProceso = obtenerNombreProceso();
-    registrarHistorialEditor();
-    $("#editor").val(
+    return reemplazarEditorConfirmando(
       `Proceso ${nombreProceso}\n${EJEMPLOS[nombre]}\nFinProceso`,
+      "Esto reemplazará el contenido del editor por el ejemplo seleccionado.",
+      true,
     );
-    limpiarConsola();
-    actualizarLineas();
   }
+  return Promise.resolve(false);
 }
 
 // =========================================
@@ -2640,9 +2641,9 @@ function plantillaInicial(ejercicio) {
   return `Proceso ${nombre}\n  // ${ejercicio.titulo}\n  // Enunciado: revisa el panel de aprendizaje.\n\n\nFinProceso`;
 }
 
-function reemplazarEditorConfirmando(nuevoCodigo, mensaje, siempreConfirmar = false) {
+function reemplazarEditorConfirmando(nuevoCodigo, mensaje, siempreConfirmar = false, opciones = {}) {
   const editor = document.getElementById("editor");
-  if (!editor) return;
+  if (!editor) return Promise.resolve(false);
   const actual = editor.value;
   const limpio = actual.trim();
   const placeholder = ESTRUCTURA_INICIAL.trim();
@@ -2652,16 +2653,19 @@ function reemplazarEditorConfirmando(nuevoCodigo, mensaje, siempreConfirmar = fa
     editor.value = nuevoCodigo;
     limpiarConsola();
     actualizarLineas();
+    if (typeof opciones.afterReplace === "function") {
+      opciones.afterReplace(editor);
+    }
     editor.focus();
   };
 
   if (!siempreConfirmar && (limpio === "" || limpio === placeholder)) {
     reemplazar();
-    return;
+    return Promise.resolve(true);
   }
 
   if (typeof Swal !== "undefined") {
-    Swal.fire({
+    return Swal.fire({
       icon: "warning",
       title: "¿Reemplazar el código actual?",
       text: mensaje,
@@ -2672,11 +2676,19 @@ function reemplazarEditorConfirmando(nuevoCodigo, mensaje, siempreConfirmar = fa
       background: "#161b22",
       color: "#e6edf3",
     }).then((res) => {
-      if (res && res.isConfirmed) reemplazar();
+      if (res && res.isConfirmed) {
+        reemplazar();
+        return true;
+      }
+      return false;
     });
-  } else if (window.confirm(mensaje + "\n\n¿Reemplazar el código actual?")) {
-    reemplazar();
   }
+
+  if (window.confirm(mensaje + "\n\n¿Reemplazar el código actual?")) {
+    reemplazar();
+    return Promise.resolve(true);
+  }
+  return Promise.resolve(false);
 }
 
 function cargarPlantillaEjercicio(ejercicio) {
@@ -2930,8 +2942,9 @@ $(document).ready(function () {
   $("#ejemplosSelect").on("change", function () {
     const nombre = $(this).val();
     if (!nombre) return;
-    cargarEjemplo(nombre);
-    $(this).val("");
+    cargarEjemplo(nombre).finally(() => {
+      $(this).val("");
+    });
   });
 
   // Banco de ejercicios: filtros, listado, detalle y progreso local

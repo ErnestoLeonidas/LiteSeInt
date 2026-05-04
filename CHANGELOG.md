@@ -6,6 +6,20 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.9.3] — 2026-05-04
+
+Revisión UX de flujo completo para que la práctica pueda completarse desde la app sin explicación externa.
+
+### Cambiado
+- **Confirmaciones de reemplazo**: cargar ejemplos y borrar el editor ahora piden confirmación antes de reemplazar el código actual, igual que el código de referencia de ejercicios.
+- **Responsive móvil**: en pantallas pequeñas el editor queda como primer bloque, el panel de aprendizaje pasa debajo con altura contenida, los filtros quedan accesibles y los controles del editor/consola reducen presión horizontal.
+- **Selector de ejemplos**: el menú vuelve a su estado inicial después de confirmar o cancelar la carga.
+- **README y EJERCICIOS**: estado actualizado a `v0.9.3`.
+- **Versión visible**: `v0.9.3`.
+
+### Validado
+- **Pruebas**: `npm test` pasa.
+
 ## [0.9.2] — 2026-05-03
 
 Pruebas de material pedagógico para reforzar la confianza antes del cierre estable hacia `v1.0.0`.

@@ -160,7 +160,7 @@ test('evalua Y, O y No dentro de asignaciones logicas', async () => {
 });
 
 // =====================================================
-// Banco de ejercicios y material pedagógico v0.9.2
+// Banco de ejercicios y material pedagógico
 // =====================================================
 
 const CAMPOS_OBLIGATORIOS = [
