@@ -27,6 +27,43 @@ function loadRuntime() {
   return ctx;
 }
 
+function leerAppConstArray(nombre) {
+  const app = fs.readFileSync(path.join(root, 'js/app.js'), 'utf8');
+  const inicio = app.indexOf(`const ${nombre} = [`);
+  assert(inicio >= 0, `No se encontró ${nombre} en js/app.js`);
+  const bracketInicio = app.indexOf('[', inicio);
+  let profundidad = 0;
+  let quote = null;
+  let escaped = false;
+  for (let i = bracketInicio; i < app.length; i++) {
+    const ch = app[i];
+    if (quote) {
+      if (escaped) {
+        escaped = false;
+      } else if (ch === '\\') {
+        escaped = true;
+      } else if (ch === quote) {
+        quote = null;
+      }
+      continue;
+    }
+    if (ch === '"' || ch === "'" || ch === '`') {
+      quote = ch;
+      continue;
+    }
+    if (ch === '[') profundidad++;
+    if (ch === ']') profundidad--;
+    if (profundidad === 0) {
+      const snippet = app.slice(inicio, i + 1);
+      const ctx = {};
+      vm.createContext(ctx);
+      vm.runInContext(`${snippet}; globalThis.valor = ${nombre};`, ctx);
+      return ctx.valor;
+    }
+  }
+  throw new Error(`No se pudo extraer ${nombre} desde js/app.js`);
+}
+
 function validar(ctx, codigo) {
   return ctx.DocErrores.validarDocumento(codigo).errores;
 }
@@ -123,7 +160,7 @@ test('evalua Y, O y No dentro de asignaciones logicas', async () => {
 });
 
 // =====================================================
-// Banco de ejercicios v0.8.5
+// Banco de ejercicios y material pedagógico v0.9.2
 // =====================================================
 
 const CAMPOS_OBLIGATORIOS = [
@@ -141,6 +178,20 @@ test('banco de ejercicios: ids unicos', () => {
     assert(!vistos.has(e.id), `ID duplicado: ${e.id}`);
     vistos.add(e.id);
   }
+});
+
+test('banco de ejercicios: carga 245 ejercicios desde N1 a N7', () => {
+  const ctx = loadRuntime();
+  const ej = ctx.EjerciciosLiteSeInt.EJERCICIOS;
+  assert.strictEqual(ej.length, 245);
+  const conteo = new Map();
+  for (const e of ej) {
+    conteo.set(e.nivelLiteSeInt, (conteo.get(e.nivelLiteSeInt) || 0) + 1);
+  }
+  assert.deepStrictEqual(
+    [...conteo.entries()].sort((a, b) => a[0] - b[0]),
+    [[1, 20], [2, 40], [3, 40], [4, 60], [5, 15], [6, 40], [7, 30]],
+  );
 });
 
 test('banco de ejercicios: campos obligatorios presentes', () => {
@@ -218,6 +269,70 @@ test('banco de ejercicios: todos los visibles estan adaptados', () => {
     );
   }
   assert(visibles.length > 0, 'No hay ejercicios visibles');
+});
+
+test('app: niveles visibles alineados con N1 a N7', () => {
+  const nivelesVisibles = leerAppConstArray('NIVELES_VISIBLES');
+  assert.deepStrictEqual(Array.from(nivelesVisibles), [1, 2, 3, 4, 5, 6, 7]);
+});
+
+test('documentacion de comandos: ejercicios recomendados existen', () => {
+  const ctx = loadRuntime();
+  const docs = leerAppConstArray('DOC_COMANDOS');
+  assert(docs.length >= 17, `DOC_COMANDOS tiene solo ${docs.length} entradas`);
+  for (const doc of docs) {
+    assert(Array.isArray(doc.ejercicios), `${doc.nombre}: ejercicios debe ser array`);
+    for (const id of doc.ejercicios) {
+      assert(ctx.EjerciciosLiteSeInt.porId(id), `${doc.nombre}: ejercicio inexistente ${id}`);
+    }
+  }
+});
+
+test('documentacion de comandos: ejemplos no usan sintaxis PSeInt prohibida', () => {
+  const docs = leerAppConstArray('DOC_COMANDOS');
+  const prohibidos = [
+    [/<-/, '<-'],
+    [/\bCadena\b/, 'Cadena'],
+    [/\bSiNo\b/, 'SiNo'],
+    [/\bMOD\b/, 'MOD'],
+    [/\bDIV\b/, 'DIV'],
+  ];
+  for (const doc of docs) {
+    for (const campo of ['sintaxis', 'ejemplo', 'ejemplo2']) {
+      if (!doc[campo]) continue;
+      for (const [regex, label] of prohibidos) {
+        assert(!regex.test(doc[campo]), `${doc.nombre}.${campo}: contiene ${label}`);
+      }
+    }
+  }
+});
+
+test('documentacion de errores: ejemplos corregidos validan', () => {
+  const ctx = loadRuntime();
+  const errores = leerAppConstArray('DOC_ERRORES_COMUNES');
+  assert(errores.length >= 16, `DOC_ERRORES_COMUNES tiene solo ${errores.length} entradas`);
+  for (const err of errores) {
+    const res = validar(ctx, err.ejemplo);
+    assert.strictEqual(
+      res.length,
+      0,
+      `${err.titulo}: ejemplo corregido tiene errores: ${JSON.stringify(res)}`,
+    );
+  }
+});
+
+test('documentacion de errores: ejemplos incorrectos reproducen errores o son de runtime', () => {
+  const ctx = loadRuntime();
+  const errores = leerAppConstArray('DOC_ERRORES_COMUNES');
+  for (const err of errores) {
+    if (!err.ejemploMal) continue;
+    const res = validar(ctx, err.ejemploMal);
+    const esRuntime = /Al ejecutar/i.test(err.sintoma || '');
+    assert(
+      res.length > 0 || esRuntime,
+      `${err.titulo}: ejemplo incorrecto no falla en validación ni está marcado como runtime`,
+    );
+  }
 });
 
 test('detener durante Leer marca la ejecucion como detenida', async () => {

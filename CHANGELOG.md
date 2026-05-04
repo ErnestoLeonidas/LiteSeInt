@@ -6,6 +6,27 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.9.2] — 2026-05-03
+
+Pruebas de material pedagógico para reforzar la confianza antes del cierre estable hacia `v1.0.0`.
+
+### Agregado
+- **Pruebas del banco completo**: `tests/run-tests.js` confirma que se cargan 245 ejercicios desde N1–N7 con la distribución esperada: 20, 40, 40, 60, 15, 40 y 30.
+- **Prueba de niveles visibles**: la suite verifica que `NIVELES_VISIBLES` esté alineado con N1–N7.
+- **Pruebas de documentación de comandos**: la suite extrae `DOC_COMANDOS` desde `js/app.js`, verifica que los ejercicios recomendados existan en el banco real y que los ejemplos no usen sintaxis PSeInt prohibida.
+- **Pruebas de documentación de errores**: la suite extrae `DOC_ERRORES_COMUNES`, valida que todos los ejemplos corregidos pasen `DocErrores.validarDocumento` y que los ejemplos incorrectos reproduzcan errores estáticos o estén marcados como casos de runtime.
+
+### Cambiado
+- **README**: versión visible actualizada a `v0.9.2` y descripción de pruebas ampliada para incluir banco y documentación interna.
+- **EJERCICIOS**: estado actualizado a `v0.9.2`, dejando explícito que la cobertura principal está respaldada por pruebas del banco o de documentación.
+- **ROADMAP**: hito `v0.9.2` marcado como completado.
+- **Versión visible**: `v0.9.2`.
+
+### Validado
+- **Pruebas**: `npm test` pasa con 17 pruebas.
+
+---
+
 ## [0.9.1] — 2026-05-03
 
 Revisión de consistencia documental para alinear el proyecto con el estado real posterior a `v0.9.0`.
