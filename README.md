@@ -6,7 +6,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v0.9.6`
+- Versión visible en la app: `v1.0.0`
 - Demo en GitHub Pages: <https://ernestoleonidas.github.io/LiteSeInt/>
 - Layout educativo: editor arriba, **consola debajo del editor** (redimensionable verticalmente) y **panel de aprendizaje integrado** redimensionable horizontalmente con ejercicios, documentación de comandos, ruta del estudiante y errores comunes.
 - **245 ejercicios adaptados** desde `ejercicios/guia.html` al dialecto LiteSeInt, cargados desde archivos JSON normalizados `N1`–`N7`, con validación estática automática y formato de código de referencia consistente.
@@ -312,7 +312,7 @@ El panel de aprendizaje muestra el banco de ejercicios adaptados desde `ejercici
 - **Ver el código de referencia** adaptado desde el detalle del ejercicio, con confirmación previa para no sobrescribir el editor.
 - **Marcar progreso** manualmente como `pendiente`, `en curso` o `completado`. El estado se guarda en `localStorage` (`liteseint:exerciseProgress`) y persiste al recargar la página.
 
-A la fecha `v0.9.6`, el banco contiene 245 ejercicios adaptados, cargados desde `json/N1.json` a `json/N7.json` mediante `js/ejercicios-data.js`. En la app quedan visibles N1–N7. La regla de calidad se mantiene: **todo ejercicio visible debe estar adaptado** al dialecto LiteSeInt, pasar la validación estática y mantener un formato de referencia legible. Detalles en [`EJERCICIOS.md`](EJERCICIOS.md).
+A la fecha `v1.0.0`, el banco contiene 245 ejercicios adaptados, cargados desde `json/N1.json` a `json/N7.json` mediante `js/ejercicios-data.js`. En la app quedan visibles N1–N7. La regla de calidad se mantiene: **todo ejercicio visible debe estar adaptado** al dialecto LiteSeInt, pasar la validación estática y mantener un formato de referencia legible. Detalles en [`EJERCICIOS.md`](EJERCICIOS.md).
 
 ## Documentación integrada
 

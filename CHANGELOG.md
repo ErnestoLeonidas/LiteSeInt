@@ -6,6 +6,39 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [1.0.0] — 2026-05-04
+
+Release estable de LiteSeInt como plataforma minimalista para aprender pseudolenguaje desde el navegador. Cierra el camino desde `v0.9.0` consolidando documentación, banco de ejercicios, ruta del estudiante y guía de errores. **No agrega lenguaje nuevo respecto a v0.9.6**: el dialecto LiteSeInt queda congelado para 1.0.
+
+### Resumen
+- Editor web con resaltado, autocompletado, validación estática y ejecución, todo en el navegador y sin build.
+- Consola inferior redimensionable con entrada inline para `Leer`.
+- Panel de aprendizaje integrado con pestañas `Ejercicios`, `Comandos`, `Ruta` y `Errores`, redimensionable horizontalmente.
+- Banco de **245 ejercicios adaptados** al dialecto LiteSeInt, cargados desde `json/N1.json` a `json/N7.json` con `estadoAdaptacion: adaptado` y `codigoReferencia` que pasa validación estática.
+- Niveles **N1–N7** visibles en la app, con progreso local por ejercicio en `localStorage` (`liteseint:exerciseProgress`).
+- Guía de **17 comandos** y guía de **16 errores comunes** integradas, sin depender de internet.
+- Ruta N1–N7 con objetivos, requisitos, comandos clave y avance local.
+- Importación de archivos `.psc`, ejemplos agrupados por concepto y confirmación previa para acciones que reemplazan el editor.
+
+### Cambiado
+- **Versión visible**: `v1.0.0`.
+- **README, EJERCICIOS, ROADMAP**: estado y referencias actualizadas a `v1.0.0`.
+- **ROADMAP**: hito `v1.0.0 — Release Estable` marcado como completado; checklist de salida 1.0 cumplido salvo el tag de release.
+
+### Validado
+- **Pruebas**: `npm test` pasa con 17 pruebas (validador estático, runtime, banco de ejercicios y documentación interna).
+- **Banco de ejercicios**: 245 ejercicios visibles, todos `adaptado`, sin sintaxis prohibida (`<-`, `Cadena`, `SiNo`, `MOD`, `DIV`) en `codigoReferencia`.
+- **Documentación interna**: IDs recomendados por `DOC_COMANDOS` existen en el banco; ejemplos de comandos y errores validan.
+- **Niveles visibles**: alineados con N1–N7.
+
+### Fuera de alcance (post-1.0)
+- Validación automática por salida esperada en ejercicios seleccionados.
+- Modo práctica guiada con pasos desbloqueables.
+- Exportación/importación de progreso local.
+- Mejoras de accesibilidad y navegación por teclado.
+- Revisión pedagógica profunda de ejercicios avanzados (N6 y N7).
+- Nuevos bancos de ejercicios manteniendo el dialecto LiteSeInt estable.
+
 ## [0.9.6] — 2026-05-04
 
 QA final pre-release. No cambia el lenguaje, el runtime ni la UI: ejecuta y registra la pasada de verificación previa al bump a `v1.0.0`.

@@ -322,7 +322,7 @@ body::before {
 .line-numbers {
   width: 43px; padding: 8px 0;
   background: rgba(0,0,0,0.15); border-right: 1px solid var(--border-color);
-  font-size: 13px; color: var(--line-number); line-height: var(--line-height-val);
+  font-size: 12px; color: var(--line-number); line-height: var(--line-height-val);
   overflow: hidden; user-select: none; flex-shrink: 0;
 }
 
@@ -366,27 +366,6 @@ body::before {
   color: var(--text-primary);
 }
 
-/* Error badge */
-.error-badge-container {
-  display: none;
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 20;
-  pointer-events: auto;
-}
-.line-overlay.has-error .error-badge-container { display: flex; }
-
-.error-badge-btn {
-  width: 18px; height: 18px; border-radius: 50%;
-  border: 1.5px solid var(--error); background: transparent;
-  color: var(--error); font-size: 11px; font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; padding: 0; line-height: 1; transition: all 0.2s;
-}
-.error-badge-btn:hover { background: var(--error); color: #fff; }
-
 /* ---- Line overlays ---- */
 .editor-line-overlays {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -417,7 +396,7 @@ body::before {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   background: transparent; color: transparent;
   border: none; outline: none; padding: 8px 8px 8px 16px;
-  font-family: var(--font-code); font-size: 13px; line-height: var(--line-height-val);
+  font-family: var(--font-code); font-size: 12px; line-height: var(--line-height-val);
   resize: none; tab-size: 2; white-space: pre;
   overflow-wrap: normal; overflow-x: auto;
   scrollbar-width: thin;
@@ -487,7 +466,7 @@ body::before {
 .syntax-highlight-layer {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   z-index: 3; pointer-events: none;
-  font-family: var(--font-code); font-size: 13px;
+  font-family: var(--font-code); font-size: 12px;
   line-height: var(--line-height-val);
   white-space: pre; overflow: hidden;
   color: transparent;
@@ -510,7 +489,7 @@ body::before {
 .error-decoration-layer {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   z-index: 2; pointer-events: none;
-  font-family: var(--font-code); font-size: 13px;
+  font-family: var(--font-code); font-size: 12px;
   line-height: var(--line-height-val);
   white-space: pre; overflow: hidden;
   color: transparent;

@@ -771,10 +771,6 @@ function invalidarErroresVisuales() {
   resetErrorVisualState();
   $(".line-num-row").removeClass("has-error");
   $(".line-overlay").removeClass("has-error");
-  $(".error-badge-btn").each(function () {
-    const tip = bootstrap.Tooltip.getInstance(this);
-    if (tip) tip.dispose();
-  });
   setMirrorLayerHTML("errorDecoLayer", "");
 }
 
@@ -802,18 +798,7 @@ function marcarErrorLinea(lineaIdx, mensaje) {
   $row.addClass("has-error").removeClass("executing");
 
   const $overlay = $(`.line-overlay[data-line="${lineaIdx}"]`);
-  $overlay.removeClass("executing").addClass("has-error");
-
-  const $btn = $overlay.find(".error-badge-btn");
-  $btn.attr("title", mensaje);
-
-  const existing = bootstrap.Tooltip.getInstance($btn[0]);
-  if (existing) existing.dispose();
-  new bootstrap.Tooltip($btn[0], {
-    placement: "left",
-    trigger: "hover focus",
-    html: false,
-  });
+  $overlay.removeClass("executing").addClass("has-error").attr("title", mensaje);
 }
 
 function renderizarSubrayados() {
@@ -896,13 +881,6 @@ function actualizarLineas() {
     $gutter.append($row);
 
     const $overlay = $("<div>").addClass("line-overlay").attr("data-line", i);
-    $overlay.append(
-      $("<div>")
-        .addClass("error-badge-container")
-        .html(
-          `<button class="error-badge-btn" data-line="${i}" tabindex="-1">!</button>`,
-        ),
-    );
     $overlays.append($overlay);
   }
 
@@ -1377,6 +1355,21 @@ function getLineIndices(texto, selStart, selEnd) {
   return { lineIdxStart, lineIdxEnd };
 }
 
+function insertarTabEnCaret(editor) {
+  const s = editor.selectionStart;
+  const en = editor.selectionEnd;
+  const v = editor.value;
+  const lastNL = v.lastIndexOf("\nFinProceso");
+
+  if (s < PROCESO_PREFIX_LEN || s > lastNL || en > lastNL) return;
+
+  registrarHistorialEditor(editor);
+
+  editor.value = v.substring(0, s) + "  " + v.substring(en);
+  editor.selectionStart = editor.selectionEnd = s + 2;
+  actualizarLineas();
+}
+
 function tabularLineas(editor) {
   const s = editor.selectionStart;
   const en = editor.selectionEnd;
@@ -1548,7 +1541,15 @@ $("#editor").on("keydown", function (e) {
     if (e.shiftKey) {
       destabularLineas(this);
     } else {
-      tabularLineas(this);
+      const s = this.selectionStart;
+      const en = this.selectionEnd;
+      const seleccionMultilinea =
+        s !== en && this.value.substring(s, en).includes("\n");
+      if (seleccionMultilinea) {
+        tabularLineas(this);
+      } else {
+        insertarTabEnCaret(this);
+      }
     }
   }
 });

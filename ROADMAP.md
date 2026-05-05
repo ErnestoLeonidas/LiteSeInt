@@ -8,7 +8,7 @@ La promesa del producto queda así:
 
 ## Estado Base: v0.9.0
 
-La revisión del proyecto muestra que `v0.9.0` ya contiene el núcleo esperado para 1.0. La revisión documental `v0.9.1` deja ese estado alineado en README, CHANGELOG, EJERCICIOS y ROADMAP. La revisión `v0.9.2` refuerza las pruebas automatizadas del banco y de la documentación pedagógica. La revisión `v0.9.3` cierra una pasada UX de flujo completo con confirmaciones de reemplazo y ajustes responsive. La revisión `v0.9.4` consolida la preparación de release con importación `.psc`, tooltips, confirmaciones compactas, mejoras de theming y pulido del panel de ejercicios. La revisión `v0.9.5` ajusta el redimensionado horizontal del panel de aprendizaje y deja el menú de ejercicios desplegado por defecto. La revisión `v0.9.6` ejecuta la QA final pre-release sin tocar el lenguaje, el runtime ni la UI.
+La revisión del proyecto muestra que `v0.9.0` ya contiene el núcleo esperado para 1.0. La revisión documental `v0.9.1` deja ese estado alineado en README, CHANGELOG, EJERCICIOS y ROADMAP. La revisión `v0.9.2` refuerza las pruebas automatizadas del banco y de la documentación pedagógica. La revisión `v0.9.3` cierra una pasada UX de flujo completo con confirmaciones de reemplazo y ajustes responsive. La revisión `v0.9.4` consolida la preparación de release con importación `.psc`, tooltips, confirmaciones compactas, mejoras de theming y pulido del panel de ejercicios. La revisión `v0.9.5` ajusta el redimensionado horizontal del panel de aprendizaje y deja el menú de ejercicios desplegado por defecto. La revisión `v0.9.6` ejecuta la QA final pre-release sin tocar el lenguaje, el runtime ni la UI. La versión `v1.0.0` cierra el camino desde `v0.9.0` y publica LiteSeInt como release estable, con el dialecto congelado.
 
 - Editor web con resaltado, autocompletado, validación estática y ejecución.
 - Consola inferior redimensionable con entrada inline para `Leer`.
@@ -20,7 +20,7 @@ La revisión del proyecto muestra que `v0.9.0` ya contiene el núcleo esperado p
 - Guía de errores con 16 entradas agrupadas por `Estructura`, `Variables`, `Expresiones` y `Ciclos`.
 - Ruta N1-N7 con objetivos, requisitos, comandos clave y progreso.
 - Suite de pruebas Node.js ejecutable con `npm test`.
-- Versión visible actual: `v0.9.6`.
+- Versión visible actual: `v1.0.0`.
 
 El cierre hacia 1.0 es principalmente de estabilización, consistencia documental, pruebas de flujo completo y pulido educativo. No se recomienda agregar nuevas construcciones del lenguaje antes de 1.0.
 
@@ -183,6 +183,8 @@ Criterios de aceptación:
 ### v1.0.0 - Release Estable
 
 Objetivo: publicar LiteSeInt como plataforma minimalista estable de aprendizaje de pseudolenguaje.
+
+Estado: completado (pendiente solo el tag de release si el flujo de trabajo del proyecto lo usa).
 
 Tareas:
 
