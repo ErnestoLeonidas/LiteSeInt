@@ -8,7 +8,7 @@ La promesa del producto queda así:
 
 ## Estado Base: v0.9.0
 
-La revisión del proyecto muestra que `v0.9.0` ya contiene el núcleo esperado para 1.0. La revisión documental `v0.9.1` deja ese estado alineado en README, CHANGELOG, EJERCICIOS y ROADMAP. La revisión `v0.9.2` refuerza las pruebas automatizadas del banco y de la documentación pedagógica. La revisión `v0.9.3` cierra una pasada UX de flujo completo con confirmaciones de reemplazo y ajustes responsive. La revisión `v0.9.4` consolida la preparación de release con importación `.psc`, tooltips, confirmaciones compactas, mejoras de theming y pulido del panel de ejercicios. La revisión `v0.9.5` ajusta el redimensionado horizontal del panel de aprendizaje y deja el menú de ejercicios desplegado por defecto.
+La revisión del proyecto muestra que `v0.9.0` ya contiene el núcleo esperado para 1.0. La revisión documental `v0.9.1` deja ese estado alineado en README, CHANGELOG, EJERCICIOS y ROADMAP. La revisión `v0.9.2` refuerza las pruebas automatizadas del banco y de la documentación pedagógica. La revisión `v0.9.3` cierra una pasada UX de flujo completo con confirmaciones de reemplazo y ajustes responsive. La revisión `v0.9.4` consolida la preparación de release con importación `.psc`, tooltips, confirmaciones compactas, mejoras de theming y pulido del panel de ejercicios. La revisión `v0.9.5` ajusta el redimensionado horizontal del panel de aprendizaje y deja el menú de ejercicios desplegado por defecto. La revisión `v0.9.6` ejecuta la QA final pre-release sin tocar el lenguaje, el runtime ni la UI.
 
 - Editor web con resaltado, autocompletado, validación estática y ejecución.
 - Consola inferior redimensionable con entrada inline para `Leer`.
@@ -20,7 +20,7 @@ La revisión del proyecto muestra que `v0.9.0` ya contiene el núcleo esperado p
 - Guía de errores con 16 entradas agrupadas por `Estructura`, `Variables`, `Expresiones` y `Ciclos`.
 - Ruta N1-N7 con objetivos, requisitos, comandos clave y progreso.
 - Suite de pruebas Node.js ejecutable con `npm test`.
-- Versión visible actual: `v0.9.5`.
+- Versión visible actual: `v0.9.6`.
 
 El cierre hacia 1.0 es principalmente de estabilización, consistencia documental, pruebas de flujo completo y pulido educativo. No se recomienda agregar nuevas construcciones del lenguaje antes de 1.0.
 
@@ -135,6 +135,50 @@ Criterios de aceptación:
 - La documentación está lista para usuario final.
 - No hay pendientes bloqueantes documentales.
 - El repositorio queda limpio para el cambio de versión.
+
+### v0.9.5 - Pulido del Panel de Aprendizaje
+
+Objetivo: cerrar los ajustes finales de layout y micro-UX del panel lateral antes de la QA de release.
+
+Estado: completado.
+
+Tareas:
+
+- Mantener el menú de ejercicios desplegado por defecto al abrir el panel.
+- Conservar el redimensionado horizontal del panel dentro del rango definido para el layout.
+- Volver a mostrar la lista de ejercicios al recuperar espacio suficiente.
+- Sincronizar `README`, `EJERCICIOS`, `CHANGELOG` y `ROADMAP` con la versión visible `v0.9.5`.
+- Aplicar parches menores de documentación y UI en `v0.9.5.1` y `v0.9.5.2` sin alterar el lenguaje ni el alcance 1.0.
+
+Criterios de aceptación:
+
+- El panel de aprendizaje se comporta de forma estable en escritorio dentro del rango horizontal permitido.
+- La versión visible y la documentación coinciden en `v0.9.5`.
+- `npm test` sigue pasando.
+
+### v0.9.6 - QA Final Pre-Release
+
+Objetivo: ejecutar la última pasada de verificación antes de etiquetar `v1.0.0`, sin agregar lenguaje ni funcionalidades.
+
+Estado: completado.
+
+Tareas:
+
+- Recorrer el checklist de salida 1.0 punto por punto y registrar evidencia.
+- Ejecutar `npm test` y confirmar suite en verde.
+- Verificar que los 245 ejercicios visibles siguen cargando desde `json/N1.json` a `json/N7.json` sin errores en consola.
+- Confirmar que ningún código de referencia usa sintaxis prohibida (`<-`, `Cadena`, `SiNo`, `MOD`, `DIV`).
+- Confirmar que los IDs recomendados por `DOC_COMANDOS` existen en el banco.
+- Probar el flujo completo de estudiante una vez en escritorio y una vez en móvil real (no solo emulado).
+- Confirmar que el progreso local persiste tras recargar la página y tras cerrar y reabrir el navegador.
+- Revisar que no haya archivos temporales, JSON sueltos o artefactos eliminados pendientes de commit.
+- Dejar el árbol limpio para el bump a `v1.0.0`.
+
+Criterios de aceptación:
+
+- El checklist de salida 1.0 queda con todos los ítems verificados, salvo los que dependen explícitamente del bump de versión.
+- No quedan regresiones conocidas en flujo, banco, documentación ni layout.
+- El repositorio está listo para el cambio de versión sin trabajo intermedio adicional.
 
 ### v1.0.0 - Release Estable
 

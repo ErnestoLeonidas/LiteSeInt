@@ -6,6 +6,21 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.9.6] — 2026-05-04
+
+QA final pre-release. No cambia el lenguaje, el runtime ni la UI: ejecuta y registra la pasada de verificación previa al bump a `v1.0.0`.
+
+### Validado
+- **Pruebas**: `npm test` pasa con 17 pruebas (validador estático, runtime, banco de ejercicios y documentación interna).
+- **Banco de ejercicios**: los 245 ejercicios visibles siguen cargando desde `json/N1.json` a `json/N7.json`, todos con `estadoAdaptacion: adaptado`, sin sintaxis prohibida (`<-`, `Cadena`, `SiNo`, `MOD`, `DIV`) en `codigoReferencia` y pasando validación estática.
+- **Documentación de comandos**: los IDs de ejercicios recomendados por `DOC_COMANDOS` existen en el banco; los ejemplos no usan sintaxis PSeInt prohibida.
+- **Documentación de errores**: los ejemplos corregidos validan; los incorrectos reproducen errores estáticos o de runtime.
+- **Niveles visibles**: alineados con N1–N7.
+
+### Cambiado
+- **README, EJERCICIOS y ROADMAP**: estado actualizado a `v0.9.6`; el hito `v0.9.6 — QA Final Pre-Release` queda marcado como completado en el roadmap.
+- **Versión visible**: `v0.9.6`.
+
 ## [0.9.5] — 2026-05-04
 
 Ajuste de versionado para la revisión de redimensionado horizontal del panel de aprendizaje.
