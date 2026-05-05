@@ -1,24 +1,26 @@
-# Roadmap LiteSeInt 2.0
+# Roadmap LiteSeInt: de v1.0 a v2.0
 
-LiteSeInt cerró su versión `v1.0.0` como editor educativo de pseudolenguaje, estático, sin backend y con dialecto congelado. El camino hacia 2.0 transforma el proyecto en una plataforma educativa institucional para colegios y educación superior, sin romper el editor 1.0 ni el banco de 245 ejercicios existente.
+LiteSeInt cerró su versión `v1.0.0` como editor educativo de pseudolenguaje, estático, sin backend y con dialecto congelado. Este roadmap describe la **ruta de desarrollo** que lleva al proyecto desde ese punto hasta `v2.0.0`, su próxima versión mayor: la plataforma educativa institucional para colegios y educación superior.
 
-> LiteSeInt 2.0 permite a instituciones enseñar, asignar y evaluar pseudolenguaje con cuentas, cursos, secciones, progreso, ranking y herramientas avanzadas (arreglos, subprocesos, inspector de variables y diagrama bidireccional), preservando el editor educativo de 1.0.
+> En `v2.0.0` LiteSeInt será una plataforma institucional con cuentas, cursos, secciones, progreso, ranking y herramientas avanzadas (arreglos, subprocesos, inspector de variables y diagrama bidireccional), preservando el editor educativo de 1.0 y sin romper el banco de 245 ejercicios.
 
-Este roadmap describe **cada versión futura** con su contenido detallado: objetivo, cambios técnicos, schema, endpoints, UI, pruebas, documentación, criterios de aceptación y restricciones específicas. No se planifica por fases sueltas: cada versión es entregable, instalable y demoable por sí misma.
+La ruta se divide en versiones intermedias `v1.1.0` a `v1.9.0`. Cada versión es entregable, demoable y mantiene la app funcionando. `v2.0.0` es el cierre institucional completo, no un MVP suelto.
 
-## Índice de Versiones
+## Índice de la Ruta
 
 | Versión | Tipo | Tema | Estado |
 |---|---|---|---|
 | `v1.0.x` | patch | Mantenimiento del editor 1.0 | Abierto a parches no disruptivos |
 | `v1.1.0` | minor | Reestructura interna y AST explícito | Planificado |
-| `v2.0.0` | major | Plataforma institucional (MVP1) | Planificado |
-| `v2.1.0` | minor | Arreglos y matrices (`Dimension`) | Planificado |
-| `v2.2.0` | minor | Panel de pestañas e inspector de variables | Planificado |
-| `v2.3.0` | minor | `SubProceso`/`Funcion`, scopes y call stack | Planificado |
-| `v2.4.0` | minor | Diagrama bidireccional | Planificado |
-| `v2.5.0` | minor | Reportes, ranking configurable y exportación | Planificado |
-| `v2.6.0` | minor | QA institucional, seeds de demo y hardening | Planificado |
+| `v1.2.0` | minor | Backend base, login y RBAC | Planificado |
+| `v1.3.0` | minor | Multi-tenant y modelo académico | Planificado |
+| `v1.4.0` | minor | Persistencia de código y reanudación | Planificado |
+| `v1.5.0` | minor | Actividades asignables y ranking básico | Planificado |
+| `v1.6.0` | minor | Lenguaje 2.0 — Arreglos (`Dimension`) | Planificado |
+| `v1.7.0` | minor | Panel de pestañas e inspector de variables | Planificado |
+| `v1.8.0` | minor | Lenguaje 2.0 — `SubProceso`/`Funcion` y call stack | Planificado |
+| `v1.9.0` | minor | Diagrama bidireccional | Planificado |
+| `v2.0.0` | major | Release institucional: reportes, ranking configurable, hardening, demos | Planificado |
 
 ---
 
@@ -31,13 +33,20 @@ Este roadmap describe **cada versión futura** con su contenido detallado: objet
 - `js/LiteSeInt.js` como parser, runtime y evaluador de expresiones.
 - `js/ejercicios-data.js` y `json/N1.json`-`json/N7.json` como banco de 245 ejercicios.
 - `tests/run-tests.js` como suite de regresión.
-- Dialecto LiteSeInt congelado: `Definir`, `Escribir`, `Leer`, `=`, `//`, tipos `Entero`/`Real`/`Caracter`/`Logico`, control completo, operadores aritméticos, relacionales y lógicos en español.
+- Dialecto LiteSeInt congelado: `Definir`, `Escribir`, `Leer`, `=`, `//`, tipos `Entero`/`Real`/`Caracter`/`Logico`, control completo y operadores en español.
 
 `v1.0.x` queda abierto a parches puntuales (typos, accesibilidad, ajustes responsive) que no introduzcan backend ni cambios de dialecto.
 
----
+## Promesa 2.0
 
-## Decisiones de Arquitectura para 2.0
+LiteSeInt 2.0 debe responder, además de las preguntas que ya respondía 1.0:
+
+1. ¿Quién está practicando y cómo va?
+2. ¿Qué ejercicio asigno y a qué sección?
+3. ¿Cómo recupero el trabajo del estudiante en cualquier momento?
+4. ¿Qué pasa adentro del programa cuando se ejecuta?
+
+## Decisiones de Arquitectura para la Ruta 2.0
 
 - Monorepo con `core/`, `frontend/`, `backend/`, `shared/`, `tests/`.
 - `core/` como ES modules importable desde navegador y desde Node.
@@ -49,7 +58,8 @@ Este roadmap describe **cada versión futura** con su contenido detallado: objet
 - Rankings on-demand con cache hasta tener volumen real.
 - Frontend continúa en HTML + Bootstrap 5.3 + JavaScript vanilla + jQuery.
 - Tests con `npm test` para `core` y backend (`node:test` + `supertest`).
-- Estructura final de carpetas:
+
+Estructura objetivo de carpetas (alcanzada al cerrar `v1.1.0` y completada en `v1.2.0`):
 
 ```
 /LiteSeInt
@@ -74,12 +84,11 @@ Dejar el motor reutilizable desde Node y con AST estable, sin alterar comportami
 
 ### Alcance
 
-- Reorganizar el repositorio a monorepo con `core/`, `frontend/`, `backend/` (esqueleto), `shared/` y `tests/`.
+- Reorganizar el repositorio a monorepo con `core/`, `frontend/`, `backend/` (esqueleto vacío), `shared/` y `tests/`.
 - Convertir `js/doc_errores.js` y `js/LiteSeInt.js` a ES modules en `core/`.
 - Mantener shim `window.DocErrores` y `window.LiteSeInt` en `frontend/` para compatibilidad.
 - Producir AST explícito en parser; runtime ejecuta sobre AST.
 - Introducir scope chain en la tabla de símbolos aunque solo exista el global.
-- Documentar el contrato AST en `shared/ast-contract.md`.
 
 ### Cambios Técnicos
 
@@ -87,19 +96,16 @@ Dejar el motor reutilizable desde Node y con AST estable, sin alterar comportami
 - `core/validator.js`: extraído de `doc_errores.js`. Conserva mensajes y `loc:{linea,columnaInicio,columnaFin}`.
 - `core/parser.js`: nuevo. Construye AST a partir de tokens.
 - `core/ast.js`: define nodos `Programa`, `Definir`, `Asignar`, `Leer`, `Escribir`, `Si`, `Mientras`, `Para`, `Repetir`, `Segun`, `Llamar`, `SubProceso`, `Dimension` con `loc` en cada nodo y `astVersion: 2`.
-- `core/runtime.js`: extraído de `LiteSeInt.js`. Recorre AST en lugar de re-parsear por línea.
+- `core/runtime.js`: extraído. Recorre AST en lugar de re-parsear por línea.
 - `core/expression-evaluator.js`: extraído. Sin cambios semánticos.
 - `core/symbol-table.js`: nuevo, con scope chain (solo global por ahora).
 - `frontend/index.html`, `frontend/js/app.js`: ajustados a las nuevas rutas. Shim conserva globales.
 - `tests/run-tests.js`: importa desde `core/` vía ESM.
-
-### Schema, Endpoints, UI
-
-No aplica. No hay backend ni cambios visibles.
+- `shared/ast-contract.md`: especificación de nodos.
 
 ### Pruebas
 
-- `npm test` pasa con la nueva organización.
+- `npm test` verde con la nueva organización.
 - Test nuevo: roundtrip serialización/deserialización de AST.
 - Test nuevo: ejecución de los 245 ejercicios produce las mismas salidas que en `v1.0.0`.
 
@@ -120,165 +126,316 @@ No aplica. No hay backend ni cambios visibles.
 
 - No se introduce backend.
 - No se cambia el dialecto.
-- No se mueven archivos del `frontend/` que rompan rutas públicas existentes (GitHub Pages sigue funcionando).
+- No se rompen rutas públicas existentes (GitHub Pages sigue funcionando).
 
 ### Riesgos Específicos
 
-- Cambio de runtime por línea a runtime sobre AST puede romper ejercicios. Mitigación: cierre de versión condicionado a salidas idénticas en los 245 ejercicios.
+- Cambio de runtime por línea a runtime sobre AST puede romper ejercicios. Mitigación: cierre condicionado a salidas idénticas en los 245 ejercicios.
 
 ---
 
-## v2.0.0 — Plataforma Institucional MVP1
+## v1.2.0 — Backend Base, Login y RBAC
 
-Tipo: major. Primera versión institucional usable.
+Tipo: minor. Primera aparición del backend.
 
 ### Objetivo
 
-Que una institución pueda darse de alta, configurar su modelo académico, dar acceso a docentes y estudiantes, y que el estudiante resuelva ejercicios con persistencia y ranking básico.
+Levantar la API protegida con autenticación y control por rol, lista para que próximas versiones agreguen modelo académico encima.
 
 ### Alcance
 
-- Backend Express + Prisma con SQLite en desarrollo y PostgreSQL en producción.
-- Auth con JWT + refresh token httpOnly. Hash argon2id.
+- Bootstrap `backend/` con Express + Prisma + Zod.
 - Roles `SUPER_ADMIN`, `ADMINISTRADOR`, `DOCENTE`, `ESTUDIANTE`.
-- Multi-tenant con `institucion_id` y middleware de aislamiento.
-- Modelo académico completo: institución, sede, curso, asignatura, sección, matrícula, asignación docente.
-- Persistencia de código, versiones, intentos, progreso.
-- Reanudación exacta de ejercicios.
-- Ranking básico por sección con fórmula fija (ejercicios completados + dificultad + tiempo).
-- Sandbox server-side para validación con timeout.
-- Pantallas mínimas para los cuatro roles.
+- Auth con JWT corto + refresh token httpOnly.
+- Hash argon2id, rate limit en login y headers de seguridad con `helmet`.
+- Pantalla de login en frontend y menú dinámico por rol con secciones aún vacías.
+- Seed inicial con super_admin único.
 
 ### Cambios Técnicos
 
-- `backend/server.js`: bootstrap Express, CORS, helmet, rate limit en login.
-- `backend/middleware/auth.js`: verifica JWT, carga `req.user` y `req.tenant`.
-- `backend/middleware/rbac.js`: `requireRole(...roles)` y `requireSameTenant`.
-- `backend/middleware/tenant.js`: inyecta `where: { institucion_id }` en queries Prisma vía extension.
-- `backend/services/sandbox.js`: ejecuta `core/runtime.js` en `Worker` con `AbortController`, timeout 3s y tope de iteraciones.
-- `frontend/js/services/api.js`: cliente HTTP con manejo de refresh token.
-- `frontend/js/ui/login.js`, `frontend/js/ui/menu.js`: pantallas y menú dinámico por rol.
-- `frontend/js/ui/admin/`, `docente/`, `estudiante/`: paneles mínimos por rol.
+- `backend/server.js`: bootstrap con CORS, helmet, rate limit.
+- `backend/middleware/auth.js`, `backend/middleware/rbac.js`.
+- `backend/routes/auth.js`, `backend/controllers/auth.js`.
+- `backend/services/passwords.js` (argon2id).
+- `frontend/js/services/api.js`: cliente HTTP con manejo de refresh.
+- `frontend/js/ui/login.js`, `frontend/js/ui/menu.js`.
+- `tests/api/auth.test.js` con `supertest`.
 
 ### Schema (migración inicial)
 
-Tablas:
-
-- `usuarios`: id, nombre, email UNIQUE, password_hash, rol, activo, institucion_id, sede_id, created_at, updated_at.
-- `instituciones`: id, nombre, tipo (`colegio` | `educacion_superior`), activo.
-- `sedes`: id, institucion_id, nombre, direccion, activo.
-- `cursos`: id, institucion_id, sede_id, nombre, nivel, activo.
-- `asignaturas`: id, institucion_id, nombre, codigo, activo.
-- `secciones`: id, institucion_id, sede_id, curso_id, asignatura_id, docente_id, nombre, periodo, activo.
-- `matriculas`: id, estudiante_id, seccion_id, estado.
-- `docente_seccion`: id, docente_id, seccion_id.
-- `proyectos_codigo`: id, estudiante_id, ejercicio_id, titulo, codigo, ast_json, estado, updated_at.
-- `proyecto_versiones`: id, proyecto_codigo_id, codigo, created_at.
-- `intentos`: id, proyecto_codigo_id, estudiante_id, ejercicio_id, codigo, resultado, errores_json, salida, tiempo_ms, created_at.
-- `progreso`: id, estudiante_id, seccion_id, ejercicio_id, estado, porcentaje, puntaje, intentos, tiempo_total, ultima_linea, updated_at.
-
-Índices: `intentos(estudiante_id, ejercicio_id, created_at DESC)`, `progreso(seccion_id, estudiante_id)`, UNIQUE `proyectos_codigo(estudiante_id, ejercicio_id)`, UNIQUE `matriculas(estudiante_id, seccion_id)`.
-
-Seeds:
-
-- super_admin único definido por variables de entorno.
-- Institución demo con una sede, una asignatura y una sección para QA.
+- `usuarios`: id, nombre, email UNIQUE, password_hash, rol, activo, created_at, updated_at. (Aún sin `institucion_id`; entra en `v1.3.0`).
 
 ### Endpoints
-
-Auth:
 
 - `POST /auth/login`
 - `POST /auth/logout`
 - `POST /auth/refresh`
 - `GET  /auth/me`
 
-Instituciones (super_admin):
-
-- `GET|POST /instituciones`
-- `GET|PATCH|DELETE /instituciones/:id`
-- `GET|POST /instituciones/:id/sedes`
-
-Usuarios (admin del tenant):
-
-- `GET|POST /usuarios`
-- `GET|PATCH|DELETE /usuarios/:id`
-- `PATCH /usuarios/:id/activo`
-
-Académico (admin):
-
-- CRUD `/cursos`, `/asignaturas`, `/secciones`.
-- `POST /secciones/:id/matriculas` (matricular estudiante).
-- `POST /secciones/:id/docente` (asignar docente).
-
-Ejercicios (estudiante/docente):
-
-- `GET /ejercicios` (banco filtrable por nivel).
-- `GET /ejercicios/:id`.
-
-Progreso (estudiante):
-
-- `GET  /progreso/me`
-- `PUT  /proyectos/:ejercicioId/codigo` (autosave).
-- `POST /proyectos/:ejercicioId/intentos` (validar y guardar).
-- `GET  /proyectos/:ejercicioId` (recuperar último estado).
-
-Ranking:
-
-- `GET /ranking/seccion/:id`
-
 ### UI
 
 - Pantalla de login.
-- Menú lateral con ítems según rol.
-- Panel super_admin: lista y CRUD de instituciones.
-- Panel administrador: CRUD académico y de usuarios de su institución.
-- Panel docente: lista de sus secciones, lista de estudiantes, ranking de sección.
-- Panel estudiante: lista de ejercicios asignados, editor con autosave, indicador de estado, ranking de su sección.
-- El editor de 1.0 se reutiliza completo dentro del panel del estudiante.
+- Menú lateral por rol con ítems placeholder ("Próximamente").
+- Editor 1.0 sigue accesible como sección visible para todos los roles autenticados.
 
 ### Pruebas
 
-- Unit tests por servicio (auth, RBAC, tenant filter).
-- Integration tests con `supertest` para todos los endpoints.
-- Test E2E de aislamiento: un usuario del tenant A no puede leer/escribir en tenant B.
-- Test de sandbox: un programa con loop infinito aborta a los 3s.
-- `npm test` cubre `core/` y backend.
+- Tests de login, expiración, refresh y bloqueo por rate limit.
+- Tests de RBAC: middleware autoriza/rechaza según rol.
 
 ### Documentación
 
-- `README.md`: sección de instalación local con SQLite, variables de entorno, seed inicial.
-- `CHANGELOG.md`: entrada `2.0.0`.
-- `docs/api.md`: lista de endpoints con ejemplos.
-- `docs/roles.md`: matriz de permisos por rol.
+- `README.md`: sección "Instalación local", variables de entorno, primer super_admin.
+- `CHANGELOG.md`: entrada `1.2.0`.
+- `docs/api.md`: contrato de auth.
+- `docs/roles.md`: matriz de permisos inicial.
+
+### Criterios de Aceptación
+
+- super_admin puede iniciar sesión y consumir endpoints protegidos.
+- Tokens expiran y refrescan correctamente.
+- Tests E2E confirman que un rol no puede acceder a endpoints fuera de su alcance.
+- El editor 1.0 funciona igual sin login.
+
+### Restricciones Específicas
+
+- No persistir contraseñas en texto plano ni loguearlas.
+- No exponer endpoints de dominio antes de tener middleware de tenant (entra en `v1.3.0`).
+
+### Riesgos Específicos
+
+- Implementar refresh tokens mal puede dejar sesiones vulnerables. Mitigación: cookie httpOnly + rotación + revocación al logout.
+
+---
+
+## v1.3.0 — Multi-tenant y Modelo Académico
+
+Tipo: minor. La plataforma se vuelve institucional.
+
+### Objetivo
+
+Que un super_admin cree instituciones y un administrador configure el modelo académico completo de la suya, con aislamiento estricto.
+
+### Alcance
+
+- Multi-tenant con `institucion_id` en toda tabla de dominio.
+- Middleware obligatorio de aislamiento por tenant.
+- CRUD de institución, sede, curso, asignatura, sección.
+- Gestión de usuarios institucionales (administradores, docentes, estudiantes).
+- Matrícula estudiante-sección y asignación docente-sección.
+
+### Cambios Técnicos
+
+- Migración: `institucion_id` y `sede_id` en `usuarios`.
+- `backend/middleware/tenant.js`: extension Prisma que inyecta `institucion_id`.
+- `backend/routes/instituciones.js`, `sedes.js`, `cursos.js`, `asignaturas.js`, `secciones.js`, `usuarios.js`.
+- `frontend/js/ui/admin/`: paneles de CRUD académico y de usuarios.
+
+### Schema (migraciones)
+
+- `instituciones`: id, nombre, tipo (`colegio` | `educacion_superior`), activo.
+- `sedes`: id, institucion_id, nombre, direccion, activo.
+- `cursos`: id, institucion_id, sede_id, nombre, nivel, activo.
+- `asignaturas`: id, institucion_id, nombre, codigo, activo.
+- `secciones`: id, institucion_id, sede_id, curso_id, asignatura_id, docente_id, nombre, periodo, activo.
+- `matriculas`: id, estudiante_id, seccion_id, estado. UNIQUE `(estudiante_id, seccion_id)`.
+- `docente_seccion`: id, docente_id, seccion_id.
+- Alteración: `usuarios.institucion_id`, `usuarios.sede_id`.
+
+### Endpoints
+
+- CRUD `/instituciones`, `/instituciones/:id/sedes`.
+- CRUD `/cursos`, `/asignaturas`, `/secciones`.
+- CRUD `/usuarios` (admin del tenant).
+- `POST /secciones/:id/matriculas`, `POST /secciones/:id/docente`.
+
+### UI
+
+- Panel super_admin: lista y CRUD de instituciones.
+- Panel administrador: árbol institución → sede → curso → asignatura → sección con CRUD por nivel.
+- Panel docente: lista de sus secciones con estudiantes (sin progreso aún).
+- Panel estudiante: lista de secciones donde está matriculado (sin ejercicios asignados aún).
+
+### Pruebas
+
+- Tests E2E de aislamiento: un usuario del tenant A no lee/escribe en B.
+- Tests de CRUD por rol.
+- Tests de matrícula y asignación.
+
+### Documentación
+
+- `README.md`: sección "Configurar una institución".
+- `CHANGELOG.md`: entrada `1.3.0`.
 
 ### Criterios de Aceptación
 
 - super_admin crea una institución desde cero.
 - Administrador configura sede, curso, asignatura, sección, docente y estudiantes.
-- Docente asigna ejercicios del banco a una sección.
-- Estudiante resuelve, cierra el navegador, vuelve y ve su código intacto.
-- Ranking básico de la sección se renderiza con datos reales.
-- Aislamiento multi-tenant verificado por tests.
-- `npm test` verde.
+- Tests E2E confirman aislamiento estricto.
+- Editor 1.0 sigue funcionando para usuarios autenticados.
 
 ### Restricciones Específicas
 
-- Banco de 245 ejercicios y dialecto 1.0 intactos.
-- Editor 1.0 reutilizado tal cual en el panel del estudiante.
-- Contraseñas siempre con hash; nunca en texto plano ni en logs.
-- Importación CSV de usuarios queda fuera de esta versión (entra en `v2.0.x` si presiona el plazo o se sube a `v2.6.0`).
+- Toda query de dominio pasa por el middleware de tenant; no se permiten queries directas sin filtro.
+- Nada de borrado físico para instituciones/sedes en producción; usar `activo=false`.
 
 ### Riesgos Específicos
 
-- Aislamiento multi-tenant a nivel app puede fallar con joins. Mitigación: middleware obligatorio + tests E2E de cruzamiento.
-- Sandbox server-side abre superficie a DoS. Mitigación: `Worker` + timeout + tope de iteraciones desde el día 1.
+- Joins olvidados pueden saltar el aislamiento. Mitigación: extension Prisma central + tests E2E de cruzamiento.
 
 ---
 
-## v2.1.0 — Lenguaje 2.0: Arreglos y Matrices (`Dimension`)
+## v1.4.0 — Persistencia de Código y Reanudación
 
-Tipo: minor. Primera extensión del dialecto 2.0.
+Tipo: minor. El editor empieza a guardar progreso real.
+
+### Objetivo
+
+Que el estudiante resuelva ejercicios del banco actual desde su panel, con autosave, historial e intentos persistidos, y que pueda cerrar y volver sin perder nada.
+
+### Alcance
+
+- Guardado automático del código por estudiante y ejercicio.
+- Historial de versiones del código.
+- Registro de intentos de ejecución/validación.
+- Estado de avance por ejercicio: pendiente, en curso, completado, revisado.
+- Reanudación exacta del último estado.
+- Sandbox server-side para validar entregas.
+
+### Cambios Técnicos
+
+- `backend/services/sandbox.js`: ejecuta `core/runtime.js` en `Worker` con `AbortController`, timeout 3s y tope de iteraciones.
+- `backend/routes/proyectos.js`: autosave, intento, recuperación.
+- `backend/services/progreso.js`: cálculo de estado y porcentaje.
+- `frontend/js/ui/estudiante/`: integración del editor 1.0 con autosave y badges de estado.
+
+### Schema (migraciones)
+
+- `proyectos_codigo`: id, estudiante_id, ejercicio_id, titulo, codigo, ast_json, estado, updated_at. UNIQUE `(estudiante_id, ejercicio_id)`.
+- `proyecto_versiones`: id, proyecto_codigo_id, codigo, created_at.
+- `intentos`: id, proyecto_codigo_id, estudiante_id, ejercicio_id, codigo, resultado, errores_json, salida, tiempo_ms, created_at. Index `(estudiante_id, ejercicio_id, created_at DESC)`.
+- `progreso`: id, estudiante_id, seccion_id, ejercicio_id, estado, porcentaje, puntaje, intentos, tiempo_total, ultima_linea, updated_at. Index `(seccion_id, estudiante_id)`.
+
+### Endpoints
+
+- `GET  /ejercicios` (banco filtrable por nivel).
+- `GET  /ejercicios/:id`.
+- `PUT  /proyectos/:ejercicioId/codigo` (autosave).
+- `POST /proyectos/:ejercicioId/intentos`.
+- `GET  /proyectos/:ejercicioId` (último estado + historial corto).
+- `GET  /progreso/me`.
+
+### UI
+
+- Panel estudiante: lista de ejercicios del banco con badge de estado.
+- Editor con autosave silencioso e indicador "Guardado".
+- Vista de historial de versiones.
+- Vista de intentos con resultado y salida.
+
+### Pruebas
+
+- Test de sandbox: programa con loop infinito aborta a los 3s.
+- Test de reanudación: cerrar/volver mantiene código exacto.
+- Test de historial: cada autosave significativo crea versión.
+- Test de aislamiento: estudiante no lee proyectos de otros.
+
+### Documentación
+
+- `README.md`: sección "Resolver ejercicios".
+- `CHANGELOG.md`: entrada `1.4.0`.
+
+### Criterios de Aceptación
+
+- Estudiante cierra navegador y al volver ve su código exactamente.
+- Sandbox aborta loops infinitos.
+- Historial e intentos quedan accesibles.
+- Banco 1.0 intacto y dialecto inalterado.
+
+### Restricciones Específicas
+
+- No introducir nuevas funcionalidades de lenguaje.
+- No alterar el banco de ejercicios.
+
+### Riesgos Específicos
+
+- Autosave excesivo puede saturar la base. Mitigación: debounce + guardar versión solo ante cambios significativos (delta o intervalo mínimo).
+
+---
+
+## v1.5.0 — Actividades Asignables y Ranking Básico
+
+Tipo: minor. Aparece la dimensión docente.
+
+### Objetivo
+
+Que un docente cree actividades, asigne ejercicios a su sección y vea un ranking básico. El estudiante ve su lista de tareas y su posición.
+
+### Alcance
+
+- Actividades creadas por docentes con fecha de inicio y cierre, dificultad y puntaje.
+- Ejercicios asignables a una sección dentro de una actividad.
+- Solución de referencia y casos de prueba opcionales.
+- Ranking básico por sección con fórmula fija (ejercicios completados + dificultad + tiempo).
+- Vista de ranking respeta permisos: estudiante no ve datos privados.
+
+### Cambios Técnicos
+
+- `backend/routes/actividades.js`: CRUD para docente.
+- `backend/services/ranking.js`: cálculo on-demand con cache 5 min en memoria.
+- `frontend/js/ui/docente/actividades.js`: gestión de actividades.
+- `frontend/js/ui/estudiante/tareas.js`: lista de actividades vigentes.
+- `frontend/js/ui/estudiante/ranking.js`: posición y top de la sección.
+
+### Schema (migraciones)
+
+- `actividades`: id, institucion_id, asignatura_id, seccion_id, docente_id, titulo, descripcion, fecha_inicio, fecha_cierre, puntaje, visible.
+- `actividad_ejercicios`: id, actividad_id, ejercicio_id, orden, puntaje.
+- Alteración: `progreso.actividad_id` (nullable). `proyectos_codigo.actividad_id` (nullable).
+
+### Endpoints
+
+- CRUD `/actividades` (docente).
+- `POST /actividades/:id/ejercicios` (asignar).
+- `GET  /actividades/me` (estudiante: actividades asignadas).
+- `GET  /ranking/seccion/:id`.
+
+### UI
+
+- Panel docente: crear actividad, asignar ejercicios, ver progreso por estudiante.
+- Panel estudiante: actividades vigentes con fechas y puntaje, ranking de su sección.
+- Editor: indicador de actividad activa cuando aplica.
+
+### Pruebas
+
+- Tests de creación y vencimiento de actividades.
+- Tests de ranking con dataset sintético.
+- Tests de visibilidad por rol.
+
+### Documentación
+
+- `README.md`: sección "Asignar ejercicios y ver progreso".
+- `CHANGELOG.md`: entrada `1.5.0`.
+
+### Criterios de Aceptación
+
+- Docente asigna ejercicios; estudiante los ve en su panel.
+- Ranking se renderiza con datos reales y respeta permisos.
+- Fechas de cierre cierran efectivamente la entrega.
+
+### Restricciones Específicas
+
+- Ranking aún no es configurable por institución (eso entra en `v2.0.0`).
+- Calificación automática avanzada queda fuera; los casos de prueba opcionales solo validan ejecución/salida básica.
+
+### Riesgos Específicos
+
+- Ranking en tiempo real puede ser costoso. Mitigación: cache 5 min por scope.
+
+---
+
+## v1.6.0 — Lenguaje 2.0: Arreglos y Matrices (`Dimension`)
+
+Tipo: minor. Primera extensión del dialecto.
 
 ### Objetivo
 
@@ -290,7 +447,6 @@ Soportar arreglos y matrices con sintaxis estilo PSeInt sin romper el dialecto 1
 - `Dimension nombre[filas, columnas]` para matrices.
 - Acceso por índice unidimensional `arr[i]` y bidimensional `mat[i, j]`.
 - Validación estática y runtime de rangos, tipos y arreglo no dimensionado.
-- Inspector de variables (preliminar) muestra arreglos como árbol expandible cuando esté disponible (la pestaña completa llega en `v2.2.0`).
 - Autocompletado y ejemplos extendidos.
 
 ### Cambios Técnicos
@@ -298,31 +454,22 @@ Soportar arreglos y matrices con sintaxis estilo PSeInt sin romper el dialecto 1
 - `core/tokenizer.js`: tokens `Dimension`, `[`, `]`, `,` en contexto de índices.
 - `core/parser.js`: nodos `Dimension`, `IndiceArreglo`, `IndiceMatriz`.
 - `core/symbol-table.js`: registra forma `{tipo, dimensiones:[n] | [filas, cols]}`.
-- `core/validator.js`: nuevas reglas: dimensión positiva, índice numérico, tipo coherente en asignación, arreglo no dimensionado.
-- `core/runtime.js`: lectura/escritura por índice; error `IndiceFueraDeRango`, `ArregloNoDimensionado`, `TipoIncompatible`.
-- `core/expression-evaluator.js`: soporta `IndiceArreglo` y `IndiceMatriz` como expresiones.
-- `frontend/js/app.js`: autocompletado de `Dimension`; ejemplos en sección de aprendizaje.
-
-### Schema, Endpoints
-
-Sin cambios. El AST persistido en `proyectos_codigo.ast_json` aumenta `astVersion`. Migración de versiones antiguas: re-parseo desde el código fuente (verdad).
-
-### UI
-
-- Pestaña de comandos: nueva entrada "Arreglos / `Dimension`".
-- Mensajes de error específicos en consola: rango y arreglo no dimensionado.
+- `core/validator.js`: nuevas reglas: dimensión positiva, índice numérico, tipo coherente, arreglo no dimensionado.
+- `core/runtime.js`: lectura/escritura por índice; errores `IndiceFueraDeRango`, `ArregloNoDimensionado`, `TipoIncompatible`.
+- `core/expression-evaluator.js`: soporta accesos como expresiones.
+- `frontend/js/app.js`: autocompletado de `Dimension` y ejemplos.
+- AST sube `astVersion`. Migración: re-parseo desde `codigo` (verdad).
 
 ### Pruebas
 
 - Tests de validador para cada nuevo error.
-- Tests de runtime para arreglos, matrices, escritura, lectura, errores.
-- Tests con ejemplos completos de los nuevos comandos.
+- Tests de runtime para arreglos, matrices y errores típicos.
 - Re-ejecución de los 245 ejercicios 1.0: salidas idénticas.
 
 ### Documentación
 
-- `README.md`: sección "Arreglos y matrices" con sintaxis y ejemplos.
-- `CHANGELOG.md`: entrada `2.1.0`.
+- `README.md`: sección "Arreglos y matrices".
+- `CHANGELOG.md`: entrada `1.6.0`.
 - Pestaña interna `Comandos` actualizada en el frontend.
 
 ### Criterios de Aceptación
@@ -330,12 +477,11 @@ Sin cambios. El AST persistido en `proyectos_codigo.ast_json` aumenta `astVersio
 - `Dimension v[5]` y `Dimension m[3,4]` validan, ejecutan y reportan errores con `loc` exacta.
 - Tests cubren rango, tipo y errores típicos.
 - Ejercicios 1.0 siguen pasando.
-- Autocompletado sugiere `Dimension` y formas correctas de uso.
 
 ### Restricciones Específicas
 
-- No introducir aún paso por referencia (entra en `v2.3.0` con subprocesos).
-- No bloquear arreglos sin tipo por defecto: respetar `Definir nombre Como Tipo` después de `Dimension`.
+- No introducir aún paso por referencia (entra en `v1.8.0` con subprocesos).
+- Respetar `Definir nombre Como Tipo` después de `Dimension`.
 
 ### Riesgos Específicos
 
@@ -343,73 +489,59 @@ Sin cambios. El AST persistido en `proyectos_codigo.ast_json` aumenta `astVersio
 
 ---
 
-## v2.2.0 — Panel de Pestañas e Inspector de Variables
+## v1.7.0 — Panel de Pestañas e Inspector de Variables
 
 Tipo: minor. Cambio mayor de UX en el área inferior.
 
 ### Objetivo
 
-Convertir la consola actual en un panel con pestañas Consola / Variables / Diagrama, con un inspector de variables vivo durante la ejecución.
+Convertir la consola actual en un panel con pestañas Consola / Variables / Diagrama y un inspector de variables vivo durante la ejecución.
 
 ### Alcance
 
-- Pestaña Consola: salida, entrada para `Leer`, trazas opcionales, errores runtime (igual que hoy, dentro de la nueva pestaña).
-- Pestaña Variables: árbol por proceso activo (en esta versión solo existe el proceso principal) con variables locales, parámetros futuros, arreglos/matrices expandibles, valor actual, tipo, estado de inicialización y resaltado de cambios recientes.
-- Pestaña Diagrama: placeholder con mensaje "Disponible en v2.4.0".
-- Modo paso a paso visible: el botón de ejecución expone una opción "Paso a paso".
-- Persistencia local de la pestaña activa por sesión.
+- Pestaña Consola: salida, entrada para `Leer`, trazas opcionales, errores runtime (igual que hoy).
+- Pestaña Variables: árbol por proceso activo (en esta versión solo proceso principal) con variables locales, valor actual, tipo, estado de inicialización, arreglos/matrices expandibles y resaltado de cambios recientes.
+- Pestaña Diagrama: placeholder con mensaje "Disponible en v1.9.0".
+- Modo paso a paso visible en la barra del editor.
 
 ### Cambios Técnicos
 
 - `core/runtime.js`: emite eventos `onStep({linea, scopeSnapshot})`, `onVariableChanged({nombre, valorAnterior, valorNuevo})`, `onScopeEntered`, `onScopeExited`.
 - `frontend/js/ui/panel-tabs.js`: contenedor de pestañas.
-- `frontend/js/ui/inspector.js`: árbol de variables con expansión/colapso y resaltado de cambios.
-- `frontend/css/styles.css`: estilos del panel y del árbol respetando variables `:root`.
-
-### Schema, Endpoints
-
-Sin cambios.
-
-### UI
-
-- Panel inferior reorganizado con tres pestañas.
-- Botón "Paso a paso" en la barra del editor.
-- Tooltips y leyenda de iconos de tipo (Entero, Real, Caracter, Logico, Arreglo, Matriz).
+- `frontend/js/ui/inspector.js`: árbol de variables con expansión/colapso.
+- `frontend/css/styles.css`: estilos del panel y árbol respetando variables `:root`.
 
 ### Pruebas
 
 - Tests headless del runtime emitiendo eventos en orden correcto.
-- Snapshot tests del estado del inspector tras cada paso, en programas representativos (asignación, condicional, ciclo, arreglos).
-- Test de regresión visual mínimo (manual o con `playwright` si se introduce, opcional).
+- Snapshots del inspector tras cada paso en programas con asignación, condicional, ciclo y arreglos.
 
 ### Documentación
 
 - `README.md`: sección "Inspección paso a paso".
-- `CHANGELOG.md`: entrada `2.2.0`.
-- Guía rápida en la pestaña `Comandos` del frontend.
+- `CHANGELOG.md`: entrada `1.7.0`.
 
 ### Criterios de Aceptación
 
 - Cada paso muestra el árbol correcto y resalta variables modificadas.
 - Arreglos y matrices se expanden visualmente.
-- Cambiar entre pestañas no interrumpe la ejecución.
 - En modo normal, el inspector muestra el estado final.
+- Pestañas se comportan como acordeón en pantallas pequeñas.
 
 ### Restricciones Específicas
 
 - No mover lógica de runtime al frontend.
 - No tocar el dialecto.
-- Mantener compatibilidad móvil: en pantallas pequeñas, las pestañas se comportan como acordeón.
 
 ### Riesgos Específicos
 
-- Eventos por paso pueden saturar el frontend. Mitigación: throttling y batching cuando hay más de N pasos por segundo.
+- Eventos por paso pueden saturar el frontend. Mitigación: throttling y batching por encima de N pasos por segundo.
 
 ---
 
-## v2.3.0 — Lenguaje 2.0: SubProceso, Funciones y Call Stack
+## v1.8.0 — Lenguaje 2.0: SubProceso, Funciones y Call Stack
 
-Tipo: minor. Segunda extensión del dialecto 2.0.
+Tipo: minor. Segunda extensión del dialecto.
 
 ### Objetivo
 
@@ -422,28 +554,19 @@ Programas con varios subprocesos, parámetros, retorno y scopes correctos, visib
 - Retorno mediante variable de retorno antes de `=`: `SubProceso resultado = Sumar(a, b)`.
 - Llamadas con y sin retorno.
 - Parámetros por valor y por referencia. Arreglos por referencia por defecto.
-- Definición de funciones antes o después del bloque `Proceso Principal`.
+- Definición antes o después de `Proceso Principal`.
 - Detección de función inexistente, aridad incorrecta y profundidad máxima de recursión.
-- Inspector muestra variables agrupadas por proceso activo y permite navegar el call stack.
+- Inspector con tabs internos por frame del call stack.
 
 ### Cambios Técnicos
 
 - `core/tokenizer.js`: tokens `SubProceso`, `FinSubProceso`, `Funcion`, `FinFuncion`, `Proceso`, `FinProceso`.
-- `core/parser.js`: nodos `SubProceso` (con `params`, `paramsPorReferencia`, `retorno?`, `cuerpo`, `esFuncion`), nodo `Llamar`.
-- `core/symbol-table.js`: scope chain por subproceso, lookup ascendente.
-- `core/runtime.js`: call stack con frames `{nombre, params, locals, retorno?}`. Detección de profundidad máxima configurable (por defecto 256).
+- `core/parser.js`: nodos `SubProceso` (`params`, `paramsPorReferencia`, `retorno?`, `cuerpo`, `esFuncion`) y `Llamar`.
+- `core/symbol-table.js`: scope chain real con lookup ascendente.
+- `core/runtime.js`: call stack con frames; profundidad máxima configurable (256 por defecto).
 - `core/validator.js`: errores `FuncionNoDefinida`, `AridadIncorrecta`, `RetornoNoAsignado`, `ParametroIncompatible`.
-- `frontend/js/ui/inspector.js`: tabs internos por frame del call stack.
-
-### Schema, Endpoints
-
-Sin cambios. `astVersion` sube otra vez; código fuente sigue siendo verdad.
-
-### UI
-
-- Pestaña Variables muestra selector de frame del call stack.
-- Pestaña Comandos: nuevas entradas para `SubProceso` y `Funcion`.
-- Autocompletado de subprocesos definidos por el estudiante.
+- `frontend/js/ui/inspector.js`: selector de frame.
+- `frontend/js/app.js`: autocompletado de subprocesos definidos por el estudiante.
 
 ### Pruebas
 
@@ -455,31 +578,30 @@ Sin cambios. `astVersion` sube otra vez; código fuente sigue siendo verdad.
 ### Documentación
 
 - `README.md`: sección "Subprocesos y funciones".
-- `CHANGELOG.md`: entrada `2.3.0`.
+- `CHANGELOG.md`: entrada `1.8.0`.
 
 ### Criterios de Aceptación
 
 - Programa con tres subprocesos y recursión ejecuta correctamente.
 - Parámetros por referencia modifican el arreglo del llamador.
-- El inspector navega el call stack y muestra variables del frame seleccionado.
+- Inspector navega el call stack y muestra variables del frame seleccionado.
 - Errores de llamada apuntan a la línea correcta.
 
 ### Restricciones Específicas
 
-- No permitir funciones anidadas dentro de funciones (por simplicidad pedagógica).
+- No permitir funciones anidadas dentro de funciones.
 - No introducir closures.
 - No permitir mismo nombre entre `SubProceso` y variable global.
 
 ### Riesgos Específicos
 
 - Recursión profunda puede colgar la pestaña. Mitigación: límite de profundidad y mensaje claro al estudiante.
-- Reglas de paso por referencia mal explicadas confunden. Mitigación: documento corto y ejemplos en pestaña `Comandos`.
 
 ---
 
-## v2.4.0 — Modo Diagrama Bidireccional
+## v1.9.0 — Diagrama Bidireccional
 
-Tipo: minor. Tercera y mayor extensión visual.
+Tipo: minor. Última pieza visual antes del cierre 2.0.
 
 ### Objetivo
 
@@ -492,42 +614,41 @@ Editor visual basado en AST que modifica el código y se regenera desde código 
 - Edición de nodos del diagrama regenera código solo si el roundtrip es seguro.
 - Soporte mínimo: Inicio/Fin, `Definir`, `Asignar`, `Leer`, `Escribir`, `Si`/`Sino`/`FinSi`, `Mientras`, `Repetir`/`HastaQue`, `Para`, `Segun`, llamadas a `SubProceso`/`Funcion`.
 - División del área de trabajo: diagrama al 50% del panel disponible cuando se activa.
-- Si el código no parsea, la pestaña Diagrama queda en modo lectura con motivo visible.
+- Si el código no parsea, modo lectura con motivo visible.
 - Serialización `diagrama_json` opcional como cache derivable.
 - Validaciones anti-pérdida: ningún flujo destruye código sin confirmación explícita.
 
 ### Cambios Técnicos
 
-- `core/diagram-mapper.js`: funciones `astADiagrama(ast)` y `diagramaAAst(diagrama)` con tests de roundtrip.
-- `frontend/js/ui/diagram/`: render del diagrama, edición de nodos, drag opcional.
-- `frontend/js/ui/diagram/safety.js`: detección de pérdida y bloqueo de edición.
+- `core/diagram-mapper.js`: `astADiagrama(ast)` y `diagramaAAst(diagrama)` con tests de roundtrip.
+- `frontend/js/ui/diagram/`: render, edición, atajos.
+- `frontend/js/ui/diagram/safety.js`: detección de pérdida y bloqueo.
 - Atajo de teclado para alternar foco editor/diagrama.
 
 ### Schema
 
-- `proyectos_codigo.diagrama_json` se usa como cache; puede recalcularse desde `codigo`.
-- Nueva columna opcional: `diagrama_layout_json` (posiciones del usuario).
+- Alteración: `proyectos_codigo.diagrama_json` y opcional `diagrama_layout_json`.
 
 ### Endpoints
 
-- `PUT /proyectos/:ejercicioId/diagrama` (guarda layout/cache).
+- `PUT /proyectos/:ejercicioId/diagrama` (cache + layout).
 
 ### UI
 
 - Pestaña Diagrama activa con panel dividido al 50%.
-- Modo lectura con banner cuando hay errores de parseo.
-- Diálogos de confirmación cuando una edición pueda perder código (por ejemplo, cambiar la firma de un subproceso).
+- Banner de modo lectura cuando hay errores de parseo.
+- Diálogos de confirmación cuando una edición pueda perder código.
 
 ### Pruebas
 
-- Tests unitarios de `astADiagrama` y `diagramaAAst`: roundtrip exacto del AST en todos los nodos soportados.
-- Tests E2E (manual o automatizado) de edición visual: editar nodo `Si` actualiza solo esa rama del código.
-- Test de seguridad: si el parseo falla, el código queda intacto.
+- Tests unitarios de roundtrip exacto del AST en todos los nodos soportados.
+- Tests de seguridad: si el parseo falla, el código queda intacto.
+- Test E2E manual: editar nodo `Si` actualiza solo esa rama del código.
 
 ### Documentación
 
 - `README.md`: sección "Modo diagrama".
-- `CHANGELOG.md`: entrada `2.4.0`.
+- `CHANGELOG.md`: entrada `1.9.0`.
 
 ### Criterios de Aceptación
 
@@ -538,7 +659,7 @@ Editor visual basado en AST que modifica el código y se regenera desde código 
 ### Restricciones Específicas
 
 - El código fuente sigue siendo la verdad: nunca se sobrescribe sin confirmación.
-- No introducir librerías pesadas de diagrama si se pueden lograr los nodos con SVG/canvas mínimo.
+- No introducir librerías pesadas si SVG/canvas mínimo alcanza.
 
 ### Riesgos Específicos
 
@@ -546,163 +667,112 @@ Editor visual basado en AST que modifica el código y se regenera desde código 
 
 ---
 
-## v2.5.0 — Reportes, Ranking Configurable y Exportación
+## v2.0.0 — Release Institucional
 
-Tipo: minor.
-
-### Objetivo
-
-Cubrir la visión institucional con reportes accionables, ranking configurable por institución y exportación a CSV/Excel.
-
-### Alcance
-
-- `ranking_config` con fórmula configurable (JSON) por institución.
-- Variables soportadas: ejercicios completados, dificultad, intentos, tiempo de resolución, errores corregidos, rachas, actividades evaluadas, porcentaje de avance.
-- Materialización opcional con tabla `rankings`.
-- Reportes: avance por estudiante, sección, asignatura; ejercicios más fallados; errores frecuentes; tiempo medio; actividad semanal/mensual.
-- Exportación CSV y Excel.
-- Filtro permite calcular rankings por sección, asignatura, curso, sede e institución.
-
-### Cambios Técnicos
-
-- `backend/services/ranking.js`: motor que evalúa fórmulas JSON con whitelist de variables.
-- `backend/services/reports.js`: queries optimizadas con índices nuevos.
-- `backend/exporters/csv.js` y `xlsx.js`.
-- `frontend/js/ui/admin/ranking-config.js`: editor de fórmula con vista previa.
-
-### Schema
-
-- `rankings` (id, scope_tipo, scope_id, estudiante_id, puntaje, posicion, calculado_at).
-- `ranking_config` (id, institucion_id, nombre, formula_json, visible_estudiante, activo).
-- Índices auxiliares para reportes: `intentos(seccion_id, created_at)`, `progreso(asignatura_id)` (vía join cacheado).
-
-### Endpoints
-
-- `GET    /ranking/:scopeTipo/:scopeId`
-- `POST   /ranking/recalcular/:scopeTipo/:scopeId`
-- `GET|POST|PATCH /ranking-config`
-- `GET    /reportes/avance-estudiante`
-- `GET    /reportes/avance-seccion`
-- `GET    /reportes/ejercicios-fallados`
-- `GET    /reportes/errores-frecuentes`
-- `GET    /reportes/tiempo-medio`
-- `GET    /reportes/exportar?formato=csv|xlsx`
-
-### UI
-
-- Panel administrador: editor visual de fórmula + vista previa con datos reales de prueba.
-- Panel docente: dashboards básicos para sus secciones.
-- Botones de exportar en cada reporte.
-
-### Pruebas
-
-- Tests de motor de fórmulas con valores límite.
-- Tests de queries de reportes con datasets sintéticos.
-- Tests de seguridad: estudiante no ve información privada no autorizada.
-
-### Documentación
-
-- `README.md`: sección "Ranking y reportes".
-- `CHANGELOG.md`: entrada `2.5.0`.
-- `docs/ranking.md`: especificación del lenguaje JSON de fórmulas.
-
-### Criterios de Aceptación
-
-- Cambiar `ranking_config` actualiza el ranking visible.
-- Estudiante no ve datos privados.
-- Exportaciones CSV y XLSX se abren correctamente en herramientas estándar.
-
-### Restricciones Específicas
-
-- Fórmulas evaluadas con whitelist; nunca con `eval`.
-- Rate limit en endpoints de reporte.
-
-### Riesgos Específicos
-
-- Cálculos costosos por request degradan el servicio. Mitigación: cache 5 minutos por scope; materialización por job si la métrica de carga lo justifica.
-
----
-
-## v2.6.0 — QA Institucional, Seeds de Demo y Hardening
-
-Tipo: minor de cierre.
+Tipo: major. Cierre de la ruta y publicación oficial 2.0.
 
 ### Objetivo
 
-Dejar 2.x cerrado: cobertura de pruebas, seeds reproducibles, hardening de seguridad y documentación final.
+Empaquetar todo lo construido entre `v1.1.0` y `v1.9.0` como release institucional listo para demos en colegios y educación superior, con reportes, ranking configurable, importación masiva de usuarios, hardening de seguridad, manuales por rol y seeds reproducibles.
 
 ### Alcance
 
-- Aumentar cobertura unitaria e integración a un umbral acordado (sugerencia: 80% en `core/` y `backend/services/`).
-- Pruebas por rol y de aislamiento multi-tenant exhaustivas.
-- Pruebas de seguridad: rate limiting, intentos fallidos, expiración de tokens, headers (`helmet`), sanitización de inputs.
+- Ranking configurable por institución con fórmula JSON.
+- Reportes para administradores y docentes con exportación CSV/Excel.
 - Importación CSV de estudiantes y docentes con validaciones y reporte de errores.
+- Hardening de seguridad: rate limiting fino, expiración y rotación de tokens, sanitización de inputs, headers reforzados, auditoría de eventos sensibles.
+- Cobertura de pruebas elevada y suite de seguridad propia.
 - Seeds de demo: institución modelo con secciones, docentes, estudiantes y ejercicios asignados.
-- Guía de instalación para producción (PostgreSQL, variables de entorno, backups).
-- README 2.0 final con manuales por rol.
+- Documentación 2.0 completa con manuales por rol.
+- Bump de versión visible y tag de release.
 
 ### Cambios Técnicos
 
-- `backend/middleware/security.js`: helmet, rate limit por IP/usuario, CORS estricto.
-- `backend/services/csv-import.js`: parsing con validaciones de email, rol y institución.
+- `backend/services/ranking.js`: motor que evalúa fórmulas JSON con whitelist (sin `eval`).
+- `backend/services/reports.js`: queries optimizadas; vistas materializadas opcionales.
+- `backend/exporters/csv.js` y `xlsx.js`.
+- `backend/services/csv-import.js`: parsing con validaciones por fila.
+- `backend/middleware/security.js`: helmet endurecido, rate limit por IP/usuario, CORS estricto.
+- `backend/services/audit.js`: log de eventos sensibles (login, cambios de rol, exportaciones).
+- `frontend/js/ui/admin/ranking-config.js`: editor de fórmula con vista previa.
+- `frontend/js/ui/admin/reports/`: dashboards y exportadores.
+- `frontend/js/ui/admin/import-csv.js`: wizard con preview y errores por fila.
 - `backend/seeds/demo.js`: dataset reproducible.
-- `tests/security/`: nuevos tests.
 
-### Schema
+### Schema (migraciones)
 
-Sin cambios estructurales.
+- `rankings`: id, scope_tipo, scope_id, estudiante_id, puntaje, posicion, calculado_at.
+- `ranking_config`: id, institucion_id, nombre, formula_json, visible_estudiante, activo.
+- `auditoria`: id, usuario_id, institucion_id, accion, payload_json, ip, created_at.
+- Índices auxiliares para reportes: `intentos(seccion_id, created_at)`, vistas o materializaciones según métricas reales.
 
 ### Endpoints
 
-- `POST /usuarios/importar?tipo=estudiante|docente` (CSV).
+- `GET    /ranking/:scopeTipo/:scopeId` (sección, asignatura, curso, sede, institución).
+- `POST   /ranking/recalcular/:scopeTipo/:scopeId`.
+- `GET|POST|PATCH /ranking-config`.
+- `GET    /reportes/avance-estudiante`.
+- `GET    /reportes/avance-seccion`.
+- `GET    /reportes/avance-asignatura`.
+- `GET    /reportes/ejercicios-fallados`.
+- `GET    /reportes/errores-frecuentes`.
+- `GET    /reportes/tiempo-medio`.
+- `GET    /reportes/exportar?formato=csv|xlsx`.
+- `POST   /usuarios/importar?tipo=estudiante|docente`.
 
 ### UI
 
-- Wizard de importación CSV con vista previa y errores por fila.
+- Panel administrador: editor visual de fórmula de ranking + vista previa con datos reales de prueba; wizard de importación CSV; dashboards de reportes con exportación.
+- Panel docente: dashboards básicos para sus secciones.
+- Panel super_admin: métricas globales por institución.
+- Manual contextual visible desde el menú según rol.
 
 ### Pruebas
 
-- Suite de seguridad ejecutable con `npm test`.
+- Suite de seguridad con `npm test`.
+- Tests de fórmulas con valores límite y queries de reportes con datasets sintéticos.
 - Test de seeds: tras `npm run seed:demo`, todos los flujos del MVP funcionan.
+- Tests de aislamiento exhaustivos por rol.
+- Cobertura objetivo: 80% en `core/` y `backend/services/`.
 
 ### Documentación
 
-- `README.md`: manuales por rol y guía de instalación productiva.
-- `CHANGELOG.md`: entrada `2.6.0`.
+- `README.md`: manuales por rol, guía de instalación productiva, backups, rotación de tokens.
+- `CHANGELOG.md`: entrada `2.0.0` consolidada.
+- `docs/api.md`: contrato completo.
+- `docs/ranking.md`: especificación de fórmulas JSON.
 - `docs/security.md`: superficie revisada y mitigaciones.
 - `docs/operacion.md`: backups, monitoreo básico, rotación de tokens.
 
 ### Criterios de Aceptación
 
-- `npm test` cubre lenguaje, progreso, roles, ranking y seguridad.
-- Seeds reproducibles para demos.
-- Documentación cubre super_admin, administrador, docente y estudiante.
-- Sin issues críticos abiertos en seguridad.
+- Existe login real por rol.
+- super_admin crea instituciones; administrador configura sede, curso, asignatura, sección, docente y estudiantes.
+- Docente asigna ejercicios a una sección.
+- Estudiante resuelve ejercicios y guarda progreso; al volver retoma exactamente.
+- Ranking por sección, asignatura, curso, sede e institución, configurable por fórmula JSON.
+- `Dimension`, arreglos y matrices funcionan.
+- `SubProceso`/`Funcion` funcionan.
+- Consola organizada en pestañas; Variables muestra árbol por proceso; Diagrama es bidireccional.
+- Reportes exportan CSV/Excel correctos.
+- Suite de pruebas cubre lenguaje, progreso, roles, ranking y seguridad.
+- Documentación 2.0 completa.
+- Seeds de demo reproducibles.
 
 ### Restricciones Específicas
 
-- No introducir nuevas funcionalidades de lenguaje.
+- No introducir nuevas funcionalidades de lenguaje en este cierre.
 - No modificar el dialecto.
+- Fórmulas de ranking evaluadas con whitelist; nunca con `eval`.
 
 ### Riesgos Específicos
 
-- Sobrecarga de cobertura artificial. Mitigación: foco en flujos críticos (auth, RBAC, persistencia, sandbox), no en cubrir métodos triviales.
+- Sobrecarga de cobertura artificial. Mitigación: foco en flujos críticos (auth, RBAC, persistencia, sandbox), no en métodos triviales.
+- Reportes pesados pueden degradar el servicio. Mitigación: rate limit + cache + materialización solo si la métrica de carga lo justifica.
 
 ---
 
-## Mapeo MVP → Versiones
-
-| MVP | Versiones que lo cubren |
-|---|---|
-| MVP 1: base institucional | `v1.1.0` + `v2.0.0` |
-| MVP 2: lenguaje y datos | `v2.1.0` + `v2.2.0` |
-| MVP 3: subprogramas | `v2.3.0` |
-| MVP 4: diagrama y reportes | `v2.4.0` + `v2.5.0` |
-| Cierre 2.x | `v2.6.0` |
-
----
-
-## Restricciones Globales 2.0
+## Restricciones Globales para la Ruta 2.0
 
 - No romper ejercicios actuales.
 - No eliminar soporte actual de sintaxis.
@@ -717,15 +787,15 @@ Sin cambios estructurales.
 
 ## Riesgos Globales y Mitigaciones
 
-- **AST inestable antes del diagrama** → `v1.1.0` cierra con AST versionado y pruebas de roundtrip; `v2.4.0` no comienza si esto no está sólido.
-- **Multi-tenant inseguro** → middleware obligatorio en `v2.0.0` + tests E2E de cruzamiento.
-- **Ejecución server-side de código del estudiante** → sandbox en `Worker` con timeout y tope de iteraciones desde `v2.0.0`.
+- **AST inestable antes del diagrama** → `v1.1.0` cierra con AST versionado y pruebas de roundtrip; `v1.9.0` no comienza si esto no está sólido.
+- **Multi-tenant inseguro** → `v1.3.0` introduce middleware obligatorio + tests E2E de cruzamiento desde el primer commit institucional.
+- **Ejecución server-side de código del estudiante** → sandbox en `Worker` con timeout y tope de iteraciones desde `v1.4.0`.
 - **Migración del intérprete a AST** → `v1.1.0` cierra solo si los 245 ejercicios producen las mismas salidas.
-- **Tabla de símbolos plana** → `v1.1.0` introduce scope chain incluso cuando solo hay scope global.
-- **Arreglos en múltiples capas** → `v2.1.0` se entrega como bloque cerrado: tokenizer, validador, runtime, autocompletado e inspector preliminar.
-- **Ranking en tiempo real** → `v2.0.0` usa fórmula fija; `v2.5.0` agrega cache y materialización opcional.
-- **Crecimiento excesivo del modo institucional** → cada versión es entregable por sí misma; nada se agrupa en una sola entrega gigante.
+- **Tabla de símbolos plana** → `v1.1.0` introduce scope chain incluso cuando solo hay scope global, para no rehacer todo en `v1.8.0`.
+- **Arreglos en múltiples capas** → `v1.6.0` se entrega como bloque cerrado: tokenizer, validador, runtime, autocompletado.
+- **Ranking en tiempo real** → `v1.5.0` usa fórmula fija con cache; `v2.0.0` agrega configuración y materialización opcional.
+- **Crecimiento excesivo del modo institucional** → cada minor entre `v1.1.0` y `v1.9.0` es entregable por sí mismo; `v2.0.0` solo empaqueta y endurece.
 
 ## Norte 2.0
 
-LiteSeInt 2.0 debe sentirse pequeño para el estudiante y completo para la institución. El editor 1.0 sigue siendo el corazón del producto: si abrir LiteSeInt como estudiante deja de ser claro, simple y rápido, la versión 2.0 falló aunque el backend funcione perfecto.
+LiteSeInt 2.0 debe sentirse pequeño para el estudiante y completo para la institución. El editor 1.0 sigue siendo el corazón del producto: si abrir LiteSeInt como estudiante deja de ser claro, simple y rápido en cualquier punto de la ruta, esa versión no debería liberarse.
