@@ -67,6 +67,10 @@ function cycleTheme() {
 // =========================================
 
 const PANEL_ORDER_KEY = 'liteseint_panel_order';
+const LEARNING_PANEL_WIDTH_KEY = 'liteseint_learning_panel_width';
+const LEARNING_PANEL_MIN_PX = 320;
+const LEARNING_PANEL_MAX_RATIO = 0.72;
+const LEARNING_PANEL_AUTO_COLLAPSE_PX = 560;
 const CONSOLE_ECHO_KEY = 'liteseint_console_echo';
 
 function initPanelDrag() {
@@ -159,6 +163,133 @@ function restorePanelOrder() {
   }
 }
 
+function clampLearningPanelWidth(px) {
+  const container = document.querySelector('.main-container');
+  if (!container) return px;
+  const total = container.getBoundingClientRect().width;
+  const defaultWidth = total * 0.5;
+  const min = Math.min(LEARNING_PANEL_MIN_PX, Math.max(220, total * 0.35));
+  const menuMax = medirAnchoMenuLearningPanel();
+  const ratioMax = total * LEARNING_PANEL_MAX_RATIO;
+  const max = Math.max(defaultWidth, min, Math.min(ratioMax, menuMax));
+  return Math.min(Math.max(px, min), max);
+}
+
+function medirAnchoMenuLearningPanel() {
+  const header = document.querySelector('.learning-panel-header');
+  if (!header) return Number.POSITIVE_INFINITY;
+
+  const clone = header.cloneNode(true);
+  clone.removeAttribute('id');
+  clone.style.position = 'fixed';
+  clone.style.left = '-10000px';
+  clone.style.top = '-10000px';
+  clone.style.width = 'max-content';
+  clone.style.maxWidth = 'none';
+  clone.style.visibility = 'hidden';
+  clone.style.pointerEvents = 'none';
+
+  const tabs = clone.querySelector('.learning-tabs');
+  if (tabs) {
+    tabs.style.overflow = 'visible';
+    tabs.style.width = 'max-content';
+    tabs.style.maxWidth = 'none';
+  }
+
+  document.body.appendChild(clone);
+  const width = clone.getBoundingClientRect().width;
+  clone.remove();
+
+  return Math.ceil(width + 8);
+}
+
+function aplicarAnchoLearningPanel(px, opciones = {}) {
+  const panel = document.querySelector('.learning-panel');
+  if (!panel) return;
+  const width = clampLearningPanelWidth(px);
+  document.documentElement.style.setProperty('--learning-panel-w', `${width}px`);
+  if (opciones.autoColapsar && width <= LEARNING_PANEL_AUTO_COLLAPSE_PX) {
+    setEjListaVisible(false);
+  }
+  scheduleIndentGuideRender({ remeasure: true });
+}
+
+function guardarAnchoLearningPanel(px) {
+  try {
+    localStorage.setItem(LEARNING_PANEL_WIDTH_KEY, String(Math.round(px)));
+  } catch (_) {
+    /* localStorage no disponible: ignorar */
+  }
+}
+
+function cargarAnchoLearningPanelPersistido() {
+  try {
+    const v = localStorage.getItem(LEARNING_PANEL_WIDTH_KEY);
+    if (!v) return;
+    const px = parseInt(v, 10);
+    if (Number.isFinite(px) && px > 0) aplicarAnchoLearningPanel(px);
+  } catch (_) {
+    /* localStorage no disponible: ignorar */
+  }
+}
+
+function inicializarResizeLearningPanel() {
+  const handle = document.getElementById('learningWidthResizeHandle');
+  const panel = document.querySelector('.learning-panel');
+  const container = document.querySelector('.main-container');
+  if (!handle || !panel || !container) return;
+
+  let dragging = false;
+
+  const widthFromPointer = (clientX) => {
+    const rect = container.getBoundingClientRect();
+    const panelOnRight = panel.classList.contains('panel-on-right');
+    return panelOnRight ? rect.right - clientX : clientX - rect.left;
+  };
+
+  const onPointerMove = (e) => {
+    if (!dragging) return;
+    aplicarAnchoLearningPanel(widthFromPointer(e.clientX), { autoColapsar: true });
+  };
+
+  const onPointerUp = (e) => {
+    if (!dragging) return;
+    dragging = false;
+    handle.classList.remove('dragging');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    window.removeEventListener('pointermove', onPointerMove);
+    window.removeEventListener('pointerup', onPointerUp);
+    guardarAnchoLearningPanel(widthFromPointer(e.clientX));
+  };
+
+  handle.addEventListener('pointerdown', (e) => {
+    if (mobileConsoleQuery.matches) return;
+    e.preventDefault();
+    dragging = true;
+    handle.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+  });
+
+  handle.addEventListener('keydown', (e) => {
+    const step = e.shiftKey ? 48 : 16;
+    const current = panel.getBoundingClientRect().width;
+    const panelOnRight = panel.classList.contains('panel-on-right');
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      aplicarAnchoLearningPanel(current + (panelOnRight ? step : -step), { autoColapsar: true });
+      guardarAnchoLearningPanel(panel.getBoundingClientRect().width);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      aplicarAnchoLearningPanel(current + (panelOnRight ? -step : step), { autoColapsar: true });
+      guardarAnchoLearningPanel(panel.getBoundingClientRect().width);
+    }
+  });
+}
+
 // =========================================
 // EXERCISE LIST TOGGLE
 // =========================================
@@ -166,8 +297,7 @@ function restorePanelOrder() {
 const EJ_LISTA_KEY = 'liteseint_ej_lista';
 
 function initEjListaToggle() {
-  const saved = localStorage.getItem(EJ_LISTA_KEY);
-  if (saved === 'hidden') setEjListaVisible(false);
+  setEjListaVisible(true);
   $(document).on('click', '.btn-toggle-ej-lista', () => {
     const collapsed = document.querySelector('.ej-workspace')?.classList.contains('ej-lista-colapsada');
     setEjListaVisible(collapsed);
@@ -2994,7 +3124,9 @@ $(document).ready(function () {
   actualizarLineas();
   initTheme();
   restorePanelOrder();
+  cargarAnchoLearningPanelPersistido();
   initPanelDrag();
+  inicializarResizeLearningPanel();
   initEjListaToggle();
   initLearningTabs();
 
@@ -3014,6 +3146,10 @@ $(document).ready(function () {
 
   window.addEventListener("resize", () => {
     actualizarIndentGuides({ remeasure: true });
+    const panel = document.querySelector('.learning-panel');
+    if (panel && !mobileConsoleQuery.matches) {
+      aplicarAnchoLearningPanel(panel.getBoundingClientRect().width);
+    }
   });
 
   if (document.fonts && document.fonts.ready) {

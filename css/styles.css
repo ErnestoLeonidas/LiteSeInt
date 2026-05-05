@@ -937,12 +937,60 @@ body::before {
   background: var(--surface-learning-panel);
   border-right: 1px solid var(--border-color);
   min-height: 0;
+  position: relative;
 }
 
 /* When exercises panel is dragged to the right side */
 .learning-panel.panel-on-right {
   border-right: none;
   border-left: 1px solid var(--border-color);
+}
+
+.learning-width-resize-handle {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  bottom: 0;
+  width: 8px;
+  z-index: 45;
+  cursor: col-resize;
+  background: transparent;
+  transition: background 0.15s;
+}
+
+.learning-panel.panel-on-right .learning-width-resize-handle {
+  right: auto;
+  left: -4px;
+}
+
+.learning-width-resize-handle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 42px;
+  border-radius: 2px;
+  background: var(--text-muted);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.15s, background 0.15s;
+}
+
+.learning-width-resize-handle:hover,
+.learning-width-resize-handle.dragging {
+  background: var(--accent-bg);
+}
+
+.learning-width-resize-handle:hover::before,
+.learning-width-resize-handle.dragging::before {
+  background: var(--accent);
+  opacity: 1;
+}
+
+.learning-width-resize-handle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
 }
 
 .learning-panel-header {
@@ -2308,6 +2356,10 @@ body::before {
 
   .learning-panel.panel-on-right {
     border-left: none;
+  }
+
+  .learning-width-resize-handle {
+    display: none;
   }
 
   .panel-drag-handle {

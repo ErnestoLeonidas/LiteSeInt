@@ -12,6 +12,7 @@ Preparación de release hacia `v1.0.0`, consolidando los ajustes finales de inte
 
 ### Agregado
 - **Importación `.psc`**: nuevo botón en el editor para cargar archivos `.psc` y reemplazar el contenido previa confirmación.
+- **Redimensionado horizontal**: el panel de aprendizaje parte en 50%; al ampliarlo, el borde no permite pasar del ancho natural del menú, y al reducirlo minimiza la lista de ejercicios cuando queda angosto.
 - **Tooltips compactos**: acciones de editor y consola (`cargar`, `descargar`, `borrar editor`, `borrar consola`, `mostrar/ocultar trazas`) usan tooltips propios alineados con el estilo de la barra de progreso.
 - **SweetAlert compacto**: las alertas y confirmaciones usan clases `liteseint-swal*`, menor tamaño y botones acordes al sistema visual.
 - **Tokens de superficies**: nuevas variables `--surface-*` aíslan fondos de panel, lista, detalle, tarjetas y subpaneles para simplificar la creación de themes.
