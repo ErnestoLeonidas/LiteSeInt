@@ -6,6 +6,29 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.9.4] — 2026-05-04
+
+Preparación de release hacia `v1.0.0`, consolidando los ajustes finales de interacción, theming y archivos `.psc`.
+
+### Agregado
+- **Importación `.psc`**: nuevo botón en el editor para cargar archivos `.psc` y reemplazar el contenido previa confirmación.
+- **Tooltips compactos**: acciones de editor y consola (`cargar`, `descargar`, `borrar editor`, `borrar consola`, `mostrar/ocultar trazas`) usan tooltips propios alineados con el estilo de la barra de progreso.
+- **SweetAlert compacto**: las alertas y confirmaciones usan clases `liteseint-swal*`, menor tamaño y botones acordes al sistema visual.
+- **Tokens de superficies**: nuevas variables `--surface-*` aíslan fondos de panel, lista, detalle, tarjetas y subpaneles para simplificar la creación de themes.
+
+### Cambiado
+- **Tema Papel**: el workspace oscuro conserva headers, gutter y consola en tonos oscuros; el detalle de ejercicios queda levemente más oscuro que la selección.
+- **Panel de ejercicios**: el botón de minimizar lista existe tanto en el header como junto al progreso; si la lista está minimizada, seleccionar otro ejercicio mantiene el estado minimizado.
+- **Carga de ejemplos**: solo pide confirmación cuando el proceso actual ya no es el genérico `nombre_proceso`.
+- **Descarga `.psc`**: ahora se bloquea si no hay instrucciones reales dentro del proceso o si el nombre del proceso sigue siendo genérico.
+- **Textos de confirmación**: cada alerta describe la acción concreta (`Borrar editor`, `Borrar consola`, `Cargar ejemplo`, `Importar archivo`, `Ver referencia`).
+- **Banco JSON**: títulos de ejercicios seleccionados en N1 y N2 quedan sin sufijos técnicos de origen.
+- **README, EJERCICIOS y ROADMAP**: estado actualizado a `v0.9.4`.
+- **Versión visible**: `v0.9.4`.
+
+### Validado
+- **Pruebas**: `npm test` pasa con 17 pruebas.
+
 ## [0.9.3] — 2026-05-04
 
 Revisión UX de flujo completo para que la práctica pueda completarse desde la app sin explicación externa.

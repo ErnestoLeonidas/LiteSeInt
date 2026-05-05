@@ -166,11 +166,9 @@ function restorePanelOrder() {
 const EJ_LISTA_KEY = 'liteseint_ej_lista';
 
 function initEjListaToggle() {
-  const btn = document.getElementById('btnToggleEjLista');
-  if (!btn) return;
   const saved = localStorage.getItem(EJ_LISTA_KEY);
   if (saved === 'hidden') setEjListaVisible(false);
-  btn.addEventListener('click', () => {
+  $(document).on('click', '.btn-toggle-ej-lista', () => {
     const collapsed = document.querySelector('.ej-workspace')?.classList.contains('ej-lista-colapsada');
     setEjListaVisible(collapsed);
   });
@@ -178,13 +176,13 @@ function initEjListaToggle() {
 
 function setEjListaVisible(visible) {
   const workspace = document.querySelector('.ej-workspace');
-  const btn = document.getElementById('btnToggleEjLista');
   if (!workspace) return;
   workspace.classList.toggle('ej-lista-colapsada', !visible);
-  if (btn) {
+  document.querySelectorAll('.btn-toggle-ej-lista').forEach((btn) => {
     btn.textContent = visible ? '◀' : '▶';
     btn.title = visible ? 'Ocultar lista de ejercicios' : 'Mostrar lista de ejercicios';
-  }
+    btn.setAttribute('aria-label', btn.title);
+  });
   try { localStorage.setItem(EJ_LISTA_KEY, visible ? 'visible' : 'hidden'); } catch(e) {}
 }
 
@@ -251,6 +249,12 @@ function setConsoleEchoVisible(visible) {
     btn.classList.toggle("btn-toggle-console-echo-hidden", !visible);
     btn.setAttribute("aria-label", visible ? "Ocultar trazas de consola" : "Mostrar trazas de consola");
     btn.title = visible ? "Ocultar trazas de consola" : "Mostrar trazas de consola";
+    btn.setAttribute(
+      "data-tooltip",
+      visible
+        ? "Ocultar trazas:\nOculta entradas y mensajes internos de ejecución"
+        : "Mostrar trazas:\nMuestra entradas y mensajes internos de ejecución",
+    );
   }
   try { localStorage.setItem(CONSOLE_ECHO_KEY, visible ? "visible" : "hidden"); } catch(e) {}
 }
@@ -296,14 +300,41 @@ function limpiarConsola() {
   invalidarErroresVisuales();
 }
 
+function limpiarConsolaConfirmando() {
+  if (typeof Swal !== "undefined") {
+    return liteSwal({
+      icon: "warning",
+      title: "¿Borrar consola?",
+      text: "Se limpiarán las salidas, errores y trazas visibles. Si hay una ejecución en curso, se detendrá.",
+      showCancelButton: true,
+      confirmButtonText: "Borrar consola",
+      cancelButtonText: "Cancelar",
+    }).then((res) => {
+      if (res && res.isConfirmed) {
+        limpiarConsola();
+        return true;
+      }
+      return false;
+    });
+  }
+
+  if (window.confirm("¿Borrar consola?\n\nSe limpiarán las salidas, errores y trazas visibles.")) {
+    limpiarConsola();
+    return Promise.resolve(true);
+  }
+  return Promise.resolve(false);
+}
+
 function limpiarTodo() {
   const nombre = obtenerNombreProceso();
   const estructura = `Proceso ${nombre}\n\n\n\n\n\n\n\n\nFinProceso`;
   reemplazarEditorConfirmando(
     estructura,
-    "Esto borrará el contenido actual y dejará solo la estructura base del proceso.",
+    "Se borrará el contenido del editor y quedará solo la estructura base del proceso.",
     true,
     {
+      title: "¿Borrar editor?",
+      confirmButtonText: "Borrar editor",
       afterReplace(editor) {
         const pos = estructura.indexOf("\n") + 1;
         editor.setSelectionRange(pos, pos);
@@ -450,21 +481,61 @@ function quitarResalteNombreInvalido() {
   if (el) el.remove();
 }
 
+const LITE_SWAL_CUSTOM_CLASS = {
+  popup: "liteseint-swal",
+  icon: "liteseint-swal-icon",
+  title: "liteseint-swal-title",
+  htmlContainer: "liteseint-swal-text",
+  actions: "liteseint-swal-actions",
+  confirmButton: "liteseint-swal-confirm",
+  cancelButton: "liteseint-swal-cancel",
+};
+
+function liteSwal(opciones) {
+  return Swal.fire({
+    background: "#161b22",
+    color: "#e6edf3",
+    buttonsStyling: false,
+    customClass: LITE_SWAL_CUSTOM_CLASS,
+    ...opciones,
+  });
+}
+
+function editorTieneInstruccionesDescargables(contenido) {
+  const lineas = String(contenido || "").split("\n");
+  return lineas.some((linea) => {
+    const limpia = linea.trim();
+    if (!limpia || limpia.startsWith("//")) return false;
+    if (/^Proceso\s+\S+/i.test(limpia)) return false;
+    if (/^FinProceso$/i.test(limpia)) return false;
+    return true;
+  });
+}
+
 function descargar() {
   const nombre = obtenerNombreProceso();
-  if (nombre === "nombre_proceso") {
-    resaltarNombreInvalido();
-    Swal.fire({
+  const contenido = $("#editor").val();
+  if (!editorTieneInstruccionesDescargables(contenido)) {
+    liteSwal({
       icon: "warning",
-      title: "Nombre de proceso inválido",
-      text: 'Cambia "nombre_proceso" por un nombre válido antes de descargar.',
-      confirmButtonColor: "#00cc77",
-      background: "#161b22",
-      color: "#e6edf3",
+      title: "No hay código para descargar",
+      text: "Escribe al menos una instrucción dentro del proceso antes de guardar el archivo .psc.",
+      confirmButtonText: "Entendido",
     });
     return;
   }
-  const contenido = $("#editor").val();
+
+  if (nombre === "nombre_proceso") {
+    resaltarNombreInvalido();
+    liteSwal({
+      icon: "warning",
+      title: "No se puede descargar",
+      text: 'Cambia "nombre_proceso" por un nombre válido para guardar el archivo .psc.',
+      confirmButtonText: "Entendido",
+    });
+    return;
+  }
+
   const blob = new Blob([contenido], { type: "text/plain" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -472,6 +543,53 @@ function descargar() {
   a.download = `${nombre}.psc`;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+function mostrarAlertaImportacion(icon, title, text) {
+  if (typeof Swal !== "undefined") {
+    liteSwal({
+      icon,
+      title,
+      text,
+      confirmButtonText: "Entendido",
+    });
+  } else {
+    window.alert(`${title}\n\n${text}`);
+  }
+}
+
+function importarArchivoPsc(file) {
+  if (!file) return;
+  if (!/\.psc$/i.test(file.name)) {
+    mostrarAlertaImportacion(
+      "warning",
+      "Archivo no compatible",
+      "Selecciona un archivo con extensión .psc.",
+    );
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const contenido = String(reader.result || "").replace(/^\uFEFF/, "");
+    reemplazarEditorConfirmando(
+      contenido,
+      `Se reemplazará el contenido del editor por el archivo "${file.name}".`,
+      true,
+      {
+        title: "¿Importar archivo .psc?",
+        confirmButtonText: "Importar archivo",
+      },
+    );
+  };
+  reader.onerror = () => {
+    mostrarAlertaImportacion(
+      "error",
+      "No se pudo importar",
+      "El archivo no se pudo leer. Intenta abrir otro .psc.",
+    );
+  };
+  reader.readAsText(file);
 }
 
 // =========================================
@@ -1700,10 +1818,16 @@ const EJEMPLOS = {
 function cargarEjemplo(nombre) {
   if (EJEMPLOS[nombre]) {
     const nombreProceso = obtenerNombreProceso();
+    const usaProcesoGenerico = nombreProceso === "nombre_proceso";
     return reemplazarEditorConfirmando(
       `Proceso ${nombreProceso}\n${EJEMPLOS[nombre]}\nFinProceso`,
-      "Esto reemplazará el contenido del editor por el ejemplo seleccionado.",
-      true,
+      "Se reemplazará el contenido del editor por el ejemplo seleccionado.",
+      !usaProcesoGenerico,
+      {
+        title: "¿Cargar ejemplo?",
+        confirmButtonText: "Cargar ejemplo",
+        omitirConfirmacion: usaProcesoGenerico,
+      },
     );
   }
   return Promise.resolve(false);
@@ -2370,7 +2494,7 @@ function cambiarVistaAprendizaje(view) {
   $(`.learning-tab[data-learning-view="${view}"]`).addClass("active");
   $(".learning-view").removeClass("active");
   $(`[data-learning-panel-view="${view}"]`).addClass("active");
-  $("#btnToggleEjLista").toggle(view === "ejercicios");
+  $("#btnToggleEjListaHeader").toggle(view === "ejercicios");
 }
 
 function initLearningTabs() {
@@ -2454,13 +2578,19 @@ function renderizarResumenProgreso() {
     .attr("title", tooltip)
     .attr("data-tooltip", tooltip)
     .html(
-      `<span class="ej-progress-label">progreso:</span>` +
+      `<div class="ej-progress-head">` +
+        `<span class="ej-progress-label">progreso:</span>` +
+        `<button class="btn-toggle-ej-lista" id="btnToggleEjListaProgress" type="button" title="Ocultar lista de ejercicios" aria-label="Ocultar lista de ejercicios">◀</button>` +
+      `</div>` +
       `<div class="ej-progress-modern-bar" aria-label="${tooltip}">` +
         crearTramo(completados, "done", "Completados") +
         crearTramo(enCurso, "running", "En curso") +
         crearTramo(pendientes, "pending", "Pendientes") +
       `</div>`,
     );
+
+  const collapsed = document.querySelector('.ej-workspace')?.classList.contains('ej-lista-colapsada');
+  setEjListaVisible(!collapsed);
 }
 
 function renderizarListaEjercicios() {
@@ -2659,22 +2789,24 @@ function reemplazarEditorConfirmando(nuevoCodigo, mensaje, siempreConfirmar = fa
     editor.focus();
   };
 
+  if (opciones.omitirConfirmacion) {
+    reemplazar();
+    return Promise.resolve(true);
+  }
+
   if (!siempreConfirmar && (limpio === "" || limpio === placeholder)) {
     reemplazar();
     return Promise.resolve(true);
   }
 
   if (typeof Swal !== "undefined") {
-    return Swal.fire({
-      icon: "warning",
-      title: "¿Reemplazar el código actual?",
+    return liteSwal({
+      icon: opciones.icon || "warning",
+      title: opciones.title || "¿Reemplazar el código actual?",
       text: mensaje,
       showCancelButton: true,
-      confirmButtonText: "Reemplazar",
-      cancelButtonText: "Cancelar",
-      confirmButtonColor: "#00cc77",
-      background: "#161b22",
-      color: "#e6edf3",
+      confirmButtonText: opciones.confirmButtonText || "Reemplazar",
+      cancelButtonText: opciones.cancelButtonText || "Cancelar",
     }).then((res) => {
       if (res && res.isConfirmed) {
         reemplazar();
@@ -2694,7 +2826,12 @@ function reemplazarEditorConfirmando(nuevoCodigo, mensaje, siempreConfirmar = fa
 function cargarPlantillaEjercicio(ejercicio) {
   reemplazarEditorConfirmando(
     plantillaInicial(ejercicio),
-    "Esto reemplazará el contenido del editor por una plantilla en blanco para este ejercicio.",
+    "Se reemplazará el contenido del editor por una plantilla en blanco para este ejercicio.",
+    false,
+    {
+      title: "¿Cargar plantilla?",
+      confirmButtonText: "Cargar plantilla",
+    },
   );
 }
 
@@ -2702,8 +2839,12 @@ function cargarCodigoReferencia(ejercicio) {
   if (!ejercicio.codigoReferencia) return;
   reemplazarEditorConfirmando(
     ejercicio.codigoReferencia,
-    "Esto reemplazará el contenido del editor por el código de referencia. Se recomienda intentar resolver el ejercicio antes de mirar la solución.",
+    "Se reemplazará el contenido del editor por el código de referencia. Se recomienda intentar resolver el ejercicio antes de mirar la solución.",
     true,
+    {
+      title: "¿Ver código de referencia?",
+      confirmButtonText: "Ver referencia",
+    },
   );
 }
 
@@ -2917,9 +3058,18 @@ $(document).ready(function () {
 
   $("#btnEjecutar").on("click", ejecutar);
   $("#btnDetener").on("click", detener);
-  $("#btnLimpiarConsola").on("click", limpiarConsola);
+  $("#btnLimpiarConsola").on("click", limpiarConsolaConfirmando);
   $("#btnLimpiarTodo").on("click", limpiarTodo);
   $("#btnDescargar").on("click", descargar);
+  $("#btnImportar").on("click", () => {
+    const input = document.getElementById("inputImportarPsc");
+    if (input) input.click();
+  });
+  $("#inputImportarPsc").on("change", function () {
+    const file = this.files && this.files[0];
+    importarArchivoPsc(file);
+    this.value = "";
+  });
   $("#btnTheme").on("click", cycleTheme);
   initConsoleEchoToggle();
   $(".console-header").on("click", function (e) {

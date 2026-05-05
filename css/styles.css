@@ -17,6 +17,16 @@
   --selected-dim: #4d7fd6;
   --selected-bg: rgba(112, 161, 255, 0.10);
   --selected-shadow: rgba(112, 161, 255, 0.16);
+  --surface-learning-panel: rgba(0,0,0,0.15);
+  --surface-learning-header: rgba(0,0,0,0.2);
+  --surface-exercise-list: transparent;
+  --surface-exercise-detail: transparent;
+  --surface-exercise-card: rgba(255,255,255,0.02);
+  --surface-exercise-card-hover: var(--accent-bg);
+  --surface-exercise-card-selected: var(--selected-bg);
+  --surface-exercise-subpanel: rgba(255,255,255,0.025);
+  --surface-exercise-subpanel-strong: var(--bg-console);
+  --surface-exercise-progress: rgba(255,255,255,0.035);
   --text-primary: #c8d6e5;
   --text-secondary: #5c6a7a;
   --text-muted: #3a4555;
@@ -676,11 +686,45 @@ body::before {
 }
 
 .btn-icon-action {
+  position: relative;
   width: 24px;
   height: 24px;
   justify-content: center;
   padding: 0;
   gap: 0;
+}
+
+.btn-icon-action[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 80;
+  width: max-content;
+  max-width: min(260px, calc(100vw - 32px));
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(236,164,0,0.42);
+  background: var(--reference-tooltip-bg);
+  color: var(--reference-action);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.42);
+  font-family: var(--font-code);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-align: left;
+  white-space: pre-wrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-2px);
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.btn-icon-action[data-tooltip]:hover::after,
+.btn-icon-action[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .console-header .btn-icon-action {
@@ -699,6 +743,7 @@ body::before {
 }
 
 #btnDescargar,
+#btnImportar,
 #btnToggleConsoleEcho {
   color: var(--dif-basic);
   border-color: transparent;
@@ -713,6 +758,7 @@ body::before {
 }
 
 #btnDescargar:hover,
+#btnImportar:hover,
 #btnToggleConsoleEcho:hover {
   color: var(--dif-basic);
   background: var(--dif-basic-bg);
@@ -888,7 +934,7 @@ body::before {
   width: var(--learning-panel-w);
   display: flex;
   flex-direction: column;
-  background: rgba(0,0,0,0.15);
+  background: var(--surface-learning-panel);
   border-right: 1px solid var(--border-color);
   min-height: 0;
 }
@@ -909,7 +955,7 @@ body::before {
   letter-spacing: 1.5px;
   text-transform: uppercase;
   border-bottom: 1px solid var(--border-color);
-  background: rgba(0,0,0,0.2);
+  background: var(--surface-learning-header);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -928,7 +974,8 @@ body::before {
   color: var(--text-muted);
   border-radius: 4px;
   padding: 0 6px;
-  height: 20px;
+  height: 18px;
+  min-width: 24px;
   font-family: var(--font-code);
   font-size: 10px;
   cursor: pointer;
@@ -943,6 +990,10 @@ body::before {
   color: var(--accent);
   border-color: var(--accent);
   background: var(--accent-bg);
+}
+
+.ej-workspace.ej-lista-colapsada .btn-toggle-ej-lista {
+  display: none;
 }
 
 .learning-panel-toggle {
@@ -1169,13 +1220,15 @@ body::before {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background: var(--surface-exercise-list);
 }
 
 .ej-detail-column {
   grid-area: detail;
   overflow-y: auto;
   border-left: 1px dashed var(--border-color);
-  padding-left: 12px;
+  padding: 10px 12px;
+  background: var(--surface-exercise-detail);
 }
 
 .ej-detail-column .ej-detail {
@@ -1649,13 +1702,21 @@ body::before {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 4px;
+  gap: 6px;
   margin-bottom: 10px;
   font-family: var(--font-code);
   font-size: 10.5px;
   position: relative;
   min-width: 0;
   flex-shrink: 0;
+}
+
+.ej-progress-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
 }
 
 .ej-progress-summary::after {
@@ -1698,7 +1759,7 @@ body::before {
   overflow: hidden;
   border-radius: 0;
   border: 0;
-  background: rgba(255,255,255,0.035);
+  background: var(--surface-exercise-progress);
   box-shadow: none;
 }
 
@@ -1760,7 +1821,7 @@ body::before {
 }
 
 .ej-item {
-  background: rgba(255,255,255,0.02);
+  background: var(--surface-exercise-card);
   border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 7px 9px;
@@ -1770,12 +1831,12 @@ body::before {
 
 .ej-item:hover {
   border-color: var(--accent-dim);
-  background: var(--accent-bg);
+  background: var(--surface-exercise-card-hover);
 }
 
 .ej-item.selected {
   border-color: var(--selected);
-  background: var(--selected-bg);
+  background: var(--surface-exercise-card-selected);
   box-shadow: 0 0 12px var(--selected-shadow);
 }
 
@@ -1980,7 +2041,7 @@ body::before {
 }
 
 .ej-enunciado-box {
-  background: rgba(255,255,255,0.025);
+  background: var(--surface-exercise-subpanel);
   border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 8px 9px;
@@ -2006,7 +2067,7 @@ body::before {
 }
 
 .ej-eps {
-  background: rgba(0,0,0,0.2);
+  background: var(--surface-exercise-subpanel);
   border: 1px solid var(--border-color);
   border-radius: 5px;
   padding: 6px 8px;
@@ -2030,7 +2091,7 @@ body::before {
 }
 
 .ej-salida pre {
-  background: var(--bg-console);
+  background: var(--surface-exercise-subpanel-strong);
   border: 1px solid var(--border-color);
   border-radius: 5px;
   padding: 6px 8px;
@@ -2046,7 +2107,7 @@ body::before {
   margin: 0 0 8px 0;
   font-size: 11px;
   color: var(--text-secondary);
-  background: rgba(255,255,255,0.03);
+  background: var(--surface-exercise-subpanel);
   border: 1px solid var(--border-color);
   border-radius: 5px;
   padding: 4px 8px;
@@ -2516,6 +2577,86 @@ body::before {
 }
 
 /* ========================================
+    COMPACT SWEETALERT
+    ======================================== */
+.swal2-popup.liteseint-swal {
+  width: min(360px, calc(100vw - 32px));
+  padding: 14px 16px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-panel) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 14px 36px rgba(0,0,0,0.44);
+  font-family: var(--font-code);
+}
+
+.swal2-icon.liteseint-swal-icon {
+  width: 38px;
+  height: 38px;
+  margin: 4px auto 10px;
+  font-size: 11px;
+}
+
+.swal2-title.liteseint-swal-title {
+  padding: 0;
+  margin: 0 0 8px;
+  color: var(--text-primary);
+  font-family: var(--font-code);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+.swal2-html-container.liteseint-swal-text {
+  margin: 0;
+  color: var(--text-secondary);
+  font-family: var(--font-code);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.swal2-actions.liteseint-swal-actions {
+  gap: 8px;
+  margin: 14px 0 0;
+}
+
+.liteseint-swal-confirm,
+.liteseint-swal-cancel {
+  min-height: 28px;
+  border-radius: 5px;
+  padding: 5px 12px;
+  font-family: var(--font-code);
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.liteseint-swal-confirm {
+  border: 1px solid var(--accent-dim);
+  background: var(--accent);
+  color: var(--bg-deep);
+}
+
+.liteseint-swal-confirm:hover {
+  box-shadow: 0 0 14px var(--accent-bg);
+}
+
+.liteseint-swal-cancel {
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.liteseint-swal-cancel:hover {
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.04);
+}
+
+/* ========================================
     THEMES
     ======================================== */
 
@@ -2536,6 +2677,16 @@ body::before {
   --selected-dim: #6269d8;
   --selected-bg: rgba(124,132,255,0.10);
   --selected-shadow: rgba(124,132,255,0.16);
+  --surface-learning-panel: rgba(0,0,0,0.15);
+  --surface-learning-header: rgba(0,0,0,0.2);
+  --surface-exercise-list: transparent;
+  --surface-exercise-detail: transparent;
+  --surface-exercise-card: rgba(255,255,255,0.02);
+  --surface-exercise-card-hover: var(--accent-bg);
+  --surface-exercise-card-selected: var(--selected-bg);
+  --surface-exercise-subpanel: rgba(255,255,255,0.025);
+  --surface-exercise-subpanel-strong: var(--bg-console);
+  --surface-exercise-progress: rgba(255,255,255,0.035);
   --text-primary: #b8d4e8;
   --text-secondary: #3a6880;
   --text-muted: #1a3550;
@@ -2591,6 +2742,16 @@ body::before {
   --selected-dim: #5a3eaa;
   --selected-bg: rgba(112, 80, 200, 0.10);
   --selected-shadow: rgba(112, 80, 200, 0.16);
+  --surface-learning-panel: rgba(0, 0, 0, 0.03);
+  --surface-learning-header: rgba(0, 0, 0, 0.04);
+  --surface-exercise-list: transparent;
+  --surface-exercise-detail: rgba(86, 112, 140, 0.13);
+  --surface-exercise-card: rgba(255, 255, 255, 0.50);
+  --surface-exercise-card-hover: var(--accent-bg);
+  --surface-exercise-card-selected: var(--selected-bg);
+  --surface-exercise-subpanel: rgba(255, 255, 255, 0.48);
+  --surface-exercise-subpanel-strong: rgba(255, 255, 255, 0.36);
+  --surface-exercise-progress: rgba(0, 0, 0, 0.09);
   --text-primary: #1c2b3a;
   --text-secondary: #4a5e72;
   --text-muted: #8898a8;
@@ -2675,8 +2836,22 @@ body::before {
 [data-theme="papel"] .learning-panel-header {
   background: rgba(0, 0, 0, 0.04);
 }
-[data-theme="papel"] .learning-panel {
-  background: rgba(0, 0, 0, 0.03);
+[data-theme="papel"] .workspace-column .panel-header,
+[data-theme="papel"] .workspace-column .console-header {
+  background: #0d1117;
+  border-color: #1a2332;
+  color: #5c6a7a;
+}
+[data-theme="papel"] .workspace-column .line-numbers {
+  background: #0b1016;
+  border-color: #1a2332;
+  color: #5c6a7a;
+}
+[data-theme="papel"] .workspace-column .console-resize-handle {
+  background: #1a2332;
+}
+[data-theme="papel"] .workspace-column .console-resize-handle::before {
+  background: #5c6a7a;
 }
 [data-theme="papel"] .learning-level {
   background: rgba(255, 255, 255, 0.55);
@@ -2695,24 +2870,6 @@ body::before {
 [data-theme="papel"] .learning-panel-intro code {
   background: rgba(0, 0, 0, 0.07);
   color: var(--accent-dim);
-}
-[data-theme="papel"] .ej-item {
-  background: rgba(255, 255, 255, 0.50);
-}
-[data-theme="papel"] .ej-item:hover {
-  background: var(--accent-bg);
-}
-[data-theme="papel"] .ej-item.selected {
-  background: var(--selected-bg);
-}
-[data-theme="papel"] .ej-progress-modern-bar {
-  background: rgba(0, 0, 0, 0.09);
-}
-[data-theme="papel"] .ej-eps {
-  background: rgba(0, 0, 0, 0.05);
-}
-[data-theme="papel"] .ej-pista {
-  background: rgba(255, 255, 255, 0.45);
 }
 [data-theme="papel"] .ej-pill:hover {
   background: rgba(0, 0, 0, 0.05);
@@ -2752,6 +2909,16 @@ body::before {
   --selected-dim: #d95757;
   --selected-bg: rgba(255,107,107,0.10);
   --selected-shadow: rgba(255,107,107,0.16);
+  --surface-learning-panel: rgba(0,0,0,0.15);
+  --surface-learning-header: rgba(0,0,0,0.2);
+  --surface-exercise-list: transparent;
+  --surface-exercise-detail: transparent;
+  --surface-exercise-card: rgba(255,255,255,0.02);
+  --surface-exercise-card-hover: var(--accent-bg);
+  --surface-exercise-card-selected: var(--selected-bg);
+  --surface-exercise-subpanel: rgba(255,255,255,0.025);
+  --surface-exercise-subpanel-strong: var(--bg-console);
+  --surface-exercise-progress: rgba(255,255,255,0.035);
   --text-primary: #e8d0b4;
   --text-secondary: #7a5038;
   --text-muted: #4a3020;

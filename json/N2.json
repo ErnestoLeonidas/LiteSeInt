@@ -436,7 +436,7 @@
       "numero": "N2-16",
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
-      "titulo": "Mayor de tres números (variable auxiliar)",
+      "titulo": "Mayor de tres números",
       "conceptos": [
         "Leer",
         "Entero",
@@ -464,7 +464,7 @@
       "numero": "N2-17",
       "dificultad": "intermedio",
       "gradoAyuda": "practica",
-      "titulo": "Menor y mayor de dos números (fórmula)",
+      "titulo": "Menor y mayor de dos números",
       "conceptos": [
         "Leer",
         "Real",
@@ -860,7 +860,7 @@
       "numero": "N2-31",
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
-      "titulo": "Rutina matutina completa (pseudocódigo)",
+      "titulo": "Rutina matutina completa",
       "conceptos": [
         "Algoritmo",
         "Secuencia",

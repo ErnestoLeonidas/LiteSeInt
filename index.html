@@ -48,7 +48,7 @@
             <button class="learning-tab" data-learning-view="errores">Errores</button>
           </nav>
           <div class="lph-actions">
-            <button class="btn-toggle-ej-lista" id="btnToggleEjLista" title="Ocultar lista de ejercicios">◀</button>
+            <button class="btn-toggle-ej-lista" id="btnToggleEjListaHeader" title="Ocultar lista de ejercicios" aria-label="Ocultar lista de ejercicios">◀</button>
             <button class="learning-panel-toggle" id="learningPanelToggle" aria-label="Mostrar u ocultar panel de ejercicios">▾</button>
           </div>
         </div>
@@ -132,14 +132,22 @@
                   <option value="diasemana">Día de semana</option>
                 </optgroup>
               </select>
-              <button class="btn-console-clear btn-icon-action" id="btnDescargar" aria-label="Descargar" title="Descargar">
+              <button class="btn-console-clear btn-icon-action" id="btnDescargar" aria-label="Descargar" title="Descargar" data-tooltip="Descargar código:&#10;Guarda el contenido actual como archivo .psc">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                   <path d="M7 10l5 5 5-5"/>
                   <path d="M12 15V3"/>
                 </svg>
               </button>
-              <button class="btn-console-clear btn-icon-action" id="btnLimpiarTodo" aria-label="Borrar editor" title="Borrar editor">
+              <button class="btn-console-clear btn-icon-action" id="btnImportar" aria-label="Importar archivo .psc" title="Importar archivo .psc" data-tooltip="Cargar archivo:&#10;Importa un archivo .psc y reemplaza el editor previa confirmación">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <path d="M17 8l-5-5-5 5"/>
+                  <path d="M12 3v12"/>
+                </svg>
+              </button>
+              <input type="file" id="inputImportarPsc" accept=".psc,text/plain" hidden />
+              <button class="btn-console-clear btn-icon-action" id="btnLimpiarTodo" aria-label="Borrar editor" title="Borrar editor" data-tooltip="Borrar editor:&#10;Reemplaza el código actual por la estructura base previa confirmación">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M3 6h18"/>
                   <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
@@ -174,7 +182,7 @@
         <div class="console-panel" id="consolePanel">
           <div class="console-header">
             <div class="console-header-actions console-header-actions-left">
-              <button class="btn-console-clear btn-icon-action" id="btnToggleConsoleEcho" aria-label="Ocultar trazas de consola" title="Ocultar trazas de consola">
+              <button class="btn-console-clear btn-icon-action" id="btnToggleConsoleEcho" aria-label="Ocultar trazas de consola" title="Ocultar trazas de consola" data-tooltip="Ocultar trazas:&#10;Oculta entradas y mensajes internos de ejecución">
                 <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
                   <circle cx="12" cy="12" r="3"/>
@@ -186,7 +194,7 @@
                   <path d="M3 3l18 18"/>
                 </svg>
               </button>
-              <button class="btn-console-clear btn-icon-action" id="btnLimpiarConsola" aria-label="Borrar consola" title="Borrar consola">
+              <button class="btn-console-clear btn-icon-action" id="btnLimpiarConsola" aria-label="Borrar consola" title="Borrar consola" data-tooltip="Borrar consola:&#10;Limpia salidas, errores y trazas visibles">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M3 6h18"/>
                   <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
@@ -217,7 +225,7 @@
     <footer class="app-footer">
       Desarrollado con<span class="heart">♥</span>por
       <a href="https://github.com/ernestoleonidas" target="_blank" rel="noopener noreferrer" class="ps-1"> Ernesto Velásquez</a>
-      <div class="app-version">v0.9.3</div>
+      <div class="app-version">v0.9.4</div>
     </footer>
 
   </div>

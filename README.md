@@ -6,7 +6,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v0.9.3`
+- Versión visible en la app: `v0.9.4`
 - Demo en GitHub Pages: <https://ernestoleonidas.github.io/LiteSeInt/>
 - Layout educativo: editor arriba, **consola debajo del editor** (redimensionable verticalmente) y **panel de aprendizaje integrado** con ejercicios, documentación de comandos, ruta del estudiante y errores comunes.
 - **245 ejercicios adaptados** desde `ejercicios/guia.html` al dialecto LiteSeInt, cargados desde archivos JSON normalizados `N1`–`N7`, con validación estática automática y formato de código de referencia consistente.
@@ -24,13 +24,15 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 - Consola **debajo del editor**, redimensionable verticalmente (la altura se persiste en `localStorage`).
 - **Panel de aprendizaje** con banco de ejercicios, documentación de comandos (17 entradas: instrucciones, tipos, operadores, estructuras de control y funciones), ruta del estudiante y guía de errores comunes sin depender de internet.
 - **Banco de ejercicios** con filtros por nivel/dificultad/estado, detalle con enunciado, E·P·S dentro de la pista, salida esperada, acceso al código de referencia con confirmación previa y **progreso local** persistente (`pendiente` / `en curso` / `completado`).
-- Selector de **ejemplos en menú desplegable**, agrupados por concepto (primeros programas, variables, expresiones, condicionales, ciclos, `Segun`).
-- Confirmación previa en acciones que reemplazan el contenido del editor: ejemplos, borrado de editor y código de referencia.
+- Selector de **ejemplos en menú desplegable**, agrupados por concepto (primeros programas, variables, expresiones, condicionales, ciclos, `Segun`), con confirmación solo cuando el editor ya usa un proceso no genérico.
+- Importación y descarga de archivos `.psc`; la descarga exige un nombre de proceso válido y al menos una instrucción real.
+- Confirmación previa en acciones que reemplazan el contenido del editor: borrado de editor, importación `.psc`, ejemplos con proceso no genérico y código de referencia.
+- Tooltips compactos en acciones de editor/consola y diálogos de confirmación adaptados al estilo visual de LiteSeInt.
 - Resaltado de sintaxis y guías visuales de indentación.
 - Validación estática con errores por línea, badge visual y tooltip descriptivo.
 - Consola integrada con entrada inline para instrucciones `Leer`.
 - Ejecución con resaltado de la línea activa.
-- Botones para ejecutar, detener, limpiar y descargar el código como `.psc`.
+- Botones para ejecutar, detener, limpiar, importar y descargar código `.psc`.
 - Autocompletado de palabras reservadas, tipos, literales y variables definidas por el usuario.
 - Deshacer cambios del editor con `Ctrl+Z` o `Cmd+Z`.
 - Estructura inicial `Proceso ... FinProceso` protegida en la experiencia de edición.
@@ -309,7 +311,7 @@ El panel de aprendizaje muestra el banco de ejercicios adaptados desde `ejercici
 - **Ver el código de referencia** adaptado desde el detalle del ejercicio, con confirmación previa para no sobrescribir el editor.
 - **Marcar progreso** manualmente como `pendiente`, `en curso` o `completado`. El estado se guarda en `localStorage` (`liteseint:exerciseProgress`) y persiste al recargar la página.
 
-A la fecha `v0.9.3`, el banco contiene 245 ejercicios adaptados, cargados desde `json/N1.json` a `json/N7.json` mediante `js/ejercicios-data.js`. En la app quedan visibles N1–N7. La regla de calidad se mantiene: **todo ejercicio visible debe estar adaptado** al dialecto LiteSeInt, pasar la validación estática y mantener un formato de referencia legible. Detalles en [`EJERCICIOS.md`](EJERCICIOS.md).
+A la fecha `v0.9.4`, el banco contiene 245 ejercicios adaptados, cargados desde `json/N1.json` a `json/N7.json` mediante `js/ejercicios-data.js`. En la app quedan visibles N1–N7. La regla de calidad se mantiene: **todo ejercicio visible debe estar adaptado** al dialecto LiteSeInt, pasar la validación estática y mantener un formato de referencia legible. Detalles en [`EJERCICIOS.md`](EJERCICIOS.md).
 
 ## Documentación integrada
 

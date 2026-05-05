@@ -236,7 +236,7 @@
       "numero": "N1-09",
       "dificultad": "basico",
       "gradoAyuda": "practica",
-      "titulo": "Celsius a Fahrenheit (EA 1.1)",
+      "titulo": "Celsius a Fahrenheit",
       "conceptos": [
         "Leer",
         "Real",
@@ -499,7 +499,7 @@
       "numero": "N1-18",
       "dificultad": "avanzado",
       "gradoAyuda": "desafio",
-      "titulo": "Conversión de segundos a h:m:s (EA 1.1)",
+      "titulo": "Conversión de segundos a h:m:s",
       "conceptos": [
         "Leer",
         "Entero",
