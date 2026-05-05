@@ -208,8 +208,8 @@ function aplicarAnchoLearningPanel(px, opciones = {}) {
   if (!panel) return;
   const width = clampLearningPanelWidth(px);
   document.documentElement.style.setProperty('--learning-panel-w', `${width}px`);
-  if (opciones.autoColapsar && width <= LEARNING_PANEL_AUTO_COLLAPSE_PX) {
-    setEjListaVisible(false);
+  if (opciones.autoColapsar) {
+    setEjListaVisible(width > LEARNING_PANEL_AUTO_COLLAPSE_PX);
   }
   scheduleIndentGuideRender({ remeasure: true });
 }
@@ -3148,7 +3148,7 @@ $(document).ready(function () {
     actualizarIndentGuides({ remeasure: true });
     const panel = document.querySelector('.learning-panel');
     if (panel && !mobileConsoleQuery.matches) {
-      aplicarAnchoLearningPanel(panel.getBoundingClientRect().width);
+      aplicarAnchoLearningPanel(panel.getBoundingClientRect().width, { autoColapsar: true });
     }
   });
 

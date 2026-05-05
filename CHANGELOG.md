@@ -11,7 +11,7 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 Ajuste de versionado para la revisión de redimensionado horizontal del panel de aprendizaje.
 
 ### Cambiado
-- **Panel de aprendizaje**: mantiene el menú de ejercicios desplegado por defecto y conserva el redimensionado horizontal dentro del rango definido para el layout.
+- **Panel de aprendizaje**: mantiene el menú de ejercicios desplegado por defecto, conserva el redimensionado horizontal dentro del rango definido para el layout y vuelve a mostrar la lista al recuperar espacio suficiente.
 - **README, EJERCICIOS y ROADMAP**: estado actualizado a `v0.9.5`.
 - **Versión visible**: `v0.9.5`.
 
