@@ -6,6 +6,18 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [0.9.5] — 2026-05-04
+
+Ajuste de versionado para la revisión de redimensionado horizontal del panel de aprendizaje.
+
+### Cambiado
+- **Panel de aprendizaje**: mantiene el menú de ejercicios desplegado por defecto y conserva el redimensionado horizontal dentro del rango definido para el layout.
+- **README, EJERCICIOS y ROADMAP**: estado actualizado a `v0.9.5`.
+- **Versión visible**: `v0.9.5`.
+
+### Validado
+- **Pruebas**: `npm test` pasa con 17 pruebas.
+
 ## [0.9.4] — 2026-05-04
 
 Preparación de release hacia `v1.0.0`, consolidando los ajustes finales de interacción, theming y archivos `.psc`.
@@ -309,7 +321,7 @@ Cierre de la fase "Nuevo layout de aprendizaje". Esta versión reorganiza la pan
 - No se integran los 245 ejercicios de `ejercicios/guia.html`. El panel derecho muestra solo placeholders por nivel.
 - No se implementa progreso persistente por ejercicio.
 - No se agrega documentación de comandos en la app (eso pertenece a 0.8.5).
-- No se agrega el puente a Python (eso pertenece a 0.9.5).
+- No se agrega el puente a Python (queda fuera del alcance de la preparación 1.0 actual).
 
 ## [0.6.5] — 2026-04-26
 
