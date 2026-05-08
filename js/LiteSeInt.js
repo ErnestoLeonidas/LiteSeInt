@@ -1265,7 +1265,6 @@ class LiteSeInt {
   // Registro de funciones nativas. Forma esperada de cada entrada:
   //
   //   nombre: { aridadMin, aridadMax, aplicar(args, ctx) }
-  //
   // donde `args` es el arreglo de argumentos ya evaluados y `ctx`
   // expone `{ lineaIdx, runtime }` por si una función necesitara
   // contexto extra al lanzar errores. Las claves se almacenan en
