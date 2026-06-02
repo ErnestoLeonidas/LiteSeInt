@@ -267,11 +267,12 @@ La lógica del intérprete no depende de frameworks de frontend.
 ├── package.json
 ├── css/
 │   └── styles.css
+├── core/
+│   ├── doc_errores.js
+│   └── LiteSeInt.js
 ├── js/
 │   ├── app.js
-│   ├── doc_errores.js
-│   ├── ejercicios-data.js
-│   └── LiteSeInt.js
+│   └── ejercicios-data.js
 ├── ejercicios/
 │   └── guia.html
 └── tests/
@@ -290,8 +291,8 @@ tests/
 - [index.html](index.html): estructura de la interfaz y carga de dependencias.
 - [css/styles.css](css/styles.css): estilos de la aplicación.
 - [js/app.js](js/app.js): controlador de interfaz, consola, editor, autocompletado, ejemplos y banco de ejercicios.
-- [js/doc_errores.js](js/doc_errores.js): tokenización, validación estática, decoraciones y tabla de símbolos.
-- [js/LiteSeInt.js](js/LiteSeInt.js): parser, AST, ejecución y evaluación de expresiones/condiciones.
+- [core/doc_errores.js](core/doc_errores.js): tokenización, validación estática, decoraciones y tabla de símbolos.
+- [core/LiteSeInt.js](core/LiteSeInt.js): parser, AST, ejecución y evaluación de expresiones/condiciones.
 - [js/ejercicios-data.js](js/ejercicios-data.js): banco de ejercicios adaptados al dialecto LiteSeInt (fuente de datos del panel de aprendizaje).
 - [tests/run-tests.js](tests/run-tests.js): pruebas de regresión del lenguaje y del banco de ejercicios.
 
@@ -360,8 +361,8 @@ Las pruebas cargan `doc_errores.js`, `LiteSeInt.js`, `ejercicios-data.js` y dato
 index.html
   ├── css/styles.css
   └── js/app.js
-       ├── usa js/doc_errores.js para validación y ayudas del editor
-       ├── usa js/LiteSeInt.js para interpretar y ejecutar
+       ├── usa core/doc_errores.js para validación y ayudas del editor
+       ├── usa core/LiteSeInt.js para interpretar y ejecutar
        └── usa js/ejercicios-data.js como fuente del banco de ejercicios
 ```
 

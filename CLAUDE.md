@@ -29,10 +29,10 @@ Current file ownership:
 - `index.html`: app shell and script loading
 - `css/styles.css`: visual system and responsive layout
 - `js/app.js`: UI controller, editor behavior, console, autocomplete, examples, visual state
-- `js/doc_errores.js`: tokenizer, static validator, symbol table, exact error ranges, autocomplete helpers
-- `js/LiteSeInt.js`: parser, AST, runtime execution, expression evaluation, runtime checks
+- `core/doc_errores.js`: tokenizer, static validator, symbol table, exact error ranges, autocomplete helpers
+- `core/LiteSeInt.js`: parser, AST, runtime execution, expression evaluation, runtime checks
 - `js/ejercicios-data.js`: exercise definitions consumed by the UI and loaded into the test sandbox
-- `tests/run-tests.js`: Node-based regression tests for validator and runtime behavior. Loads `doc_errores.js`, `LiteSeInt.js`, and `ejercicios-data.js` into a `vm` context and exercises them via `DocErrores.validarDocumento` and `new LiteSeInt({...})` callbacks. New tests should follow the existing `validar(...)` / `ejecutar(...)` helper patterns at the top of the file.
+- `tests/run-tests.js`: Node-based regression tests for validator and runtime behavior. Loads `core/doc_errores.js`, `core/LiteSeInt.js`, and `js/ejercicios-data.js` into a `vm` context and exercises them via `DocErrores.validarDocumento` and `new LiteSeInt({...})` callbacks. New tests should follow the existing `validar(...)` / `ejecutar(...)` helper patterns at the top of the file.
 - `package.json`: test script entrypoint
 - `README.md`: user-facing documentation
 - `CHANGELOG.md`: notable visible changes
@@ -42,14 +42,14 @@ Current file ownership:
 ## Core Architecture Rules
 
 - Respect layer boundaries.
-- `js/doc_errores.js` must not depend on DOM, jQuery, Bootstrap, or UI state.
-- `js/LiteSeInt.js` must remain UI-agnostic. No direct DOM access.
+- `core/doc_errores.js` must not depend on DOM, jQuery, Bootstrap, or UI state.
+- `core/LiteSeInt.js` must remain UI-agnostic. No direct DOM access.
 - `js/app.js` owns UI orchestration and should consume the validator and runtime instead of reimplementing them.
 - `index.html` should stay focused on shell markup and loading, not absorb language logic.
 - Do not move validation logic into the UI.
 - Do not duplicate parser or validation rules across files unless strictly necessary.
-- If a rule belongs to lexical analysis or static validation, put it in `js/doc_errores.js`.
-- If a rule belongs to execution semantics, put it in `js/LiteSeInt.js`.
+- If a rule belongs to lexical analysis or static validation, put it in `core/doc_errores.js`.
+- If a rule belongs to execution semantics, put it in `core/LiteSeInt.js`.
 - If a rule belongs to UI behavior or examples, put it in `js/app.js`.
 - If a rule belongs to presentation only, keep it in HTML/CSS.
 
@@ -82,7 +82,7 @@ Use the current naming conventions:
 
 ## File-Specific Guidance
 
-### `js/doc_errores.js`
+### `core/doc_errores.js`
 
 This file owns:
 
@@ -103,7 +103,7 @@ Rules:
 - Avoid UI-oriented language or DOM assumptions here.
 - Keep helpers generic and reusable.
 
-### `js/LiteSeInt.js`
+### `core/LiteSeInt.js`
 
 This file owns:
 
@@ -135,7 +135,7 @@ This file owns:
 
 Rules:
 
-- Reuse helpers from `js/doc_errores.js` and `js/LiteSeInt.js` instead of duplicating language rules.
+- Reuse helpers from `core/doc_errores.js` and `core/LiteSeInt.js` instead of duplicating language rules.
 - Preserve the current console, editor, overlay, and autocomplete flows unless the request changes them.
 - If a user-visible language feature changes, update examples and relevant autocomplete entries here.
 
@@ -165,8 +165,8 @@ For user-visible language changes, use the project skill `/liteseint-language-ch
 
 When adding or changing language behavior:
 
-1. Update static analysis in `js/doc_errores.js`.
-2. Update runtime semantics in `js/LiteSeInt.js`.
+1. Update static analysis in `core/doc_errores.js`.
+2. Update runtime semantics in `core/LiteSeInt.js`.
 3. Update autocomplete, examples, or UI helpers in `js/app.js` if the feature is user-visible.
 4. Update `README.md` if supported syntax or behavior changed.
 5. Update `CHANGELOG.md` for notable visible changes.

@@ -31,22 +31,22 @@ State the scope before editing anything.
 
 Keep responsibilities in the correct file:
 
-- `js/doc_errores.js`: tokenization, static validation, symbol table, exact error ranges, autocomplete helpers
-- `js/LiteSeInt.js`: parser, AST, execution, expression evaluation, runtime errors
+- `core/doc_errores.js`: tokenization, static validation, symbol table, exact error ranges, autocomplete helpers
+- `core/LiteSeInt.js`: parser, AST, execution, expression evaluation, runtime errors
 - `js/app.js`: UI controller, autocomplete wiring, examples, console behavior
 - `index.html`: layout, visible version, user-facing chrome
 
 Do not move validation logic into the UI.
-Do not add DOM dependencies to `js/doc_errores.js`.
-Do not add direct UI logic to `js/LiteSeInt.js`.
+Do not add DOM dependencies to `core/doc_errores.js`.
+Do not add direct UI logic to `core/LiteSeInt.js`.
 Do not duplicate parser or validation rules across files unless strictly necessary.
 
 ## Apply The Smallest Correct Cross-File Patch
 
 When a user-visible language feature changes, update all affected layers together:
 
-1. Update tokenization and static validation in `js/doc_errores.js`.
-2. Update parsing and runtime behavior in `js/LiteSeInt.js`.
+1. Update tokenization and static validation in `core/doc_errores.js`.
+2. Update parsing and runtime behavior in `core/LiteSeInt.js`.
 3. Update autocomplete, examples, or editor helpers in `js/app.js` if the feature is user-facing.
 4. Update `README.md` for syntax, supported behavior, and examples.
 5. Update `CHANGELOG.md` for notable visible changes.
@@ -74,7 +74,7 @@ Preserve exact validation ranges:
 
 Keep static validation and runtime behavior aligned:
 
-- Do not let `js/doc_errores.js` approve syntax that `js/LiteSeInt.js` cannot execute.
+- Do not let `core/doc_errores.js` approve syntax that `core/LiteSeInt.js` cannot execute.
 - Do not implement runtime syntax without teaching the validator about it when the syntax is user-visible.
 - If a call or operator is unsupported, make the error explicit and name the real issue.
 

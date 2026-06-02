@@ -13,10 +13,12 @@ function loadRuntime() {
     Promise,
   };
   vm.createContext(ctx);
-  const docErrores = fs.readFileSync(path.join(root, 'js/doc_errores.js'), 'utf8');
-  const liteSeInt = fs.readFileSync(path.join(root, 'js/LiteSeInt.js'), 'utf8');
+  const tokenizer = fs.readFileSync(path.join(root, 'core/tokenizer.js'), 'utf8');
+  const validator = fs.readFileSync(path.join(root, 'core/validator.js'), 'utf8');
+  const docErrores = fs.readFileSync(path.join(root, 'core/doc_errores.js'), 'utf8');
+  const liteSeInt = fs.readFileSync(path.join(root, 'core/LiteSeInt.js'), 'utf8');
   const ejercicios = fs.readFileSync(path.join(root, 'js/ejercicios-data.js'), 'utf8');
-  vm.runInContext(`${docErrores}\nglobalThis.DocErrores = DocErrores;`, ctx);
+  vm.runInContext(`${tokenizer}\n${validator}\n${docErrores}\nglobalThis.DocErrores = DocErrores;`, ctx);
   vm.runInContext(`${liteSeInt}\nglobalThis.LiteSeInt = LiteSeInt;`, ctx);
   vm.runInContext(`${ejercicios}\nglobalThis.EjerciciosLiteSeInt = globalThis.EjerciciosLiteSeInt;`, ctx);
   const ejerciciosJson = ctx.EjerciciosLiteSeInt.EJERCICIOS_JSON_PATHS.flatMap((jsonPath) => {
