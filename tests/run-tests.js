@@ -14,11 +14,17 @@ function loadRuntime() {
   };
   vm.createContext(ctx);
   const tokenizer = fs.readFileSync(path.join(root, 'core/tokenizer.js'), 'utf8');
+  const symbolTable = fs.readFileSync(path.join(root, 'core/symbol-table.js'), 'utf8');
   const validator = fs.readFileSync(path.join(root, 'core/validator.js'), 'utf8');
   const docErrores = fs.readFileSync(path.join(root, 'core/doc_errores.js'), 'utf8');
+  const ast = fs.readFileSync(path.join(root, 'core/ast.js'), 'utf8');
+  const parser = fs.readFileSync(path.join(root, 'core/parser.js'), 'utf8');
+  const exprEval = fs.readFileSync(path.join(root, 'core/expression-evaluator.js'), 'utf8');
   const liteSeInt = fs.readFileSync(path.join(root, 'core/LiteSeInt.js'), 'utf8');
   const ejercicios = fs.readFileSync(path.join(root, 'js/ejercicios-data.js'), 'utf8');
-  vm.runInContext(`${tokenizer}\n${validator}\n${docErrores}\nglobalThis.DocErrores = DocErrores;`, ctx);
+  vm.runInContext(`${tokenizer}\n${symbolTable}\n${validator}\n${docErrores}\nglobalThis.DocErrores = DocErrores; globalThis.LiteSeIntSymbolTable = LiteSeIntSymbolTable;`, ctx);
+  vm.runInContext(`${ast}\n${parser}\nglobalThis.LiteSeIntAST = LiteSeIntAST; globalThis.LiteSeIntParser = LiteSeIntParser;`, ctx);
+  vm.runInContext(`${exprEval}\nglobalThis.LiteSeIntExprEval = LiteSeIntExprEval;`, ctx);
   vm.runInContext(`${liteSeInt}\nglobalThis.LiteSeInt = LiteSeInt;`, ctx);
   vm.runInContext(`${ejercicios}\nglobalThis.EjerciciosLiteSeInt = globalThis.EjerciciosLiteSeInt;`, ctx);
   const ejerciciosJson = ctx.EjerciciosLiteSeInt.EJERCICIOS_JSON_PATHS.flatMap((jsonPath) => {
@@ -334,6 +340,227 @@ test('documentacion de errores: ejemplos incorrectos reproducen errores o son de
       res.length > 0 || esRuntime,
       `${err.titulo}: ejemplo incorrecto no falla en validación ni está marcado como runtime`,
     );
+  }
+});
+
+test('parser: produce Programa raiz con astVersion 2 y cuerpo array', () => {
+  const ctx = loadRuntime();
+  const codigo = 'Proceso p\nDefinir x Como Entero\nx = 1\nEscribir x\nFinProceso';
+  const ast = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  assert.strictEqual(ast.tipo, 'Programa');
+  assert.strictEqual(ast.astVersion, 2);
+  assert.ok(Array.isArray(ast.cuerpo));
+  assert.ok(ast.loc && typeof ast.loc.linea === 'number');
+});
+
+test('parser: emite nodos PascalCase para instrucciones simples', () => {
+  const ctx = loadRuntime();
+  const codigo = 'Proceso p\nDefinir x Como Entero\nLeer x\nx = x + 1\nEscribir x\nFinProceso';
+  const cuerpo = ctx.LiteSeIntParser.parsearPrograma(codigo).cuerpo;
+  const tipos = Array.from(cuerpo, (n) => n.tipo);
+  assert.deepStrictEqual(tipos, ['Definir', 'Leer', 'Asignar', 'Escribir']);
+  for (const nodo of cuerpo) {
+    assert.ok(nodo.loc, `nodo ${nodo.tipo} sin loc`);
+    assert.strictEqual(typeof nodo.loc.linea, 'number');
+    assert.strictEqual(typeof nodo.loc.columnaInicio, 'number');
+    assert.strictEqual(typeof nodo.loc.columnaFin, 'number');
+  }
+});
+
+test('parser: construye nodo Si con entonces y sino', () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Definir x Como Entero',
+    'x = 1',
+    'Si x > 0 Entonces',
+    '  Escribir "pos"',
+    'Sino',
+    '  Escribir "neg"',
+    'FinSi',
+    'FinProceso',
+  ].join('\n');
+  const cuerpo = ctx.LiteSeIntParser.parsearPrograma(codigo).cuerpo;
+  const si = cuerpo.find((n) => n.tipo === 'Si');
+  assert.ok(si, 'no se encontro nodo Si');
+  assert.strictEqual(si.condicion, 'x > 0');
+  assert.strictEqual(si.entonces.length, 1);
+  assert.strictEqual(si.entonces[0].tipo, 'Escribir');
+  assert.ok(Array.isArray(si.sino));
+  assert.strictEqual(si.sino.length, 1);
+  assert.strictEqual(si.sino[0].tipo, 'Escribir');
+});
+
+test('parser: construye nodo Mientras con condicion y cuerpo', () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Definir i Como Entero',
+    'i = 0',
+    'Mientras i < 3 Hacer',
+    '  Escribir i',
+    '  i = i + 1',
+    'FinMientras',
+    'FinProceso',
+  ].join('\n');
+  const m = ctx.LiteSeIntParser.parsearPrograma(codigo).cuerpo.find((n) => n.tipo === 'Mientras');
+  assert.ok(m);
+  assert.strictEqual(m.condicion, 'i < 3');
+  assert.strictEqual(m.cuerpo.length, 2);
+  assert.strictEqual(m.cuerpo[0].tipo, 'Escribir');
+  assert.strictEqual(m.cuerpo[1].tipo, 'Asignar');
+});
+
+test('parser: construye nodo Para con desde, hasta y paso', () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Definir i Como Entero',
+    'Para i = 1 Hasta 10 Con Paso 2 Hacer',
+    '  Escribir i',
+    'FinPara',
+    'FinProceso',
+  ].join('\n');
+  const p = ctx.LiteSeIntParser.parsearPrograma(codigo).cuerpo.find((n) => n.tipo === 'Para');
+  assert.ok(p);
+  assert.strictEqual(p.variable, 'i');
+  assert.strictEqual(p.variableOriginal, 'i');
+  assert.strictEqual(p.desde, '1');
+  assert.strictEqual(p.hasta, '10');
+  assert.strictEqual(p.paso, '2');
+  assert.strictEqual(p.cuerpo.length, 1);
+});
+
+test('parser: construye nodo Repetir con condicion de HastaQue', () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Definir i Como Entero',
+    'i = 0',
+    'Repetir',
+    '  i = i + 1',
+    'HastaQue i >= 3',
+    'FinProceso',
+  ].join('\n');
+  const r = ctx.LiteSeIntParser.parsearPrograma(codigo).cuerpo.find((n) => n.tipo === 'Repetir');
+  assert.ok(r);
+  assert.strictEqual(r.condicion, 'i >= 3');
+  assert.strictEqual(r.cuerpo.length, 1);
+  assert.ok(r.locHastaQue && typeof r.locHastaQue.linea === 'number');
+});
+
+test('parser: construye nodo Segun con casos y rama otro', () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Definir d Como Entero',
+    'd = 1',
+    'Segun d Hacer',
+    '  1: Escribir "uno"',
+    '  2, 3: Escribir "dos o tres"',
+    '  De Otro Modo:',
+    '    Escribir "otro"',
+    'FinSegun',
+    'FinProceso',
+  ].join('\n');
+  const s = ctx.LiteSeIntParser.parsearPrograma(codigo).cuerpo.find((n) => n.tipo === 'Segun');
+  assert.ok(s);
+  assert.strictEqual(s.expresion, 'd');
+  assert.strictEqual(s.casos.length, 2);
+  assert.deepStrictEqual(Array.from(s.casos[0].valores), ['1']);
+  assert.deepStrictEqual(Array.from(s.casos[1].valores), ['2', '3']);
+  assert.ok(Array.isArray(s.otro));
+  assert.strictEqual(s.otro.length, 1);
+});
+
+test('parser: roundtrip JSON preserva el AST', () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Definir x Como Entero',
+    'Si x > 0 Entonces',
+    '  Para x = 1 Hasta 3 Hacer',
+    '    Escribir x',
+    '  FinPara',
+    'Sino',
+    '  Escribir "neg"',
+    'FinSi',
+    'FinProceso',
+  ].join('\n');
+  const ast = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const json = ctx.LiteSeIntAST.serializarAST(ast);
+  const rehidratado = ctx.LiteSeIntAST.deserializarAST(json);
+  assert.strictEqual(rehidratado.tipo, 'Programa');
+  assert.strictEqual(rehidratado.astVersion, 2);
+  assert.deepStrictEqual(rehidratado, ast);
+  assert.strictEqual(ctx.LiteSeIntAST.serializarAST(rehidratado), json);
+});
+
+test('parser: los 245 ejercicios visibles parsean sin throw y producen Programa', () => {
+  const ctx = loadRuntime();
+  const visibles = ctx.EjerciciosLiteSeInt.listarAdaptados().filter((e) => e.codigoReferencia);
+  assert.ok(visibles.length >= 200, `se esperaban al menos 200 ejercicios visibles, hubo ${visibles.length}`);
+  for (const ej of visibles) {
+    const ast = ctx.LiteSeIntParser.parsearPrograma(ej.codigoReferencia);
+    assert.strictEqual(ast.tipo, 'Programa', `${ej.id}: tipo raiz no es Programa`);
+    assert.strictEqual(ast.astVersion, 2, `${ej.id}: astVersion incorrecto`);
+    assert.ok(Array.isArray(ast.cuerpo), `${ej.id}: cuerpo no es array`);
+  }
+});
+
+test('symbol-table: TablaSimbolos define, marca inicializada y clona', () => {
+  const ctx = loadRuntime();
+  const tabla = new ctx.LiteSeIntSymbolTable.TablaSimbolos();
+  tabla.definir('Edad', 'entero', 3);
+  assert.strictEqual(tabla.existeVariable('edad'), true);
+  assert.strictEqual(tabla.estaInicializada('edad'), false);
+  assert.strictEqual(tabla.obtenerTipo('edad'), 'entero');
+  tabla.marcarInicializada('edad');
+  assert.strictEqual(tabla.estaInicializada('edad'), true);
+  const clon = tabla.clonar();
+  tabla.marcarInicializada('inexistente');
+  assert.deepStrictEqual(Array.from(clon.obtenerNombres()), ['Edad']);
+});
+
+test('symbol-table: ScopeChain comienza con scope global y resuelve nombres', () => {
+  const ctx = loadRuntime();
+  const chain = new ctx.LiteSeIntSymbolTable.ScopeChain();
+  assert.strictEqual(chain.profundidad(), 1);
+  chain.global().definir('total', 'entero', 0);
+  const hallado = chain.lookup('total');
+  assert.ok(hallado, 'lookup global debió encontrar la variable');
+  assert.strictEqual(hallado.obtenerTipo('total'), 'entero');
+  assert.strictEqual(chain.lookup('inexistente'), null);
+});
+
+test('symbol-table: ScopeChain push/pop respeta visibilidad de scopes anidados', () => {
+  const ctx = loadRuntime();
+  const chain = new ctx.LiteSeIntSymbolTable.ScopeChain();
+  chain.global().definir('global_var', 'real', 0);
+  const local = chain.push();
+  local.definir('local_var', 'caracter', 5);
+  assert.strictEqual(chain.profundidad(), 2);
+  assert.ok(chain.lookup('local_var'), 'local visible desde scope actual');
+  assert.ok(chain.lookup('global_var'), 'global sigue visible desde scope anidado');
+  chain.pop();
+  assert.strictEqual(chain.profundidad(), 1);
+  assert.strictEqual(chain.lookup('local_var'), null, 'local desaparece tras pop');
+  assert.throws(() => chain.pop(), /scope global/i);
+});
+
+test('runtime: ejercicios sin Leer ejecutan sin errores sobre el AST nuevo', async () => {
+  const ctx = loadRuntime();
+  const sinLeer = ctx.EjerciciosLiteSeInt.listarAdaptados()
+    .filter((e) => e.codigoReferencia && !/\bLeer\b/i.test(e.codigoReferencia));
+  assert.ok(sinLeer.length >= 10, `se esperaban >=10 ejercicios sin Leer, hubo ${sinLeer.length}`);
+  for (const ej of sinLeer) {
+    const { resultado, errores } = await ejecutar(ctx, ej.codigoReferencia);
+    assert.strictEqual(
+      resultado.exito,
+      true,
+      `${ej.id} falló: ${errores.length ? errores[0].mensaje : 'sin mensaje'}`
+    );
+    assert.strictEqual(errores.length, 0, `${ej.id} reportó errores runtime: ${JSON.stringify(errores)}`);
   }
 });
 

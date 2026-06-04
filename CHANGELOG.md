@@ -6,6 +6,39 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [1.1.0] — 2026-06-03
+
+Reestructura interna sin cambio de dialecto ni de comportamiento visible. El motor queda dividido en módulos de capa única dentro de `core/` y produce un AST explícito versionado. Es la base que `v1.2.0` (backend) y `v1.6.0+` (lenguaje 2.0) consumirán sin tocar la fachada del editor.
+
+### Resumen
+- Editor, consola y banco de ejercicios funcionan exactamente igual que en `v1.0.0`. Los 245 ejercicios siguen validando y ejecutando con la misma salida.
+- El motor del lenguaje quedó reorganizado en módulos de responsabilidad única dentro de `core/`.
+- El parser construye un AST explícito (`astVersion: 2`) con nodos en PascalCase y `loc` por nodo. El runtime ejecuta sobre ese AST.
+- Tabla de símbolos extraída con una `ScopeChain` lista para soportar subprocesos en `v1.8.0` (en `v1.1.0` solo hay scope global, pero la cadena ya existe).
+
+### Cambiado
+- **Reorganización a `core/`**: `core/tokenizer.js`, `core/symbol-table.js`, `core/validator.js`, `core/doc_errores.js` (aggregator), `core/ast.js`, `core/parser.js`, `core/expression-evaluator.js`, `core/LiteSeInt.js`. Los archivos previos `js/doc_errores.js` y `js/LiteSeInt.js` ya no existen.
+- **`core/doc_errores.js`** quedó como aggregator delgado (~35 líneas) que re-expone el contrato público `DocErrores.{...}` sobre el que dependen `js/app.js`, el runtime y los tests.
+- **Runtime de `LiteSeInt.js`** consume `LiteSeIntParser.parsearPrograma(codigo).cuerpo` en lugar de re-parsear por línea internamente. El switch del ejecutor reconoce los nodos en PascalCase (`Definir`, `Asignar`, `Si`, `Mientras`, `Repetir`, `Para`, `Segun`, ...) y lee `nodo.loc.linea`.
+- **Evaluador de expresiones** extraído a `core/expression-evaluator.js`. `LiteSeInt.js` aplica el mixin sobre `LiteSeInt.prototype` después de declarar la clase. Las tablas `_OPERADORES` y `_FUNCIONES_NATIVAS` siguen accesibles como estáticos de la clase.
+- **`core/symbol-table.js`** nuevo: contiene `TablaSimbolos` (movida desde `validator.js`) y la nueva `ScopeChain` con `actual()`, `global()`, `push()`, `pop()`, `lookup(nombre)` y `profundidad()`.
+
+### Agregado
+- **`core/ast.js`**: factories para los nodos del AST (`Programa`, `Definir`, `Asignar`, `Leer`, `Escribir`, `Si`, `Mientras`, `Repetir`, `Para`, `Segun`, `Caso`, `Desconocido`), `AST_VERSION = 2` y helpers `serializarAST` / `deserializarAST`.
+- **`core/parser.js`**: `parsearPrograma(codigo)` devuelve `{ tipo: "Programa", astVersion: 2, cuerpo, loc }`.
+- **`shared/ast-contract.md`**: contrato público del AST documentado con shape por nodo, reglas de extensión y matriz de capas que lo consumen.
+
+### Validado
+- **Pruebas**: `npm test` pasa con **30 pruebas** (las 17 originales + 9 nuevas de parser/AST + 1 de paridad de ejecución sobre ejercicios reales + 3 de symbol-table/ScopeChain).
+- **Paridad de ejecución**: los ejercicios visibles del banco que no requieren `Leer` ejecutan con `exito === true` y cero errores runtime sobre el nuevo AST.
+- **Roundtrip AST**: `JSON.stringify` / `JSON.parse` preserva el árbol generado por el parser.
+- **Carga estática**: `index.html` continúa sirviéndose desde la raíz del repo (GitHub Pages intacto).
+
+### Fuera de alcance
+- Backend, autenticación, persistencia, cuentas y modelo académico (entran en `v1.2.0` y `v1.3.0`).
+- Nuevas construcciones del lenguaje: `Dimension`, `SubProceso`, `Funcion`, `Llamar` (entran en `v1.6.0` y `v1.8.0`).
+- Cambios visibles en el editor, la consola o el banco de ejercicios.
+
 ## [1.0.0] — 2026-05-04
 
 Release estable de LiteSeInt como plataforma minimalista para aprender pseudolenguaje desde el navegador. Cierra el camino desde `v0.9.0` consolidando documentación, banco de ejercicios, ruta del estudiante y guía de errores. **No agrega lenguaje nuevo respecto a v0.9.6**: el dialecto LiteSeInt queda congelado para 1.0.

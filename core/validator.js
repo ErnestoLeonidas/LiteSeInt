@@ -18,55 +18,11 @@
 
 // ─────────────────────────────────────────────
 //  SYMBOL TABLE
+//  La clase TablaSimbolos vive en core/symbol-table.js (extraída
+//  en v1.1.0 F5 para preparar la cadena de scopes que v1.8.0
+//  necesita). validator.js la usa por nombre, asumiendo que
+//  symbol-table.js se cargó antes en el mismo scope global.
 // ─────────────────────────────────────────────
-
-class TablaSimbolos {
-  constructor() {
-    /** @type {Map<string, {tipo: string, inicializada: boolean, lineaDefinicion: number, nombreOriginal: string}>} */
-    this.variables = new Map();
-  }
-
-  definir(nombreOriginal, tipo, lineaIdx) {
-    const key = nombreOriginal.toLowerCase();
-    this.variables.set(key, {
-      tipo,
-      inicializada: false,
-      lineaDefinicion: lineaIdx,
-      nombreOriginal,
-    });
-  }
-
-  existeVariable(nombre) {
-    return this.variables.has(nombre.toLowerCase());
-  }
-
-  estaInicializada(nombre) {
-    const v = this.variables.get(nombre.toLowerCase());
-    return v ? v.inicializada : false;
-  }
-
-  marcarInicializada(nombre) {
-    const v = this.variables.get(nombre.toLowerCase());
-    if (v) v.inicializada = true;
-  }
-
-  obtenerTipo(nombre) {
-    const v = this.variables.get(nombre.toLowerCase());
-    return v ? v.tipo : null;
-  }
-
-  obtenerNombres() {
-    return Array.from(this.variables.values()).map(v => v.nombreOriginal);
-  }
-
-  clonar() {
-    const copia = new TablaSimbolos();
-    for (const [key, val] of this.variables) {
-      copia.variables.set(key, { ...val });
-    }
-    return copia;
-  }
-}
 
 // ─────────────────────────────────────────────
 //  STATIC VALIDATOR

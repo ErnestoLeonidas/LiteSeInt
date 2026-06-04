@@ -6,7 +6,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v1.0.0`
+- Versión visible en la app: `v1.1.0`
 - Demo en GitHub Pages: <https://ernestoleonidas.github.io/LiteSeInt/>
 - Layout educativo: editor arriba, **consola debajo del editor** (redimensionable verticalmente) y **panel de aprendizaje integrado** redimensionable horizontalmente con ejercicios, documentación de comandos, ruta del estudiante y errores comunes.
 - **245 ejercicios adaptados** desde `ejercicios/guia.html` al dialecto LiteSeInt, cargados desde archivos JSON normalizados `N1`–`N7`, con validación estática automática y formato de código de referencia consistente.
@@ -268,8 +268,16 @@ La lógica del intérprete no depende de frameworks de frontend.
 ├── css/
 │   └── styles.css
 ├── core/
+│   ├── tokenizer.js
+│   ├── symbol-table.js
+│   ├── validator.js
 │   ├── doc_errores.js
+│   ├── ast.js
+│   ├── parser.js
+│   ├── expression-evaluator.js
 │   └── LiteSeInt.js
+├── shared/
+│   └── ast-contract.md
 ├── js/
 │   ├── app.js
 │   └── ejercicios-data.js
@@ -291,8 +299,15 @@ tests/
 - [index.html](index.html): estructura de la interfaz y carga de dependencias.
 - [css/styles.css](css/styles.css): estilos de la aplicación.
 - [js/app.js](js/app.js): controlador de interfaz, consola, editor, autocompletado, ejemplos y banco de ejercicios.
-- [core/doc_errores.js](core/doc_errores.js): tokenización, validación estática, decoraciones y tabla de símbolos.
-- [core/LiteSeInt.js](core/LiteSeInt.js): parser, AST, ejecución y evaluación de expresiones/condiciones.
+- [core/tokenizer.js](core/tokenizer.js): tokenización por línea, constantes léxicas, helpers (`stripComment`, `crearError`).
+- [core/symbol-table.js](core/symbol-table.js): `TablaSimbolos` y `ScopeChain` (cadena de scopes, en `v1.1.0` solo scope global).
+- [core/validator.js](core/validator.js): validación estática del documento completo y reglas `validar*`.
+- [core/doc_errores.js](core/doc_errores.js): aggregator que reexpone el contrato público `DocErrores`.
+- [core/ast.js](core/ast.js): nodos del AST, `AST_VERSION` y helpers de serialización.
+- [core/parser.js](core/parser.js): `parsearPrograma(codigo)` construye el AST.
+- [core/expression-evaluator.js](core/expression-evaluator.js): pipeline aritmético y condicional + tablas de operadores y funciones nativas.
+- [core/LiteSeInt.js](core/LiteSeInt.js): runtime — recorre el AST y orquesta callbacks de I/O.
+- [shared/ast-contract.md](shared/ast-contract.md): especificación pública del AST.
 - [js/ejercicios-data.js](js/ejercicios-data.js): banco de ejercicios adaptados al dialecto LiteSeInt (fuente de datos del panel de aprendizaje).
 - [tests/run-tests.js](tests/run-tests.js): pruebas de regresión del lenguaje y del banco de ejercicios.
 
@@ -353,7 +368,7 @@ El proyecto ya cuenta con editor, consola inferior, validación estática, banco
 npm test
 ```
 
-Las pruebas cargan `doc_errores.js`, `LiteSeInt.js`, `ejercicios-data.js` y datos pedagógicos de `app.js` en Node.js para validar reglas del lenguaje, ejecución, banco de ejercicios, documentación interna y regresiones del flujo `Detener`.
+Las pruebas cargan los módulos de `core/` (`tokenizer`, `symbol-table`, `validator`, `doc_errores`, `ast`, `parser`, `expression-evaluator`, `LiteSeInt`), `js/ejercicios-data.js` y datos pedagógicos de `js/app.js` en Node.js para validar tokenización, validación estática, AST, parser, runtime, banco de ejercicios, documentación interna y regresiones del flujo `Detener`.
 
 ## Arquitectura general
 
