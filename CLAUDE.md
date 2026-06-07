@@ -44,7 +44,9 @@ Current file ownership:
 - `README.md`: user-facing documentation
 - `CHANGELOG.md`: notable visible changes
 - `EJERCICIOS.md`, `ejercicios/`: exercise documentation and assets
-- `ROADMAP.md`, `prompt_v*.txt`: planned phases and per-phase scope guards (treat as source of truth when a request maps to one)
+- `ROADMAP.md`: front/editor roadmap. Front occupies `v1.1.0` and `v1.6.0`–`v1.9.0` of the shared version line (the editor is built standalone, with no backend dependency, through `v1.9.0`).
+- `roadmap_backend.md`: backend-only roadmap. Backend occupies `v1.2.0`–`v1.5.0` of the shared line and labels its deliverables `backend v0.1.0` → `backend v1.0.0`. `backend v1.0.0` must be ready when the front closes `v1.9.0`; integration is validated between front `v1.9.0` and `v2.0.0`.
+- `prompt_v*.txt`: planned phases and per-phase scope guards (treat as source of truth when a request maps to one)
 
 ## Core Architecture Rules
 

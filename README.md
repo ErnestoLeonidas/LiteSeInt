@@ -264,6 +264,7 @@ La lógica del intérprete no depende de frameworks de frontend.
 ├── CHANGELOG.md
 ├── EJERCICIOS.md
 ├── ROADMAP.md
+├── roadmap_backend.md
 ├── package.json
 ├── css/
 │   └── styles.css
@@ -402,7 +403,7 @@ La ruta hacia 1.0 prioriza la experiencia educativa:
 - Mostrar progreso claro por nivel y ejercicio.
 - Mantener el cierre de 1.0 enfocado en LiteSeInt: comandos, rutas, errores y ejercicios.
 
-El detalle está en [ROADMAP.md](ROADMAP.md) y [EJERCICIOS.md](EJERCICIOS.md).
+El detalle del front y el editor está en [ROADMAP.md](ROADMAP.md); el del servidor en [roadmap_backend.md](roadmap_backend.md). Los ejercicios, en [EJERCICIOS.md](EJERCICIOS.md).
 
 ## Licencia
 
