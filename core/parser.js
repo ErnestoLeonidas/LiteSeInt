@@ -208,6 +208,38 @@ function parsearPrograma(codigo) {
     }
 
     if (bloqueActual !== null) {
+      // Dimension nombre[n] o Dimension nombre[n, m]
+      const dimMatch = linea.match(/^dimension\s+(\w+)\s*\[([^\]]*)\]$/i);
+      if (dimMatch) {
+        const nombre = dimMatch[1];
+        const dimensiones = dimMatch[2].split(',').map(s => {
+          const t = s.trim();
+          const n = parseInt(t, 10);
+          return isNaN(n) ? t : n;
+        });
+        bloqueActual.push(nodoDimension(nombre, dimensiones, locDeLinea(i, lineaRaw)));
+        continue;
+      }
+
+      // Leer nombre[idx] o Leer nombre[idx, idx2] — debe ir antes del fallback
+      const leerArrMatch = linea.match(/^leer\s+(\w+)\s*\[([^\]]*)\]$/i);
+      if (leerArrMatch) {
+        const nombre = leerArrMatch[1];
+        const indices = leerArrMatch[2].split(',').map(s => s.trim());
+        bloqueActual.push(nodoLeerIndice(nombre, indices, locDeLinea(i, lineaRaw)));
+        continue;
+      }
+
+      // nombre[idx] = expr  (asignación a elemento de arreglo)
+      const arrAssignMatch = linea.match(/^(\w+)\s*\[([^\]]*)\]\s*=(?!=)\s*(.+)$/i);
+      if (arrAssignMatch) {
+        const nombre = arrAssignMatch[1];
+        const indices = arrAssignMatch[2].split(',').map(s => s.trim());
+        const expresion = arrAssignMatch[3].trim();
+        bloqueActual.push(nodoAsignarIndice(nombre, indices, expresion, locDeLinea(i, lineaRaw)));
+        continue;
+      }
+
       const nodo = _crearNodoSimpleAST(linea, i, lineaRaw);
       if (nodo) bloqueActual.push(nodo);
     }

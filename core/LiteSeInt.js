@@ -138,6 +138,20 @@ class LiteSeInt {
           this.callbacks.onLineaActiva(lineaIdx);
           return await this._ejecutarLeer(nodo.texto, lineaIdx);
 
+        case 'Dimension':
+          this.callbacks.onLineaActiva(lineaIdx);
+          await this._pausa(this.velocidadPausa);
+          return this._ejecutarDimension(nodo, lineaIdx);
+
+        case 'AsignarIndice':
+          this.callbacks.onLineaActiva(lineaIdx);
+          await this._pausa(this.velocidadPausa);
+          return this._ejecutarAsignarIndice(nodo, lineaIdx);
+
+        case 'LeerIndice':
+          this.callbacks.onLineaActiva(lineaIdx);
+          return await this._ejecutarLeerIndice(nodo, lineaIdx);
+
         case 'Asignar':
           this.callbacks.onLineaActiva(lineaIdx);
           await this._pausa(this.velocidadPausa);
@@ -315,6 +329,13 @@ class LiteSeInt {
         throw new Error(`"${nombre}" es una palabra reservada y no puede usarse como variable.`);
       }
       if (this.variables.hasOwnProperty(nombre)) {
+        const v = this.variables[nombre];
+        if (v.tipo === null && Array.isArray(v.dimensiones)) {
+          // Pre-registrado por Dimension — completar con tipo e inicializar datos
+          v.tipo = tipo;
+          v.datos = this._initArrayDatos(v.dimensiones, this._valorDefault(tipo));
+          continue;
+        }
         throw new Error(`Variable "${nombre}" ya se encuentra definida.`);
       }
 
@@ -406,6 +427,172 @@ class LiteSeInt {
 
 
   // ===========================================================
+  //  ARREGLOS Y MATRICES
+  // ===========================================================
+
+  _initArrayDatos(dimensiones, valorDefault) {
+    if (dimensiones.length === 1) {
+      return new Array(dimensiones[0] + 1).fill(null).map(() => valorDefault);
+    }
+    return Array.from({ length: dimensiones[0] + 1 }, () =>
+      new Array(dimensiones[1] + 1).fill(null).map(() => valorDefault)
+    );
+  }
+
+  _getArrayElement(nombre, indices) {
+    const v = this.variables[nombre];
+    if (indices.length === 1) return v.datos[indices[0]];
+    return v.datos[indices[0]][indices[1]];
+  }
+
+  _setArrayElement(nombre, indices, valor) {
+    const v = this.variables[nombre];
+    if (indices.length === 1) {
+      v.datos[indices[0]] = valor;
+    } else {
+      v.datos[indices[0]][indices[1]] = valor;
+    }
+  }
+
+  _validarIndices(nodo, indices) {
+    const v = this.variables[nodo.nombre.toLowerCase()];
+    if (!v || !v.dimensiones) {
+      throw new Error(`"${nodo.nombre}" no es un arreglo dimensionado. Use "Dimension" para declararlo.`);
+    }
+    if (indices.length !== v.dimensiones.length) {
+      throw new Error(`Arreglo "${nodo.nombre}" tiene ${v.dimensiones.length} dimensión(es), se usaron ${indices.length}.`);
+    }
+    for (let i = 0; i < indices.length; i++) {
+      const idx = indices[i];
+      const max = v.dimensiones[i];
+      if (idx < 1 || idx > max) {
+        throw new Error(`Índice ${idx} fuera de rango [1..${max}] en "${nodo.nombre}".`);
+      }
+    }
+  }
+
+  _ejecutarDimension(nodo, lineaIdx) {
+    const nombre = nodo.nombre.toLowerCase();
+    const dimensiones = nodo.dimensiones.map((d, dimIdx) => {
+      if (typeof d === 'number') return d;
+      const val = this._evaluarExpresion(String(d), lineaIdx);
+      if (typeof val !== 'number' || val <= 0) {
+        throw Object.assign(
+          new Error(`El tamaño de la dimensión ${dimIdx + 1} debe ser un número positivo.`),
+          { lineaIdx }
+        );
+      }
+      return Math.trunc(val);
+    });
+
+    if (this.variables.hasOwnProperty(nombre)) {
+      const v = this.variables[nombre];
+      if (Array.isArray(v.dimensiones)) {
+        throw Object.assign(
+          new Error(`El arreglo "${nodo.nombre}" ya fue dimensionado.`),
+          { lineaIdx }
+        );
+      }
+      // Definir vino antes — agregar dimensiones ahora
+      v.dimensiones = dimensiones;
+      v.datos = this._initArrayDatos(dimensiones, this._valorDefault(v.tipo));
+    } else {
+      // Definir vendrá después — pre-registrar
+      this.variables[nombre] = {
+        tipo: null,
+        valor: null,
+        inicializada: false,
+        dimensiones,
+        datos: null,
+      };
+    }
+  }
+
+  _ejecutarAsignarIndice(nodo, lineaIdx) {
+    const nombre = nodo.nombre.toLowerCase();
+    if (!this.variables.hasOwnProperty(nombre)) {
+      throw Object.assign(
+        new Error(`Variable "${nodo.nombre}" no definida. Use "Definir" y "Dimension" primero.`),
+        { lineaIdx }
+      );
+    }
+    const v = this.variables[nombre];
+    if (!v.dimensiones) {
+      throw Object.assign(
+        new Error(`"${nodo.nombre}" no es un arreglo dimensionado. Use "Dimension" para declararlo.`),
+        { lineaIdx }
+      );
+    }
+    if (v.tipo === null) {
+      throw Object.assign(
+        new Error(`Tipo de "${nodo.nombre}" no definido. Use "Definir ${nodo.nombre} Como Tipo" después de "Dimension".`),
+        { lineaIdx }
+      );
+    }
+
+    const indices = nodo.indices.map(idxExpr => {
+      const val = this._evaluarExpresion(idxExpr, lineaIdx);
+      if (typeof val !== 'number') {
+        throw Object.assign(
+          new Error(`El índice del arreglo "${nodo.nombre}" debe ser numérico.`),
+          { lineaIdx }
+        );
+      }
+      return Math.trunc(val);
+    });
+
+    this._validarIndices(nodo, indices);
+
+    const valor = this._evaluarExpresion(nodo.expresion, lineaIdx);
+    this._setArrayElement(nombre, indices, this._convertirTipo(valor, v.tipo));
+    v.inicializada = true;
+  }
+
+  async _ejecutarLeerIndice(nodo, lineaIdx) {
+    const nombre = nodo.nombre.toLowerCase();
+    if (!this.variables.hasOwnProperty(nombre)) {
+      throw Object.assign(
+        new Error(`Variable "${nodo.nombre}" no definida.`),
+        { lineaIdx }
+      );
+    }
+    const v = this.variables[nombre];
+    if (!v.dimensiones) {
+      throw Object.assign(
+        new Error(`"${nodo.nombre}" no es un arreglo.`),
+        { lineaIdx }
+      );
+    }
+    if (v.tipo === null) {
+      throw Object.assign(
+        new Error(`Tipo de "${nodo.nombre}" no definido. Use "Definir ${nodo.nombre} Como Tipo".`),
+        { lineaIdx }
+      );
+    }
+
+    const indices = nodo.indices.map(idxExpr => {
+      const val = this._evaluarExpresion(idxExpr, lineaIdx);
+      return Math.trunc(val);
+    });
+    this._validarIndices(nodo, indices);
+
+    const valorIngresado = await this.callbacks.onLeer(nombre);
+    if (!this.ejecutando) return;
+
+    if (!this._validarEntradaTipo(valorIngresado, v.tipo)) {
+      const tipoLabel = v.tipo.charAt(0).toUpperCase() + v.tipo.slice(1);
+      throw Object.assign(
+        new Error(`El valor ingresado para "${nodo.nombre}" no corresponde al tipo ${tipoLabel}.`),
+        { lineaIdx }
+      );
+    }
+
+    this._setArrayElement(nombre, indices, this._convertirTipo(valorIngresado, v.tipo));
+    v.inicializada = true;
+    this.callbacks.onSistema(`  ↳ ${nodo.nombre}[${nodo.indices.join(', ')}] = ${valorIngresado}`);
+  }
+
+  // ===========================================================
   //  UTILIDADES
   // ===========================================================
 
@@ -474,7 +661,8 @@ class LiteSeInt {
     const partes = [];
     let actual = '';
     let dentroComillas = false;
-    let nivel = 0;
+    let nivelParen = 0;
+    let nivelBracket = 0;
 
     for (let i = 0; i < texto.length; i++) {
       const c = texto[i];
@@ -482,12 +670,18 @@ class LiteSeInt {
         dentroComillas = !dentroComillas;
         actual += c;
       } else if (!dentroComillas && c === '(') {
-        nivel++;
+        nivelParen++;
         actual += c;
       } else if (!dentroComillas && c === ')') {
-        nivel--;
+        nivelParen--;
         actual += c;
-      } else if (c === ',' && !dentroComillas && nivel === 0) {
+      } else if (!dentroComillas && c === '[') {
+        nivelBracket++;
+        actual += c;
+      } else if (!dentroComillas && c === ']') {
+        nivelBracket--;
+        actual += c;
+      } else if (c === ',' && !dentroComillas && nivelParen === 0 && nivelBracket === 0) {
         partes.push(actual);
         actual = '';
       } else {
@@ -507,6 +701,7 @@ class LiteSeInt {
     { texto: 'Proceso',     tipo: 'estructura' },
     { texto: 'FinProceso',  tipo: 'estructura' },
     { texto: 'Definir',     tipo: 'instrucción' },
+    { texto: 'Dimension',   tipo: 'instrucción' },
     { texto: 'Escribir',    tipo: 'instrucción' },
     { texto: 'Leer',        tipo: 'instrucción' },
     { texto: 'Como',        tipo: 'palabra clave' },

@@ -20,7 +20,7 @@
  * ============================================================
  */
 
-const AST_VERSION = 2;
+const AST_VERSION = 3;
 
 function locDeLinea(linea, lineaRaw) {
   return {
@@ -74,6 +74,18 @@ function nodoCaso(valores, cuerpo) {
   return { tipo: 'Caso', valores, cuerpo };
 }
 
+function nodoDimension(nombre, dimensiones, loc) {
+  return { tipo: 'Dimension', nombre, dimensiones, loc };
+}
+
+function nodoAsignarIndice(nombre, indices, expresion, loc) {
+  return { tipo: 'AsignarIndice', nombre, indices, expresion, loc };
+}
+
+function nodoLeerIndice(nombre, indices, loc) {
+  return { tipo: 'LeerIndice', nombre, indices, loc };
+}
+
 function nodoDesconocido(texto, loc) {
   return { tipo: 'Desconocido', texto, loc };
 }
@@ -108,6 +120,9 @@ const LiteSeIntAST = {
   nodoPara,
   nodoSegun,
   nodoCaso,
+  nodoDimension,
+  nodoAsignarIndice,
+  nodoLeerIndice,
   nodoDesconocido,
   serializarAST,
   deserializarAST,

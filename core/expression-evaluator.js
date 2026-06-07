@@ -195,6 +195,29 @@ const FUNCIONES_NATIVAS_EXPR = {
     },
 };
 
+// Divide una cadena de expresiones de índice por comas en el nivel exterior.
+function _splitIndexArgs(str) {
+  const parts = [];
+  let current = '';
+  let depth = 0;
+  let inStr = false;
+  for (let ci = 0; ci < str.length; ci++) {
+    const ch = str[ci];
+    if (ch === '"') { inStr = !inStr; current += ch; continue; }
+    if (inStr) { current += ch; continue; }
+    if (ch === '(' || ch === '[') { depth++; current += ch; continue; }
+    if (ch === ')' || ch === ']') { depth--; current += ch; continue; }
+    if (ch === ',' && depth === 0) {
+      parts.push(current.trim());
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+  if (current.trim()) parts.push(current.trim());
+  return parts.length > 0 ? parts : [''];
+}
+
 const _ExprEvalMixin = {
   _evaluarCondicion(condStr, lineaIdx) {
     condStr = condStr.trim();
@@ -372,13 +395,32 @@ const _ExprEvalMixin = {
         } else if (lw === 'no') {
           tokens.push({ tipo: 'op', valor: 'No' });
         } else {
-          // Look-ahead: si lo sigue "(" (con o sin espacios), es una
-          // llamada a función. El "(" se mantiene como token aparte
-          // para que el parser arme la lista de argumentos.
+          // Look-ahead para "(": llamada a función, o "[": acceso por índice.
           let k = j;
           while (k < expr.length && /\s/.test(expr[k])) k++;
           if (k < expr.length && expr[k] === '(') {
             tokens.push({ tipo: 'funcion', nombre: palabra });
+          } else if (k < expr.length && expr[k] === '[') {
+            // Acceso por índice: nombre[...] — parsear el contenido entre [ y ]
+            k++; // saltar '['
+            const contentStart = k;
+            let depth = 0;
+            while (k < expr.length) {
+              if (expr[k] === '[') depth++;
+              else if (expr[k] === ']') {
+                if (depth === 0) break;
+                depth--;
+              }
+              k++;
+            }
+            if (k >= expr.length) {
+              throw new Error(`Falta "]" en el acceso por índice de "${palabra}".`);
+            }
+            const innerStr = expr.substring(contentStart, k);
+            const indices = _splitIndexArgs(innerStr);
+            tokens.push({ tipo: 'indiceArreglo', nombre: palabra, indices });
+            i = k + 1; // después de ']'
+            continue;
           } else {
             tokens.push({ tipo: 'variable', nombre: palabra });
           }
@@ -440,7 +482,7 @@ const _ExprEvalMixin = {
 
     for (const tk of tokens) {
       if (tk.tipo === 'numero' || tk.tipo === 'cadena' ||
-          tk.tipo === 'booleano' || tk.tipo === 'variable') {
+          tk.tipo === 'booleano' || tk.tipo === 'variable' || tk.tipo === 'indiceArreglo') {
         output.push(tk);
         if (argSeen.length > 0) argSeen[argSeen.length - 1] = true;
       }
@@ -565,6 +607,32 @@ const _ExprEvalMixin = {
           throw new Error(`Variable "${tk.nombre}" no inicializada.`);
         }
         stack.push(this.variables[key].valor);
+      }
+      else if (tk.tipo === 'indiceArreglo') {
+        const key = tk.nombre.toLowerCase();
+        if (!this.variables.hasOwnProperty(key)) {
+          throw new Error(`Variable "${tk.nombre}" no definida.`);
+        }
+        const v = this.variables[key];
+        if (!v.dimensiones) {
+          throw new Error(`"${tk.nombre}" no es un arreglo dimensionado. Use "Dimension" para declararlo.`);
+        }
+        if (tk.indices.length !== v.dimensiones.length) {
+          throw new Error(`Arreglo "${tk.nombre}" tiene ${v.dimensiones.length} dimensión(es), se usaron ${tk.indices.length}.`);
+        }
+        const indices = tk.indices.map((idxExpr, dimIdx) => {
+          const val = this._evaluarExpresion(idxExpr, lineaIdx);
+          if (typeof val !== 'number') {
+            throw new Error(`El índice del arreglo "${tk.nombre}" debe ser numérico.`);
+          }
+          const idx = Math.trunc(val);
+          const maxIdx = v.dimensiones[dimIdx];
+          if (idx < 1 || idx > maxIdx) {
+            throw new Error(`Índice ${idx} fuera de rango [1..${maxIdx}] en "${tk.nombre}".`);
+          }
+          return idx;
+        });
+        stack.push(this._getArrayElement(key, indices));
       }
       else if (tk.tipo === 'op') {
         const meta = LiteSeInt._OPERADORES[tk.valor];

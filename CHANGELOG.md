@@ -6,6 +6,46 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [1.6.0] — 2026-06-07
+
+Agrega arreglos unidimensionales y matrices bidimensionales con la instrucción `Dimension`. Es el primer cambio de dialecto visible desde `v1.0.0`.
+
+### Resumen
+- `Dimension arr[n]` declara un arreglo de `n` elementos (1-indexado).
+- `Dimension mat[n, m]` declara una matriz de `n × m` elementos (1-indexado).
+- Los elementos se leen con `arr[i]`, se asignan con `arr[i] = expr` y se leen con `Leer arr[i]`.
+- `Dimension` puede ir antes o después de `Definir`; ambos deben aparecer antes de cualquier acceso.
+- Los arreglos y matrices son accesibles en expresiones dentro de `Escribir`, condiciones y asignaciones escalares.
+- Los 245 ejercicios existentes pasan las pruebas sin cambios.
+
+### Agregado
+- **`Dimension`**: nueva instrucción declarada en todos los módulos del núcleo.
+- **Arreglos 1D**: `Dimension v[5]` + `Definir v Como Entero`. Acceso: `v[i]`, `v[i] = expr`, `Leer v[i]`.
+- **Matrices 2D**: `Dimension m[3, 3]` + `Definir m Como Entero`. Acceso: `m[i, j]`, `m[i, j] = expr`.
+- **Validación estática** completa: tamaño cero, índices no numéricos, variable no dimensionada, índice fuera de rango, dimensiones inválidas.
+- **Ejemplos precargados** `arreglo` y `matriz` en el selector de ejemplos.
+- **AST**: nodos `Dimension`, `AsignarIndice`, `LeerIndice` en `core/ast.js`; `AST_VERSION` subió de 2 a 3.
+- **`shared/ast-contract.md`**: documentados los tres nodos nuevos.
+
+### Cambiado
+- **`core/tokenizer.js`**: añadidos `TK.LBRACKET`, `TK.RBRACKET` y `'dimension'` a palabras reservadas. `Dimension` eliminado de `CONSTRUCCIONES_FUERA_DE_ALCANCE`.
+- **`core/symbol-table.js`**: `dimensionar()`, `obtenerDimensiones()` y `esArreglo()` para gestión de dimensiones; `definir()` detecta pre-registro por `Dimension`.
+- **`core/validator.js`**: `validarDimension`, `validarAsignacionIndice`, `validarLeerIndice`; `validarListaExpresiones` y `validarExpresionTokens` entienden `[`. El separador de comas respeta niveles de corchete.
+- **`core/parser.js`**: detecta `Dimension nombre[...]`, `nombre[...] = expr` y `Leer nombre[...]` y emite los nodos correctos.
+- **`core/expression-evaluator.js`**: el tokenizador de expresiones emite `indiceArreglo` al detectar `nombre[...]`; `_evaluarRPN` resuelve el elemento en runtime.
+- **`core/LiteSeInt.js`**: casos `Dimension`, `AsignarIndice`, `LeerIndice` en `_ejecutarNodo`; `_initArrayDatos`, `_getArrayElement`, `_setArrayElement`, `_validarIndices`; `_separarPorComas` respeta corchetes para no partir índices 2D.
+
+### Validado
+- **Pruebas**: `npm test` pasa con **41 pruebas** (30 anteriores + 11 nuevas de v1.6.0).
+- **Rango y tipo**: error `IndiceFueraDeRango` y `ArregloNoDimensionado` se emiten con mensaje claro.
+- **Paridad**: los 245 ejercicios visibles parsean y ejecutan sin errores sobre el AST nuevo.
+- **Roundtrip AST**: los nodos `Dimension` y `AsignarIndice` sobreviven `JSON.stringify` / `JSON.parse`.
+
+### Fuera de alcance
+- Arreglos de más de 2 dimensiones.
+- Redimensionado dinámico (`Dimension` solo se puede llamar una vez por variable).
+- Subprocesos (`SubProceso` / `FinSubProceso`) — entran en v1.8.0.
+
 ## [1.1.0] — 2026-06-03
 
 Reestructura interna sin cambio de dialecto ni de comportamiento visible. El motor queda dividido en módulos de capa única dentro de `core/` y produce un AST explícito versionado. Es la base que `v1.2.0` (backend) y `v1.6.0+` (lenguaje 2.0) consumirán sin tocar la fachada del editor.

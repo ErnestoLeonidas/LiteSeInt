@@ -30,12 +30,46 @@ class TablaSimbolos {
 
   definir(nombreOriginal, tipo, lineaIdx) {
     const key = nombreOriginal.toLowerCase();
+    if (this.variables.has(key)) {
+      const existing = this.variables.get(key);
+      if (existing.tipo === null) {
+        // Pre-registrado por dimensionar(); ahora se completa con el tipo.
+        existing.tipo = tipo;
+        existing.lineaDefinicion = lineaIdx;
+        return;
+      }
+    }
     this.variables.set(key, {
       tipo,
       inicializada: false,
       lineaDefinicion: lineaIdx,
       nombreOriginal,
     });
+  }
+
+  dimensionar(nombreOriginal, dimensiones, lineaIdx) {
+    const key = nombreOriginal.toLowerCase();
+    if (this.variables.has(key)) {
+      this.variables.get(key).dimensiones = dimensiones;
+    } else {
+      this.variables.set(key, {
+        tipo: null,
+        inicializada: false,
+        lineaDefinicion: lineaIdx,
+        nombreOriginal,
+        dimensiones,
+      });
+    }
+  }
+
+  obtenerDimensiones(nombre) {
+    const v = this.variables.get(nombre.toLowerCase());
+    return v ? (v.dimensiones || null) : null;
+  }
+
+  esArreglo(nombre) {
+    const v = this.variables.get(nombre.toLowerCase());
+    return !!(v && Array.isArray(v.dimensiones));
   }
 
   existeVariable(nombre) {
@@ -64,7 +98,9 @@ class TablaSimbolos {
   clonar() {
     const copia = new TablaSimbolos();
     for (const [key, val] of this.variables) {
-      copia.variables.set(key, { ...val });
+      const entrada = { ...val };
+      if (Array.isArray(val.dimensiones)) entrada.dimensiones = [...val.dimensiones];
+      copia.variables.set(key, entrada);
     }
     return copia;
   }

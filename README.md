@@ -6,7 +6,7 @@ El proyecto separa la lógica del intérprete de la interfaz visual, lo que faci
 
 ## Estado actual
 
-- Versión visible en la app: `v1.1.0`
+- Versión visible en la app: `v1.6.0`
 - Demo en GitHub Pages: <https://ernestoleonidas.github.io/LiteSeInt/>
 - Layout educativo: editor arriba, **consola debajo del editor** (redimensionable verticalmente) y **panel de aprendizaje integrado** redimensionable horizontalmente con ejercicios, documentación de comandos, ruta del estudiante y errores comunes.
 - **245 ejercicios adaptados** desde `ejercicios/guia.html` al dialecto LiteSeInt, cargados desde archivos JSON normalizados `N1`–`N7`, con validación estática automática y formato de código de referencia consistente.
@@ -111,11 +111,42 @@ Todo programa válido empieza con `Proceso nombre` y termina con `FinProceso`. L
 - Una línea `Definir` puede declarar múltiples variables del mismo tipo separadas por coma.
 - Los casos en `Segun` aceptan: caso multilínea, caso inline (`1: Escribir "Lunes"`) y varios valores por caso (`3, 4, 5: Escribir "..."`).
 
-### No soportado en v0.6.0
+### Arreglos y matrices (v1.6.0)
 
-Las siguientes construcciones de PSeInt **no** están soportadas en LiteSeInt v0.6.0 y emiten un mensaje pedagógico cuando aparecen:
+`Dimension` declara arreglos unidimensionales o matrices bidimensionales. Los índices son 1-basados (el primer elemento es `arr[1]`).
 
-- `Dimension` y arreglos.
+| Instrucción | Ejemplo |
+|---|---|
+| Declarar arreglo 1D | `Dimension arr[5]` |
+| Declarar matriz 2D | `Dimension mat[3, 4]` |
+| Asignar elemento | `arr[2] = 10` |
+| Leer elemento | `Leer mat[1, 1]` |
+| Leer en expresión | `Escribir arr[i]` |
+
+`Dimension` puede aparecer antes o después de `Definir`; ambos deben declararse antes de cualquier acceso por índice. El tipo del arreglo se fija con `Definir`.
+
+```txt
+Proceso ejemplo
+Dimension notas[5]
+Definir notas Como Entero
+Definir i, suma Como Entero
+
+Para i = 1 Hasta 5 Hacer
+  Leer notas[i]
+FinPara
+
+suma = 0
+Para i = 1 Hasta 5 Hacer
+  suma = suma + notas[i]
+FinPara
+Escribir "Promedio: ", suma / 5
+FinProceso
+```
+
+### No soportado en v0.6.0 (aún pendiente)
+
+Las siguientes construcciones de PSeInt **no** están soportadas y emiten un mensaje pedagógico cuando aparecen:
+
 - `SubProceso` / `FinSubProceso`.
 - Funciones definidas por el usuario (`Funcion` / `FinFuncion`).
 - Diagramas de flujo.

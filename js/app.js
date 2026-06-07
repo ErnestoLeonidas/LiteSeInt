@@ -1926,6 +1926,42 @@ const EJEMPLOS = {
   Escribir "2 ^ 10 = ", resultado
   `,
 
+  arreglo: `// Arreglo de notas: declaración, carga, suma y promedio
+  Dimension notas[5]
+  Definir notas Como Real
+  Definir i Como Entero
+  Definir suma, promedio Como Real
+
+  suma = 0
+  Para i = 1 Hasta 5 Hacer
+    Escribir "Ingresa la nota ", i, ":"
+    Leer notas[i]
+    suma = suma + notas[i]
+  FinPara
+
+  promedio = suma / 5
+  Escribir "Promedio: ", promedio
+  `,
+
+  matriz: `// Matriz 3x3: carga y suma de la diagonal principal
+  Dimension m[3, 3]
+  Definir m Como Entero
+  Definir i, j, diagonal Como Entero
+
+  Para i = 1 Hasta 3 Hacer
+    Para j = 1 Hasta 3 Hacer
+      Escribir "m[", i, ",", j, "] = "
+      Leer m[i, j]
+    FinPara
+  FinPara
+
+  diagonal = 0
+  Para i = 1 Hasta 3 Hacer
+    diagonal = diagonal + m[i, i]
+  FinPara
+  Escribir "Suma diagonal: ", diagonal
+  `,
+
   diasemana: `// Nombre del día según su número (1=Lunes ... 7=Domingo)
   Definir dia Como Entero
 

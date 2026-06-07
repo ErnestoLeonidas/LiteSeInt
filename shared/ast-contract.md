@@ -2,7 +2,7 @@
 
 > Contrato del Árbol de Sintaxis Abstracta (AST) producido por `core/parser.js` y consumido por `core/LiteSeInt.js` (runtime), y a futuro por `core/diagram-mapper.js` (v1.9.0).
 >
-> Versión del contrato: **`astVersion: 2`** (introducida en v1.1.0).
+> Versión del contrato: **`astVersion: 3`** (actualizada en v1.6.0).
 
 ## Propósito
 
@@ -36,7 +36,7 @@ Nodo raíz único del documento.
 ```js
 {
   tipo: "Programa",
-  astVersion: 2,
+  astVersion: 3,
   cuerpo: Nodo[],   // instrucciones de nivel superior
   loc
 }
@@ -162,6 +162,50 @@ Línea no reconocida por el parser. El runtime la convierte en un error de ejecu
 { tipo: "Desconocido", texto: string, loc }
 ```
 
+## Nodos agregados en v1.6.0
+
+### `Dimension`
+
+Declara las dimensiones de un arreglo o matriz. Debe ir antes o después de `Definir`, pero ambos deben aparecer antes de cualquier acceso por índice.
+
+```js
+{
+  tipo: "Dimension",
+  nombre: string,        // nombre original de la variable (sin normalizar)
+  dimensiones: (number | string)[],  // tamaños: [n] para 1D, [n, m] para 2D
+  loc
+}
+```
+
+Los elementos de `dimensiones` son números si el tamaño es un literal entero en el código fuente, o strings de expresión si es una variable o expresión (evaluados en tiempo de ejecución).
+
+### `AsignarIndice`
+
+Asignación a un elemento de arreglo: `arr[i] = expr` o `mat[i, j] = expr`.
+
+```js
+{
+  tipo: "AsignarIndice",
+  nombre: string,         // nombre original de la variable
+  indices: string[],      // una o dos expresiones de índice (como strings)
+  expresion: string,      // expresión del lado derecho de la asignación
+  loc
+}
+```
+
+### `LeerIndice`
+
+Lectura desde consola hacia un elemento de arreglo: `Leer arr[i]`.
+
+```js
+{
+  tipo: "LeerIndice",
+  nombre: string,
+  indices: string[],      // expresiones de índice (como strings)
+  loc
+}
+```
+
 ## Helpers de serialización
 
 ```js
@@ -174,7 +218,7 @@ El roundtrip JSON debe preservar exactamente el AST. Está cubierto por la prueb
 ## Reglas para extender el contrato
 
 1. **Subir `astVersion`** cuando se agreguen, retiren o cambien nodos del lenguaje. Versiones planeadas:
-   - `astVersion: 3` → v1.6.0 (nodo `Dimension` y accesos por índice).
+   - `astVersion: 3` → v1.6.0 (**completado**: nodos `Dimension`, `AsignarIndice`, `LeerIndice`).
    - `astVersion: 4` → v1.8.0 (nodos `SubProceso`, `Funcion`, `Llamar`).
 2. **Nuevos nodos** se definen en `core/ast.js` mediante factory `nodoX(...)` y se documentan aquí.
 3. **Modificaciones en nodos existentes** se documentan aquí indicando la versión del cambio.

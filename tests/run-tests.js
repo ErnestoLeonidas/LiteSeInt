@@ -343,12 +343,12 @@ test('documentacion de errores: ejemplos incorrectos reproducen errores o son de
   }
 });
 
-test('parser: produce Programa raiz con astVersion 2 y cuerpo array', () => {
+test('parser: produce Programa raiz con astVersion 3 y cuerpo array', () => {
   const ctx = loadRuntime();
   const codigo = 'Proceso p\nDefinir x Como Entero\nx = 1\nEscribir x\nFinProceso';
   const ast = ctx.LiteSeIntParser.parsearPrograma(codigo);
   assert.strictEqual(ast.tipo, 'Programa');
-  assert.strictEqual(ast.astVersion, 2);
+  assert.strictEqual(ast.astVersion, 3);
   assert.ok(Array.isArray(ast.cuerpo));
   assert.ok(ast.loc && typeof ast.loc.linea === 'number');
 });
@@ -491,7 +491,7 @@ test('parser: roundtrip JSON preserva el AST', () => {
   const json = ctx.LiteSeIntAST.serializarAST(ast);
   const rehidratado = ctx.LiteSeIntAST.deserializarAST(json);
   assert.strictEqual(rehidratado.tipo, 'Programa');
-  assert.strictEqual(rehidratado.astVersion, 2);
+  assert.strictEqual(rehidratado.astVersion, 3);
   assert.deepStrictEqual(rehidratado, ast);
   assert.strictEqual(ctx.LiteSeIntAST.serializarAST(rehidratado), json);
 });
@@ -503,7 +503,7 @@ test('parser: los 245 ejercicios visibles parsean sin throw y producen Programa'
   for (const ej of visibles) {
     const ast = ctx.LiteSeIntParser.parsearPrograma(ej.codigoReferencia);
     assert.strictEqual(ast.tipo, 'Programa', `${ej.id}: tipo raiz no es Programa`);
-    assert.strictEqual(ast.astVersion, 2, `${ej.id}: astVersion incorrecto`);
+    assert.strictEqual(ast.astVersion, 3, `${ej.id}: astVersion incorrecto`);
     assert.ok(Array.isArray(ast.cuerpo), `${ej.id}: cuerpo no es array`);
   }
 });
@@ -562,6 +562,179 @@ test('runtime: ejercicios sin Leer ejecutan sin errores sobre el AST nuevo', asy
     );
     assert.strictEqual(errores.length, 0, `${ej.id} reportó errores runtime: ${JSON.stringify(errores)}`);
   }
+});
+
+// =====================================================
+// v1.6.0 — Arreglos y matrices (Dimension)
+// =====================================================
+
+test('v1.6.0: Dimension 1D valida sin errores', () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Dimension v[5]',
+    'Definir v Como Entero',
+    'FinProceso',
+  ].join('\n');
+  assert.strictEqual(validar(ctx, codigo).length, 0);
+});
+
+test('v1.6.0: Dimension 2D valida sin errores', () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Dimension m[3, 4]',
+    'Definir m Como Real',
+    'FinProceso',
+  ].join('\n');
+  assert.strictEqual(validar(ctx, codigo).length, 0);
+});
+
+test('v1.6.0: Dimension con tamaño cero emite error', () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Dimension v[0]',
+    'Definir v Como Entero',
+    'FinProceso',
+  ].join('\n');
+  assert.ok(validar(ctx, codigo).some(e => e.tipo === 'dimension_no_positiva'));
+});
+
+test('v1.6.0: parser emite nodo Dimension con nombre y dimensiones', () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Dimension arr[10]',
+    'Definir arr Como Entero',
+    'FinProceso',
+  ].join('\n');
+  const cuerpo = ctx.LiteSeIntParser.parsearPrograma(codigo).cuerpo;
+  const nodo = cuerpo.find(n => n.tipo === 'Dimension');
+  assert.ok(nodo, 'no se encontró nodo Dimension');
+  assert.strictEqual(nodo.nombre, 'arr');
+  assert.deepStrictEqual(Array.from(nodo.dimensiones), [10]);
+});
+
+test('v1.6.0: parser emite nodo AsignarIndice', () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Dimension v[3]',
+    'Definir v Como Entero',
+    'v[1] = 42',
+    'FinProceso',
+  ].join('\n');
+  const cuerpo = ctx.LiteSeIntParser.parsearPrograma(codigo).cuerpo;
+  const nodo = cuerpo.find(n => n.tipo === 'AsignarIndice');
+  assert.ok(nodo, 'no se encontró nodo AsignarIndice');
+  assert.strictEqual(nodo.nombre, 'v');
+  assert.deepStrictEqual(Array.from(nodo.indices), ['1']);
+  assert.strictEqual(nodo.expresion, '42');
+});
+
+test('v1.6.0: runtime ejecuta arreglo 1D — asignacion y lectura', async () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Dimension v[3]',
+    'Definir v Como Entero',
+    'v[1] = 10',
+    'v[2] = 20',
+    'v[3] = 30',
+    'Escribir v[1], " ", v[2], " ", v[3]',
+    'FinProceso',
+  ].join('\n');
+  assert.strictEqual(validar(ctx, codigo).length, 0);
+  const { resultado, salida } = await ejecutar(ctx, codigo);
+  assert.strictEqual(resultado.exito, true);
+  assert.deepStrictEqual(salida, ['10 20 30']);
+});
+
+test('v1.6.0: runtime ejecuta matriz 2D', async () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Dimension m[2, 2]',
+    'Definir m Como Entero',
+    'm[1, 1] = 1',
+    'm[1, 2] = 2',
+    'm[2, 1] = 3',
+    'm[2, 2] = 4',
+    'Escribir m[1, 1], m[1, 2], m[2, 1], m[2, 2]',
+    'FinProceso',
+  ].join('\n');
+  assert.strictEqual(validar(ctx, codigo).length, 0);
+  const { resultado, salida } = await ejecutar(ctx, codigo);
+  assert.strictEqual(resultado.exito, true);
+  assert.deepStrictEqual(salida, ['1234']);
+});
+
+test('v1.6.0: runtime lanza error IndiceFueraDeRango', async () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Dimension v[3]',
+    'Definir v Como Entero',
+    'v[5] = 1',
+    'FinProceso',
+  ].join('\n');
+  const { resultado, errores } = await ejecutar(ctx, codigo);
+  assert.strictEqual(resultado.exito, false);
+  assert.ok(errores.some(e => /fuera de rango/i.test(e.mensaje)));
+});
+
+test('v1.6.0: runtime lanza error ArregloNoDimensionado', async () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Definir v Como Entero',
+    'v[1] = 1',
+    'FinProceso',
+  ].join('\n');
+  const { resultado, errores } = await ejecutar(ctx, codigo);
+  assert.strictEqual(resultado.exito, false);
+  assert.ok(errores.some(e => /no es un arreglo/i.test(e.mensaje)));
+});
+
+test('v1.6.0: arreglo en bucle Para — suma de elementos', async () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Dimension v[4]',
+    'Definir v Como Entero',
+    'Definir i, s Como Entero',
+    'v[1] = 1',
+    'v[2] = 2',
+    'v[3] = 3',
+    'v[4] = 4',
+    's = 0',
+    'Para i = 1 Hasta 4 Hacer',
+    '  s = s + v[i]',
+    'FinPara',
+    'Escribir s',
+    'FinProceso',
+  ].join('\n');
+  assert.strictEqual(validar(ctx, codigo).length, 0);
+  const { resultado, salida } = await ejecutar(ctx, codigo);
+  assert.strictEqual(resultado.exito, true);
+  assert.deepStrictEqual(salida, ['10']);
+});
+
+test('v1.6.0: roundtrip JSON del AST preserva nodos Dimension y AsignarIndice', () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    'Dimension v[5]',
+    'Definir v Como Entero',
+    'v[1] = 99',
+    'FinProceso',
+  ].join('\n');
+  const ast = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const rehidratado = ctx.LiteSeIntAST.deserializarAST(ctx.LiteSeIntAST.serializarAST(ast));
+  assert.deepStrictEqual(rehidratado, ast);
+  assert.ok(rehidratado.cuerpo.some(n => n.tipo === 'Dimension'));
+  assert.ok(rehidratado.cuerpo.some(n => n.tipo === 'AsignarIndice'));
 });
 
 test('detener durante Leer marca la ejecucion como detenida', async () => {

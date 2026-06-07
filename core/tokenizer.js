@@ -30,6 +30,7 @@ const PALABRAS_RESERVADAS_SET = new Set([
   'y', 'o', 'no',
   'verdadero', 'falso',
   'mod',
+  'dimension',
 ]);
 
 const TIPOS_VALIDOS = new Set(['entero', 'real', 'caracter', 'logico']);
@@ -51,16 +52,15 @@ const FUNCIONES_NATIVAS_SET = new Set([
   'longitud', 'mayusculas', 'minusculas',
 ]);
 
-// Construcciones de PSeInt fuera del alcance de LiteSeInt v0.6.0.
+// Construcciones de PSeInt fuera del alcance de LiteSeInt v1.6.0.
 // Si aparecen como primer token de una línea, el validador emite un
 // mensaje pedagógico en lugar de "Instrucción no reconocida".
 const CONSTRUCCIONES_FUERA_DE_ALCANCE = {
-  'dimension':       'La instrucción "Dimension" y los arreglos no están soportados en LiteSeInt v0.6.0.',
-  'dimensionar':     'La instrucción "Dimensionar" y los arreglos no están soportados en LiteSeInt v0.6.0.',
-  'subproceso':      'Los "SubProceso" no están soportados en LiteSeInt v0.6.0.',
-  'finsubproceso':   'Los "SubProceso" no están soportados en LiteSeInt v0.6.0.',
-  'funcion':         'Las funciones definidas por el usuario no están soportadas en LiteSeInt v0.6.0.',
-  'finfuncion':      'Las funciones definidas por el usuario no están soportadas en LiteSeInt v0.6.0.',
+  'dimensionar':     'La instrucción "Dimensionar" no está soportada. Use "Dimension nombre[tamaño]".',
+  'subproceso':      'Los "SubProceso" no están soportados en esta versión de LiteSeInt.',
+  'finsubproceso':   'Los "SubProceso" no están soportados en esta versión de LiteSeInt.',
+  'funcion':         'Las funciones definidas por el usuario no están soportadas en esta versión de LiteSeInt.',
+  'finfuncion':      'Las funciones definidas por el usuario no están soportadas en esta versión de LiteSeInt.',
 };
 
 // ─────────────────────────────────────────────
@@ -79,6 +79,8 @@ const TK = Object.freeze({
   COLON:            'colon',             // : used in Segun case labels
   LPAREN:           'lparen',
   RPAREN:           'rparen',
+  LBRACKET:         'lbracket',          // [ used in Dimension and array index
+  RBRACKET:         'rbracket',          // ]
   COMMENT:          'comment',
   WHITESPACE:       'whitespace',
   UNKNOWN:          'unknown',
@@ -213,6 +215,18 @@ function tokenizarLinea(linea) {
     // ── Colon ──
     if (linea[i] === ':') {
       tokens.push({ type: TK.COLON, value: ':', col: start, end: start + 1 });
+      i++;
+      continue;
+    }
+
+    // ── Brackets ──
+    if (linea[i] === '[') {
+      tokens.push({ type: TK.LBRACKET, value: '[', col: start, end: start + 1 });
+      i++;
+      continue;
+    }
+    if (linea[i] === ']') {
+      tokens.push({ type: TK.RBRACKET, value: ']', col: start, end: start + 1 });
       i++;
       continue;
     }

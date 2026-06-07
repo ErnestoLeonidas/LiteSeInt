@@ -1268,6 +1268,10 @@ function validarLinea(sig, allTokens, lineaIdx, tabla) {
   }
 
   switch (instruccion) {
+    case 'dimension':
+      validarDimension(sig, lineaIdx, tabla, errores);
+      break;
+
     case 'definir':
       validarDefinir(sig, lineaIdx, tabla, errores);
       break;
@@ -1317,6 +1321,8 @@ function validarLinea(sig, allTokens, lineaIdx, tabla) {
       }
       if (sig.length >= 3 && sig[1].type === TK.ASSIGN) {
         validarAsignacion(sig, lineaIdx, tabla, errores);
+      } else if (primerToken.type === TK.IDENTIFIER && sig[1] && sig[1].type === TK.LBRACKET) {
+        validarAsignacionIndice(sig, lineaIdx, tabla, errores);
       } else if (primerToken.type === TK.IDENTIFIER) {
         if (!tabla.existeVariable(primerToken.value)) {
           errores.push(crearError(
@@ -1529,7 +1535,7 @@ function validarDefinir(sig, lineaIdx, tabla, errores) {
           `Variable "${tk.value}" ya se encuentra definida.`,
           tk.value
         ));
-      } else if (tabla.existeVariable(keyLower)) {
+      } else if (tabla.existeVariable(keyLower) && tabla.obtenerTipo(keyLower) !== null) {
         errores.push(crearError(
           lineaIdx, tk.col, tk.end,
           'variable_duplicada',
@@ -1537,6 +1543,7 @@ function validarDefinir(sig, lineaIdx, tabla, errores) {
           tk.value
         ));
       } else {
+        // tabla.definir completa el tipo si la variable fue pre-registrada por Dimension
         tabla.definir(tk.value, tipo, lineaIdx);
       }
 
@@ -1599,6 +1606,14 @@ function validarLeer(sig, lineaIdx, tabla, errores) {
     return;
   }
 
+  const varToken = sig[1];
+
+  // Leer arr[i] o Leer mat[i, j]
+  if (sig[2] && sig[2].type === TK.LBRACKET) {
+    validarLeerIndice(sig, lineaIdx, tabla, errores);
+    return;
+  }
+
   if (sig.length > 2) {
     errores.push(crearError(
       lineaIdx, sig[2].col, sig[sig.length - 1].end,
@@ -1608,7 +1623,6 @@ function validarLeer(sig, lineaIdx, tabla, errores) {
     ));
   }
 
-  const varToken = sig[1];
   if (varToken.type !== TK.IDENTIFIER) {
     errores.push(crearError(
       lineaIdx, varToken.col, varToken.end,
@@ -1683,11 +1697,11 @@ function validarListaExpresiones(tokens, lineaIdx, tabla, errores) {
   const grupos = [];
   let grupoActual = [];
   let nivelParen = 0;
+  let nivelBracket = 0;
 
-  // Sólo dividimos por comas en el nivel exterior. Las comas dentro
-  // de paréntesis son argumentos de una llamada a función y se validan
-  // como parte de su expresión, no como separadores de la lista de
-  // Escribir.
+  // Dividimos por comas sólo en el nivel exterior (fuera de paréntesis y corchetes).
+  // Las comas dentro de paréntesis son argumentos de funciones, y las de
+  // corchetes son índices de arreglos.
   for (const tk of tokens) {
     if (tk.type === TK.LPAREN) {
       nivelParen++;
@@ -1699,7 +1713,17 @@ function validarListaExpresiones(tokens, lineaIdx, tabla, errores) {
       grupoActual.push(tk);
       continue;
     }
-    if (tk.type === TK.COMMA && nivelParen === 0) {
+    if (tk.type === TK.LBRACKET) {
+      nivelBracket++;
+      grupoActual.push(tk);
+      continue;
+    }
+    if (tk.type === TK.RBRACKET) {
+      nivelBracket = Math.max(0, nivelBracket - 1);
+      grupoActual.push(tk);
+      continue;
+    }
+    if (tk.type === TK.COMMA && nivelParen === 0 && nivelBracket === 0) {
       if (grupoActual.length > 0) {
         grupos.push(grupoActual);
       } else {
@@ -1733,13 +1757,10 @@ function validarExpresionTokens(tokens, lineaIdx, tabla, errores) {
     const tk = tokens[i];
 
     if (tk.type === TK.IDENTIFIER) {
-      // Identificador inmediatamente seguido de "(" → llamada a función.
-      // En 0.5.0 el conjunto FUNCIONES_NATIVAS_SET está vacío a propósito,
-      // por lo que cualquier llamada se reporta como "Función no
-      // reconocida". Esto deja la base lista para 0.5.1 sin marcar como
-      // válido nada que el runtime aún no pueda resolver.
       const next = tokens[i + 1];
       const esLlamada = next && next.type === TK.LPAREN;
+      const esIndice  = next && next.type === TK.LBRACKET;
+
       if (esLlamada) {
         if (!FUNCIONES_NATIVAS_SET.has(tk.value.toLowerCase())) {
           errores.push(crearError(
@@ -1749,13 +1770,61 @@ function validarExpresionTokens(tokens, lineaIdx, tabla, errores) {
             tk.value
           ));
         }
-        // La validación profunda de aridad y argumentos llega en 0.5.1+.
+        continue;
+      }
+
+      if (esIndice) {
+        // Acceso por índice: arr[i] o mat[i, j]
+        if (!tabla.existeVariable(tk.value)) {
+          errores.push(crearError(
+            lineaIdx, tk.col, tk.end,
+            'variable_no_definida',
+            `Variable "${tk.value}" no definida.`,
+            tk.value
+          ));
+        } else if (!tabla.esArreglo(tk.value)) {
+          errores.push(crearError(
+            lineaIdx, tk.col, next.end,
+            'no_es_arreglo',
+            `"${tk.value}" no es un arreglo. Declare sus dimensiones con "Dimension".`,
+            tk.value
+          ));
+        }
+        // Avanzar hasta el RBRACKET correspondiente, validando tokens internos
+        let k = i + 2; // después de LBRACKET
+        let depth = 0;
+        const indexGroups = [];
+        let currentGroup = [];
+        while (k < tokens.length) {
+          const t = tokens[k];
+          if (t.type === TK.LBRACKET) { depth++; currentGroup.push(t); }
+          else if (t.type === TK.RBRACKET) {
+            if (depth === 0) { indexGroups.push(currentGroup); break; }
+            depth--;
+            currentGroup.push(t);
+          } else if (t.type === TK.COMMA && depth === 0) {
+            indexGroups.push(currentGroup);
+            currentGroup = [];
+          } else {
+            currentGroup.push(t);
+          }
+          k++;
+        }
+        if (indexGroups.length > 0) {
+          for (const group of indexGroups) {
+            if (group.length === 0) {
+              errores.push(crearError(lineaIdx, tokens[i + 1].col, tokens[i + 1].end,
+                'indice_vacio', 'Falta el índice del arreglo.', ''));
+            } else {
+              validarExpresionTokens(group, lineaIdx, tabla, errores);
+            }
+          }
+        }
+        i = k; // avanzar más allá del RBRACKET
         continue;
       }
 
       if (FUNCIONES_NATIVAS_SET.has(tk.value.toLowerCase())) {
-        // Nombre de función nativa usado sin "(": el usuario probablemente
-        // intentó llamarla. Mensaje específico en lugar de "no definida".
         errores.push(crearError(
           lineaIdx, tk.col, tk.end,
           'llamada_sin_parentesis',
@@ -1777,10 +1846,9 @@ function validarExpresionTokens(tokens, lineaIdx, tabla, errores) {
                tk.type === TK.NUMBER ||
                tk.type === TK.OPERATOR || tk.type === TK.LPAREN ||
                tk.type === TK.RPAREN || tk.type === TK.ASSIGN ||
-               tk.type === TK.COMMA) {
+               tk.type === TK.COMMA ||
+               tk.type === TK.LBRACKET || tk.type === TK.RBRACKET) {
       // Tokens válidos dentro de una expresión.
-      // Las comas sólo aparecen aquí cuando vienen dentro de una llamada
-      // a función — la lista de Escribir ya se separó en otro nivel.
     } else if (tk.type === TK.KEYWORD) {
       if (KEYWORDS_EXPR_OK.has(tk.value.toLowerCase())) continue;
       errores.push(crearError(
@@ -1791,6 +1859,255 @@ function validarExpresionTokens(tokens, lineaIdx, tabla, errores) {
       ));
     }
   }
+}
+
+// ─────────────────────────────────────────────
+//  VALIDATION: Dimension
+// ─────────────────────────────────────────────
+
+function validarDimension(sig, lineaIdx, tabla, errores) {
+  const dimTok = sig[0];
+
+  if (sig.length < 5) {
+    errores.push(crearError(lineaIdx, dimTok.col, sig[sig.length - 1].end,
+      'sintaxis_dimension',
+      'Sintaxis inválida. Use: Dimension nombre[tamaño] o Dimension nombre[filas, columnas]',
+      ''));
+    return;
+  }
+
+  const nombreTok = sig[1];
+  if (nombreTok.type !== TK.IDENTIFIER) {
+    errores.push(crearError(lineaIdx, nombreTok.col, nombreTok.end,
+      'dimension_nombre_invalido',
+      'Se esperaba un nombre de variable después de "Dimension".',
+      nombreTok.value));
+    return;
+  }
+
+  if (sig[2].type !== TK.LBRACKET) {
+    errores.push(crearError(lineaIdx, sig[2].col, sig[2].end,
+      'sintaxis_dimension',
+      'Se esperaba "[" después del nombre del arreglo.',
+      sig[2].value));
+    return;
+  }
+
+  const rbrIdx = sig.findIndex((t, idx) => idx > 2 && t.type === TK.RBRACKET);
+  if (rbrIdx === -1) {
+    errores.push(crearError(lineaIdx, sig[2].col, sig[sig.length - 1].end,
+      'dimension_sin_cierre',
+      'Falta "]" en la declaración "Dimension".',
+      ''));
+    return;
+  }
+
+  if (rbrIdx + 1 < sig.length) {
+    errores.push(crearError(lineaIdx, sig[rbrIdx + 1].col, sig[sig.length - 1].end,
+      'dimension_texto_extra',
+      'Texto inesperado después del cierre "]" en "Dimension".',
+      ''));
+  }
+
+  const innerTokens = sig.slice(3, rbrIdx);
+  if (innerTokens.length === 0) {
+    errores.push(crearError(lineaIdx, sig[2].col, sig[rbrIdx].end,
+      'dimension_vacia',
+      'Falta el tamaño de la dimensión.',
+      ''));
+    return;
+  }
+
+  // Separar dimensiones por coma
+  const dimGroups = [];
+  let currentGroup = [];
+  for (const t of innerTokens) {
+    if (t.type === TK.COMMA) {
+      dimGroups.push(currentGroup);
+      currentGroup = [];
+    } else {
+      currentGroup.push(t);
+    }
+  }
+  dimGroups.push(currentGroup);
+
+  if (dimGroups.length > 2) {
+    errores.push(crearError(lineaIdx, sig[2].col, sig[rbrIdx].end,
+      'dimension_aridad',
+      'Solo se soportan arreglos de una o dos dimensiones.',
+      ''));
+    return;
+  }
+
+  const dimensiones = [];
+  for (const group of dimGroups) {
+    if (group.length === 0) {
+      errores.push(crearError(lineaIdx, sig[2].col, sig[rbrIdx].end,
+        'dimension_vacia', 'Falta el tamaño de la dimensión.', ''));
+      dimensiones.push(1);
+      continue;
+    }
+    if (group.length === 1 && group[0].type === TK.NUMBER) {
+      const n = parseInt(group[0].value, 10);
+      if (n <= 0) {
+        errores.push(crearError(lineaIdx, group[0].col, group[0].end,
+          'dimension_no_positiva',
+          'El tamaño de la dimensión debe ser mayor que 0.',
+          group[0].value));
+        dimensiones.push(1);
+      } else {
+        dimensiones.push(n);
+      }
+    } else {
+      // Expresión como dimensión: se valida estáticamente pero el valor
+      // se evalúa en runtime. Solo validamos que los identificadores existan.
+      validarExpresionTokens(group, lineaIdx, tabla, errores);
+      dimensiones.push(null); // desconocido en tiempo de validación
+    }
+  }
+
+  tabla.dimensionar(nombreTok.value, dimensiones, lineaIdx);
+}
+
+// ─────────────────────────────────────────────
+//  VALIDATION: AsignaciónIndice  arr[i] = expr
+// ─────────────────────────────────────────────
+
+function validarAsignacionIndice(sig, lineaIdx, tabla, errores) {
+  const nombreTok = sig[0];
+
+  if (!tabla.existeVariable(nombreTok.value)) {
+    errores.push(crearError(lineaIdx, nombreTok.col, nombreTok.end,
+      'variable_no_definida',
+      `Variable "${nombreTok.value}" no definida.`,
+      nombreTok.value));
+    return;
+  }
+
+  if (!tabla.esArreglo(nombreTok.value)) {
+    errores.push(crearError(lineaIdx, nombreTok.col, sig[1].end,
+      'no_es_arreglo',
+      `"${nombreTok.value}" no es un arreglo. Declare sus dimensiones con "Dimension".`,
+      nombreTok.value));
+    return;
+  }
+
+  // Buscar RBRACKET y el ASSIGN que le sigue
+  const rbrIdx = sig.findIndex((t, idx) => idx > 1 && t.type === TK.RBRACKET);
+  if (rbrIdx === -1) {
+    errores.push(crearError(lineaIdx, sig[1].col, sig[sig.length - 1].end,
+      'sintaxis_indice', 'Falta "]" en el acceso por índice.', ''));
+    return;
+  }
+
+  if (!sig[rbrIdx + 1] || sig[rbrIdx + 1].type !== TK.ASSIGN) {
+    errores.push(crearError(lineaIdx, nombreTok.col, sig[sig.length - 1].end,
+      'sintaxis_asignacion_indice', 'Se esperaba "=" después del índice.', ''));
+    return;
+  }
+
+  // Validar tokens de índice (entre [ y ])
+  const indexTokens = sig.slice(2, rbrIdx);
+  if (indexTokens.length === 0) {
+    errores.push(crearError(lineaIdx, sig[1].col, sig[rbrIdx].end,
+      'indice_vacio', 'Falta el índice del arreglo.', ''));
+  } else {
+    const indexGroups = _splitTokensByCommaTopLevel(indexTokens);
+    for (const group of indexGroups) {
+      validarExpresionTokens(group, lineaIdx, tabla, errores);
+    }
+  }
+
+  // Validar expresión del RHS
+  const exprTokens = sig.slice(rbrIdx + 2);
+  if (exprTokens.length === 0) {
+    errores.push(crearError(lineaIdx, sig[rbrIdx + 1].col, sig[rbrIdx + 1].end,
+      'sintaxis_asignacion_indice', 'Falta la expresión después de "=".', ''));
+  } else {
+    validarExpresionTokens(exprTokens, lineaIdx, tabla, errores);
+  }
+
+  tabla.marcarInicializada(nombreTok.value);
+}
+
+// ─────────────────────────────────────────────
+//  VALIDATION: LeerIndice  Leer arr[i]
+// ─────────────────────────────────────────────
+
+function validarLeerIndice(sig, lineaIdx, tabla, errores) {
+  // sig[0] = 'leer', sig[1] = nombre, sig[2] = '[', ..., sig[n] = ']'
+  const nombreTok = sig[1];
+
+  if (nombreTok.type !== TK.IDENTIFIER) {
+    errores.push(crearError(lineaIdx, nombreTok.col, nombreTok.end,
+      'sintaxis_leer',
+      `Se esperaba un nombre de variable después de "Leer", se encontró: "${nombreTok.value}"`,
+      nombreTok.value));
+    return;
+  }
+
+  if (!tabla.existeVariable(nombreTok.value)) {
+    errores.push(crearError(lineaIdx, nombreTok.col, nombreTok.end,
+      'variable_no_definida',
+      `Variable "${nombreTok.value}" no definida.`,
+      nombreTok.value));
+    return;
+  }
+
+  if (!tabla.esArreglo(nombreTok.value)) {
+    errores.push(crearError(lineaIdx, nombreTok.col, sig[2].end,
+      'no_es_arreglo',
+      `"${nombreTok.value}" no es un arreglo. Declare sus dimensiones con "Dimension".`,
+      nombreTok.value));
+    return;
+  }
+
+  const rbrIdx = sig.findIndex((t, idx) => idx > 2 && t.type === TK.RBRACKET);
+  if (rbrIdx === -1) {
+    errores.push(crearError(lineaIdx, sig[2].col, sig[sig.length - 1].end,
+      'sintaxis_indice', 'Falta "]" en el acceso por índice.', ''));
+    return;
+  }
+
+  if (rbrIdx + 1 < sig.length) {
+    errores.push(crearError(lineaIdx, sig[rbrIdx + 1].col, sig[sig.length - 1].end,
+      'sintaxis_leer', 'Texto inesperado después del índice en "Leer".', ''));
+  }
+
+  const indexTokens = sig.slice(3, rbrIdx);
+  if (indexTokens.length === 0) {
+    errores.push(crearError(lineaIdx, sig[2].col, sig[rbrIdx].end,
+      'indice_vacio', 'Falta el índice del arreglo.', ''));
+  } else {
+    const indexGroups = _splitTokensByCommaTopLevel(indexTokens);
+    for (const group of indexGroups) {
+      validarExpresionTokens(group, lineaIdx, tabla, errores);
+    }
+  }
+
+  tabla.marcarInicializada(nombreTok.value);
+}
+
+// Divide una lista de tokens por comas en el nivel exterior (no dentro de [] ni ())
+function _splitTokensByCommaTopLevel(tokens) {
+  const groups = [];
+  let current = [];
+  let depthParen = 0;
+  let depthBracket = 0;
+  for (const t of tokens) {
+    if (t.type === TK.LPAREN)   { depthParen++;   current.push(t); continue; }
+    if (t.type === TK.RPAREN)   { depthParen = Math.max(0, depthParen - 1); current.push(t); continue; }
+    if (t.type === TK.LBRACKET) { depthBracket++; current.push(t); continue; }
+    if (t.type === TK.RBRACKET) { depthBracket = Math.max(0, depthBracket - 1); current.push(t); continue; }
+    if (t.type === TK.COMMA && depthParen === 0 && depthBracket === 0) {
+      groups.push(current);
+      current = [];
+    } else {
+      current.push(t);
+    }
+  }
+  groups.push(current);
+  return groups;
 }
 
 // ─────────────────────────────────────────────
