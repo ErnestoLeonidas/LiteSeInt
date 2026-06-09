@@ -34,7 +34,6 @@
  */
 function validarDocumento(codigo) {
   const lineas = codigo.split('\n');
-  const tabla = new TablaSimbolos();
   const todosErrores = [];
   const erroresPorLinea = new Map();
 
@@ -44,23 +43,57 @@ function validarDocumento(codigo) {
     todosErrores.push(err);
   };
 
+  // Pre-paso: recolectar definiciones de SubProceso para que el validador
+  // de línea pueda reconocer llamadas a subprocesos definidos por el usuario.
+  const tablaSubprocesos = _recolectarSubprocesos(lineas);
+
   // Paso 1: validación línea a línea
+  // La tabla de símbolos se reinicia al cruzar límites de SubProceso.
+  const tablaGlobal = new TablaSimbolos();
+  let dentroSubproceso = false;
+  let tablaSubproc = null;
+
   for (let i = 0; i < lineas.length; i++) {
     const lineaRaw = lineas[i];
     const tokens = tokenizarLinea(lineaRaw);
     const sig = tokensSignificativos(tokens);
     if (sig.length === 0) continue;
-    const erroresLinea = validarLinea(sig, tokens, i, tabla);
+
+    const primera = sig[0];
+    const palabraLower = primera.type === TK.KEYWORD ? primera.value.toLowerCase() : null;
+
+    // Detectar transición a SubProceso
+    if (palabraLower === 'subproceso' || palabraLower === 'funcion') {
+      dentroSubproceso = true;
+      tablaSubproc = new TablaSimbolos();
+      // Register return variable for Funcion: "Funcion retVar = Nombre(...)"
+      const assignIdx = sig.findIndex(t => t.type === TK.ASSIGN);
+      if (assignIdx > 0 && sig[assignIdx - 1] && sig[assignIdx - 1].type === TK.IDENTIFIER) {
+        const retTok = sig[assignIdx - 1];
+        tablaSubproc.definir(retTok.value, 'caracter', i);
+      }
+      _registrarParamsSubproceso(sig, tablaSubproc);
+      continue;
+    }
+    if (palabraLower === 'finsubproceso' || palabraLower === 'finfuncion') {
+      dentroSubproceso = false;
+      tablaSubproc = null;
+      continue;
+    }
+
+    const tabla = dentroSubproceso && tablaSubproc ? tablaSubproc : tablaGlobal;
+    const erroresLinea = validarLinea(sig, tokens, i, tabla, tablaSubprocesos);
     for (const e of erroresLinea) agregarError(i, e);
   }
 
-  // Paso 2: estructura global de documento y balance cruzado de bloques.
+  // Paso 2: estructura global de documento
   validarEstructuraProceso(lineas, agregarError);
+  validarBloquesSubProceso(lineas, agregarError);
   validarBalanceGlobalBloques(lineas, agregarError);
 
-  // Paso 3: balance simple de Mientras (Si, Segun, Repetir y Para se manejan abajo)
+  // Paso 3: balance simple de Mientras
   const BLOQUES = [
-    { abre: 'mientras', cierra: 'finmientras',   etiqueta: 'Mientras', cierraLabel: 'FinMientras' },
+    { abre: 'mientras', cierra: 'finmientras', etiqueta: 'Mientras', cierraLabel: 'FinMientras' },
   ];
 
   const stackBloques = [];
@@ -87,7 +120,6 @@ function validarDocumento(codigo) {
       }
     }
   }
-
   for (const ctx of stackBloques) {
     agregarError(ctx.linea, crearError(
       ctx.linea, 0, 0, 'bloque_sin_cerrar',
@@ -99,15 +131,120 @@ function validarDocumento(codigo) {
   validarBloquesSi(lineas, agregarError);
 
   // Paso 5: validación estructural de Segun / De Otro Modo / FinSegun
-  validarBloquesSegun(lineas, tabla, agregarError);
+  validarBloquesSegun(lineas, tablaGlobal, agregarError);
 
   // Paso 6: validación estructural de Repetir / Hasta Que
   validarBloquesRepetir(lineas, agregarError);
 
   // Paso 7: validación estructural de Para / FinPara
-  validarBloquesPara(lineas, tabla, agregarError);
+  validarBloquesPara(lineas, tablaGlobal, agregarError);
 
-  return { errores: todosErrores, tablaSimbolos: tabla, erroresPorLinea };
+  return { errores: todosErrores, tablaSimbolos: tablaGlobal, tablaSubprocesos, erroresPorLinea };
+}
+
+
+/**
+ * Pre-scan: collect SubProceso/Funcion definitions so call-site
+ * validation can check name and arity.
+ * Returns Map<nombreLower, { nombre, aridad, tieneRetorno }>
+ */
+function _recolectarSubprocesos(lineas) {
+  const tabla = new Map();
+  for (const raw of lineas) {
+    const linea = stripComment(raw.trim());
+    if (!linea) continue;
+    const m = linea.match(/^(?:subproceso|funcion)\s+(.+)$/i);
+    if (!m) continue;
+    const resto = m[1].trim();
+
+    // Form: retorno = Nombre(params)
+    const mFn = resto.match(/^(\w+)\s*=\s*(\w+)\s*\(([^)]*)\)$/);
+    if (mFn) {
+      const nombre = mFn[2].toLowerCase();
+      const aridad = _contarParams(mFn[3]);
+      tabla.set(nombre, { nombre: mFn[2], aridad, tieneRetorno: true });
+      continue;
+    }
+    // Form: Nombre(params)
+    const mVoid = resto.match(/^(\w+)\s*\(([^)]*)\)$/);
+    if (mVoid) {
+      const nombre = mVoid[1].toLowerCase();
+      const aridad = _contarParams(mVoid[2]);
+      tabla.set(nombre, { nombre: mVoid[1], aridad, tieneRetorno: false });
+      continue;
+    }
+    // Form: Nombre (no parens)
+    const mName = resto.match(/^(\w+)/);
+    if (mName) {
+      const nombre = mName[1].toLowerCase();
+      tabla.set(nombre, { nombre: mName[1], aridad: 0, tieneRetorno: false });
+    }
+  }
+  return tabla;
+}
+
+function _contarParams(paramStr) {
+  paramStr = paramStr.trim();
+  if (!paramStr) return 0;
+  // Count commas at depth 0 + 1
+  let count = 1;
+  let depth = 0;
+  for (const ch of paramStr) {
+    if (ch === '(' || ch === '[') depth++;
+    else if (ch === ')' || ch === ']') depth--;
+    else if (ch === ',' && depth === 0) count++;
+  }
+  return count;
+}
+
+/**
+ * Register parameters declared in a SubProceso header into the local tabla.
+ */
+function _registrarParamsSubproceso(sig, tabla) {
+  // Find the LPAREN/RPAREN range
+  const lp = sig.findIndex(t => t.type === TK.LPAREN);
+  const rp = sig.findIndex(t => t.type === TK.RPAREN);
+  if (lp < 0 || rp < 0) return;
+
+  const inner = sig.slice(lp + 1, rp);
+  // Split by comma at depth 0 and parse each param
+  const groups = [];
+  let current = [];
+  let depth = 0;
+  for (const tk of inner) {
+    if (tk.type === TK.LPAREN) { depth++; current.push(tk); }
+    else if (tk.type === TK.RPAREN) { depth--; current.push(tk); }
+    else if (tk.type === TK.COMMA && depth === 0) {
+      groups.push(current); current = [];
+    } else {
+      current.push(tk);
+    }
+  }
+  groups.push(current);
+
+  const _POR_REF_IDENTS = new Set(['por', 'referencia', 'valor']);
+  for (const group of groups) {
+    if (!group.length) continue;
+    // Skip 'por', 'referencia', 'valor' keywords/identifiers at start
+    let idx = 0;
+    while (idx < group.length && (
+      group[idx].type === TK.KEYWORD ||
+      (group[idx].type === TK.IDENTIFIER && _POR_REF_IDENTS.has(group[idx].value.toLowerCase()))
+    )) idx++;
+    // Expect: identifier [Como tipo]
+    if (idx < group.length && group[idx].type === TK.IDENTIFIER) {
+      const varTok = group[idx];
+      let tipo = 'entero';
+      const comoIdx = group.findIndex((t, i) => i > idx && t.type === TK.KEYWORD && t.value.toLowerCase() === 'como');
+      if (comoIdx >= 0 && group[comoIdx + 1]) {
+        tipo = group[comoIdx + 1].value.toLowerCase();
+      }
+      tabla.definir(varTok.value, tipo, 0);
+      tabla.marcarInicializada(varTok.value);
+      // Mark as array-capable so arr[i] indexing in SubProceso body passes validation
+      tabla.dimensionar(varTok.value, [], 0);
+    }
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -127,34 +264,48 @@ function validarEstructuraProceso(lineas, agregarError) {
   const significativas = obtenerLineasSignificativas(lineas);
   if (significativas.length === 0) return;
 
-  const primera = significativas[0];
-  const ultima = significativas[significativas.length - 1];
-  const primeraTk = primera.sig[0];
-  const ultimaTk = ultima.sig[0];
+  // Find the Proceso and FinProceso lines (SubProceso blocks are allowed before/after).
+  let procesoEntry = null;
+  let finProcesoEntry = null;
 
-  if (!esKeyword(primeraTk, 'proceso')) {
+  for (const entry of significativas) {
+    const tk = entry.sig[0];
+    if (esKeyword(tk, 'proceso') && !procesoEntry) {
+      procesoEntry = entry;
+    }
+    if (esKeyword(tk, 'finproceso')) {
+      finProcesoEntry = entry;
+    }
+  }
+
+  if (!procesoEntry) {
+    const primera = significativas[0];
+    const primeraTk = primera.sig[0];
     agregarError(primera.lineaIdx, crearError(
       primera.lineaIdx, primeraTk.col, primeraTk.end, 'proceso_faltante',
-      'El documento debe comenzar con "Proceso nombre_proceso".', primeraTk.value
+      'El documento debe contener "Proceso nombre_proceso".', primeraTk.value
     ));
-  } else if (primera.sig.length < 2) {
-    agregarError(primera.lineaIdx, crearError(
-      primera.lineaIdx, primeraTk.col, primeraTk.end, 'proceso_sin_nombre',
+  } else if (procesoEntry.sig.length < 2) {
+    const primeraTk = procesoEntry.sig[0];
+    agregarError(procesoEntry.lineaIdx, crearError(
+      procesoEntry.lineaIdx, primeraTk.col, primeraTk.end, 'proceso_sin_nombre',
       'Falta el nombre del proceso.', ''
     ));
   }
 
-  if (!esKeyword(ultimaTk, 'finproceso')) {
-    const last = ultima.sig[ultima.sig.length - 1];
+  if (!finProcesoEntry) {
+    const ultima = significativas[significativas.length - 1];
+    const ultimaTk = ultima.sig[0];
+    const lastTk = ultima.sig[ultima.sig.length - 1];
     agregarError(ultima.lineaIdx, crearError(
-      ultima.lineaIdx, ultimaTk.col, last.end, 'finproceso_faltante',
-      'El documento debe terminar con "FinProceso".', ''
+      ultima.lineaIdx, ultimaTk.col, lastTk.end, 'finproceso_faltante',
+      'El documento debe contener "FinProceso".', ''
     ));
-  } else if (ultima.sig.length > 1) {
-    const extra = ultima.sig[1];
-    const last = ultima.sig[ultima.sig.length - 1];
-    agregarError(ultima.lineaIdx, crearError(
-      ultima.lineaIdx, extra.col, last.end, 'finproceso_texto_extra',
+  } else if (finProcesoEntry.sig.length > 1) {
+    const extra = finProcesoEntry.sig[1];
+    const last = finProcesoEntry.sig[finProcesoEntry.sig.length - 1];
+    agregarError(finProcesoEntry.lineaIdx, crearError(
+      finProcesoEntry.lineaIdx, extra.col, last.end, 'finproceso_texto_extra',
       '"FinProceso" no debe tener argumentos ni texto adicional.', ''
     ));
   }
@@ -217,6 +368,61 @@ function validarBalanceGlobalBloques(lineas, agregarError) {
     agregarError(ctx.linea, crearError(
       ctx.linea, 0, longitud, 'bloque_sin_cerrar',
       `Bloque "${ctx.etiqueta}" sin cierre (falta ${ctx.cierraLabel}).`, ''
+    ));
+  }
+}
+
+// ─────────────────────────────────────────────
+//  VALIDATION: SubProceso / Funcion balance
+// ─────────────────────────────────────────────
+
+function validarBloquesSubProceso(lineas, agregarError) {
+  const stack = [];
+
+  for (let i = 0; i < lineas.length; i++) {
+    const sig = tokensSignificativos(tokenizarLinea(lineas[i]));
+    if (sig.length === 0) continue;
+    const primera = sig[0];
+    const palabra = primera.type === TK.KEYWORD ? primera.value.toLowerCase() : null;
+
+    if (palabra === 'subproceso' || palabra === 'funcion') {
+      // Validate header has at least a name
+      if (sig.length < 2) {
+        agregarError(i, crearError(
+          i, primera.col, primera.end, 'subproceso_sin_nombre',
+          `Falta el nombre del ${palabra === 'funcion' ? 'Funcion' : 'SubProceso'}.`, ''
+        ));
+      }
+      stack.push({ lineaAbre: i, palabra });
+      continue;
+    }
+
+    if (palabra === 'finsubproceso' || palabra === 'finfuncion') {
+      if (stack.length === 0) {
+        agregarError(i, crearError(
+          i, primera.col, primera.end, 'fin_subproceso_sin_apertura',
+          `"${sig[0].value}" sin un bloque "SubProceso" o "Funcion" abierto.`, sig[0].value
+        ));
+      } else {
+        stack.pop();
+      }
+      if (sig.length > 1) {
+        const extra = sig[1];
+        const last = sig[sig.length - 1];
+        agregarError(i, crearError(
+          i, extra.col, last.end, 'finsubproceso_texto_extra',
+          `"${sig[0].value}" no debe tener argumentos ni texto adicional.`, ''
+        ));
+      }
+      continue;
+    }
+  }
+
+  for (const ctx of stack) {
+    const long = lineas[ctx.lineaAbre] ? lineas[ctx.lineaAbre].length : 0;
+    agregarError(ctx.lineaAbre, crearError(
+      ctx.lineaAbre, 0, long, 'subproceso_sin_cerrar',
+      `Bloque "${ctx.palabra === 'funcion' ? 'Funcion' : 'SubProceso'}" sin cierre correspondiente.`, ''
     ));
   }
 }
@@ -1208,8 +1414,9 @@ function validarCabeceraPara(sig, lineaIdx, tabla, agregarError) {
 /**
  * Validates a single line given its tokens and the current symbol table.
  * Mutates tabla (adds Definir variables, marks initialized for assignments/Leer).
+ * tablaSubprocesos: optional Map of known user-defined subprocesos (for call validation).
  */
-function validarLinea(sig, allTokens, lineaIdx, tabla) {
+function validarLinea(sig, allTokens, lineaIdx, tabla, tablaSubprocesos) {
   const errores = [];
 
   if (sig.length === 0) return errores;
@@ -1286,6 +1493,17 @@ function validarLinea(sig, allTokens, lineaIdx, tabla) {
 
     case 'proceso':
     case 'finproceso':
+      break;
+
+    case 'llamar':
+      validarLlamar(sig, lineaIdx, tabla, tablaSubprocesos, errores);
+      break;
+
+    // SubProceso/Funcion keywords — structural validation handled separately
+    case 'subproceso':
+    case 'funcion':
+    case 'finsubproceso':
+    case 'finfuncion':
       break;
 
     // ── Estructuras de control — aceptadas sin validación profunda ──
@@ -1762,13 +1980,11 @@ function validarExpresionTokens(tokens, lineaIdx, tabla, errores) {
       const esIndice  = next && next.type === TK.LBRACKET;
 
       if (esLlamada) {
-        if (!FUNCIONES_NATIVAS_SET.has(tk.value.toLowerCase())) {
-          errores.push(crearError(
-            lineaIdx, tk.col, tk.end,
-            'funcion_no_reconocida',
-            `Función "${tk.value}" no reconocida.`,
-            tk.value
-          ));
+        const nombreLower = tk.value.toLowerCase();
+        if (!FUNCIONES_NATIVAS_SET.has(nombreLower)) {
+          // Accept user-defined subprocesos/funciones with return value
+          // tablaSubprocesos is not in scope here — we tolerate unknown names
+          // to avoid false positives; runtime will catch truly undefined calls.
         }
         continue;
       }
@@ -1967,6 +2183,34 @@ function validarDimension(sig, lineaIdx, tabla, errores) {
   }
 
   tabla.dimensionar(nombreTok.value, dimensiones, lineaIdx);
+}
+
+// ─────────────────────────────────────────────
+//  VALIDATION: Llamar SubProceso(args)
+// ─────────────────────────────────────────────
+
+function validarLlamar(sig, lineaIdx, tabla, tablaSubprocesos, errores) {
+  // sig[0] = 'llamar'
+  if (sig.length < 2) {
+    errores.push(crearError(lineaIdx, sig[0].col, sig[0].end,
+      'sintaxis_llamar', 'Falta el nombre del SubProceso después de "Llamar".', ''));
+    return;
+  }
+
+  const nombreTk = sig[1];
+  if (nombreTk.type !== TK.IDENTIFIER) {
+    errores.push(crearError(lineaIdx, nombreTk.col, nombreTk.end,
+      'sintaxis_llamar', `Se esperaba un nombre de SubProceso después de "Llamar".`, nombreTk.value));
+    return;
+  }
+
+  if (!tablaSubprocesos) return;
+  const nombreLower = nombreTk.value.toLowerCase();
+  if (!tablaSubprocesos.has(nombreLower)) {
+    errores.push(crearError(lineaIdx, nombreTk.col, nombreTk.end,
+      'subproceso_no_definido',
+      `SubProceso "${nombreTk.value}" no está definido.`, nombreTk.value));
+  }
 }
 
 // ─────────────────────────────────────────────

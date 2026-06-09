@@ -15,6 +15,7 @@
 class LiteSeInt {
 
   static MAX_ITERACIONES = 100_000;
+  static MAX_PROFUNDIDAD_LLAMADA = 256;
 
   constructor(callbacks = {}) {
     this.callbacks = {
@@ -31,6 +32,10 @@ class LiteSeInt {
 
     /** @type {Object.<string, {tipo: string, valor: *, inicializada: boolean}>} */
     this.variables = {};
+    /** @type {Object.<string, Object>} SubProceso/Funcion definitions from AST */
+    this.subprocesos = {};
+    /** @type {Array<{nombre: string, linea: number}>} Call stack frames */
+    this.callStack = [];
 
     this.ejecutando = false;
     this.detencionSolicitada = false;
@@ -50,6 +55,8 @@ class LiteSeInt {
 
   async ejecutar(codigo, validacionPrevia = null) {
     this.variables = {};
+    this.subprocesos = {};
+    this.callStack = [];
     this.errores = [];
     this.ejecutando = true;
     this.detencionSolicitada = false;
@@ -71,9 +78,9 @@ class LiteSeInt {
       };
     }
 
-    let nodos;
+    let ast;
     try {
-      nodos = LiteSeIntParser.parsearPrograma(codigo).cuerpo;
+      ast = LiteSeIntParser.parsearPrograma(codigo);
     } catch (err) {
       const mensaje = err.message || String(err);
       const errorObj = DocErrores.crearError(0, 0, 0, 'parse_error', mensaje, '');
@@ -84,8 +91,12 @@ class LiteSeInt {
       return { exito: false, errores: this.errores, erroresPorLinea: new Map() };
     }
 
+    if (ast.subprocesos) {
+      this.subprocesos = ast.subprocesos;
+    }
+
     try {
-      await this._ejecutarBloque(nodos);
+      await this._ejecutarBloque(ast.cuerpo);
     } catch (err) {
       const mensaje = err.message || String(err);
       const lineaErr = err.lineaIdx !== undefined ? err.lineaIdx : 0;
@@ -166,7 +177,12 @@ class LiteSeInt {
         case 'Asignar':
           this.callbacks.onLineaActiva(lineaIdx);
           await this._pausa(this.velocidadPausa);
-          return this._ejecutarAsignacion(nodo.texto, lineaIdx);
+          return await this._ejecutarAsignacion(nodo.texto, lineaIdx);
+
+        case 'Llamar':
+          this.callbacks.onLineaActiva(lineaIdx);
+          await this._pausa(this.velocidadPausa);
+          return await this._ejecutarLlamar(nodo, lineaIdx);
 
         case 'Si':
           return await this._ejecutarSi(nodo);
@@ -347,6 +363,7 @@ class LiteSeInt {
           // Pre-registrado por Dimension — completar con tipo e inicializar datos
           v.tipo = tipo;
           v.datos = this._initArrayDatos(v.dimensiones, this._valorDefault(tipo));
+          v.inicializada = true;
           this._notificarCambioVariable(nombre);
           continue;
         }
@@ -379,7 +396,7 @@ class LiteSeInt {
     return -1;
   }
 
-  _ejecutarAsignacion(linea, lineaIdx) {
+  async _ejecutarAsignacion(linea, lineaIdx) {
     const pos = this._encontrarPosAsignacion(linea);
     if (pos < 0) {
       throw new Error('Sintaxis de asignación inválida. Use: variable = valor');
@@ -390,6 +407,15 @@ class LiteSeInt {
 
     if (!this.variables.hasOwnProperty(nombre)) {
       throw new Error(`Variable "${nombre}" no definida. Use "Definir ${nombre} Como Tipo" primero.`);
+    }
+
+    // Check if RHS is a lone user-defined subproceso/funcion call.
+    const fnMatch = expresion.match(/^([a-zA-ZáéíóúüñÁÉÍÓÚÜÑ_][\wáéíóúüñÁÉÍÓÚÜÑ]*)\s*\(([^)]*)\)$/);
+    if (fnMatch && this.subprocesos && this.subprocesos.hasOwnProperty(fnMatch[1].toLowerCase())) {
+      const sp = this.subprocesos[fnMatch[1].toLowerCase()];
+      const argsRaw = this._splitArgsPorComas(fnMatch[2]);
+      await this._ejecutarSubProcesoCall(sp, argsRaw, lineaIdx, nombre);
+      return;
     }
 
     const valor = this._evaluarExpresion(expresion, lineaIdx);
@@ -442,6 +468,171 @@ class LiteSeInt {
     this.callbacks.onSistema(`  ↳ ${nombre} = ${valorIngresado}`);
   }
 
+
+  // ===========================================================
+  //  SUBPROCESOS / FUNCIONES
+  // ===========================================================
+
+  /** Split an argument string by commas, respecting nested parens and strings. */
+  _splitArgsPorComas(str) {
+    str = str.trim();
+    if (!str) return [];
+    const parts = [];
+    let current = '';
+    let depth = 0;
+    let inStr = false;
+    for (let i = 0; i < str.length; i++) {
+      const ch = str[i];
+      if (ch === '"') { inStr = !inStr; current += ch; continue; }
+      if (inStr) { current += ch; continue; }
+      if (ch === '(' || ch === '[') { depth++; current += ch; continue; }
+      if (ch === ')' || ch === ']') { depth--; current += ch; continue; }
+      if (ch === ',' && depth === 0) {
+        const t = current.trim();
+        if (t) parts.push(t);
+        current = '';
+      } else {
+        current += ch;
+      }
+    }
+    const t = current.trim();
+    if (t) parts.push(t);
+    return parts;
+  }
+
+  async _ejecutarLlamar(nodo, lineaIdx) {
+    const nombre = nodo.nombre;
+    if (!this.subprocesos || !this.subprocesos.hasOwnProperty(nombre)) {
+      throw Object.assign(
+        new Error(`SubProceso "${nodo.nombreOriginal}" no definido.`),
+        { lineaIdx }
+      );
+    }
+    const sp = this.subprocesos[nombre];
+    await this._ejecutarSubProcesoCall(sp, nodo.args, lineaIdx, nodo.varRetorno);
+  }
+
+  async _ejecutarSubProcesoCall(sp, argsRaw, lineaIdx, varRetornoExterno) {
+    if (this.callStack.length >= LiteSeInt.MAX_PROFUNDIDAD_LLAMADA) {
+      throw Object.assign(
+        new Error(`Desbordamiento de pila: profundidad máxima (${LiteSeInt.MAX_PROFUNDIDAD_LLAMADA}) alcanzada en "${sp.nombreOriginal}".`),
+        { lineaIdx }
+      );
+    }
+
+    // Evaluate arguments in the CALLER's scope
+    const argsEvaluados = argsRaw.map((argExpr, idx) => {
+      if (!argExpr || !argExpr.trim()) return undefined;
+      try {
+        return this._evaluarExpresion(argExpr.trim(), lineaIdx);
+      } catch (err) {
+        throw Object.assign(
+          new Error(`Error en argumento ${idx + 1} de "${sp.nombreOriginal}": ${err.message}`),
+          { lineaIdx }
+        );
+      }
+    });
+
+    // Save caller's variable scope
+    const outerVariables = this.variables;
+
+    // Push a call stack frame
+    this.callStack.push({ nombre: sp.nombreOriginal, linea: lineaIdx });
+
+    // Build inner scope from parameters
+    const innerVariables = {};
+    const refs = []; // by-reference scalar params
+
+    for (let i = 0; i < sp.params.length; i++) {
+      const param = sp.params[i];
+      const argVal = i < argsEvaluados.length ? argsEvaluados[i] : this._valorDefault(param.tipo || 'entero');
+      const argExpr = argsRaw[i] ? argsRaw[i].trim() : null;
+      const argNameLower = argExpr && /^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ_][\wáéíóúüñÁÉÍÓÚÜÑ]*$/.test(argExpr)
+        ? argExpr.toLowerCase() : null;
+      const outerVar = argNameLower && outerVariables.hasOwnProperty(argNameLower)
+        ? outerVariables[argNameLower] : null;
+
+      if (outerVar && outerVar.dimensiones) {
+        // Arrays are always by reference: share the datos array object
+        innerVariables[param.nombre] = {
+          tipo: outerVar.tipo,
+          valor: null,
+          inicializada: outerVar.inicializada,
+          dimensiones: outerVar.dimensiones,
+          datos: outerVar.datos,
+        };
+        refs.push({ tipo: 'array', paramNombre: param.nombre, outerKey: argNameLower });
+      } else if (param.porReferencia && outerVar) {
+        innerVariables[param.nombre] = {
+          tipo: param.tipo || outerVar.tipo,
+          valor: argVal,
+          inicializada: true,
+        };
+        refs.push({ tipo: 'scalar', paramNombre: param.nombre, outerKey: argNameLower });
+      } else {
+        innerVariables[param.nombre] = {
+          tipo: param.tipo || 'caracter',
+          valor: argVal,
+          inicializada: argVal !== undefined,
+        };
+      }
+    }
+
+    // Add return variable to inner scope if the subproceso has one
+    if (sp.retorno) {
+      innerVariables[sp.retorno] = {
+        tipo: 'caracter',
+        valor: null,
+        inicializada: false,
+      };
+    }
+
+    // Switch to inner scope
+    this.variables = innerVariables;
+    this.callbacks.onScopeEntered({ nombre: sp.nombreOriginal });
+
+    // Execute the subproceso body
+    await this._ejecutarBloque(sp.cuerpo);
+
+    // Capture return value before restoring scope
+    let retVal = undefined;
+    if (sp.retorno && innerVariables.hasOwnProperty(sp.retorno) && innerVariables[sp.retorno].inicializada) {
+      retVal = innerVariables[sp.retorno].valor;
+    }
+
+    // Restore caller's scope
+    this.callbacks.onScopeExited({ nombre: sp.nombreOriginal });
+    this.callStack.pop();
+    this.variables = outerVariables;
+
+    // Apply by-reference back-copies and notify
+    for (const ref of refs) {
+      if (ref.tipo === 'scalar') {
+        outerVariables[ref.outerKey].valor = innerVariables[ref.paramNombre].valor;
+        this._notificarCambioVariable(ref.outerKey);
+      }
+      // Array refs share the datos object — no copy needed; notify outer variable
+      if (ref.tipo === 'array') {
+        this._notificarCambioVariable(ref.outerKey);
+      }
+    }
+
+    // Assign return value to caller's variable
+    if (varRetornoExterno && retVal !== undefined) {
+      const varNombre = varRetornoExterno.toLowerCase();
+      if (!outerVariables.hasOwnProperty(varNombre)) {
+        throw Object.assign(
+          new Error(`Variable "${varRetornoExterno}" no definida.`),
+          { lineaIdx }
+        );
+      }
+      outerVariables[varNombre].valor = this._convertirTipo(retVal, outerVariables[varNombre].tipo);
+      outerVariables[varNombre].inicializada = true;
+      this._notificarCambioVariable(varNombre);
+    }
+
+    return retVal;
+  }
 
   // ===========================================================
   //  ARREGLOS Y MATRICES
@@ -513,6 +704,7 @@ class LiteSeInt {
       // Definir vino antes — agregar dimensiones ahora
       v.dimensiones = dimensiones;
       v.datos = this._initArrayDatos(dimensiones, this._valorDefault(v.tipo));
+      v.inicializada = true;
       this._notificarCambioVariable(nombre);
     } else {
       // Definir vendrá después — pre-registrar
@@ -719,6 +911,11 @@ class LiteSeInt {
 
 
   static PALABRAS_RESERVADAS = [
+    { texto: 'SubProceso',    tipo: 'estructura' },
+    { texto: 'FinSubProceso', tipo: 'estructura' },
+    { texto: 'Funcion',       tipo: 'estructura' },
+    { texto: 'FinFuncion',    tipo: 'estructura' },
+    { texto: 'Llamar',        tipo: 'instrucción' },
     { texto: 'Proceso',     tipo: 'estructura' },
     { texto: 'FinProceso',  tipo: 'estructura' },
     { texto: 'Definir',     tipo: 'instrucción' },

@@ -31,6 +31,8 @@ const PALABRAS_RESERVADAS_SET = new Set([
   'verdadero', 'falso',
   'mod',
   'dimension',
+  // v1.8.0 — SubProceso/Funcion
+  'subproceso', 'finsubproceso', 'funcion', 'finfuncion', 'llamar',
 ]);
 
 const TIPOS_VALIDOS = new Set(['entero', 'real', 'caracter', 'logico']);
@@ -52,15 +54,11 @@ const FUNCIONES_NATIVAS_SET = new Set([
   'longitud', 'mayusculas', 'minusculas',
 ]);
 
-// Construcciones de PSeInt fuera del alcance de LiteSeInt v1.6.0.
+// Construcciones de PSeInt fuera del alcance de LiteSeInt.
 // Si aparecen como primer token de una línea, el validador emite un
 // mensaje pedagógico en lugar de "Instrucción no reconocida".
 const CONSTRUCCIONES_FUERA_DE_ALCANCE = {
-  'dimensionar':     'La instrucción "Dimensionar" no está soportada. Use "Dimension nombre[tamaño]".',
-  'subproceso':      'Los "SubProceso" no están soportados en esta versión de LiteSeInt.',
-  'finsubproceso':   'Los "SubProceso" no están soportados en esta versión de LiteSeInt.',
-  'funcion':         'Las funciones definidas por el usuario no están soportadas en esta versión de LiteSeInt.',
-  'finfuncion':      'Las funciones definidas por el usuario no están soportadas en esta versión de LiteSeInt.',
+  'dimensionar': 'La instrucción "Dimensionar" no está soportada. Use "Dimension nombre[tamaño]".',
 };
 
 // ─────────────────────────────────────────────

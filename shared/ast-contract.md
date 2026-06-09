@@ -2,7 +2,7 @@
 
 > Contrato del Árbol de Sintaxis Abstracta (AST) producido por `core/parser.js` y consumido por `core/LiteSeInt.js` (runtime), y a futuro por `core/diagram-mapper.js` (v1.9.0).
 >
-> Versión del contrato: **`astVersion: 3`** (actualizada en v1.6.0).
+> Versión del contrato: **`astVersion: 4`** (actualizada en v1.8.0).
 
 ## Propósito
 
@@ -36,8 +36,9 @@ Nodo raíz único del documento.
 ```js
 {
   tipo: "Programa",
-  astVersion: 3,
-  cuerpo: Nodo[],   // instrucciones de nivel superior
+  astVersion: 4,
+  cuerpo: Nodo[],         // instrucciones del Proceso principal
+  subprocesos: Object,    // mapa nombre→SubProceso (v1.8.0)
   loc
 }
 ```
@@ -206,6 +207,51 @@ Lectura desde consola hacia un elemento de arreglo: `Leer arr[i]`.
 }
 ```
 
+## Nodos agregados en v1.8.0
+
+### `SubProceso`
+
+Definición de un subproceso o función. Aparece como valor en el mapa `subprocesos` del nodo `Programa`, no directamente en `cuerpo`.
+
+```js
+{
+  tipo: "SubProceso",
+  nombre: string,              // nombre normalizado (lowercase)
+  nombreOriginal: string,      // nombre tal como aparece en el código
+  retorno: string | null,      // nombre de la variable de retorno, o null (SubProceso sin retorno)
+  params: Param[],             // lista de parámetros
+  esFuncion: boolean,          // true si se declaró con "Funcion"
+  cuerpo: Nodo[],              // instrucciones del cuerpo
+  loc
+}
+```
+
+Donde `Param` es:
+
+```js
+{
+  nombre: string,              // nombre normalizado (lowercase)
+  nombreOriginal: string,
+  tipo: string | null,         // tipo declarado con "Como", o null si ausente
+  porReferencia: boolean       // true si "Por Referencia"
+}
+```
+
+### `Llamar`
+
+Invocación de un subproceso como instrucción independiente (sin captura de retorno).
+
+```js
+{
+  tipo: "Llamar",
+  nombre: string,              // nombre normalizado (lowercase)
+  nombreOriginal: string,
+  args: string[],              // expresiones de argumento como strings
+  varRetorno: null,            // siempre null en Llamar (retorno se captura con asignación)
+  loc
+}
+```
+
 ## Helpers de serialización
 
 ```js
@@ -219,7 +265,7 @@ El roundtrip JSON debe preservar exactamente el AST. Está cubierto por la prueb
 
 1. **Subir `astVersion`** cuando se agreguen, retiren o cambien nodos del lenguaje. Versiones planeadas:
    - `astVersion: 3` → v1.6.0 (**completado**: nodos `Dimension`, `AsignarIndice`, `LeerIndice`).
-   - `astVersion: 4` → v1.8.0 (nodos `SubProceso`, `Funcion`, `Llamar`).
+   - `astVersion: 4` → v1.8.0 (**completado**: nodos `SubProceso`, `Llamar`; campo `subprocesos` en `Programa`).
 2. **Nuevos nodos** se definen en `core/ast.js` mediante factory `nodoX(...)` y se documentan aquí.
 3. **Modificaciones en nodos existentes** se documentan aquí indicando la versión del cambio.
 4. **No se eliminan campos** sin un ciclo de deprecación que toque parser, runtime y validator a la vez. Los consumidores de F1.7+ (inspector, diagrama) dependen de la estabilidad de `loc` y de los campos estructurales.

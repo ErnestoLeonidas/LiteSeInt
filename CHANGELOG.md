@@ -6,6 +6,42 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [1.8.0] — 2026-06-08
+
+SubProcesos y funciones definidas por el usuario.
+
+### Resumen
+- Se pueden declarar bloques `SubProceso … FinSubProceso` y `Funcion res = Nombre(params) … FinFuncion` fuera del `Proceso` principal.
+- Los subprocesos se invocan con `Llamar Nombre(args)`. Las funciones con retorno se invocan en el lado derecho de una asignación: `r = Funcion(args)`.
+- Parámetros por valor (defecto) y por referencia (`Por Referencia`). Los arreglos siempre se pasan por referencia (datos compartidos).
+- Recursividad soportada con límite de 256 frames de call stack.
+- `AST_VERSION` incrementado a 4: `nodoPrograma` incluye campo `subprocesos`; nuevos nodos `SubProceso` y `Llamar`.
+
+### Agregado
+- **`SubProceso` / `FinSubProceso`** y **`Funcion` / `FinFuncion`**: declaración de subprocesos y funciones con parámetros opcionales.
+- **`Llamar NombreSP(args)`**: invocación de subproceso como instrucción.
+- **Parámetros por referencia**: prefijo `Por Referencia` en la declaración del parámetro.
+- **Call stack** con `LiteSeInt.MAX_PROFUNDIDAD_LLAMADA = 256`; error de desbordamiento claro.
+- **`core/ast.js`**: `nodoSubProceso(...)` y `nodoLlamar(...)`.
+- **`shared/ast-contract.md`**: documentados nodos `SubProceso` y `Llamar`.
+
+### Cambiado
+- **`core/tokenizer.js`**: `subproceso`, `finsubproceso`, `funcion`, `finfuncion`, `llamar` agregados a `PALABRAS_RESERVADAS_SET`; eliminados de `CONSTRUCCIONES_FUERA_DE_ALCANCE`.
+- **`core/parser.js`**: reescrito para soportar múltiples bloques de nivel superior; extrae SubProcesos en el mapa `subprocesos` del AST.
+- **`core/validator.js`**: pre-paso recolecta definiciones de SubProceso; la validación de cuerpos usa tabla local; `validarLlamar` verifica nombre y aridad.
+- **`core/LiteSeInt.js`**: `ejecutar()` carga subprocesos del AST; `_ejecutarLlamar` y `_ejecutarSubProcesoCall` ejecutan el cuerpo con scope propio; `_ejecutarDefinir` y `_ejecutarDimension` marcan arreglos como inicializados al completar su registro.
+- **`index.html`**: versión visible actualizada a `v1.8.0`.
+
+### Validado
+- **Pruebas**: `npm test` pasa con **55 pruebas** (45 anteriores + 10 nuevas de v1.8.0).
+- **Ejercicios**: los 245 ejercicios pasan sin cambios.
+
+### Fuera de alcance
+- Inspector multi-frame en panel Variables (se agrega en revisión de v1.8.x o v1.9.0).
+- Módulos / importación entre archivos.
+
+---
+
 ## [1.7.0] — 2026-06-08
 
 Panel de pestañas en el área inferior y inspector de variables en tiempo de ejecución. No cambia el dialecto.

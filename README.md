@@ -144,12 +144,44 @@ Escribir "Promedio: ", suma / 5
 FinProceso
 ```
 
-### No soportado en v0.6.0 (aún pendiente)
+### Subprocesos y funciones (v1.8.0)
 
-Las siguientes construcciones de PSeInt **no** están soportadas y emiten un mensaje pedagógico cuando aparecen:
+Se pueden definir subprocesos (sin valor de retorno) y funciones (con valor de retorno) fuera del bloque `Proceso`:
 
-- `SubProceso` / `FinSubProceso`.
-- Funciones definidas por el usuario (`Funcion` / `FinFuncion`).
+```txt
+SubProceso Saludar(nombre Como Caracter)
+  Escribir "Hola, ", nombre
+FinSubProceso
+
+Funcion res = Cuadrado(n Como Entero)
+  res = n * n
+FinFuncion
+
+Proceso ejemplo
+  Llamar Saludar("Mundo")
+  Definir r Como Entero
+  r = Cuadrado(5)
+  Escribir r
+FinProceso
+```
+
+**Parámetros:**
+- Por defecto se pasan **por valor** (copia).
+- Se puede forzar paso **por referencia** con el prefijo `Por Referencia`:
+  ```txt
+  SubProceso Duplicar(Por Referencia n Como Entero)
+    n = n * 2
+  FinSubProceso
+  ```
+- Los **arreglos** se pasan siempre por referencia (se comparte el objeto `datos`).
+
+**Recursividad:** soportada con límite de profundidad de llamada de 256 frames.
+
+**Invocación:**
+- Como instrucción: `Llamar Nombre(args)`.
+- Como expresión (funciones con retorno): `r = NombreFuncion(args)`.
+
+### No soportado (aún pendiente)
 - Diagramas de flujo.
 - Exportación a otros lenguajes.
 - Editor multiarchivo.

@@ -1,22 +1,15 @@
 /**
  * ============================================================
- *  parser.js — Construcción del AST LiteSeInt (v1.1.0 F3)
+ *  parser.js — Construcción del AST LiteSeInt (v1.8.0)
  * ============================================================
- *  Espejo de la lógica de LiteSeInt._parsear (core/LiteSeInt.js)
- *  pero produciendo nodos PascalCase definidos en core/ast.js.
+ *  parsearPrograma(codigo) returns the Programa AST consumed by
+ *  the runtime. Supports multiple top-level blocks:
+ *    Proceso Principal ... FinProceso
+ *    SubProceso / Funcion ... FinSubProceso / FinFuncion
  *
- *  En F3 este parser es un CONTRATO PARALELO al runtime — el
- *  runtime sigue ejecutando con su _parsear interno (legacy
- *  lowercase). F4 conmuta el runtime a este AST.
- *
- *  Por eso ambos coexisten en v1.1.0:
- *  - LiteSeInt._parsear  → nodos { tipo:'si', ... } (legacy)
- *  - parsearPrograma     → nodo  { tipo:'Programa', cuerpo:[{tipo:'Si',...}] }
- *
- *  Depende de:
- *  - core/tokenizer.js (stripComment, REGEX_HASTAQUE_LINEA vía
- *    DocErrores, pero también accesible directo).
- *  - core/ast.js (factories de nodos).
+ *  SubProceso blocks may appear before or after Proceso.
+ *  No static errors are emitted — unrecognized lines become
+ *  Desconocido nodes; the runtime turns them into runtime errors.
  * ============================================================
  */
 
@@ -39,47 +32,242 @@ function _encontrarPosAsignacionParser(linea) {
   return -1;
 }
 
+/** Split a comma-separated arg string respecting nested parentheses and strings. */
+function _splitArgsPorComas(str) {
+  str = str.trim();
+  if (!str) return [];
+  const parts = [];
+  let current = '';
+  let depth = 0;
+  let inStr = false;
+  for (let i = 0; i < str.length; i++) {
+    const ch = str[i];
+    if (ch === '"') { inStr = !inStr; current += ch; continue; }
+    if (inStr) { current += ch; continue; }
+    if (ch === '(' || ch === '[') { depth++; current += ch; continue; }
+    if (ch === ')' || ch === ']') { depth--; current += ch; continue; }
+    if (ch === ',' && depth === 0) {
+      const t = current.trim();
+      if (t) parts.push(t);
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+  const t = current.trim();
+  if (t) parts.push(t);
+  return parts;
+}
+
+/**
+ * Parse SubProceso parameter list string.
+ * Accepts:
+ *   nombre Como Tipo
+ *   Por Referencia nombre Como Tipo
+ *   Por Valor nombre Como Tipo
+ */
+function _parsearParams(paramStr) {
+  paramStr = paramStr.trim();
+  if (!paramStr) return [];
+
+  const params = [];
+  const parts = _splitArgsPorComas(paramStr);
+
+  for (const part of parts) {
+    let rest = part.trim();
+    if (!rest) continue;
+
+    let porReferencia = false;
+    if (/^por\s+referencia\s+/i.test(rest)) {
+      porReferencia = true;
+      rest = rest.replace(/^por\s+referencia\s+/i, '').trim();
+    } else if (/^por\s+valor\s+/i.test(rest)) {
+      rest = rest.replace(/^por\s+valor\s+/i, '').trim();
+    }
+
+    const m = rest.match(/^(\w+)\s+como\s+(entero|real|caracter|logico)$/i);
+    if (m) {
+      params.push({
+        nombre: m[1].toLowerCase(),
+        nombreOriginal: m[1],
+        tipo: m[2].toLowerCase(),
+        porReferencia,
+      });
+    } else {
+      const mName = rest.match(/^(\w+)/);
+      if (mName) {
+        params.push({
+          nombre: mName[1].toLowerCase(),
+          nombreOriginal: mName[1],
+          tipo: null,
+          porReferencia,
+        });
+      }
+    }
+  }
+  return params;
+}
+
+/**
+ * Parse the header of a SubProceso/Funcion line.
+ * `keyword` = 'subproceso' | 'funcion'
+ * `resto`   = the part after the keyword
+ *
+ * Accepted forms:
+ *   Nombre(params)                → void subproceso
+ *   retorno = Nombre(params)      → subproceso with return value
+ */
+function _parsearCabeceraSubProceso(keyword, resto, lineaIdx, lineaRaw) {
+  const esFuncion = /^funcion$/i.test(keyword);
+  const loc = locDeLinea(lineaIdx, lineaRaw);
+
+  // Form: retorno = Nombre(params)
+  const matchFn = resto.match(/^(\w+)\s*=\s*(\w+)\s*\(([^)]*)\)$/);
+  if (matchFn) {
+    const retorno       = matchFn[1].toLowerCase();
+    const nombreOriginal = matchFn[2];
+    const params        = _parsearParams(matchFn[3]);
+    return nodoSubProceso(nombreOriginal.toLowerCase(), nombreOriginal, retorno, params, esFuncion, [], loc);
+  }
+
+  // Form: Nombre(params) or Nombre()
+  const matchVoid = resto.match(/^(\w+)\s*\(([^)]*)\)$/);
+  if (matchVoid) {
+    const nombreOriginal = matchVoid[1];
+    const params        = _parsearParams(matchVoid[2]);
+    return nodoSubProceso(nombreOriginal.toLowerCase(), nombreOriginal, null, params, esFuncion, [], loc);
+  }
+
+  // Fallback: just a name (no parens — malformed header)
+  const mName = resto.match(/^(\w+)/);
+  const nombre = mName ? mName[1] : 'desconocido';
+  return nodoSubProceso(nombre.toLowerCase(), nombre, null, [], esFuncion, [], loc);
+}
+
+/**
+ * Build a simple (non-block) AST node from a single normalized line.
+ * Unrecognized lines become Desconocido so the runtime catches them.
+ */
 function _crearNodoSimpleAST(linea, lineaIdx, lineaRaw) {
   const loc = locDeLinea(lineaIdx, lineaRaw);
+
   if (/^definir\s+/i.test(linea))  return nodoDefinir(linea, loc);
   if (/^escribir\s+/i.test(linea)) return nodoEscribir(linea, loc);
-  if (/^leer\s+/i.test(linea))     return nodoLeer(linea, loc);
+
+  // Leer arr[idx] must be matched before plain Leer
+  const leerArrMatch = linea.match(/^leer\s+(\w+)\s*\[([^\]]*)\]$/i);
+  if (leerArrMatch) {
+    const indices = leerArrMatch[2].split(',').map(s => s.trim());
+    return nodoLeerIndice(leerArrMatch[1], indices, loc);
+  }
+
+  if (/^leer\s+/i.test(linea)) return nodoLeer(linea, loc);
+
+  // Llamar SubProceso(args) — void call statement
+  const llamarMatch = linea.match(/^llamar\s+(\w+)\s*\(([^)]*)\)$/i);
+  if (llamarMatch) {
+    const nombreOriginal = llamarMatch[1];
+    const args = _splitArgsPorComas(llamarMatch[2]);
+    return nodoLlamar(nombreOriginal.toLowerCase(), nombreOriginal, args, null, loc);
+  }
+  // Llamar with no parens (malformed but absorb gracefully)
+  const llamarNoParMatch = linea.match(/^llamar\s+(\w+)\s*$/i);
+  if (llamarNoParMatch) {
+    const nombreOriginal = llamarNoParMatch[1];
+    return nodoLlamar(nombreOriginal.toLowerCase(), nombreOriginal, [], null, loc);
+  }
+
+  // Dimension nombre[n] or Dimension nombre[n, m]
+  const dimMatch = linea.match(/^dimension\s+(\w+)\s*\[([^\]]*)\]$/i);
+  if (dimMatch) {
+    const nombre = dimMatch[1];
+    const dimensiones = dimMatch[2].split(',').map(s => {
+      const t = s.trim();
+      const n = parseInt(t, 10);
+      return isNaN(n) ? t : n;
+    });
+    return nodoDimension(nombre, dimensiones, loc);
+  }
+
+  // nombre[idx] = expr  (array element assignment)
+  const arrAssignMatch = linea.match(/^(\w+)\s*\[([^\]]*)\]\s*=(?!=)\s*(.+)$/i);
+  if (arrAssignMatch) {
+    const nombre = arrAssignMatch[1];
+    const indices = arrAssignMatch[2].split(',').map(s => s.trim());
+    const expresion = arrAssignMatch[3].trim();
+    return nodoAsignarIndice(nombre, indices, expresion, loc);
+  }
+
+  // Regular assignment: var = expr
   if (_encontrarPosAsignacionParser(linea) >= 0) return nodoAsignar(linea, loc);
+
   return nodoDesconocido(linea, loc);
 }
 
 /**
- * Parsea código LiteSeInt completo y devuelve el AST.
- * Salida: { tipo: 'Programa', astVersion: 2, cuerpo: [...], loc }
- *
- * El parser actual reutiliza la estrategia line-based del runtime
- * legacy: tokeniza por línea relevante y empuja frames a una pila
- * para los bloques (Si/Mientras/Repetir/Para/Segun).
- *
- * NO emite errores estáticos: para eso está DocErrores.validarDocumento.
- * Aquí solo construye el árbol; las líneas con sintaxis no reconocida
- * se materializan como nodos Desconocido para que el runtime las
- * detecte en ejecución (igual que hace LiteSeInt._parsear hoy).
+ * Main parser entry point.
+ * Returns { tipo:'Programa', astVersion, cuerpo, subprocesos, loc }
  */
 function parsearPrograma(codigo) {
   const lineas = codigo.split('\n');
   const cuerpoRaiz = [];
-  const stack = []; // { tipo, nodo, parentBloque }
-  let bloqueActual = cuerpoRaiz;
+  const subprocesos = {};
+  const stack = [];           // block nesting stack (Si, Mientras, etc.)
+  let bloqueActual = null;    // null when between top-level blocks
+  let contextActual = null;   // 'proceso' | 'subproceso' | null
+  let spActual = null;        // SubProceso node being built
 
   for (let i = 0; i < lineas.length; i++) {
     const lineaRaw = lineas[i].trim();
     const linea = stripComment(lineaRaw);
     if (linea === '') continue;
 
-    if (/^proceso(\s+\S+)?$/i.test(linea)) continue;
-    if (/^finproceso$/i.test(linea)) continue;
+    // ── Top-level block entry/exit ──────────────────────────
+
+    if (/^proceso(\s+\S+)?$/i.test(linea)) {
+      contextActual = 'proceso';
+      bloqueActual = cuerpoRaiz;
+      stack.length = 0;
+      continue;
+    }
+    if (/^finproceso$/i.test(linea)) {
+      contextActual = null;
+      bloqueActual = null;
+      stack.length = 0;
+      continue;
+    }
+
+    // SubProceso/Funcion at top level (not inside Proceso)
+    const spMatch = linea.match(/^(subproceso|funcion)\s+(.+)$/i);
+    if (spMatch && contextActual === null) {
+      spActual = _parsearCabeceraSubProceso(spMatch[1], spMatch[2], i, lineaRaw);
+      contextActual = 'subproceso';
+      bloqueActual = spActual.cuerpo;
+      stack.length = 0;
+      continue;
+    }
+
+    // FinSubProceso/FinFuncion at top of inner stack
+    if ((/^finsubproceso$/i.test(linea) || /^finfuncion$/i.test(linea)) && stack.length === 0) {
+      if (contextActual === 'subproceso' && spActual) {
+        subprocesos[spActual.nombre] = spActual;
+      }
+      spActual = null;
+      contextActual = null;
+      bloqueActual = null;
+      continue;
+    }
+
+    // Skip lines outside any named block (between top-level sections)
+    if (contextActual === null) continue;
+
+    // ── Control structure blocks ─────────────────────────────
 
     if (/^si\s+.+\s+entonces$/i.test(linea)) {
       const condicion = linea.replace(/^si\s+/i, '').replace(/\s+entonces$/i, '').trim();
       const loc = locDeLinea(i, lineaRaw);
       const nodo = nodoSi(condicion, [], null, loc);
-      if (bloqueActual !== null) bloqueActual.push(nodo);
+      bloqueActual.push(nodo);
       stack.push({ tipo: 'Si', nodo, parentBloque: bloqueActual });
       bloqueActual = nodo.entonces;
       continue;
@@ -104,7 +292,7 @@ function parsearPrograma(codigo) {
       const condicion = linea.replace(/^mientras\s+/i, '').replace(/\s+hacer$/i, '').trim();
       const loc = locDeLinea(i, lineaRaw);
       const nodo = nodoMientras(condicion, [], loc);
-      if (bloqueActual !== null) bloqueActual.push(nodo);
+      bloqueActual.push(nodo);
       stack.push({ tipo: 'Mientras', nodo, parentBloque: bloqueActual });
       bloqueActual = nodo.cuerpo;
       continue;
@@ -119,7 +307,7 @@ function parsearPrograma(codigo) {
     if (/^repetir$/i.test(linea)) {
       const loc = locDeLinea(i, lineaRaw);
       const nodo = nodoRepetir([], null, loc, loc);
-      if (bloqueActual !== null) bloqueActual.push(nodo);
+      bloqueActual.push(nodo);
       stack.push({ tipo: 'Repetir', nodo, parentBloque: bloqueActual });
       bloqueActual = nodo.cuerpo;
       continue;
@@ -132,9 +320,8 @@ function parsearPrograma(codigo) {
       if (ctx && ctx.tipo === 'Repetir') {
         ctx.nodo.condicion = condicion;
         ctx.nodo.locHastaQue = locDeLinea(i, lineaRaw);
-        const parentBloque = ctx.parentBloque;
         stack.pop();
-        bloqueActual = parentBloque;
+        bloqueActual = ctx.parentBloque;
       }
       continue;
     }
@@ -153,7 +340,7 @@ function parsearPrograma(codigo) {
         [],
         loc
       );
-      if (bloqueActual !== null) bloqueActual.push(nodo);
+      bloqueActual.push(nodo);
       stack.push({ tipo: 'Para', nodo, parentBloque: bloqueActual });
       bloqueActual = nodo.cuerpo;
       continue;
@@ -169,9 +356,9 @@ function parsearPrograma(codigo) {
       const exprMatch = linea.match(/^segun\s+(.+?)\s+hacer$/i);
       const loc = locDeLinea(i, lineaRaw);
       const nodo = nodoSegun(exprMatch[1].trim(), [], null, loc);
-      if (bloqueActual !== null) bloqueActual.push(nodo);
+      bloqueActual.push(nodo);
       stack.push({ tipo: 'Segun', nodo, parentBloque: bloqueActual });
-      bloqueActual = null; // espera etiqueta de caso
+      bloqueActual = null;
       continue;
     }
 
@@ -190,6 +377,7 @@ function parsearPrograma(codigo) {
       continue;
     }
 
+    // ── Segun case labels ─────────────────────────────────────
     const ctxTop = stack[stack.length - 1];
     if (ctxTop && ctxTop.tipo === 'Segun') {
       const casoMatch = linea.match(/^([^:]+):\s*(.*)$/);
@@ -207,39 +395,8 @@ function parsearPrograma(codigo) {
       }
     }
 
+    // ── Simple instructions ───────────────────────────────────
     if (bloqueActual !== null) {
-      // Dimension nombre[n] o Dimension nombre[n, m]
-      const dimMatch = linea.match(/^dimension\s+(\w+)\s*\[([^\]]*)\]$/i);
-      if (dimMatch) {
-        const nombre = dimMatch[1];
-        const dimensiones = dimMatch[2].split(',').map(s => {
-          const t = s.trim();
-          const n = parseInt(t, 10);
-          return isNaN(n) ? t : n;
-        });
-        bloqueActual.push(nodoDimension(nombre, dimensiones, locDeLinea(i, lineaRaw)));
-        continue;
-      }
-
-      // Leer nombre[idx] o Leer nombre[idx, idx2] — debe ir antes del fallback
-      const leerArrMatch = linea.match(/^leer\s+(\w+)\s*\[([^\]]*)\]$/i);
-      if (leerArrMatch) {
-        const nombre = leerArrMatch[1];
-        const indices = leerArrMatch[2].split(',').map(s => s.trim());
-        bloqueActual.push(nodoLeerIndice(nombre, indices, locDeLinea(i, lineaRaw)));
-        continue;
-      }
-
-      // nombre[idx] = expr  (asignación a elemento de arreglo)
-      const arrAssignMatch = linea.match(/^(\w+)\s*\[([^\]]*)\]\s*=(?!=)\s*(.+)$/i);
-      if (arrAssignMatch) {
-        const nombre = arrAssignMatch[1];
-        const indices = arrAssignMatch[2].split(',').map(s => s.trim());
-        const expresion = arrAssignMatch[3].trim();
-        bloqueActual.push(nodoAsignarIndice(nombre, indices, expresion, locDeLinea(i, lineaRaw)));
-        continue;
-      }
-
       const nodo = _crearNodoSimpleAST(linea, i, lineaRaw);
       if (nodo) bloqueActual.push(nodo);
     }
@@ -250,7 +407,7 @@ function parsearPrograma(codigo) {
     columnaInicio: 0,
     columnaFin: lineas.length > 0 ? lineas[0].length : 0,
   };
-  return nodoPrograma(cuerpoRaiz, locPrograma);
+  return nodoPrograma(cuerpoRaiz, subprocesos, locPrograma);
 }
 
 const LiteSeIntParser = {

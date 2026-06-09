@@ -343,14 +343,15 @@ test('documentacion de errores: ejemplos incorrectos reproducen errores o son de
   }
 });
 
-test('parser: produce Programa raiz con astVersion 3 y cuerpo array', () => {
+test('parser: produce Programa raiz con astVersion 4 y cuerpo array', () => {
   const ctx = loadRuntime();
   const codigo = 'Proceso p\nDefinir x Como Entero\nx = 1\nEscribir x\nFinProceso';
   const ast = ctx.LiteSeIntParser.parsearPrograma(codigo);
   assert.strictEqual(ast.tipo, 'Programa');
-  assert.strictEqual(ast.astVersion, 3);
+  assert.strictEqual(ast.astVersion, 4);
   assert.ok(Array.isArray(ast.cuerpo));
   assert.ok(ast.loc && typeof ast.loc.linea === 'number');
+  assert.ok(ast.subprocesos && typeof ast.subprocesos === 'object');
 });
 
 test('parser: emite nodos PascalCase para instrucciones simples', () => {
@@ -491,7 +492,7 @@ test('parser: roundtrip JSON preserva el AST', () => {
   const json = ctx.LiteSeIntAST.serializarAST(ast);
   const rehidratado = ctx.LiteSeIntAST.deserializarAST(json);
   assert.strictEqual(rehidratado.tipo, 'Programa');
-  assert.strictEqual(rehidratado.astVersion, 3);
+  assert.strictEqual(rehidratado.astVersion, 4);
   assert.deepStrictEqual(rehidratado, ast);
   assert.strictEqual(ctx.LiteSeIntAST.serializarAST(rehidratado), json);
 });
@@ -503,7 +504,7 @@ test('parser: los 245 ejercicios visibles parsean sin throw y producen Programa'
   for (const ej of visibles) {
     const ast = ctx.LiteSeIntParser.parsearPrograma(ej.codigoReferencia);
     assert.strictEqual(ast.tipo, 'Programa', `${ej.id}: tipo raiz no es Programa`);
-    assert.strictEqual(ast.astVersion, 3, `${ej.id}: astVersion incorrecto`);
+    assert.strictEqual(ast.astVersion, 4, `${ej.id}: astVersion incorrecto`);
     assert.ok(Array.isArray(ast.cuerpo), `${ej.id}: cuerpo no es array`);
   }
 });
@@ -804,6 +805,188 @@ test('v1.7.0: onVariableChanged se emite con valor correcto en ciclo', async () 
     'FinProceso',
   ].join('\n'));
   assert.ok(valores.includes(1) && valores.includes(2) && valores.includes(3), 'emite valores del contador');
+});
+
+// ─────────────────────────────────────────────
+//  v1.8.0 — SubProceso / Funcion / Call Stack
+// ─────────────────────────────────────────────
+
+test('v1.8.0: parser emite nodo SubProceso con params y cuerpo', () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'SubProceso Saludar(nombre Como Caracter)',
+    '  Escribir "Hola, ", nombre',
+    'FinSubProceso',
+    'Proceso p',
+    '  Llamar Saludar("Mundo")',
+    'FinProceso',
+  ].join('\n');
+  const ast = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  assert.ok(ast.subprocesos && ast.subprocesos.saludar, 'subproceso en el AST');
+  const sp = ast.subprocesos.saludar;
+  assert.strictEqual(sp.tipo, 'SubProceso');
+  assert.strictEqual(sp.nombre, 'saludar');
+  assert.strictEqual(sp.nombreOriginal, 'Saludar');
+  assert.strictEqual(sp.retorno, null);
+  assert.strictEqual(sp.params.length, 1);
+  assert.strictEqual(sp.params[0].nombre, 'nombre');
+  assert.strictEqual(sp.params[0].tipo, 'caracter');
+  assert.strictEqual(sp.cuerpo.length, 1);
+  // Llamar node in cuerpo
+  const llamar = ast.cuerpo.find(n => n.tipo === 'Llamar');
+  assert.ok(llamar, 'nodo Llamar en cuerpo principal');
+  assert.strictEqual(llamar.nombre, 'saludar');
+});
+
+test('v1.8.0: runtime ejecuta SubProceso void', async () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'SubProceso Saludar(nombre Como Caracter)',
+    '  Escribir "Hola, ", nombre',
+    'FinSubProceso',
+    'Proceso p',
+    '  Llamar Saludar("Mundo")',
+    'FinProceso',
+  ].join('\n');
+  const { salida } = await ejecutar(ctx, codigo);
+  assert.deepStrictEqual(salida, ['Hola, Mundo']);
+});
+
+test('v1.8.0: runtime ejecuta Funcion con retorno', async () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Funcion res = Cuadrado(n Como Entero)',
+    '  res = n * n',
+    'FinFuncion',
+    'Proceso p',
+    '  Definir x, r Como Entero',
+    '  x = 5',
+    '  r = Cuadrado(x)',
+    '  Escribir r',
+    'FinProceso',
+  ].join('\n');
+  const { salida } = await ejecutar(ctx, codigo);
+  assert.deepStrictEqual(salida, ['25']);
+});
+
+test('v1.8.0: parametro por referencia modifica variable del llamador', async () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'SubProceso Duplicar(Por Referencia n Como Entero)',
+    '  n = n * 2',
+    'FinSubProceso',
+    'Proceso p',
+    '  Definir x Como Entero',
+    '  x = 7',
+    '  Llamar Duplicar(x)',
+    '  Escribir x',
+    'FinProceso',
+  ].join('\n');
+  const { salida } = await ejecutar(ctx, codigo);
+  assert.deepStrictEqual(salida, ['14']);
+});
+
+test('v1.8.0: arreglo se pasa por referencia por defecto', async () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'SubProceso Llenar(arr Como Entero)',
+    '  arr[1] = 99',
+    'FinSubProceso',
+    'Proceso p',
+    '  Dimension arr[3]',
+    '  Definir arr Como Entero',
+    '  Llamar Llenar(arr)',
+    '  Escribir arr[1]',
+    'FinProceso',
+  ].join('\n');
+  const { salida } = await ejecutar(ctx, codigo);
+  assert.deepStrictEqual(salida, ['99']);
+});
+
+test('v1.8.0: recursion calcula factorial correctamente', async () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Funcion res = Fact(n Como Entero)',
+    '  Si n <= 1 Entonces',
+    '    res = 1',
+    '  Sino',
+    '    Definir m Como Entero',
+    '    m = n - 1',
+    '    m = Fact(m)',
+    '    res = n * m',
+    '  FinSi',
+    'FinFuncion',
+    'Proceso p',
+    '  Definir r Como Entero',
+    '  r = Fact(5)',
+    '  Escribir r',
+    'FinProceso',
+  ].join('\n');
+  const { salida } = await ejecutar(ctx, codigo);
+  assert.deepStrictEqual(salida, ['120']);
+});
+
+test('v1.8.0: error cuando SubProceso no esta definido', async () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    '  Llamar Inexistente()',
+    'FinProceso',
+  ].join('\n');
+  const { resultado } = await ejecutar(ctx, codigo);
+  assert.strictEqual(resultado.exito, false, 'debe fallar');
+});
+
+test('v1.8.0: error de desbordamiento de pila en recursion infinita', async () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'SubProceso Inf()',
+    '  Llamar Inf()',
+    'FinSubProceso',
+    'Proceso p',
+    '  Llamar Inf()',
+    'FinProceso',
+  ].join('\n');
+  const { resultado } = await ejecutar(ctx, codigo);
+  assert.strictEqual(resultado.exito, false, 'debe fallar por desbordamiento');
+  assert.ok(resultado.errores.some(e => /pila|profundidad/i.test(e.mensaje)), 'mensaje de stack overflow');
+});
+
+test('v1.8.0: validador acepta SubProceso con Llamar valido', () => {
+  const ctx = loadRuntime();
+  const errores = validar(ctx, [
+    'SubProceso Saludo()',
+    '  Escribir "hi"',
+    'FinSubProceso',
+    'Proceso p',
+    '  Llamar Saludo()',
+    'FinProceso',
+  ].join('\n'));
+  assert.strictEqual(errores.length, 0, `errores inesperados: ${JSON.stringify(errores)}`);
+});
+
+test('v1.8.0: validador reporta SubProceso no definido en Llamar', () => {
+  const ctx = loadRuntime();
+  const errores = validar(ctx, [
+    'Proceso p',
+    '  Llamar Inexistente()',
+    'FinProceso',
+  ].join('\n'));
+  assert.ok(errores.some(e => e.tipo === 'subproceso_no_definido'), 'debe reportar subproceso_no_definido');
+});
+
+test('v1.8.0: SubProceso definido despues de Proceso funciona', async () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    '  Llamar Doblar()',
+    'FinProceso',
+    'SubProceso Doblar()',
+    '  Escribir "doble"',
+    'FinSubProceso',
+  ].join('\n');
+  const { salida } = await ejecutar(ctx, codigo);
+  assert.deepStrictEqual(salida, ['doble']);
 });
 
 test('detener durante Leer marca la ejecucion como detenida', async () => {

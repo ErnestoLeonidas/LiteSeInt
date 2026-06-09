@@ -20,7 +20,7 @@
  * ============================================================
  */
 
-const AST_VERSION = 3;
+const AST_VERSION = 4;
 
 function locDeLinea(linea, lineaRaw) {
   return {
@@ -30,8 +30,8 @@ function locDeLinea(linea, lineaRaw) {
   };
 }
 
-function nodoPrograma(cuerpo, loc) {
-  return { tipo: 'Programa', astVersion: AST_VERSION, cuerpo, loc };
+function nodoPrograma(cuerpo, subprocesos, loc) {
+  return { tipo: 'Programa', astVersion: AST_VERSION, cuerpo, subprocesos, loc };
 }
 
 function nodoDefinir(texto, loc) {
@@ -86,6 +86,24 @@ function nodoLeerIndice(nombre, indices, loc) {
   return { tipo: 'LeerIndice', nombre, indices, loc };
 }
 
+/**
+ * SubProceso / Funcion definition node.
+ * params: [{ nombre, nombreOriginal, tipo, porReferencia }]
+ * retorno: lowercase var name for return value, or null.
+ */
+function nodoSubProceso(nombre, nombreOriginal, retorno, params, esFuncion, cuerpo, loc) {
+  return { tipo: 'SubProceso', nombre, nombreOriginal, retorno, params, esFuncion, cuerpo, loc };
+}
+
+/**
+ * Call to a SubProceso/Funcion.
+ * args: array of expression strings.
+ * varRetorno: lowercase variable name that receives the return, or null.
+ */
+function nodoLlamar(nombre, nombreOriginal, args, varRetorno, loc) {
+  return { tipo: 'Llamar', nombre, nombreOriginal, args, varRetorno, loc };
+}
+
 function nodoDesconocido(texto, loc) {
   return { tipo: 'Desconocido', texto, loc };
 }
@@ -123,6 +141,8 @@ const LiteSeIntAST = {
   nodoDimension,
   nodoAsignarIndice,
   nodoLeerIndice,
+  nodoSubProceso,
+  nodoLlamar,
   nodoDesconocido,
   serializarAST,
   deserializarAST,
