@@ -737,6 +737,75 @@ test('v1.6.0: roundtrip JSON del AST preserva nodos Dimension y AsignarIndice', 
   assert.ok(rehidratado.cuerpo.some(n => n.tipo === 'AsignarIndice'));
 });
 
+test('v1.7.0: onVariableChanged se emite al definir y asignar variable', async () => {
+  const ctx = loadRuntime();
+  const cambios = [];
+  const interprete = new ctx.LiteSeInt({
+    onVariableChanged: info => cambios.push({ ...info }),
+  });
+  interprete.velocidadPausa = 0;
+  await interprete.ejecutar(
+    'Proceso p\n  Definir x Como Entero\n  x = 42\nFinProceso'
+  );
+  const definicion = cambios.find(c => c.nombre === 'x' && !c.inicializada && c.tipo === 'entero');
+  assert.ok(definicion, 'emite al Definir');
+  const asignado = cambios.find(c => c.nombre === 'x' && c.inicializada && c.valor === 42);
+  assert.ok(asignado, 'emite al asignar con valor correcto');
+});
+
+test('v1.7.0: onScopeEntered y onScopeExited se emiten una vez', async () => {
+  const ctx = loadRuntime();
+  let entered = 0;
+  let exited = 0;
+  const interprete = new ctx.LiteSeInt({
+    onScopeEntered: () => entered++,
+    onScopeExited:  () => exited++,
+  });
+  interprete.velocidadPausa = 0;
+  await interprete.ejecutar('Proceso p\n  Definir x Como Entero\nFinProceso');
+  assert.strictEqual(entered, 1, 'onScopeEntered una vez');
+  assert.strictEqual(exited,  1, 'onScopeExited una vez');
+});
+
+test('v1.7.0: onVariableChanged en arreglo 1D emite dimensiones y datos', async () => {
+  const ctx = loadRuntime();
+  const cambios = [];
+  const interprete = new ctx.LiteSeInt({
+    onVariableChanged: info => cambios.push({ ...info, datos: info.datos ? [...info.datos] : null }),
+  });
+  interprete.velocidadPausa = 0;
+  await interprete.ejecutar([
+    'Proceso p',
+    'Dimension arr[3]',
+    'Definir arr Como Entero',
+    'arr[1] = 10',
+    'arr[2] = 20',
+    'FinProceso',
+  ].join('\n'));
+  const conDatos = cambios.filter(c => c.nombre === 'arr' && c.datos && c.dimensiones);
+  assert.ok(conDatos.length > 0, 'emite para arreglo');
+  const ultimo = conDatos[conDatos.length - 1];
+  assert.strictEqual(ultimo.dimensiones[0], 3);
+});
+
+test('v1.7.0: onVariableChanged se emite con valor correcto en ciclo', async () => {
+  const ctx = loadRuntime();
+  const valores = [];
+  const interprete = new ctx.LiteSeInt({
+    onVariableChanged: info => { if (info.nombre === 'i') valores.push(info.valor); },
+  });
+  interprete.velocidadPausa = 0;
+  await interprete.ejecutar([
+    'Proceso p',
+    'Definir i Como Entero',
+    'Para i = 1 Hasta 3 Hacer',
+    '  Escribir i',
+    'FinPara',
+    'FinProceso',
+  ].join('\n'));
+  assert.ok(valores.includes(1) && valores.includes(2) && valores.includes(3), 'emite valores del contador');
+});
+
 test('detener durante Leer marca la ejecucion como detenida', async () => {
   const ctx = loadRuntime();
   const codigo = [

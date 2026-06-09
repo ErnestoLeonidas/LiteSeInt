@@ -6,6 +6,42 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [1.7.0] — 2026-06-08
+
+Panel de pestañas en el área inferior y inspector de variables en tiempo de ejecución. No cambia el dialecto.
+
+### Resumen
+- La consola se convierte en un panel con tres pestañas: **Consola**, **Variables** y **Diagrama** (placeholder).
+- La pestaña **Variables** muestra el estado de todas las variables del proceso activo durante y después de la ejecución: nombre, tipo, valor. Los arreglos y matrices son expandibles.
+- Los cambios recientes se resaltan brevemente con una animación de flash al ser modificados.
+- El runtime emite tres nuevos callbacks: `onVariableChanged`, `onScopeEntered`, `onScopeExited`.
+- Los 245 ejercicios existentes pasan sin cambios.
+
+### Agregado
+- **Panel de pestañas** en la consola: Consola / Variables / Diagrama.
+- **Inspector de variables** en tiempo de ejecución: árbol plano con nombre, tipo y valor; arreglos y matrices expandibles con sus índices.
+- **`onVariableChanged({nombre, tipo, valor, inicializada, dimensiones?, datos?})`**: emitido por el runtime en cada creación o modificación de variable (incluyendo el contador de `Para`).
+- **`onScopeEntered({})`** y **`onScopeExited({})`**: emitidos al inicio y fin del proceso.
+- **Ejemplos `arreglo` y `matriz`** en el selector de ejemplos precargados (faltaban en el HTML desde v1.6.0).
+
+### Cambiado
+- **`core/LiteSeInt.js`**: constructor acepta las tres nuevas callbacks; `_notificarCambioVariable(nombre)` inyectado en `_ejecutarDefinir`, `_ejecutarAsignacion`, `_ejecutarLeer`, `_ejecutarPara`, `_ejecutarDimension`, `_ejecutarAsignarIndice`, `_ejecutarLeerIndice`.
+- **`index.html`**: encabezado de la consola sustituye `.console-header-title` por `nav.console-tabs`; el cuerpo de la consola envuelve `#consola` en `.console-view#consolaView` y agrega `#variablesView` y `#diagramaView`; versión visible actualizada a `v1.7.0`.
+- **`css/styles.css`**: estilos de `.console-tabs`, `.console-tab`, `.console-view`, `.inspector-panel`, `.inspector-var` y variantes de arreglo; animación `inspectorFlash`; regla mobile corregida para ocultar todas las vistas en modo colapsado.
+- **`js/app.js`**: `initConsoleTabs()`, `switchConsoleView()`, inspector state (`_inspectorVars`, `_inspectorOrder`), `limpiarInspector()`, `actualizarInspector()`, `renderizarInspector()`, `renderizarFilaVariable()`, `renderizarFilaArreglo()`; `limpiarConsola()` también limpia el inspector.
+
+### Validado
+- **Pruebas**: `npm test` pasa con **45 pruebas** (41 anteriores + 4 nuevas de v1.7.0).
+- **Ejercicios**: los 245 ejercicios ejecutan con salida idéntica.
+- **Diagrama**: pestaña placeholder visible con mensaje "Disponible en v1.9.0".
+
+### Fuera de alcance
+- Modo paso a paso (entrará en una revisión de v1.7.x o v1.8.0).
+- Inspector multi-frame / call stack (entra en v1.8.0 con `SubProceso`).
+- Diagrama bidireccional (v1.9.0).
+
+---
+
 ## [1.6.0] — 2026-06-07
 
 Agrega arreglos unidimensionales y matrices bidimensionales con la instrucción `Dimension`. Es el primer cambio de dialecto visible desde `v1.0.0`.

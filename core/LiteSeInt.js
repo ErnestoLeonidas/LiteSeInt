@@ -18,12 +18,15 @@ class LiteSeInt {
 
   constructor(callbacks = {}) {
     this.callbacks = {
-      onEscribir:    callbacks.onEscribir    || (() => {}),
-      onLeer:        callbacks.onLeer        || (() => Promise.resolve('')),
-      onError:       callbacks.onError       || (() => {}),
-      onLineaActiva: callbacks.onLineaActiva || (() => {}),
-      onSistema:     callbacks.onSistema     || (() => {}),
-      onFin:         callbacks.onFin         || (() => {}),
+      onEscribir:       callbacks.onEscribir       || (() => {}),
+      onLeer:           callbacks.onLeer           || (() => Promise.resolve('')),
+      onError:          callbacks.onError          || (() => {}),
+      onLineaActiva:    callbacks.onLineaActiva    || (() => {}),
+      onSistema:        callbacks.onSistema        || (() => {}),
+      onFin:            callbacks.onFin            || (() => {}),
+      onVariableChanged: callbacks.onVariableChanged || (() => {}),
+      onScopeEntered:   callbacks.onScopeEntered   || (() => {}),
+      onScopeExited:    callbacks.onScopeExited    || (() => {}),
     };
 
     /** @type {Object.<string, {tipo: string, valor: *, inicializada: boolean}>} */
@@ -39,12 +42,19 @@ class LiteSeInt {
   //  API PÚBLICA
   // ===========================================================
 
+  _notificarCambioVariable(nombre) {
+    const v = this.variables[nombre];
+    if (!v) return;
+    this.callbacks.onVariableChanged({ nombre, ...v });
+  }
+
   async ejecutar(codigo, validacionPrevia = null) {
     this.variables = {};
     this.errores = [];
     this.ejecutando = true;
     this.detencionSolicitada = false;
 
+    this.callbacks.onScopeEntered({});
     const validacion = validacionPrevia || DocErrores.validarDocumento(codigo);
 
     if (validacion.errores.length > 0) {
@@ -86,6 +96,7 @@ class LiteSeInt {
 
     const detenido = this.detencionSolicitada;
     this.ejecutando = false;
+    this.callbacks.onScopeExited({});
     this.callbacks.onFin();
 
     return {
@@ -258,6 +269,7 @@ class LiteSeInt {
 
     this.variables[varNombre].valor = desde;
     this.variables[varNombre].inicializada = true;
+    this._notificarCambioVariable(varNombre);
 
     const avanza = paso > 0
       ? () => this.variables[varNombre].valor <= hasta
@@ -272,6 +284,7 @@ class LiteSeInt {
       await this._ejecutarBloque(nodo.cuerpo);
 
       this.variables[varNombre].valor += paso;
+      this._notificarCambioVariable(varNombre);
       iter++;
       if (iter >= LiteSeInt.MAX_ITERACIONES) {
         throw new Error(`Bucle infinito: más de ${LiteSeInt.MAX_ITERACIONES} iteraciones.`);
@@ -334,6 +347,7 @@ class LiteSeInt {
           // Pre-registrado por Dimension — completar con tipo e inicializar datos
           v.tipo = tipo;
           v.datos = this._initArrayDatos(v.dimensiones, this._valorDefault(tipo));
+          this._notificarCambioVariable(nombre);
           continue;
         }
         throw new Error(`Variable "${nombre}" ya se encuentra definida.`);
@@ -344,6 +358,7 @@ class LiteSeInt {
         valor: this._valorDefault(tipo),
         inicializada: false,
       };
+      this._notificarCambioVariable(nombre);
     }
   }
 
@@ -380,6 +395,7 @@ class LiteSeInt {
     const valor = this._evaluarExpresion(expresion, lineaIdx);
     this.variables[nombre].valor = this._convertirTipo(valor, this.variables[nombre].tipo);
     this.variables[nombre].inicializada = true;
+    this._notificarCambioVariable(nombre);
   }
 
   _ejecutarEscribir(linea, lineaIdx) {
@@ -421,6 +437,7 @@ class LiteSeInt {
 
     this.variables[nombre].valor = this._convertirTipo(valorIngresado, tipo);
     this.variables[nombre].inicializada = true;
+    this._notificarCambioVariable(nombre);
 
     this.callbacks.onSistema(`  ↳ ${nombre} = ${valorIngresado}`);
   }
@@ -496,6 +513,7 @@ class LiteSeInt {
       // Definir vino antes — agregar dimensiones ahora
       v.dimensiones = dimensiones;
       v.datos = this._initArrayDatos(dimensiones, this._valorDefault(v.tipo));
+      this._notificarCambioVariable(nombre);
     } else {
       // Definir vendrá después — pre-registrar
       this.variables[nombre] = {
@@ -505,6 +523,7 @@ class LiteSeInt {
         dimensiones,
         datos: null,
       };
+      this._notificarCambioVariable(nombre);
     }
   }
 
@@ -546,6 +565,7 @@ class LiteSeInt {
     const valor = this._evaluarExpresion(nodo.expresion, lineaIdx);
     this._setArrayElement(nombre, indices, this._convertirTipo(valor, v.tipo));
     v.inicializada = true;
+    this._notificarCambioVariable(nombre);
   }
 
   async _ejecutarLeerIndice(nodo, lineaIdx) {
@@ -589,6 +609,7 @@ class LiteSeInt {
 
     this._setArrayElement(nombre, indices, this._convertirTipo(valorIngresado, v.tipo));
     v.inicializada = true;
+    this._notificarCambioVariable(nombre);
     this.callbacks.onSistema(`  ↳ ${nodo.nombre}[${nodo.indices.join(', ')}] = ${valorIngresado}`);
   }
 

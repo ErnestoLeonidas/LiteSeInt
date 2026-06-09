@@ -354,11 +354,152 @@ const interprete = new LiteSeInt({
   onFin() {
     /* handled in ejecutar() */
   },
+
+  onScopeEntered() {
+    limpiarInspector();
+  },
+
+  onScopeExited() {
+    /* inspector already has final state */
+  },
+
+  onVariableChanged(info) {
+    actualizarInspector(info);
+  },
 });
 
 // =========================================
-// 3. CONSOLA
+// 3. INSPECTOR DE VARIABLES (v1.7.0)
 // =========================================
+
+let _inspectorVars = {};
+let _inspectorOrder = [];
+
+function limpiarInspector() {
+  _inspectorVars = {};
+  _inspectorOrder = [];
+  renderizarInspector(null);
+}
+
+function actualizarInspector(info) {
+  const nombre = info.nombre;
+  if (!Object.prototype.hasOwnProperty.call(_inspectorVars, nombre)) {
+    _inspectorOrder.push(nombre);
+  }
+  _inspectorVars[nombre] = info;
+  renderizarInspector(nombre);
+}
+
+function formatearValorInspector(valor, tipo) {
+  if (tipo === 'logico') return valor === true ? 'Verdadero' : 'Falso';
+  if (tipo === 'caracter') return `"${valor}"`;
+  if (valor === null || valor === undefined) return '—';
+  return String(valor);
+}
+
+function renderizarFilaArreglo(nombre, info, highlight) {
+  const dim = info.dimensiones ? `[${info.dimensiones.join(' × ')}]` : '';
+  const tipoLabel = info.tipo || '?';
+
+  const $det = $('<details>').addClass('inspector-array');
+  if (highlight) {
+    $det.addClass('var-changed');
+    setTimeout(() => $det.removeClass('var-changed'), 800);
+  }
+
+  const $sum = $('<summary>').addClass('inspector-array-summary');
+  $sum.append($('<span>').addClass('inspector-array-chevron').text('▶'));
+  $sum.append($('<span>').addClass('inspector-var-name').text(nombre));
+  $sum.append($('<span>').addClass('inspector-var-type').text(tipoLabel));
+  $sum.append($('<span>').addClass('inspector-var-value').text(dim));
+  $det.append($sum);
+
+  if (info.datos && info.tipo !== null) {
+    const $items = $('<div>').addClass('inspector-array-items');
+    if (info.dimensiones.length === 1) {
+      for (let i = 1; i <= info.dimensiones[0]; i++) {
+        const $item = $('<div>').addClass('inspector-array-item');
+        $item.append($('<span>').addClass('inspector-array-idx').text(`[${i}]`));
+        $item.append($('<span>').addClass('inspector-array-val').text(
+          formatearValorInspector(info.datos[i], info.tipo)
+        ));
+        $items.append($item);
+      }
+    } else if (info.dimensiones.length === 2) {
+      for (let i = 1; i <= info.dimensiones[0]; i++) {
+        for (let j = 1; j <= info.dimensiones[1]; j++) {
+          const $item = $('<div>').addClass('inspector-array-item');
+          $item.append($('<span>').addClass('inspector-array-idx').text(`[${i},${j}]`));
+          $item.append($('<span>').addClass('inspector-array-val').text(
+            formatearValorInspector(info.datos[i][j], info.tipo)
+          ));
+          $items.append($item);
+        }
+      }
+    }
+    $det.append($items);
+  }
+  return $det;
+}
+
+function renderizarFilaVariable(nombre, info, highlight) {
+  if (info.dimensiones) {
+    return renderizarFilaArreglo(nombre, info, highlight);
+  }
+
+  const $row = $('<div>').addClass('inspector-var');
+  if (highlight) {
+    $row.addClass('var-changed');
+    setTimeout(() => $row.removeClass('var-changed'), 800);
+  }
+  $row.append($('<span>').addClass('inspector-var-name').text(nombre));
+  $row.append($('<span>').addClass('inspector-var-type').text(info.tipo || ''));
+  const $val = $('<span>').addClass('inspector-var-value');
+  if (!info.inicializada || info.tipo === null) {
+    $val.addClass('inspector-var-uninit').text('sin inicializar');
+  } else {
+    $val.text(formatearValorInspector(info.valor, info.tipo));
+  }
+  $row.append($val);
+  return $row;
+}
+
+function renderizarInspector(nombreCambiado) {
+  const $cont = $('#inspectorVariables');
+  if (!$cont.length) return;
+  $cont.empty();
+
+  if (_inspectorOrder.length === 0) {
+    $cont.append(
+      $('<p>').addClass('inspector-empty').text('Sin variables — ejecuta el programa para ver su estado.')
+    );
+    return;
+  }
+
+  for (const nombre of _inspectorOrder) {
+    const info = _inspectorVars[nombre];
+    $cont.append(renderizarFilaVariable(nombre, info, nombre === nombreCambiado));
+  }
+}
+
+// =========================================
+// TABS DE CONSOLA (v1.7.0)
+// =========================================
+
+function switchConsoleView(view) {
+  $('.console-tab').removeClass('active');
+  $(`.console-tab[data-console-view="${view}"]`).addClass('active');
+  $('.console-view').removeClass('active');
+  $(`#${view}View`).addClass('active');
+  const onConsola = view === 'consola';
+  $('#consolaTabActions').toggle(onConsola);
+}
+
+function initConsoleTabs() {
+  $(document).on('click', '.console-tab', function() {
+    switchConsoleView(this.dataset.consoleView);
+  });
+}
 
 function consolaImprimir(texto, tipo = "output") {
   $("#consola").append($("<div>").addClass(`console-line ${tipo}`).text(texto));
@@ -427,6 +568,7 @@ function obtenerNombreProceso() {
 function limpiarConsola() {
   detener();
   $("#consola").empty();
+  limpiarInspector();
   invalidarErroresVisuales();
 }
 
@@ -3166,6 +3308,7 @@ $(document).ready(function () {
   inicializarResizeLearningPanel();
   initEjListaToggle();
   initLearningTabs();
+  initConsoleTabs();
 
   const pos = ESTRUCTURA_INICIAL.indexOf("\n") + 1;
   editor.setSelectionRange(pos, pos);

@@ -836,6 +836,159 @@ body::before {
 .console-input-send:hover { box-shadow: 0 0 12px rgba(0,255,136,0.3); }
 
 /* ========================================
+    CONSOLE TABS (v1.7.0)
+    ======================================== */
+.console-tabs {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+}
+
+.console-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 13px;
+  font-family: var(--font-code);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+.console-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.02); }
+.console-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.console-tab .status-dot { width: 6px; height: 6px; flex-shrink: 0; }
+
+/* Console views — tabbed content areas */
+.console-view {
+  display: none;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+.console-view.active { display: flex; }
+
+/* ========================================
+    VARIABLE INSPECTOR (v1.7.0)
+    ======================================== */
+.inspector-panel {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--bg-console);
+  padding: 6px 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  font-size: 12px;
+  font-family: var(--font-code);
+}
+.inspector-empty {
+  padding: 24px 16px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-style: italic;
+  text-align: center;
+}
+.inspector-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  background: var(--bg-console);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-style: italic;
+}
+.inspector-var {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 3px 16px;
+  border-left: 2px solid transparent;
+  line-height: 1.6;
+}
+.inspector-var:hover { background: rgba(255,255,255,0.02); }
+.inspector-var.var-changed { animation: inspectorFlash 0.7s ease forwards; }
+
+@keyframes inspectorFlash {
+  0%   { background: rgba(0,255,136,0.12); border-left-color: var(--accent); }
+  100% { background: transparent; border-left-color: transparent; }
+}
+
+.inspector-var-name {
+  color: var(--syntax-variable);
+  font-weight: 500;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+.inspector-var-type {
+  color: var(--text-secondary);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 56px;
+  flex-shrink: 0;
+}
+.inspector-var-value {
+  color: var(--text-primary);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.inspector-var-uninit {
+  color: var(--text-muted) !important;
+  font-style: italic;
+}
+
+/* Array/matrix inspector rows */
+.inspector-array {
+  border-left: 2px solid transparent;
+}
+.inspector-array.var-changed { animation: inspectorFlash 0.7s ease forwards; }
+.inspector-array-summary {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 3px 16px;
+  cursor: pointer;
+  font-size: 12px;
+  list-style: none;
+  user-select: none;
+  line-height: 1.6;
+}
+.inspector-array-summary::-webkit-details-marker { display: none; }
+.inspector-array-summary:hover { background: rgba(255,255,255,0.02); }
+.inspector-array-chevron {
+  color: var(--text-secondary);
+  font-size: 8px;
+  transition: transform 0.15s;
+  flex-shrink: 0;
+}
+details[open] .inspector-array-chevron { transform: rotate(90deg); }
+.inspector-array-items { padding: 0 0 4px 32px; }
+.inspector-array-item {
+  display: flex;
+  gap: 8px;
+  padding: 1px 16px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.inspector-array-idx { color: var(--syntax-number); min-width: 40px; flex-shrink: 0; }
+.inspector-array-val { color: var(--text-primary); }
+
+/* ========================================
     AUTOCOMPLETE
     ======================================== */
 .autocomplete-dropdown {
@@ -2433,7 +2586,7 @@ body::before {
     box-shadow: 0 -10px 24px rgba(0,0,0,0.28);
   }
 
-  .app-shell.mobile-console-collapsed #consola {
+  .app-shell.mobile-console-collapsed .console-view {
     display: none;
   }
 

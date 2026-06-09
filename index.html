@@ -129,6 +129,10 @@
                   <option value="contador">Contador</option>
                   <option value="tabla">Tabla</option>
                 </optgroup>
+                <optgroup label="Arreglos">
+                  <option value="arreglo">Arreglo de notas</option>
+                  <option value="matriz">Matriz 3×3</option>
+                </optgroup>
                 <optgroup label="Segun">
                   <option value="diasemana">Día de semana</option>
                 </optgroup>
@@ -182,7 +186,16 @@
         <!-- Consola -->
         <div class="console-panel" id="consolePanel">
           <div class="console-header">
-            <div class="console-header-actions console-header-actions-left">
+            <nav class="console-tabs" aria-label="Vistas del panel inferior">
+              <button class="console-tab active" data-console-view="consola">
+                <div class="status-dot" id="statusDot"></div>
+                Consola
+              </button>
+              <button class="console-tab" data-console-view="variables">Variables</button>
+              <button class="console-tab" data-console-view="diagrama">Diagrama</button>
+            </nav>
+            <span id="statusText" class="visually-hidden" aria-live="polite">Listo</span>
+            <div class="console-header-actions console-header-actions-left" id="consolaTabActions">
               <button class="btn-console-clear btn-icon-action" id="btnToggleConsoleEcho" aria-label="Ocultar trazas de consola" title="Ocultar trazas de consola" data-tooltip="Ocultar trazas:&#10;Oculta entradas y mensajes internos de ejecución">
                 <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
@@ -205,19 +218,20 @@
                 </svg>
               </button>
             </div>
-            <div class="console-header-title">
-              <div class="status-indicator console-status-indicator">
-                <div class="status-dot" id="statusDot"></div>
-                <span id="statusText" class="visually-hidden">Listo</span>
-              </div>
-              <span class="console-title">Consola</span>
-            </div>
             <div class="console-header-run-actions">
               <button class="btn-exec" id="btnEjecutar">▶ Ejecutar</button>
               <button class="btn-stop" id="btnDetener" style="display:none;">◼ Detener</button>
             </div>
           </div>
-          <div id="consola"></div>
+          <div class="console-view active" id="consolaView">
+            <div id="consola"></div>
+          </div>
+          <div class="console-view" id="variablesView">
+            <div id="inspectorVariables" class="inspector-panel"></div>
+          </div>
+          <div class="console-view" id="diagramaView">
+            <div class="inspector-placeholder">Disponible en v1.9.0</div>
+          </div>
         </div>
       </div>
     </div>
@@ -226,7 +240,7 @@
     <footer class="app-footer">
       Desarrollado con<span class="heart">♥</span>por
       <a href="https://github.com/ernestoleonidas" target="_blank" rel="noopener noreferrer" class="ps-1"> Ernesto Velásquez</a>
-      <div class="app-version">v1.6.0</div>
+      <div class="app-version">v1.7.0</div>
     </footer>
 
   </div>
