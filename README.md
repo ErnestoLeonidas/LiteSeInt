@@ -181,8 +181,13 @@ FinProceso
 - Como instrucción: `Llamar Nombre(args)`.
 - Como expresión (funciones con retorno): `r = NombreFuncion(args)`.
 
+### Diagrama NS bidireccional (v1.9.0)
+
+La pestaña **Diagrama** del panel inferior muestra un diagrama de Nassi-Shneiderman (NS) del código activo, generado al vuelo desde el AST. El diagrama se actualiza cada vez que se abre la pestaña.
+
+El diagrama es **bidireccional**: hacer clic en cualquier bloque con cursor de texto (condiciones de `Si`, `Mientras`, `Repetir`, `Segun`; textos de instrucciones) abre un campo de edición inline. Al presionar Enter o hacer clic fuera, el código del editor se actualiza automáticamente y la validación estática se ejecuta.
+
 ### No soportado (aún pendiente)
-- Diagramas de flujo.
 - Exportación a otros lenguajes.
 - Editor multiarchivo.
 - Persistencia de proyectos.

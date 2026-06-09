@@ -216,6 +216,7 @@ function parsearPrograma(codigo) {
   let bloqueActual = null;    // null when between top-level blocks
   let contextActual = null;   // 'proceso' | 'subproceso' | null
   let spActual = null;        // SubProceso node being built
+  let nombreProceso = 'Principal';
 
   for (let i = 0; i < lineas.length; i++) {
     const lineaRaw = lineas[i].trim();
@@ -225,6 +226,8 @@ function parsearPrograma(codigo) {
     // ── Top-level block entry/exit ──────────────────────────
 
     if (/^proceso(\s+\S+)?$/i.test(linea)) {
+      const mProc = linea.match(/^proceso\s+(\S+)\s*$/i);
+      if (mProc) nombreProceso = mProc[1];
       contextActual = 'proceso';
       bloqueActual = cuerpoRaiz;
       stack.length = 0;
@@ -407,7 +410,7 @@ function parsearPrograma(codigo) {
     columnaInicio: 0,
     columnaFin: lineas.length > 0 ? lineas[0].length : 0,
   };
-  return nodoPrograma(cuerpoRaiz, subprocesos, locPrograma);
+  return nodoPrograma(cuerpoRaiz, subprocesos, locPrograma, nombreProceso);
 }
 
 const LiteSeIntParser = {

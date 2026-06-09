@@ -24,6 +24,8 @@ function loadRuntime() {
   const ejercicios = fs.readFileSync(path.join(root, 'js/ejercicios-data.js'), 'utf8');
   vm.runInContext(`${tokenizer}\n${symbolTable}\n${validator}\n${docErrores}\nglobalThis.DocErrores = DocErrores; globalThis.LiteSeIntSymbolTable = LiteSeIntSymbolTable;`, ctx);
   vm.runInContext(`${ast}\n${parser}\nglobalThis.LiteSeIntAST = LiteSeIntAST; globalThis.LiteSeIntParser = LiteSeIntParser;`, ctx);
+  const diagramMapper = fs.readFileSync(path.join(root, 'core/diagram-mapper.js'), 'utf8');
+  vm.runInContext(`${diagramMapper}\nglobalThis.LiteSeIntDiagrama = LiteSeIntDiagrama;`, ctx);
   vm.runInContext(`${exprEval}\nglobalThis.LiteSeIntExprEval = LiteSeIntExprEval;`, ctx);
   vm.runInContext(`${liteSeInt}\nglobalThis.LiteSeInt = LiteSeInt;`, ctx);
   vm.runInContext(`${ejercicios}\nglobalThis.EjerciciosLiteSeInt = globalThis.EjerciciosLiteSeInt;`, ctx);
@@ -343,12 +345,12 @@ test('documentacion de errores: ejemplos incorrectos reproducen errores o son de
   }
 });
 
-test('parser: produce Programa raiz con astVersion 4 y cuerpo array', () => {
+test('parser: produce Programa raiz con astVersion 5 y cuerpo array', () => {
   const ctx = loadRuntime();
   const codigo = 'Proceso p\nDefinir x Como Entero\nx = 1\nEscribir x\nFinProceso';
   const ast = ctx.LiteSeIntParser.parsearPrograma(codigo);
   assert.strictEqual(ast.tipo, 'Programa');
-  assert.strictEqual(ast.astVersion, 4);
+  assert.strictEqual(ast.astVersion, 5);
   assert.ok(Array.isArray(ast.cuerpo));
   assert.ok(ast.loc && typeof ast.loc.linea === 'number');
   assert.ok(ast.subprocesos && typeof ast.subprocesos === 'object');
@@ -492,7 +494,7 @@ test('parser: roundtrip JSON preserva el AST', () => {
   const json = ctx.LiteSeIntAST.serializarAST(ast);
   const rehidratado = ctx.LiteSeIntAST.deserializarAST(json);
   assert.strictEqual(rehidratado.tipo, 'Programa');
-  assert.strictEqual(rehidratado.astVersion, 4);
+  assert.strictEqual(rehidratado.astVersion, 5);
   assert.deepStrictEqual(rehidratado, ast);
   assert.strictEqual(ctx.LiteSeIntAST.serializarAST(rehidratado), json);
 });
@@ -504,7 +506,7 @@ test('parser: los 245 ejercicios visibles parsean sin throw y producen Programa'
   for (const ej of visibles) {
     const ast = ctx.LiteSeIntParser.parsearPrograma(ej.codigoReferencia);
     assert.strictEqual(ast.tipo, 'Programa', `${ej.id}: tipo raiz no es Programa`);
-    assert.strictEqual(ast.astVersion, 4, `${ej.id}: astVersion incorrecto`);
+    assert.strictEqual(ast.astVersion, 5, `${ej.id}: astVersion incorrecto`);
     assert.ok(Array.isArray(ast.cuerpo), `${ej.id}: cuerpo no es array`);
   }
 });
@@ -987,6 +989,351 @@ test('v1.8.0: SubProceso definido despues de Proceso funciona', async () => {
   ].join('\n');
   const { salida } = await ejecutar(ctx, codigo);
   assert.deepStrictEqual(salida, ['doble']);
+});
+
+// ─────────────────────────────────────────────────────────────
+//  v1.9.0 — DiagramaMapper
+// ─────────────────────────────────────────────────────────────
+
+test('v1.9.0: DiagramaMapper disponible y DIAGRAMA_VERSION es 1', () => {
+  const ctx = loadRuntime();
+  assert.ok(ctx.LiteSeIntDiagrama, 'LiteSeIntDiagrama debe existir');
+  assert.strictEqual(ctx.LiteSeIntDiagrama.DIAGRAMA_VERSION, 1);
+  assert.strictEqual(typeof ctx.LiteSeIntDiagrama.astACodigo, 'function');
+  assert.strictEqual(typeof ctx.LiteSeIntDiagrama.astADiagrama, 'function');
+  assert.strictEqual(typeof ctx.LiteSeIntDiagrama.normalizarASTParaComparacion, 'function');
+});
+
+test('v1.9.0: astACodigo emite Proceso Principal y FinProceso', () => {
+  const ctx = loadRuntime();
+  const ast = ctx.LiteSeIntParser.parsearPrograma('Proceso Principal\n  Escribir "hola"\nFinProceso');
+  const generado = ctx.LiteSeIntDiagrama.astACodigo(ast);
+  assert.ok(generado.includes('Proceso Principal'));
+  assert.ok(generado.includes('Escribir "hola"'));
+  assert.ok(generado.includes('FinProceso'));
+});
+
+test('v1.9.0: astACodigo roundtrip instrucciones simples', () => {
+  const ctx = loadRuntime();
+  const norm = ctx.LiteSeIntDiagrama.normalizarASTParaComparacion;
+  const codigo = ['Proceso p', '  Definir x Como Entero', '  x = 42', '  Escribir x', 'FinProceso'].join('\n');
+  const ast1 = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const ast2 = ctx.LiteSeIntParser.parsearPrograma(ctx.LiteSeIntDiagrama.astACodigo(ast1));
+  assert.deepStrictEqual(norm(ast1), norm(ast2));
+});
+
+test('v1.9.0: astACodigo roundtrip Si Sino FinSi', () => {
+  const ctx = loadRuntime();
+  const norm = ctx.LiteSeIntDiagrama.normalizarASTParaComparacion;
+  const codigo = [
+    'Proceso p',
+    '  Definir x Como Entero',
+    '  x = 3',
+    '  Si x > 2 Entonces',
+    '    Escribir "mayor"',
+    '  Sino',
+    '    Escribir "menor"',
+    '  FinSi',
+    'FinProceso',
+  ].join('\n');
+  const ast1 = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const ast2 = ctx.LiteSeIntParser.parsearPrograma(ctx.LiteSeIntDiagrama.astACodigo(ast1));
+  assert.deepStrictEqual(norm(ast1), norm(ast2));
+});
+
+test('v1.9.0: astACodigo roundtrip Mientras', () => {
+  const ctx = loadRuntime();
+  const norm = ctx.LiteSeIntDiagrama.normalizarASTParaComparacion;
+  const codigo = [
+    'Proceso p',
+    '  Definir i Como Entero',
+    '  i = 0',
+    '  Mientras i < 5 Hacer',
+    '    i = i + 1',
+    '  FinMientras',
+    'FinProceso',
+  ].join('\n');
+  const ast1 = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const ast2 = ctx.LiteSeIntParser.parsearPrograma(ctx.LiteSeIntDiagrama.astACodigo(ast1));
+  assert.deepStrictEqual(norm(ast1), norm(ast2));
+});
+
+test('v1.9.0: astACodigo roundtrip Repetir HastaQue', () => {
+  const ctx = loadRuntime();
+  const norm = ctx.LiteSeIntDiagrama.normalizarASTParaComparacion;
+  const codigo = [
+    'Proceso p',
+    '  Definir n Como Entero',
+    '  n = 0',
+    '  Repetir',
+    '    n = n + 1',
+    '  HastaQue n >= 3',
+    'FinProceso',
+  ].join('\n');
+  const ast1 = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const ast2 = ctx.LiteSeIntParser.parsearPrograma(ctx.LiteSeIntDiagrama.astACodigo(ast1));
+  assert.deepStrictEqual(norm(ast1), norm(ast2));
+});
+
+test('v1.9.0: astACodigo roundtrip Para sin paso', () => {
+  const ctx = loadRuntime();
+  const norm = ctx.LiteSeIntDiagrama.normalizarASTParaComparacion;
+  const codigo = [
+    'Proceso p',
+    '  Definir i Como Entero',
+    '  Para i = 1 Hasta 10 Hacer',
+    '    Escribir i',
+    '  FinPara',
+    'FinProceso',
+  ].join('\n');
+  const ast1 = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const ast2 = ctx.LiteSeIntParser.parsearPrograma(ctx.LiteSeIntDiagrama.astACodigo(ast1));
+  assert.deepStrictEqual(norm(ast1), norm(ast2));
+});
+
+test('v1.9.0: astACodigo roundtrip Para con paso', () => {
+  const ctx = loadRuntime();
+  const norm = ctx.LiteSeIntDiagrama.normalizarASTParaComparacion;
+  const codigo = [
+    'Proceso p',
+    '  Definir i Como Entero',
+    '  Para i = 0 Hasta 10 Con Paso 2 Hacer',
+    '    Escribir i',
+    '  FinPara',
+    'FinProceso',
+  ].join('\n');
+  const ast1 = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const ast2 = ctx.LiteSeIntParser.parsearPrograma(ctx.LiteSeIntDiagrama.astACodigo(ast1));
+  assert.deepStrictEqual(norm(ast1), norm(ast2));
+});
+
+test('v1.9.0: astACodigo roundtrip Segun con De Otro Modo', () => {
+  const ctx = loadRuntime();
+  const norm = ctx.LiteSeIntDiagrama.normalizarASTParaComparacion;
+  const codigo = [
+    'Proceso p',
+    '  Definir x Como Entero',
+    '  x = 2',
+    '  Segun x Hacer',
+    '  1:',
+    '    Escribir "uno"',
+    '  2, 3:',
+    '    Escribir "dos o tres"',
+    '  De Otro Modo:',
+    '    Escribir "otro"',
+    '  FinSegun',
+    'FinProceso',
+  ].join('\n');
+  const ast1 = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const ast2 = ctx.LiteSeIntParser.parsearPrograma(ctx.LiteSeIntDiagrama.astACodigo(ast1));
+  assert.deepStrictEqual(norm(ast1), norm(ast2));
+});
+
+test('v1.9.0: astACodigo roundtrip SubProceso void', () => {
+  const ctx = loadRuntime();
+  const norm = ctx.LiteSeIntDiagrama.normalizarASTParaComparacion;
+  const codigo = [
+    'SubProceso Saludar()',
+    '  Escribir "hola"',
+    'FinSubProceso',
+    'Proceso p',
+    '  Llamar Saludar()',
+    'FinProceso',
+  ].join('\n');
+  const ast1 = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const ast2 = ctx.LiteSeIntParser.parsearPrograma(ctx.LiteSeIntDiagrama.astACodigo(ast1));
+  assert.deepStrictEqual(norm(ast1), norm(ast2));
+});
+
+test('v1.9.0: astACodigo roundtrip Funcion con retorno', () => {
+  const ctx = loadRuntime();
+  const norm = ctx.LiteSeIntDiagrama.normalizarASTParaComparacion;
+  const codigo = [
+    'Funcion res = Doble(n Como Entero)',
+    '  res = n * 2',
+    'FinFuncion',
+    'Proceso p',
+    '  Definir x Como Entero',
+    '  x = Doble(5)',
+    '  Escribir x',
+    'FinProceso',
+  ].join('\n');
+  const ast1 = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const ast2 = ctx.LiteSeIntParser.parsearPrograma(ctx.LiteSeIntDiagrama.astACodigo(ast1));
+  assert.deepStrictEqual(norm(ast1), norm(ast2));
+});
+
+test('v1.9.0: astACodigo roundtrip SubProceso Por Referencia', () => {
+  const ctx = loadRuntime();
+  const norm = ctx.LiteSeIntDiagrama.normalizarASTParaComparacion;
+  const codigo = [
+    'SubProceso Incrementar(Por Referencia x Como Entero)',
+    '  x = x + 1',
+    'FinSubProceso',
+    'Proceso p',
+    '  Definir n Como Entero',
+    '  n = 0',
+    '  Llamar Incrementar(n)',
+    '  Escribir n',
+    'FinProceso',
+  ].join('\n');
+  const ast1 = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const ast2 = ctx.LiteSeIntParser.parsearPrograma(ctx.LiteSeIntDiagrama.astACodigo(ast1));
+  assert.deepStrictEqual(norm(ast1), norm(ast2));
+});
+
+test('v1.9.0: astACodigo roundtrip Dimension y AsignarIndice', () => {
+  const ctx = loadRuntime();
+  const norm = ctx.LiteSeIntDiagrama.normalizarASTParaComparacion;
+  const codigo = [
+    'Proceso p',
+    '  Dimension v[3]',
+    '  Definir v Como Entero',
+    '  v[1] = 10',
+    '  Escribir v[1]',
+    'FinProceso',
+  ].join('\n');
+  const ast1 = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const ast2 = ctx.LiteSeIntParser.parsearPrograma(ctx.LiteSeIntDiagrama.astACodigo(ast1));
+  assert.deepStrictEqual(norm(ast1), norm(ast2));
+});
+
+test('v1.9.0: astACodigo roundtrip Leer con indice', () => {
+  const ctx = loadRuntime();
+  const norm = ctx.LiteSeIntDiagrama.normalizarASTParaComparacion;
+  const codigo = [
+    'Proceso p',
+    '  Dimension v[5]',
+    '  Definir v Como Entero',
+    '  Leer v[1]',
+    '  Escribir v[1]',
+    'FinProceso',
+  ].join('\n');
+  const ast1 = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const ast2 = ctx.LiteSeIntParser.parsearPrograma(ctx.LiteSeIntDiagrama.astACodigo(ast1));
+  assert.deepStrictEqual(norm(ast1), norm(ast2));
+});
+
+test('v1.9.0: astACodigo roundtrip estructuras anidadas', () => {
+  const ctx = loadRuntime();
+  const norm = ctx.LiteSeIntDiagrama.normalizarASTParaComparacion;
+  const codigo = [
+    'Proceso p',
+    '  Definir i Como Entero',
+    '  i = 0',
+    '  Mientras i < 3 Hacer',
+    '    Si i == 1 Entonces',
+    '      Escribir "uno"',
+    '    FinSi',
+    '    i = i + 1',
+    '  FinMientras',
+    'FinProceso',
+  ].join('\n');
+  const ast1 = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const ast2 = ctx.LiteSeIntParser.parsearPrograma(ctx.LiteSeIntDiagrama.astACodigo(ast1));
+  assert.deepStrictEqual(norm(ast1), norm(ast2));
+});
+
+test('v1.9.0: astACodigo preserva nombreProceso personalizado', () => {
+  const ctx = loadRuntime();
+  const ast = ctx.LiteSeIntParser.parsearPrograma('Proceso MiPrograma\n  Escribir "ok"\nFinProceso');
+  const generado = ctx.LiteSeIntDiagrama.astACodigo(ast);
+  assert.ok(generado.includes('Proceso MiPrograma'));
+});
+
+test('v1.9.0: astADiagrama estructura Programa y Proceso', () => {
+  const ctx = loadRuntime();
+  const ast = ctx.LiteSeIntParser.parsearPrograma('Proceso p\n  Escribir "test"\nFinProceso');
+  const { raiz, version } = ctx.LiteSeIntDiagrama.astADiagrama(ast);
+  assert.strictEqual(version, 1);
+  assert.strictEqual(raiz.tipo, 'Programa');
+  const proceso = raiz.hijos[0];
+  assert.strictEqual(proceso.tipo, 'Proceso');
+  assert.strictEqual(proceso.hijos.length, 1);
+  assert.strictEqual(proceso.hijos[0].tipo, 'Io');
+});
+
+test('v1.9.0: astADiagrama Si produce 2 SiRama', () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    '  Definir x Como Entero',
+    '  x = 1',
+    '  Si x > 0 Entonces',
+    '    Escribir "pos"',
+    '  FinSi',
+    'FinProceso',
+  ].join('\n');
+  const ast = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const { raiz } = ctx.LiteSeIntDiagrama.astADiagrama(ast);
+  const proceso = raiz.hijos[0];
+  const siNodo = proceso.hijos.find(n => n.tipo === 'Si');
+  assert.ok(siNodo, 'debe haber nodo Si');
+  assert.strictEqual(siNodo.hijos.length, 2);
+  assert.strictEqual(siNodo.hijos[0].tipo, 'SiRama');
+  assert.strictEqual(siNodo.hijos[0].etiqueta, 'Verdadero');
+});
+
+test('v1.9.0: astADiagrama bucles tienen tipo correcto', () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'Proceso p',
+    '  Definir i Como Entero',
+    '  i = 0',
+    '  Mientras i < 1 Hacer',
+    '    i = i + 1',
+    '  FinMientras',
+    '  Repetir',
+    '    i = i + 1',
+    '  HastaQue i > 5',
+    '  Para i = 1 Hasta 3 Hacer',
+    '    Escribir i',
+    '  FinPara',
+    'FinProceso',
+  ].join('\n');
+  const ast = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const { raiz } = ctx.LiteSeIntDiagrama.astADiagrama(ast);
+  const tipos = raiz.hijos[0].hijos.map(n => n.tipo);
+  assert.ok(tipos.includes('BucleMientras'), 'BucleMientras');
+  assert.ok(tipos.includes('BucleRepetir'), 'BucleRepetir');
+  assert.ok(tipos.includes('BuclePara'), 'BuclePara');
+});
+
+test('v1.9.0: astADiagrama SubProceso aparece en hijos de raiz', () => {
+  const ctx = loadRuntime();
+  const codigo = [
+    'SubProceso Prueba()',
+    '  Escribir "sp"',
+    'FinSubProceso',
+    'Proceso p',
+    '  Llamar Prueba()',
+    'FinProceso',
+  ].join('\n');
+  const ast = ctx.LiteSeIntParser.parsearPrograma(codigo);
+  const { raiz } = ctx.LiteSeIntDiagrama.astADiagrama(ast);
+  assert.strictEqual(raiz.hijos.length, 2);
+  const sp = raiz.hijos.find(n => n.tipo === 'SubProceso');
+  assert.ok(sp, 'debe haber nodo SubProceso');
+  assert.ok(sp.etiqueta.includes('Prueba'));
+});
+
+test('v1.9.0: normalizarASTParaComparacion elimina loc y locHastaQue', () => {
+  const ctx = loadRuntime();
+  const norm = ctx.LiteSeIntDiagrama.normalizarASTParaComparacion;
+  const codigo = [
+    'Proceso p',
+    '  Definir x Como Entero',
+    '  Repetir',
+    '    x = x + 1',
+    '  HastaQue x >= 3',
+    'FinProceso',
+  ].join('\n');
+  const normalizado = norm(ctx.LiteSeIntParser.parsearPrograma(codigo));
+  assert.ok(!('loc' in normalizado), 'Programa no debe tener loc');
+  const rep = normalizado.cuerpo[1];
+  assert.strictEqual(rep.tipo, 'Repetir');
+  assert.ok(!('loc' in rep), 'Repetir no debe tener loc');
+  assert.ok(!('locHastaQue' in rep), 'Repetir no debe tener locHastaQue');
 });
 
 test('detener durante Leer marca la ejecucion como detenida', async () => {

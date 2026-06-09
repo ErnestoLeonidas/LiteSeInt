@@ -2,7 +2,7 @@
 
 > Contrato del Árbol de Sintaxis Abstracta (AST) producido por `core/parser.js` y consumido por `core/LiteSeInt.js` (runtime), y a futuro por `core/diagram-mapper.js` (v1.9.0).
 >
-> Versión del contrato: **`astVersion: 4`** (actualizada en v1.8.0).
+> Versión del contrato: **`astVersion: 5`** (actualizada en v1.9.0).
 
 ## Propósito
 
@@ -36,9 +36,10 @@ Nodo raíz único del documento.
 ```js
 {
   tipo: "Programa",
-  astVersion: 4,
-  cuerpo: Nodo[],         // instrucciones del Proceso principal
-  subprocesos: Object,    // mapa nombre→SubProceso (v1.8.0)
+  astVersion: 5,
+  cuerpo: Nodo[],            // instrucciones del Proceso principal
+  subprocesos: Object,       // mapa nombre→SubProceso (v1.8.0)
+  nombreProceso: string,     // nombre del bloque Proceso, default 'Principal' (v1.9.0)
   loc
 }
 ```
@@ -266,6 +267,7 @@ El roundtrip JSON debe preservar exactamente el AST. Está cubierto por la prueb
 1. **Subir `astVersion`** cuando se agreguen, retiren o cambien nodos del lenguaje. Versiones planeadas:
    - `astVersion: 3` → v1.6.0 (**completado**: nodos `Dimension`, `AsignarIndice`, `LeerIndice`).
    - `astVersion: 4` → v1.8.0 (**completado**: nodos `SubProceso`, `Llamar`; campo `subprocesos` en `Programa`).
+   - `astVersion: 5` → v1.9.0 (**completado**: campo `nombreProceso` en `Programa`).
 2. **Nuevos nodos** se definen en `core/ast.js` mediante factory `nodoX(...)` y se documentan aquí.
 3. **Modificaciones en nodos existentes** se documentan aquí indicando la versión del cambio.
 4. **No se eliminan campos** sin un ciclo de deprecación que toque parser, runtime y validator a la vez. Los consumidores de F1.7+ (inspector, diagrama) dependen de la estabilidad de `loc` y de los campos estructurales.

@@ -6,6 +6,35 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ---
 
+## [1.9.0] — 2026-06-08
+
+Diagrama NS bidireccional.
+
+### Resumen
+- Panel Diagrama (pestaña inferior) muestra un diagrama de Nassi-Shneiderman del código activo generado al vuelo desde el AST.
+- El diagrama es **bidireccional**: hacer clic en un bloque editable (condiciones, etiquetas) muestra un campo inline; al confirmar, el código del editor se actualiza automáticamente.
+- `core/diagram-mapper.js` expone `astACodigo(ast)→string` y `astADiagrama(ast)→DiagramaData`; ambas operaciones son puras (sin DOM).
+- `js/diagram.js` implementa el renderizador SVG y el overlay de edición.
+- `AST_VERSION` incrementado a 5: `nodoPrograma` incluye campo `nombreProceso`.
+
+### Agregado
+- **`core/diagram-mapper.js`**: `astACodigo`, `nodoACodigo`, `astADiagrama`, `diagramaAAst`, `normalizarASTParaComparacion`, `LiteSeIntDiagrama`.
+- **`js/diagram.js`**: `LiteSeIntDiagramaUI.inicializarDiagrama()` y `LiteSeIntDiagramaUI.refrescarDiagrama(codigo)`.
+- **Evento `liteseint:diagramEdit`**: cuando el usuario edita en el diagrama, `app.js` escucha este evento y actualiza el editor + validación estática.
+- **Shortcut Ctrl+D**: cambia al tab Diagrama.
+
+### Cambiado
+- **`core/ast.js`**: `nodoPrograma` acepta cuarto argumento `nombreProceso`; `AST_VERSION = 5`.
+- **`core/parser.js`**: extrae el nombre del `Proceso` de la cabecera y lo pasa a `nodoPrograma`.
+- **`index.html`**: versión visible actualizada a `v1.9.0`; `diagramaView` ahora usa el renderizador SVG (antes era placeholder).
+- **`shared/ast-contract.md`**: documentado campo `nombreProceso` y `astVersion: 5`.
+
+### Validado
+- **Pruebas**: `npm test` pasa con **77 pruebas** (57 anteriores + 20 nuevas de v1.9.0).
+- **Ejercicios**: los 245 ejercicios pasan sin cambios.
+
+---
+
 ## [1.8.0] — 2026-06-08
 
 SubProcesos y funciones definidas por el usuario.

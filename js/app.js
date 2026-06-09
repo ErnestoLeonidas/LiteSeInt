@@ -493,6 +493,9 @@ function switchConsoleView(view) {
   $(`#${view}View`).addClass('active');
   const onConsola = view === 'consola';
   $('#consolaTabActions').toggle(onConsola);
+  if (view === 'diagrama' && typeof LiteSeIntDiagramaUI !== 'undefined') {
+    LiteSeIntDiagramaUI.refrescarDiagrama($('#editor').val());
+  }
 }
 
 function initConsoleTabs() {
@@ -3309,6 +3312,19 @@ $(document).ready(function () {
   initEjListaToggle();
   initLearningTabs();
   initConsoleTabs();
+
+  if (typeof LiteSeIntDiagramaUI !== 'undefined') {
+    LiteSeIntDiagramaUI.inicializarDiagrama();
+  }
+
+  document.addEventListener('liteseint:diagramEdit', function (e) {
+    const editor = document.getElementById('editor');
+    if (editor && e.detail && e.detail.codigo) {
+      editor.value = e.detail.codigo;
+      actualizarLineas();
+      validarYDecorar();
+    }
+  });
 
   const pos = ESTRUCTURA_INICIAL.indexOf("\n") + 1;
   editor.setSelectionRange(pos, pos);

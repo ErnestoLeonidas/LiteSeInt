@@ -20,7 +20,7 @@
  * ============================================================
  */
 
-const AST_VERSION = 4;
+const AST_VERSION = 5;
 
 function locDeLinea(linea, lineaRaw) {
   return {
@@ -30,8 +30,8 @@ function locDeLinea(linea, lineaRaw) {
   };
 }
 
-function nodoPrograma(cuerpo, subprocesos, loc) {
-  return { tipo: 'Programa', astVersion: AST_VERSION, cuerpo, subprocesos, loc };
+function nodoPrograma(cuerpo, subprocesos, loc, nombreProceso) {
+  return { tipo: 'Programa', astVersion: AST_VERSION, cuerpo, subprocesos, nombreProceso: nombreProceso || 'Principal', loc };
 }
 
 function nodoDefinir(texto, loc) {

@@ -989,6 +989,61 @@ details[open] .inspector-array-chevron { transform: rotate(90deg); }
 .inspector-array-val { color: var(--text-primary); }
 
 /* ========================================
+    NS DIAGRAM (v1.9.0)
+    ======================================== */
+#diagramaView {
+  position: relative;
+  overflow: auto;
+  background: var(--bg-console);
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+.ns-diagram {
+  display: block;
+}
+.ns-leaf, .ns-io, .ns-unknown,
+.ns-si-head, .ns-si-rama, .ns-si-body,
+.ns-loop-head, .ns-loop-body,
+.ns-segun-head, .ns-caso-lbl,
+.ns-proc-head, .ns-proc-body {
+  stroke: var(--border-color);
+  stroke-width: 1;
+}
+.ns-leaf    { fill: var(--bg-panel); }
+.ns-io      { fill: color-mix(in srgb, var(--accent) 6%, var(--bg-panel)); }
+.ns-unknown { fill: color-mix(in srgb, var(--error) 8%, var(--bg-panel)); }
+.ns-si-head { fill: color-mix(in srgb, var(--selected) 8%, var(--bg-panel)); }
+.ns-si-rama { fill: color-mix(in srgb, var(--selected) 5%, var(--bg-panel)); }
+.ns-si-body { fill: var(--bg-panel); }
+.ns-loop-head { fill: color-mix(in srgb, var(--accent) 8%, var(--bg-panel)); }
+.ns-loop-body { fill: var(--bg-panel); }
+.ns-segun-head { fill: color-mix(in srgb, var(--warning) 8%, var(--bg-panel)); }
+.ns-caso-lbl   { fill: color-mix(in srgb, var(--warning) 5%, var(--bg-panel)); }
+.ns-proc-head  { fill: color-mix(in srgb, var(--accent) 12%, var(--bg-panel)); }
+.ns-proc-body  { fill: var(--bg-panel); }
+.ns-line { stroke: var(--border-color); stroke-width: 1; fill: none; }
+.ns-label      { fill: var(--text-primary);   font-family: var(--font-code); font-size: 11px; }
+.ns-label-bold { fill: var(--accent);         font-family: var(--font-code); font-size: 11px; font-weight: 600; }
+.ns-label-dim  { fill: var(--text-secondary); font-family: var(--font-code); font-size: 10px; }
+.ns-rama-lbl   { fill: var(--selected);       font-family: var(--font-code); font-size: 10px; font-weight: 600; }
+.ns-edit-hit {
+  fill: transparent;
+  stroke: none;
+  cursor: text;
+}
+.ns-edit-hit:hover { fill: rgba(255,255,255,0.04); }
+.ns-edit-input {
+  background: var(--bg-editor);
+  color: var(--text-primary);
+  border: 1px solid var(--accent);
+  font-family: var(--font-code);
+  font-size: 11px;
+  padding: 0 4px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* ========================================
     AUTOCOMPLETE
     ======================================== */
 .autocomplete-dropdown {
